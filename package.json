@@ -1,0 +1,26 @@
+{
+  "keywords": [
+    "sxapi",
+    "startx"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/startxfr/sxapi-core.git"
+  },
+  "scripts": {
+    "test": "test.js"
+  },
+  "main": "app.js",
+  "dependencies": {
+    "express": "3.20.2"
+  },
+  "bugs": {
+    "url": "https://github.com/startxfr/sxapi-core/issues"
+  },
+  "license": "BSD",
+  "author": "startxfr",
+  "name": "sxapi-core",
+  "version": "0.0.1",
+  "private": false,
+  "description": "sxapi-core is an simple and extensible framework for building microservices using javascript"
+}
