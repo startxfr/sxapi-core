@@ -1,11 +1,11 @@
 FROM startx/sv-nodejs:fc21
 MAINTAINER Christophe LARUE <dev@startx.fr>
 
-ENV APP_DIR /app
-ENV CONF_DIR /conf
-ENV DATA_DIR /data
-ENV LOG_DIR /logs
+ENV APP_PATH /app
+ENV CONF_PATH /conf
+ENV DATA_PATH /data
+ENV LOG_PATH /logs
 
 EXPOSE 19777
-VOLUME [$CONF_DIR, $LOG_DIR, $DATA_DIR, $APP_DIR]
+VOLUME [$CONF_PATH, $LOG_PATH, $DATA_PATH, $APP_PATH]
 ENTRYPOINT ["node", "/app/app.js"]
