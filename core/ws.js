@@ -8,7 +8,7 @@ var $ws = {
         if (config) {
             $ws.config = config;
         }
-        require('./log').debug("Init tempo-ws module", 2);
+        require('./log').debug("Init ws module", 2);
         if (!$ws.config) {
             throw new Error("no 'server' section in config");
         }

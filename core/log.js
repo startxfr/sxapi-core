@@ -23,7 +23,7 @@
 
 /**
  * Log manager
- * @module tempo-log
+ * @module log
  * @constructor
  * @type $log
  */
@@ -224,12 +224,12 @@ var $log = {
             if (!conf.resource) {
                 throw new Error("no 'resource' key found in log config 'sqs'");
             }
-            if (!require('./tempo-resource').exist(conf.resource)) {
+            if (!require('./resource').exist(conf.resource)) {
                 throw new Error("resource '"
                         + conf.resource
                         + "' in log config 'sqs' doesn't exist");
             }
-            this.resource = require('./tempo-resource').get(conf.resource);
+            this.resource = require('./resource').get(conf.resource);
             this.isActive = true;
             return this;
         },
@@ -276,11 +276,11 @@ var $log = {
                 throw new Error("no 'resource' key found"
                         + " in log config 'couchbase'");
             }
-            if (!require('./tempo-resource').exist(conf.resource)) {
+            if (!require('./resource').exist(conf.resource)) {
                 throw new Error("resource '" + conf.resource
                         + "' in log config 'couchbase' doesn't exist");
             }
-            $log.couchbase.resource = require('./tempo-resource').get(conf.resource);
+            $log.couchbase.resource = require('./resource').get(conf.resource);
             $log.couchbase.isActive = true;
             return this;
         },
