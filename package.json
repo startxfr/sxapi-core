@@ -29,7 +29,7 @@
   "license": "GNU Licence v3",
   "author": "startxfr",
   "name": "sxapi-core",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "description": "sxapi-core is an simple and extensible framework for building microservices using javascript"
 }
