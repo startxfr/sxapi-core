@@ -1,21 +1,6 @@
 /* global module, require, process */
 
 //'use strict';
-function getFiles (dir, files_){
-    fs = require('fs');
-    files_ = files_ || [];
-    var files = fs.readdirSync(dir);
-    for (var i in files){
-        var name = dir + '/' + files[i];
-        if (fs.statSync(name).isDirectory()){
-            getFiles(name, files_);
-        } else {
-            files_.push(name);
-        }
-    }
-    return files_;
-}
-
 var $app = {
     package: {
         network_port: 19777
@@ -135,14 +120,6 @@ var $app = {
             process.exit(5);
         }
         try {
-            console.log(cfg_file);
-            console.log(getFiles(this.config.app_path));
-            console.log(getFiles(this.config.conf_path));
-            
-            
-            
-            
-            
             mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
             logger.debug("config file : " + cfg_file + " LOADED", 3);
         }
