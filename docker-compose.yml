@@ -12,5 +12,3 @@ sxapi:
     - "/tmp/sxapi-logs:/logs"
     - "/tmp/sxapi-conf:/conf"
     - "/tmp/sxapi-data:/data"
-  environment:
-    SERVICE_NAME: "dev-sxapi-core"

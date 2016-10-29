@@ -1,15 +1,15 @@
 FROM startx/sv-nodejs:fc21
 MAINTAINER Christophe LARUE <dev@startx.fr>
 
-ENV APP_DIR /app
-ENV CONF_DIR /conf
-ENV DATA_DIR /data
-ENV LOG_DIR /logs
+ENV APP_PATH /app
+ENV CONF_PATH /conf
+ENV DATA_PATH /data
+ENV LOG_PATH /logs
 
 COPY *.j* $APP_DIR/
 COPY core $APP_DIR/core
 RUN cd $APP_DIR && npm install -production
 
 EXPOSE 19777
-VOLUME [$CONF_DIR, $LOG_DIR, $DATA_DIR]
+VOLUME [$CONF_PATH, $LOG_PATH, $DATA_PATH]
 ENTRYPOINT ["node", "/app/app.js"]
