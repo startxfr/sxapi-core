@@ -1,10 +1,8 @@
 FROM startx/sv-nodejs:fc21
 MAINTAINER Christophe LARUE <dev@startx.fr>
 
-ENV APP_PATH /app
-ENV CONF_PATH /conf
-ENV DATA_PATH /data
-ENV LOG_PATH /logs
+ENV APP_PATH=/app CONF_PATH=/conf DATA_PATH=/data LOG_PATH=/logs
+WORKDIR $APP_PATH
 
 COPY *.j* $APP_PATH/
 COPY core $APP_PATH/core
