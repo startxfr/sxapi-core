@@ -121,6 +121,8 @@ var $app = {
             process.exit(5);
         }
         try {
+            console.log(cfg_file);
+            console.log(fs.readFileSync(cfg_file, 'utf-8'));
             mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
             logger.debug("config file : " + cfg_file + " LOADED", 3);
         }
