@@ -6,9 +6,9 @@ ENV CONF_PATH /conf
 ENV DATA_PATH /data
 ENV LOG_PATH /logs
 
-COPY *.j* $APP_DIR/
-COPY core $APP_DIR/core
-RUN cd $APP_DIR && npm install -production
+COPY *.j* $APP_PATH/
+COPY core $APP_PATH/core
+RUN cd $APP_PATH && npm install -production
 
 EXPOSE 19777
 VOLUME [$CONF_PATH, $LOG_PATH, $DATA_PATH]
