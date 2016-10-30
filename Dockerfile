@@ -1,4 +1,4 @@
-FROM startx/sv-nodejs:latest
+FROM startx/sv-nodejs:fc23
 MAINTAINER Christophe LARUE <dev@startx.fr>
 
 ENV APP_PATH=/app CONF_PATH=/conf DATA_PATH=/data LOG_PATH=/logs
