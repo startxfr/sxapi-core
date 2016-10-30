@@ -1,12 +1,7 @@
 sxapi:
-  build: ./
-  container_name: "dev-sxapi-core"
-  cpu_shares: 4096
-  cpuset: "0"
-  mem_limit: 1g
-  memswap_limit: 1g
+  build: .
+  container_name: "sxapi-core-dev"
   privileged: true
-  restart: "on-failure:2"
   ports:
     - "8080:19777"
   volumes:
