@@ -1,4 +1,4 @@
-sxapi:
+dev:
   build: .
   container_name: "sxapi-core-dev"
   privileged: true
