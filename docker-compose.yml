@@ -3,7 +3,7 @@ master:
   container_name: "sxapi-core-master"
   privileged: true
   ports:
-    - "8080:19777"
+    - "1977:8080"
   volumes:
     - "/tmp/sxapi-logs:/logs"
     - "/tmp/sxapi-conf:/conf:ro"
