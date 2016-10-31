@@ -1,9 +1,9 @@
-master:
+v0.0.6:
   build: .
-  container_name: "sxapi-core-v0.0.5"
+  container_name: "sxapi-core-v0.0.6"
   privileged: true
   ports:
-    - "8080:19777"
+    - "1977:8080"
   volumes:
     - "/tmp/sxapi-logs:/logs"
     - "/tmp/sxapi-conf:/conf:ro"

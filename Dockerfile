@@ -1,13 +1,12 @@
 FROM startx/sv-nodejs:fc23
 MAINTAINER Christophe LARUE <dev@startx.fr>
 
-ENV APP_PATH=/app CONF_PATH=/conf DATA_PATH=/data LOG_PATH=/logs
-WORKDIR $APP_PATH
+ENV APP_PATH=/app CONF_PATH=/conf
 
 COPY *.j* $APP_PATH/
 COPY core $APP_PATH/core
 RUN cd $APP_PATH && npm install -production
 
-EXPOSE 19777
-VOLUME [$CONF_PATH, $LOG_PATH, $DATA_PATH]
+VOLUME $CONF_PATH
+VOLUME $APP_PATH
 ENTRYPOINT ["node", "/app/app.js"]
