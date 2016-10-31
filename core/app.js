@@ -3,7 +3,7 @@
 //'use strict';
 var $app = {
     package: {
-        network_port: 19777
+        network_port: 8080
     },
     config: {
         ip: require("ip").address(),
