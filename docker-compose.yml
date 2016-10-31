@@ -1,6 +1,6 @@
 master:
   build: .
-  container_name: "sxapi-core-master"
+  container_name: "sxapi-core-v0.0.5"
   privileged: true
   ports:
     - "8080:19777"
