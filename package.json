@@ -1,7 +1,10 @@
 {
   "keywords": [
     "sxapi",
-    "startx"
+    "startx",
+    "microservice",
+    "modejs",
+    "dev"
   ],
   "repository": {
     "type": "git",
