@@ -42,7 +42,7 @@ var $resources = {
         if (config._class === undefined) {
             throw new Error("resource must have a _class param");
         }
-        this.config[id] = require(config._class)(id, config);
+        this.config[id] = require('./'+config._class)(id, config);
         return this;
     },
     /**

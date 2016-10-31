@@ -24,11 +24,16 @@ module.exports = function (id, config) {
             if (!$sqs.config.config.QueueUrl) {
                 throw new Error("no 'QueueUrl' key found in config 'queue.config' section");
             }
-            if (!$sqs.config.credentialFile) {
-                $sqs.config.credentialFile = './aws.credentials.json';
+            if (!$sqs.config.ACCESS_ID) {
+                process.env.AWS_ACCESS_KEY_ID = $sqs.config.ACCESS_ID;
+            }
+            if (!$sqs.config.ACCESS_KEY) {
+                process.env.AWS_SECRET_ACCESS_KEY = $sqs.config.ACCESS_KEY;
+            }
+            if (!$sqs.config.SESSION_TOKEN) {
+                process.env.AWS_SESSION_TOKEN = $sqs.config.SESSION_TOKEN;
             }
             $sqs.AWS = require('aws-sdk');
-            $sqs.AWS.config.loadFromPath($sqs.config.credentialFile);
             return this;
         },
         start: function (callback) {

@@ -89,9 +89,14 @@ var $ws = {
         }
         switch (config.method) {
             case "ROUTER":
+                var fct = null;
                 if (typeof config.handler === "function") {
-                    config.handler(config);
+                    fct = config.handler;
                 }
+                else {
+                    fct = $ws.defaultRouter;
+                }
+                fct(config);
                 break;
             case "POST":
                 require("./log").debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
@@ -257,7 +262,50 @@ var $ws = {
             require("./log").debug("Endpoint '" + config.path + "' answered with dynamic document", 3);
             return this;
         };
-    }
+    },
+    defaultRouter: function (configs) {
+        var $ws = require("./ws");
+        var endpoints = configs.endpoints;
+        delete configs.endpoints;
+        require("./log").debug("Use router '$ws.defaultRouter' for '" + configs.path + "'", 2);
+        for (var i = 0; i < endpoints.length; i++) {
+            var config = require('merge').recursive(true, configs, endpoints[i]);
+            var eptype = (typeof config.handler === "string") ? "dynamic" : "static ";
+            var ephdname = (config.handler) ? config.handler : "$ws.__endpointCallback";
+            if (typeof config.handler === "string") {
+                config.handler = eval(config.handler);
+            }
+            else if (typeof config.handler === "undefined" && config.method !== "ROUTER") {
+                config.handler = $ws.__endpointCallback;
+            }
+            if (config.method === "ROUTER") {
+                var fct = null;
+                if (typeof config.handler === "function") {
+                    fct = config.handler;
+                }
+                else {
+                    fct = $ws.defaultRouter;
+                }
+                fct(config);
+            }
+            else if (config.method === "POST") {
+                require("./log").debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
+                $ws.app.post(config.path, config.handler(config));
+            }
+            else if (config.method === "PUT") {
+                require("./log").debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
+                $ws.app.put(config.path, config.handler(config));
+            }
+            else if (config.method === "DELETE") {
+                require("./log").debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
+                $ws.app.delete(config.path, config.handler(config));
+            }
+            else {
+                require("./log").debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
+                $ws.app.get(config.path, config.handler(config));
+            }
+        }
+    },
 };
 
 module.exports = $ws;
