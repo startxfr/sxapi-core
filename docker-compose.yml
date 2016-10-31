@@ -5,7 +5,7 @@ dev:
   ports:
     - "1977:8080"
   volumes:
-    - "/secure/dev/startx/sxapi-sample/samples/simple/txt:/conf:ro"
+    - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
     - "/secure/dev/startx/sxapi-core:/app:ro"
     - "/tmp/sxapi-data:/data:rw"
     - "/tmp/sxapi-logs:/logs:rw"
