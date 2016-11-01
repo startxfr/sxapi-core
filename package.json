@@ -11,7 +11,7 @@
     "url": "https://github.com/startxfr/sxapi-core.git"
   },
   "scripts": {
-    "test": "test.js"
+    "test": "ci-tests.sh"
   },
   "main": "app.js",
   "dependencies": {
@@ -24,7 +24,11 @@
     "body-parser": "~1.12.4",
     "cors": "~2.7.2",
     "crypto": "0.0.3",
-    "express": "~4.14.0"
+    "express": "~4.14.0",
+    "aws-sdk": "~2.6",
+    "couchbase": "~2.1.8",
+    "uuid": "~2.0.3",
+    "mysql": "~2.11.1"
   },
   "bugs": {
     "url": "https://github.com/startxfr/sxapi-core/issues"

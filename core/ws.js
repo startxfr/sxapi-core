@@ -61,6 +61,7 @@ var $ws = {
         return this;
     },
     _initEndpoint: function (config, withRouting) {
+        var $ws = require("./ws");
         config.method = config.method ? config.method : 'GET';
         config.path = config.path ? config.path : '/';
         if (withRouting === true) {
@@ -77,21 +78,40 @@ var $ws = {
                         config);
             }
         }
-        var eptype = "static ";
-        var ephdname = config.handler;
+        $ws._initEndpointConfig(config);
+
+        return this;
+    },
+    _initEndpointConfig: function (config) {
+        var $ws = require("./ws");
+        var eptype = (typeof config.handler === "string") ? "dynamic" : "static ";
+        var ephdname = (config.handler) ? config.handler : "$ws.__endpointCallback";
         if (typeof config.handler === "string") {
             eptype = "dynamic";
             config.handler = eval(config.handler);
         }
         else if (typeof config.handler === "undefined" && config.method !== "ROUTER") {
-            ephdname = "$ws.__endpointCallback";
-            config.handler = $ws.__endpointCallback;
+            if (typeof config.resource === "string" && typeof config.resource_handler === "string") {
+                eptype = "dynamic";
+                var rs = require('./resource').get(config.resource);
+                ephdname = config.resource+"::"+config.resource_handler;
+                config.handler = eval('rs.'+config.resource_handler);
+            }
+            else {
+                ephdname = "$ws.__endpointCallback";
+                config.handler = $ws.__endpointCallback;
+            }
         }
         switch (config.method) {
             case "ROUTER":
+                var fct = null;
                 if (typeof config.handler === "function") {
-                    config.handler(config);
+                    fct = config.handler;
                 }
+                else {
+                    fct = $ws.defaultRouter;
+                }
+                fct(config);
                 break;
             case "POST":
                 require("./log").debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
@@ -257,6 +277,16 @@ var $ws = {
             require("./log").debug("Endpoint '" + config.path + "' answered with dynamic document", 3);
             return this;
         };
+    },
+    defaultRouter: function (configs) {
+        var $ws = require("./ws");
+        var endpoints = configs.endpoints;
+        delete configs.endpoints;
+        require("./log").debug("Use router '$ws.defaultRouter' for '" + configs.path + "'", 2);
+        for (var i = 0; i < endpoints.length; i++) {
+            var config = require('merge').recursive(true, configs, endpoints[i]);
+            $ws._initEndpointConfig(config);
+        }
     }
 };
 

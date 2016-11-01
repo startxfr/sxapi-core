@@ -23,9 +23,6 @@ var $app = {
         this._initLoadConfigFiles();
         logger.info("Init application ", require('./timer').time('app'));
         var afterResourceLoaded = function () {
-            if ($app.config.events) {
-                require("./event").init($app.config.events);
-            }
             if ($app.config.server) {
                 require("./ws").init($app.config.server);
                 $app.onStart(function () {
@@ -42,14 +39,7 @@ var $app = {
         if ($app.config.resources) {
             require('./resource')
                     .init($app.config.resources)
-                    .starts(function () {
-                        if ($app.config.cache) {
-                            require("./cache").init($app.config.cache, afterResourceLoaded);
-                        }
-                        else {
-                            afterResourceLoaded();
-                        }
-                    });
+                    .starts(afterResourceLoaded);
         }
         else {
             afterResourceLoaded();
