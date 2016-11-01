@@ -222,6 +222,32 @@ module.exports = function (id, config) {
                             require("./timer").timeStop('delete_document_' + key));
                 }
             };
+        },
+        endpoints: {
+            testEndpoint: function (config) {
+                /**
+                 * Callback called when a defined endpoint is called
+                 * @param {object} req
+                 * @param {object} res
+                 * @returns {undefined}
+                 */
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    require("./log").debug("Endpoint '" + path + "' called", 1);
+                    if (config.body) {
+                        var code = (config.code) ? config.code : 200;
+                        var header = (config.header) ? config.header : {"Content-Type": "text/html"};
+                        res.writeHead(code, header);
+                        res.end(config.body);
+                        require("./log").info("Endpoint '" + path + "' answered static document [" + code + "]");
+                    }
+                    else {
+                        res.writeHead(404, {"Content-Type": "text/html"});
+                        res.end("<html><head></head><body><h1>Not Found</h1></body></html>");
+                        require("./log").warn("Endpoint " + req.method + " '" + path + "' not found");
+                    }
+                }
+            }
         }
     };
     $cbdb.init(config);

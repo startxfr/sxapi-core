@@ -24,15 +24,6 @@ module.exports = function (id, config) {
             if (!$sqs.config.config.QueueUrl) {
                 throw new Error("no 'QueueUrl' key found in config 'queue.config' section");
             }
-            if (!$sqs.config.ACCESS_ID) {
-                process.env.AWS_ACCESS_KEY_ID = $sqs.config.ACCESS_ID;
-            }
-            if (!$sqs.config.ACCESS_KEY) {
-                process.env.AWS_SECRET_ACCESS_KEY = $sqs.config.ACCESS_KEY;
-            }
-            if (!$sqs.config.SESSION_TOKEN) {
-                process.env.AWS_SESSION_TOKEN = $sqs.config.SESSION_TOKEN;
-            }
             $sqs.AWS = require('aws-sdk');
             return this;
         },
@@ -49,11 +40,20 @@ module.exports = function (id, config) {
             return this;
         },
         open: function (callback) {
-            require('./timer').start('open_sqs_'
-                    + $sqs.config.config.QueueUrl);
-            require("./log").debug("Open SQS queue "
-                    + $sqs.config.config.QueueUrl, 3);
-            $sqs.sqsqueue = new $sqs.AWS.SQS();
+            require('./timer').start('open_sqs_' + $sqs.config.config.QueueUrl);
+            require("./log").debug("Open SQS queue " + $sqs.config.config.QueueUrl, 3);
+            var config = {};
+            if ($sqs.config.ACCESS_ID) {
+                config.accessKeyId = $sqs.config.ACCESS_ID;
+            }
+            if ($sqs.config.ACCESS_KEY) {
+                config.secretAccessKey = $sqs.config.ACCESS_KEY;
+            }
+            if ($sqs.config.SESSION_TOKEN) {
+                config.sessionToken = $sqs.config.SESSION_TOKEN;
+            }
+            config.region = $sqs.config.region || "us-west-1";
+            $sqs.sqsqueue = new $sqs.AWS.SQS(config);
             $sqs.__openHandler(callback);
             return this;
         },
@@ -165,23 +165,62 @@ module.exports = function (id, config) {
             };
             var defaultCallback = function (error, response) {
                 if (error) {
-                    require("./log").warn('message ' + message.id
-                            + ' could not be send because ' + error.message
-                            + ' [' + error.code + ']',
-                            require("./timer")
-                            .timeStop('send_event_' + messId),
+                    require("./log").warn('message ' + message.id + ' could not be send because ' + error.message + ' [' + error.code + ']',
+                            require("./timer").timeStop('send_event_' + messId),
                             true);
                 }
                 else {
-                    require("./log").debug("sended sqs message "
-                            + response.MessageId, 4,
-                            require("./timer")
-                            .timeStop('send_event_' + messId),
+                    require("./log").debug("sended sqs message "+ response.MessageId, 4,
+                            require("./timer").timeStop('send_event_' + messId),
                             true);
                 }
             };
             $sqs.sqsqueue.sendMessage(params, callback ? callback : defaultCallback);
             return this;
+        },
+        endpoints: {
+            addMessageEndpoint: function (config) {
+                /**
+                 * Callback called when a defined endpoint is called
+                 * @param {object} req
+                 * @param {object} res
+                 * @returns {undefined}
+                 */
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    require("./log").debug("Endpoint '" + path + "' called", 1);
+                    var data = req.body;
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn("Endpoint " + req.method + " '" + path + "' : resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            var message = {
+                                message: data,
+                                time: Date.now(),
+                                server: require("./log").config.appsign
+                            };
+                            rs.sendMessage(message, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn("Endpoint " + req.method + " '" + path + "' : error saving log  because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "recorded message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
+                                    require("./log").info("Endpoint '" + path + "' returned "+ reponse.MessageId);
+                                }
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn("Endpoint " + req.method + " '" + path + "' : resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                }
+            }
         }
     };
     $sqs.init(config);
