@@ -7,7 +7,7 @@
  * @constructor
  * @param {string} id
  * @param {object} config
- * @type $log
+ * @type resource
  */
 module.exports = function (id, config) {
     var $sqs = {
