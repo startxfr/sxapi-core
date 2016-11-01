@@ -179,7 +179,7 @@ module.exports = function (id, config) {
             return this;
         },
         endpoints: {
-            addMessageEndpoint: function (config) {
+            addMessage: function (config) {
                 /**
                  * Callback called when a defined endpoint is called
                  * @param {object} req
@@ -189,11 +189,12 @@ module.exports = function (id, config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
                     var ress = require('./resource');
-                    require("./log").debug("Endpoint '" + path + "' called", 1);
+                    var message_prefix="Endpoint " + req.method + " '" + path + "' : ";
+                    require("./log").debug(message_prefix+"called", 1); 
                     var data = req.body;
                     if (!config.resource) {
-                        require("./ws").nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
-                        require("./log").warn("Endpoint " + req.method + " '" + path + "' : resource is not defined for this endpoint");
+                        require("./ws").nokResponse(res, message_prefix+"resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix+"resource is not defined for this endpoint");
                     }
                     else {
                         if (ress.exist(config.resource)) {
@@ -205,18 +206,18 @@ module.exports = function (id, config) {
                             };
                             rs.sendMessage(message, function (err, reponse) {
                                 if (err) {
-                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    require("./log").warn("Endpoint " + req.method + " '" + path + "' : error saving log  because " + err.message);
+                                    require("./ws").nokResponse(res, message_prefix+"error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix+"error saving log  because " + err.message);
                                 }
                                 else {
-                                    require("./ws").okResponse(res, "recorded message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
-                                    require("./log").info("Endpoint '" + path + "' returned "+ reponse.MessageId);
+                                    require("./ws").okResponse(res, message_prefix+"recorded message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
+                                    require("./log").info(message_prefix+"returned "+ reponse.MessageId);
                                 }
                             });
                         }
                         else {
-                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            require("./log").warn("Endpoint " + req.method + " '" + path + "' : resource '" + config.resource + "' doesn't exist");
+                            require("./ws").nokResponse(res, message_prefix+"resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix+"resource '" + config.resource + "' doesn't exist");
                         }
                     }
                 }

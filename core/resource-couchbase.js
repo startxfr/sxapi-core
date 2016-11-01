@@ -30,22 +30,16 @@ module.exports = function (id, config) {
                 $cbCluster = [];
             }
             if (typeof $cbCluster[$cbdb.config.cluster] === 'undefined') {
-                require("./log").debug(
-                        "new link to couchbase cluster "
-                        + $cbdb.config.cluster, 4);
-                $cbCluster[$cbdb.config.cluster] =
-                        new $cbdb.cb.Cluster($cbdb.config.cluster);
+                require("./log").debug("new link to couchbase cluster " + $cbdb.config.cluster, 4);
+                $cbCluster[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
             }
             else {
-                require("./log").debug(
-                        "use previous link to couchbase cluster "
-                        + $cbdb.config.cluster, 4);
+                require("./log").debug("use previous link to couchbase cluster " + $cbdb.config.cluster, 4);
             }
             return $cbdb;
         },
         start: function (callback) {
-            require("./log").debug(
-                    "start resource-couchbase module", 3);
+            require("./log").debug("start resource-couchbase module", 3);
             $cbdb.open(callback);
             return $cbdb;
         },
@@ -62,12 +56,8 @@ module.exports = function (id, config) {
                 $cbBuckets = [];
             }
             if (typeof $cbBuckets[$cbdb.config.bucket] === 'undefined') {
-                require("./log").debug(
-                        "new couchbase connection to bucket "
-                        + $cbdb.config.bucket, 4);
-                $cbBuckets[$cbdb.config.bucket] =
-                        $cbCluster[$cbdb.config.cluster]
-                        .openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback));
+                require("./log").debug("new couchbase connection to bucket " + $cbdb.config.bucket, 4);
+                $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback));
 //                $cbBuckets[$cbdb.config.bucket].operationTimeout = 60 * 1000;
             }
             else {
@@ -102,13 +92,11 @@ module.exports = function (id, config) {
             return $cbBuckets[$cbdb.config.bucket]
                     .get(docId, (callback) ? callback : $cbdb.__queryDefaultCallback);
         },
-        query: function (design, view, callback) {
-            require("./log").debug("query view " + design
-                    + ":" + view + " from couchbase bucket "
-                    + $cbdb.config.bucket, 4);
-            var query = $cbdb.cb.ViewQuery.from(design, view);
-            return $cbBuckets[$cbdb.config.bucket]
-                    .query(query, (callback) ? callback : $cbdb.__queryDefaultCallback);
+        query: function (n1ql, callback) {
+            require("./log").debug("query N1QL from couchbase bucket " + $cbdb.config.bucket, 4);
+            var N1qlQuery = require('couchbase').N1qlQuery;
+            var query = N1qlQuery.fromString(n1ql);
+            return $cbBuckets[$cbdb.config.bucket].query(query, (callback) ? callback : $cbdb.__queryDefaultCallback);
         },
         queryFree: function (query, callback) {
             require("./log").debug("query free view " + query.ddoc
@@ -224,29 +212,179 @@ module.exports = function (id, config) {
             };
         },
         endpoints: {
-            testEndpoint: function (config) {
-                /**
-                 * Callback called when a defined endpoint is called
-                 * @param {object} req
-                 * @param {object} res
-                 * @returns {undefined}
-                 */
+            test: function () {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    require("./log").debug("Endpoint '" + path + "' called", 1);
-                    if (config.body) {
-                        var code = (config.code) ? config.code : 200;
-                        var header = (config.header) ? config.header : {"Content-Type": "text/html"};
-                        res.writeHead(code, header);
-                        res.end(config.body);
-                        require("./log").info("Endpoint '" + path + "' answered static document [" + code + "]");
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    require("./log").debug(message_prefix + "called", 1);
+                    require("./ws").okResponse(res, "test message ").send();
+                    require("./log").info(message_prefix + "returned test message");
+                };
+            },
+            list: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    require("./log").debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        res.writeHead(404, {"Content-Type": "text/html"});
-                        res.end("<html><head></head><body><h1>Not Found</h1></body></html>");
-                        require("./log").warn("Endpoint " + req.method + " '" + path + "' not found");
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            rs.query(config.n1ql, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix + "error saving log  because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "returned " + reponse.length + 'items', reponse).addTotal(reponse.length).send();
+                                    require("./log").info(message_prefix + "list of " + reponse.length + " items");
+                                }
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
                     }
-                }
+                };
+            },
+            get: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    require("./log").debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            rs.get(docId, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix + "error reading document because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "returned " + reponse.length + 'items', reponse).send();
+                                    require("./log").info(message_prefix + "document " + docId);
+                                }
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
+            },
+            create: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
+                    require("./log").debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            rs.insert(docId, req.body, function (key) {
+                                return function (err, reponse) {
+                                    if (err) {
+                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                        require("./log").warn(message_prefix + "error saving document because " + err.message);
+                                    }
+                                    else {
+                                        require("./ws").okResponse(res, "document "+docId+" recorded", reponse).send();
+                                        require("./log").info(message_prefix + "document " + docId);
+                                    }
+                                };
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
+            },
+            update: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    require("./log").debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            rs.update(docId, req.body, function (key) {
+                                return function (err, reponse) {
+                                    if (err) {
+                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                        require("./log").warn(message_prefix + "error updating document because " + err.message);
+                                    }
+                                    else {
+                                        require("./ws").okResponse(res, "document "+docId+" updated", reponse.value).send();
+                                        require("./log").info(message_prefix + "document " + docId);
+                                    }
+                                };
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
+            },
+            delete: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('./resource');
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    require("./log").debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        require("./log").warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            rs.delete(docId, function (key) {
+                                return function (err, reponse) {
+                                    if (err) {
+                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                        require("./log").warn(message_prefix + "error deleting document because " + err.message);
+                                    }
+                                    else {
+                                        require("./ws").okResponse(res, "document "+docId+" deleted", reponse).send();
+                                        require("./log").info(message_prefix + "document " + docId);
+                                    }
+                                };
+                            });
+                        }
+                        else {
+                            require("./ws").nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            require("./log").warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
             }
         }
     };

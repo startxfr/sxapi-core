@@ -25,8 +25,9 @@
     "cors": "~2.7.2",
     "crypto": "0.0.3",
     "express": "~4.14.0",
-    "aws-sdk" : "~2.6",
-    "couchbase" : "~2.1.8"
+    "aws-sdk": "~2.6",
+    "couchbase": "~2.1.8",
+    "uuid": "~2.0.3"
   },
   "bugs": {
     "url": "https://github.com/startxfr/sxapi-core/issues"
