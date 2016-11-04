@@ -107,9 +107,7 @@ module.exports = function (id, config) {
         },
         __queryDefaultCallback: function (err, results) {
             if (err) {
-                require("./log").error(
-                        'query could not be executed because '
-                        + err.message + ' [' + err.code + ']');
+                require("./log").error('query could not be executed because '+ err.message + ' [' + err.code + ']');
             }
             else {
                 require("./log").debug(results);
