@@ -9,19 +9,23 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 -   `class` **string** Must be resource-couchbase for this resource
 -   `cluster` **string** URL of the couchbase cluster to use. You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine, please use docker host IP (like 172.17.x.x). Example : http://172.17.42.1:8091
 -   `bucket` **string** Bucket to use for this resource. If you need to connect to several bucket, you'll have to create several resources
--   `insertOptions` **Object** options used when inserting a document to the bucket
-    -   `persist_to` **[boolean]** If 1, wait for document to be persisted before returning result
-    -   `replicate_to` **int** number of node to replicate data before geting a response from the cluster
--   `updateOptions` **Object** options used when updating a document to the bucket
-    -   `persist_to` **[boolean]** If 1, wait for document to be persisted before returning result
-    -   `replicate_to` **int** number of node to replicate data before geting a response from the cluster
--   `deleteOptions` **Object** options used when deleting a document to the bucket
-    -   `persist_to` **[boolean]** If 1, wait for document to be persisted before returning result
-    -   `replicate_to` **int** number of node to replicate data before geting a response from the cluster
+-   `password` **string** Password used for this bucket
+-   `insertOptions` **object** options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
+    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
+    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
+    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
+-   `updateOptions` **object** options used when updating a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#replace) for more informations
+    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
+    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
+    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
+-   `deleteOptions` **object** options used when deleting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#remove) for more informations
+    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
+    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
+    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
 
 ### **Sample config**
 
-```
+```json
 "resources": {
     ...
     "couchbase-sample": {
@@ -29,16 +33,13 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
         "cluster": "http://172.17.42.1:8091",
         "bucket": "beer-sample",
         "insertOptions": {
-            "persist_to": 1,
-            "replicate_to": 1
+            "persist_to": 1
         },
         "updateOptions": {
-            "persist_to": 1,
-            "replicate_to": 1
+            "persist_to": 1
         },
         "deleteOptions": {
-            "persist_to": 1,
-            "replicate_to": 1
+            "persist_to": 1
         }
     }
     ...
@@ -47,7 +48,6 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 
 
 ## Available Methods
---------------------
 
 ### get
 
