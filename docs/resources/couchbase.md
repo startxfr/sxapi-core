@@ -1,10 +1,8 @@
 # SXAPI Resource : couchbase
-============================
 
-
+This resource allow you to interact with a couchbase Enterprise Server Cluster. Based on [Couchase NodeJS SDK 2.1.8](http://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/introduction.html). This resource can be used using ```require('/app/core/resource-couchbase)``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
--------------------------
 
 ### **Config parameters**
 
@@ -59,10 +57,24 @@ Get a document for the bucket according to the given docId
 
 -   `docId` **String** The document ID to find
 -   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **Boolean** True if and error occur. Response describe this error
+    -   `response` **Object, Array** Content responded for the couchbase cluster
 
-#### **Callback**
+#### **Sample code**
 
-**Boolean** XXXXX
+```javascript
+var rs = require('./resource');
+if (rs.exist('resource-id')) {
+    var resource = rs.get('resource-id');
+    resource.get(docId, function (error, response) {
+        console.log(error, response);
+    });
+}
+```
+
+
+
+
 
 #### **Return**
 
@@ -117,7 +129,7 @@ Available Endpoints
 
 Sample config :
 
-```
+```json
 ...
 "server": {
     "endpoints": [
