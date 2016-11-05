@@ -156,12 +156,14 @@ resource.delete('my-doc-id', function (error, response) {
 
 ### list endpoint
 
+Return a list resulting from a N1ql query
+
 #### **Config parameters**
 
 -   `path`**string** Serveur path to bind this entrypoint to
 -   `method`**string** http method to listen to
 -   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***"endpoints.list"***
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.list***
 -   `n1ql` **string** N1QL query to execute whent his entrypoint is called
 
 #### **Sample code**
@@ -177,12 +179,14 @@ resource.delete('my-doc-id', function (error, response) {
 
 ### get endpoint
 
+Return a document coresponding to the given docId
+
 #### **Config parameters**
 
 -   `path`**string** Serveur path to bind this entrypoint to
 -   `method`**string** http method to listen to
 -   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***"endpoints.get"***
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.get***
 
 #### **Sample code**
 
@@ -194,65 +198,72 @@ resource.delete('my-doc-id', function (error, response) {
 }
 ```
 
-
 ### create endpoint
 
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+Insert a new document in the bucket. You could give and id or leave the system create one for you
+
+#### **Config parameters**
+
+-   `path`**string** Serveur path to bind this entrypoint to
+-   `method`**string** http method to listen to
+-   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.create***
+
+#### **Sample code**
+
+```json 
+{
+    "path": "/beer/:id", "method": "POST",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.create"
+}
+```
+```
+{
+    "path": "/beer", "method": "POST",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.create"
+}
+```
 
 ### update endpoint
 
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+Update the document coresponding to the given docId with the new document
+
+#### **Config parameters**
+
+-   `path`**string** Serveur path to bind this entrypoint to
+-   `method`**string** http method to listen to
+-   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.update***
+
+#### **Sample code**
+
+```json 
+{
+    "path": "/beer/:id", "method": "PUT",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.update"
+}
+```
 
 ### delete endpoint
 
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+Remove the document coresponding to the given docId with the new document
 
+#### **Config parameters**
 
-Sample config :
+-   `path`**string** Serveur path to bind this entrypoint to
+-   `method`**string** http method to listen to
+-   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
 
-```json
-...
-"server": {
-    "endpoints": [
-        {
-            "path": "/beer",
-            "method": "ROUTER",
-            "resource": "couchbase-sample",
-            "endpoints": [
-                {
-                    "path": "/beer",
-                    "method": "GET",
-                    "resource_handler": "endpoints.list",
-                    "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
-                },
-                {
-                    "path": "/beer",
-                    "method": "POST",
-                    "resource_handler": "endpoints.create"
-                },
-                {
-                    "path": "/beer/:id",
-                    "method": "POST",
-                    "resource_handler": "endpoints.create"
-                },
-                {
-                    "path": "/beer/:id",
-                    "method": "GET",
-                    "resource_handler": "endpoints.get"
-                },
-                {
-                    "path": "/beer/:id",
-                    "method": "PUT",
-                    "resource_handler": "endpoints.update"
-                },
-                {
-                    "path": "/beer/:id",
-                    "method": "DELETE",
-                    "resource_handler": "endpoints.delete"
-                }
-            ]
-        }
-    ]
+#### **Sample code**
+
+```json 
+{
+    "path": "/beer/:id", "method": "DELETE",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.delete"
 }
-...
 ```
