@@ -67,7 +67,7 @@ module.exports = function (id, config) {
             }
         },
         /**
-         * Read the SQS queue  defined in the config.queue section of config.json
+         * Read the SQS queue  defined in the config.queue section of sxapi.json
          * @returns {$queue.sqs}
          */
         read: function (callback) {

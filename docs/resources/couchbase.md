@@ -23,7 +23,7 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
     -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
     -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
 
-### **Sample config**
+### **Sample sxapi.json**
 
 ```json
 "resources": {

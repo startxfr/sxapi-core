@@ -100,7 +100,7 @@ var $app = {
         var mg = require('merge');
         var logger = require('./log');
         var pkg_file = this.config.app_path + '/package.json';
-        var cfg_file = this.config.conf_path + '/config.json';
+        var cfg_file = this.config.conf_path + '/sxapi.json';
         try {
             mg.recursive($app.package, JSON.parse(fs.readFileSync(pkg_file, 'utf-8')));
             logger.debug("package file : " + pkg_file + "  LOADED", 3);
