@@ -14,7 +14,7 @@ If you wan't to have sample config for various resources, you can visit [sxapi-s
 
 ### Declaring a resource in your config file
 
-Resources are **referenced** within the ```resources``` key in config file. This object reference, with and *resource-id*) all resources available in you API by their key.
+Resources are referenced within the ```resources``` key in config file. This object reference, with and *resource-id*) all resources available in you API by their key.
 
 ```json
 {
@@ -26,13 +26,13 @@ Resources are **referenced** within the ```resources``` key in config file. This
     }
 }
 ```
-You can then use the --resource-id-- in your [endpoints](#using-a-resource-endpoint) or with the [resource manager](#using-a-resource-method)
+You can then use the *resource-id* in your [endpoints](#using-a-resource-endpoint) or with the [resource manager](#using-a-resource-method)
 
 ### Using a resource endpoint
 
 If a resource come with endpoints, they are all available using the ```endpoints``` property of the resource instance. You can use them for building your API config. You have to use the configuration property ```resource_handler: "endpoints.method"```. This method will receive the config endpoint object (with inherited property of parents if required).
 
--   `resource` **string** REQUIRED id of the resource to use
+-   `resource` **string** REQUIRED *resource-id* of the resource to use
 -   `resource_handler` **string** resource method to use for handling response
 
 ```json
@@ -50,10 +50,10 @@ If a resource come with endpoints, they are all available using the ```endpoints
 
 ### Using a resource method
 
-When you are creating your own module and need to use a resource, you can access it using the ```require('/app/core/resource').get('resource-id')``` method. This method will return the coresponding resource initialized and started when you module is executed.
+When you are creating your own module and need to use a resource, you can access it using the ```require('/app/core/resource').get('*resource-id*')``` method. This method will return the coresponding resource initialized and started when you module is executed.
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = require('/app/core/resource').get('*resource-id*');
 resource.resource_method();
 ```
 
@@ -67,7 +67,7 @@ Initialize the resource component and load configured resources
 
 #### **Parameters**
 
--   `config` **object** resources object list with key for resourceId and value for resource config
+-   `config` **object** resources object list with key for *resource-id* and value for resource config
 
 ### add method
 
@@ -75,7 +75,7 @@ Load a resource into the resources pool
 
 #### **Parameters**
 
--   `id` **string** resourceId used for referencing this resource
+-   `id` **string** *resource-id* used for referencing this resource
 -   `config` **object** resource config including ```_class``` key with resource library
 
 ### get method
@@ -84,15 +84,15 @@ Get a resource from the resources pool
 
 #### **Parameters**
 
--   `id` **string** resourceId of the requested resource
+-   `id` **string** *resource-id* of the requested resource
 
 ### exist method
 
-Return true if a resourceId exist in the resources pool
+Return true if a *resource-id* exist in the resources pool
 
 #### **Parameters**
 
--   `id` **string** resourceId of the requested resource
+-   `id` **string** *resource-id* of the requested resource
 
 ### starts method
 
@@ -108,7 +108,7 @@ Start one resource
 
 #### **Parameters**
 
--   `id` **string** resourceId you wan't to start
+-   `id` **string** *resource-id* you wan't to start
 
 ### stops method
 
@@ -124,4 +124,4 @@ Stop one resource
 
 #### **Parameters**
 
--   `id` **string** resourceId you wan't to stop
+-   `id` **string** *resource-id* you wan't to stop
