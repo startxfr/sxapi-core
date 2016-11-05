@@ -46,16 +46,15 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 }
 ```
 
-
 ## Available Methods
 
-### get
+### Method get
 
-Get a document for the bucket according to the given docId
+Get a document for the bucket according to the given docId.  Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
 
 #### **Parameters**
 
--   `docId` **String** The document ID to find
+-   `docId`**string** The document ID to find
 -   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **Boolean** True if and error occur. Response describe this error
     -   `response` **Object, Array** Content responded for the couchbase cluster
@@ -63,66 +62,144 @@ Get a document for the bucket according to the given docId
 #### **Sample code**
 
 ```javascript
-var rs = require('./resource');
-if (rs.exist('resource-id')) {
-    var resource = rs.get('resource-id');
-    resource.get(docId, function (error, response) {
-        console.log(error, response);
-    });
-}
+var resource = require('/app/core/resource').get('resource-id');
+resource.get('my-doc-id', function (error, response) {
+    console.log(error, response);
+});
+```
+
+### Method query
+
+Send a N1QL request to the query service of the couchbase cluster defined in the given resource. Use Query and Index node as well as Data Node according to your query. Take care of having theses services optimized for the kind of query you perform.
+
+#### **Parameters**
+
+-   `n1ql`**string** The N1QL request to send to the query node for the resource's cluster
+-   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **Boolean** True if and error occur. Response describe this error
+    -   `response` **Object, Array** Content responded for the couchbase cluster
+
+#### **Sample code**
+
+```javascript
+var resource = require('/app/core/resource').get('resource-id');
+resource.query('SELECT * FROM `beer-sample` LIMIT 0, 5', function (error, response) {
+    console.log(error, response);
+});
+```
+
+### Method insert
+
+Insert a document into the bucket according to the given docId.  Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
+
+#### **Parameters**
+
+-   `docId`**string** The document ID to create
+-   `document`**string** The document body
+-   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__insertDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **Boolean** True if and error occur. Response describe this error
+    -   `response` **Object, Array** Content responded for the couchbase cluster
+
+#### **Sample code**
+
+```javascript
+var resource = require('/app/core/resource').get('resource-id');
+resource.insert('my-doc-id', {key:'value'}, function (error, response) {
+    console.log(error, response);
+});
+```
+
+### update
+
+Update a document into the bucket according to the given docId.  Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
+
+#### **Parameters**
+
+-   `docId`**string** The document ID to create
+-   `document`**string** The document body
+-   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__updateDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **Boolean** True if and error occur. Response describe this error
+    -   `response` **Object, Array** Content responded for the couchbase cluster
+
+#### **Sample code**
+
+```javascript
+var resource = require('/app/core/resource').get('resource-id');
+resource.update('my-doc-id', {key:'value'}, function (error, response) {
+    console.log(error, response);
+});
+```
+
+### delete
+
+Remove a document into the bucket according to the given docId.  Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
+
+#### **Parameters**
+
+-   `docId`**string** The document ID to create
+-   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__deleteDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **Boolean** True if and error occur. Response describe this error
+    -   `response` **Object, Array** Content responded for the couchbase cluster
+
+#### **Sample code**
+
+```javascript
+var resource = require('/app/core/resource').get('resource-id');
+resource.delete('my-doc-id', function (error, response) {
+    console.log(error, response);
+});
 ```
 
 
 
+## Available Endpoints
+
+### list endpoint
+
+#### **Config parameters**
+
+-   `path`**string** Serveur path to bind this entrypoint to
+-   `method`**string** http method to listen to
+-   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***"endpoints.list"***
+-   `n1ql` **string** N1QL query to execute whent his entrypoint is called
+
+#### **Sample code**
+
+```json {
+    "path": "/beer", "method": "GET",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.list",
+    "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
+}```
+
+### get endpoint
+
+#### **Config parameters**
+
+-   `path`**string** Serveur path to bind this entrypoint to
+-   `method`**string** http method to listen to
+-   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***"endpoints.get"***
+
+#### **Sample code**
+
+```json {
+    "path": "/beer/:id", "method": "GET",
+    "resource": "couchbase-sample",
+    "resource_handler": "endpoints.get"
+}```
 
 
-#### **Return**
-
-**Boolean** XXXXX
-
-
-
-
-
-Params :
- :     
- :  
-
-
-### query
-
-### insert
-
-### update
-
-### delete
-
-
-
-Available Endpoints
--------------------
-
-### list
-
-#### Config params
-
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
-- n1ql : N1QL request to execute when this endpoint is requested
-
-
-### get
-
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
-
-### create
-
-- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
-
-### update
+### create endpoint
 
 - resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
 
-### delete
+### update endpoint
+
+- resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+
+### delete endpoint
 
 - resource : define the couchbase resource to use. Fill with a resource name as defined in the resource pool
 
