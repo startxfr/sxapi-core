@@ -1,9 +1,7 @@
-/* global require, process */
-require('./core/timer').start('app');
-require('./core/log').init({}, true);
+/* global require, process, $log, $timer */
+
 var $app = require("./core/app");
 
-/* global require, process */
 
 var $api = {
     /**
@@ -19,8 +17,8 @@ var $api = {
          * @returns {undefined}
          */
         return function (req, res) {
-            require('./core/timer').start('authEndpoint');
-            require("./core/log").debug("Start 'authEndpoint'", 2);
+            $timer.start('authEndpoint');
+            $log.debug("Start 'authEndpoint'", 2);
             var crypto = require('crypto');
             var login = req.body.login;
             var pwd = req.body.password;
@@ -40,9 +38,9 @@ var $api = {
                             name: login,
                             hash: pwdhash
                         })
-                        .addDuration(require('./core/timer').timeStop('authEndpoint'))
+                        .addDuration($timer.timeStop('authEndpoint'))
                         .send();
-                require("./core/log").info("Endpoint '" + config.path + "' answered OK");
+                $log.info("Endpoint '" + config.path + "' answered OK");
             }
             else {
                 require("./core/ws")
@@ -50,10 +48,10 @@ var $api = {
                             name: login,
                             hash: pwdhash
                         })
-                        .addDuration(require('./core/timer').timeStop('authEndpoint'))
+                        .addDuration($timer.timeStop('authEndpoint'))
                         .httpCode(401)
                         .send();
-                require("./core/log").warn("Endpoint '" + config.path + "' answered ERROR");
+                $log.warn("Endpoint '" + config.path + "' answered ERROR");
             }
         };
     },
@@ -70,8 +68,8 @@ var $api = {
          * @returns {undefined}
          */
         return function (req, res) {
-            require('./core/timer').start('registryEndpoint');
-            require("./core/log").debug("Start 'registryEndpoint'", 2);
+            $timer.start('registryEndpoint');
+            $log.debug("Start 'registryEndpoint'", 2);
             if (!config.resource) {
                 throw new Error("no 'resource' key found in 'registryEndpoint' config");
             }
@@ -88,20 +86,20 @@ var $api = {
             var queryCallback = function (req, res) {
                 return function (err, results) {
                     if (err) {
-                        require("./core/log").error('query could not be executed because ' + err.message + ' [' + err.code + ']');
+                        $log.error('query could not be executed because ' + err.message + ' [' + err.code + ']');
                     }
                     else {
                         var data = [];
-                        require("./core/log").debug('Query with ' + results.length + " results", 3);
+                        $log.debug('Query with ' + results.length + " results", 3);
                         for (var i in results) {
                             data.push(require('merge').recursive(true, {"id": results[i].id}, results[i].value));
                         }
                         require("./core/ws")
                                 .okResponse(res, results.length + " results found", data)
-                                .addDuration(require('./core/timer').timeStop('registryEndpoint'))
+                                .addDuration($timer.timeStop('registryEndpoint'))
                                 .addTotal(data.length)
                                 .send();
-                        require("./core/log").info("Endpoint '" + config.path + "' answered OK");
+                        $log.info("Endpoint '" + config.path + "' answered OK");
                     }
                 };
             };
@@ -127,8 +125,8 @@ var $api = {
             // 2.2 si param on verifie dans cb si elle existe
             //   2.2.1 on check si pas expiré
             //   2.2.2 si lié à un user, on l'importe
-            require('./core/timer').start('sessionEndpoint');
-            require("./core/log").debug("Start 'sessionEndpoint'", 2);
+            $timer.start('sessionEndpoint');
+            $log.debug("Start 'sessionEndpoint'", 2);
             require("./core/ws")
                     .okResponse(res, "session found", {
                         id: "sdqsfdgfgdhhdfghfgh",
@@ -137,17 +135,19 @@ var $api = {
                         duration: 3600,
                         user: null
                     })
-                    .addDuration(require('./core/timer').timeStop('sessionEndpoint'))
+                    .addDuration($timer.timeStop('sessionEndpoint'))
                     .send();
-            require("./core/log").info("Endpoint '" + config.path + "' answered OK");
+            $log.info("Endpoint '" + config.path + "' answered OK");
         };
     }
 };
 process.$api = $api;
 
-$app.onStop(function () {
-    require("./core/log").info('application stopped', require('./core/timer').timeStop('app'));
-    return this;
-}).launch(function () {
-    require("./core/log").info("application started", require('./core/timer').time('app'));
-});
+$app
+        .onStop(function () {
+            $log.info('application stopped', $timer.timeStop('app'));
+            return this;
+        })
+        .launch(function () {
+            $log.info("application started", $timer.time('app'));
+        });

@@ -1,4 +1,4 @@
-/* global module, require */
+/* global module, require, $log */
 //'use strict';
 
 /**
@@ -15,7 +15,7 @@ var $resources = {
      * @returns {$resources}
      */
     init: function (config) {
-        require('./log').debug("Init resource module", 2);
+        $log.debug("Init resource module", 2);
         if (config) {
             for (var id in config) {
                 this.add(id, config[id]);
@@ -30,7 +30,7 @@ var $resources = {
      * @returns {$resources}
      */
     add: function (id, config) {
-        require('./log')
+        $log
                 .debug("Adding resource "
                         + id + " to resources pool", 2);
         if (typeof id !== "string") {
@@ -67,7 +67,7 @@ var $resources = {
      * @returns {$resources}
      */
     starts: function (callback) {
-        require('./log')
+        $log
                 .debug("Starting all resources pool", 2);
         var series = [];
         for (var id in this.config) {
@@ -85,7 +85,7 @@ var $resources = {
      * @returns {$resources}
      */
     stops: function (callback) {
-        require('./log')
+        $log
                 .debug("Stopping all resources pool", 2);
         var series = [];
         for (var id in this.config) {
@@ -103,7 +103,7 @@ var $resources = {
      * @returns {$resources}
      */
     start: function (id) {
-        require('./log')
+        $log
                 .debug("Starting '" + id + "' resources pool", 2);
         if (this.config[id] &&
                 typeof this.config[id].start === "function") {
@@ -117,7 +117,7 @@ var $resources = {
      * @returns {$resources}
      */
     stop: function (id) {
-        require('./log')
+        $log
                 .debug("Stopping '" + id + "' resources pool", 2);
         if (this.config[id] &&
                 typeof this.config[id].stop === "function") {

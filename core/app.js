@@ -1,5 +1,13 @@
 /* global module, require, process */
 
+// declaring global variable $timer 
+$timer = require('./timer');
+$timer.start('app');
+
+// declaring global variable $log
+$log = require('./log');
+$log.init({}, true);
+
 //'use strict';
 var $app = {
     package: {
@@ -17,11 +25,10 @@ var $app = {
      * @returns {$app}
      */
     init: function (callback) {
-        var logger = require('./log');
-        logger.info("init framework", require('./timer').time('app'));
+        $log.info("init framework", $timer.time('app'));
         this._initCheckEnv();
         this._initLoadConfigFiles();
-        logger.info("Init application ", require('./timer').time('app'));
+        $log.info("Init application ", $timer.time('app'));
         var afterResourceLoaded = function () {
             if ($app.config.server) {
                 require("./ws").init($app.config.server);
@@ -51,43 +58,42 @@ var $app = {
      * @returns {$app}⋅
      */
     _initCheckEnv: function () {
-        var logger = require('./log');
         if (process.env.HOSTNAME) {
-            logger.debug("Hostname : " + process.env.HOSTNAME, 3);
+            $log.debug("Hostname : " + process.env.HOSTNAME, 3);
             this.config.hostname = process.env.HOSTNAME;
         }
         else {
-            logger.error('FATAL : environment variable HOSTNAME must be set');
+            $log.error('FATAL : environment variable HOSTNAME must be set');
             process.exit(5);
         }
         if (process.env.APP_PATH) {
-            logger.debug("App path : " + process.env.APP_PATH, 3);
+            $log.debug("App path : " + process.env.APP_PATH, 3);
             this.config.app_path = process.env.APP_PATH;
             process.chdir(process.env.APP_PATH);
         }
         else {
-            logger.error('FATAL : environment variable APP_PATH must be set');
+            $log.error('FATAL : environment variable APP_PATH must be set');
             process.exit(5);
         }
         if (process.env.CONF_PATH) {
-            logger.debug("Conf path : " + process.env.CONF_PATH, 3);
+            $log.debug("Conf path : " + process.env.CONF_PATH, 3);
             this.config.conf_path = process.env.CONF_PATH;
         }
         else {
-            logger.error('FATAL : environment variable CONF_PATH must be set');
+            $log.error('FATAL : environment variable CONF_PATH must be set');
             process.exit(5);
         }
         if (process.env.DATA_PATH) {
-            logger.debug("Data path : " + process.env.DATA_PATH, 3);
+            $log.debug("Data path : " + process.env.DATA_PATH, 3);
             this.config.data_path = process.env.DATA_PATH;
         }
         else {
-            logger.error('FATAL : environment variable DATA_PATH must be set');
+            $log.error('FATAL : environment variable DATA_PATH must be set');
             process.exit(5);
         }
         if (process.env.LOG_PATH) {
-            logger.debug("Log path : " + process.env.LOG_PATH, 3);
-            logger.config.log_path = process.env.LOG_PATH;
+            $log.debug("Log path : " + process.env.LOG_PATH, 3);
+            $log.config.log_path = process.env.LOG_PATH;
         }
         return this;
     },
@@ -98,30 +104,29 @@ var $app = {
     _initLoadConfigFiles: function () {
         var fs = require('fs');
         var mg = require('merge');
-        var logger = require('./log');
         var pkg_file = this.config.app_path + '/package.json';
         var cfg_file = this.config.conf_path + '/sxapi.json';
         try {
             mg.recursive($app.package, JSON.parse(fs.readFileSync(pkg_file, 'utf-8')));
-            logger.debug("package file : " + pkg_file + "  LOADED", 3);
+            $log.debug("package file : " + pkg_file + "  LOADED", 3);
         }
         catch (e) {
-            require("./log").error("package file : " + pkg_file + " IS MISSING");
+            $log.error("package file : " + pkg_file + " IS MISSING");
             process.exit(5);
         }
         try {
             mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
-            logger.debug("config file : " + cfg_file + " LOADED", 3);
+            $log.debug("config file : " + cfg_file + " LOADED", 3);
         }
         catch (e) {
-            require("./log").error("config file : " + cfg_file + " IS MISSING");
+            $log.error("config file : " + cfg_file + " IS MISSING");
             process.exit(5);
         }
-        logger.debug("framework : " + $app.package.name + ' v' + $app.package.version);
-        logger.debug("container ip : " + $app.config.ip);
-        logger.debug("service name : " + $app.config.name);
-        logger.debug("service version : " + $app.config.version);
-        logger.debug("service desc : " + $app.config.description);
+        $log.debug("framework : " + $app.package.name + ' v' + $app.package.version);
+        $log.debug("container ip : " + $app.config.ip);
+        $log.debug("service name : " + $app.config.name);
+        $log.debug("service version : " + $app.config.version);
+        $log.debug("service desc : " + $app.config.description);
         $app.config.appsign =
                 $app.config.log.appsign =
                 $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
@@ -129,7 +134,7 @@ var $app = {
         var logConf = JSON.parse(JSON.stringify($app.config.log));
         delete logConf['couchbase'];
         delete logConf['sqs'];
-        logger.init(logConf, $app.config.debug);
+        $log.init(logConf, $app.config.debug);
         return this;
     },
     /**
@@ -149,7 +154,7 @@ var $app = {
      * @returns {$app}
      */
     start: function (callback) {
-        require("./log").debug("Starting application ", 1);
+        $log.debug("Starting application ", 1);
         for (var i in $app.onstartQueue) {
             $app.onstartQueue[i]();
         }
@@ -175,7 +180,7 @@ var $app = {
      * @returns {$app}
      */
     stop: function (callback) {
-        require("./log").debug("Stopping application ", 1);
+        $log.debug("Stopping application ", 1);
         for (var i in $app.onstopQueue) {
             $app.onstopQueue[i]();
         }
@@ -191,9 +196,9 @@ var $app = {
      * @returns {$app}
      */
     launch: function (callback) {
-        require("./log").info("Launch SXAPI microservice", require('./timer').time('app'));
+        $log.info("Launch SXAPI microservice", $timer.time('app'));
         $app.init(function () {
-            require("./log").info('application initialized ', require('./timer').time('app'));
+            $log.info('application initialized ', $timer.time('app'));
             $app.start(callback);
         });
         return this;
