@@ -14,7 +14,7 @@ If you wan't to have sample config for various resources, you can visit [sxapi-s
 
 ### Declaring a resource in your config file
 
-Resources are referenced within the ```resources``` key in config file. This object reference, with and *resource-id*) all resources available in you API by their key.
+Resources are referenced within the ```resources``` key in config file. This object reference, with and *resource-id*, all resources available in you API. You have to read resource documentation to know required or available configuration parameters.
 
 ```json
 {
@@ -30,10 +30,10 @@ You can then use the *resource-id* in your [endpoints](#using-a-resource-endpoin
 
 ### Using a resource endpoint
 
-If a resource come with endpoints, they are all available using the ```endpoints``` property of the resource instance. You can use them for building your API config. You have to use the configuration property ```resource_handler: "endpoints.method"```. This method will receive the config endpoint object (with inherited property of parents if required).
+If a resource come with endpoints, they are all available using the ```endpoints``` property of the resource instance. In your configuration file, you can use them in your declared endpoints. You must use the configuration property ```resource_handler: "endpoints.method"``` in your endpoint configuration object. This method will receive the full config endpoint object (with inherited property of parents if required). You can use as many times the same resource endpoint with various configuration options.
 
 -   `resource` **string** REQUIRED *resource-id* of the resource to use
--   `resource_handler` **string** resource method to use for handling response
+-   `resource_handler` **string** REQUIRED resource method to use for handling response
 
 ```json
 "server": {
@@ -50,16 +50,23 @@ If a resource come with endpoints, they are all available using the ```endpoints
 
 ### Using a resource method
 
-When you are creating your own module and need to use a resource, you can access it using the ```require('/app/core/resource').get('*resource-id*')``` method. This method will return the coresponding resource initialized and started when you module is executed.
+When you are creating your own module and need to use a resource, you can access it using the ```require('/app/core/resource').get('resource-id')``` method. This method will return the coresponding resource initialized and started when you module is executed.
 
 ```javascript
-var resource = require('/app/core/resource').get('*resource-id*');
+var resource = require('/app/core/resource').get('resource-id');
 resource.resource_method();
 ```
 
 
 
-## The resource component
+## Resource manager
+
+Resource manager is the core component used for resources management. He help module developer to acces resources. He's also in charge of initalizing, starting and stopping configured resources. as part of the sxapi core startup process.
+
+```javascript
+// Get the resource manager
+var rm = require('/app/core/resource');
+```
 
 ### init method
 
