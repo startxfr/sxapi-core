@@ -166,12 +166,14 @@ resource.delete('my-doc-id', function (error, response) {
 
 #### **Sample code**
 
-```json {
+```json 
+{
     "path": "/beer", "method": "GET",
     "resource": "couchbase-sample",
     "resource_handler": "endpoints.list",
     "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
-}```
+}
+```
 
 ### get endpoint
 
@@ -184,11 +186,13 @@ resource.delete('my-doc-id', function (error, response) {
 
 #### **Sample code**
 
-```json {
+```json 
+{
     "path": "/beer/:id", "method": "GET",
     "resource": "couchbase-sample",
     "resource_handler": "endpoints.get"
-}```
+}
+```
 
 
 ### create endpoint
