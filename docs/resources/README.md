@@ -4,11 +4,9 @@ Resources are one core componement of SXAPI. They expose method you can use in y
 
 ## Availables resources
 
-| Name         | Package dep            | 
-+--------------+------------------------+----------------------------------
-|couchbase     | couchbase v2.1.8       | [documentation](couchbase.md)
-|mysql         | mysql v2.11.1          | [documentation](mysql.md)
-|sqs           | aws-sdk v2.6           | [documentation](sqs.md)
+- **couchbase** (SDK : couchbase v2.1.8) [voir la documentation](couchbase.md)
+- **mysql** (SDK : mysql v2.11.1 ) [voir la documentation](mysql.md)
+- **sqs** (SDK : aws-sdk v2.6 ) [voir la documentation](sqs.md)
 
 ## Using a resource
 
