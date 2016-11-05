@@ -3,7 +3,7 @@
 
 /**
  * sqs resource handler
- * @module resource-sqs
+ * @module resource/sqs
  * @constructor
  * @param {string} id
  * @param {object} config
@@ -28,12 +28,12 @@ module.exports = function (id, config) {
             return this;
         },
         start: function (callback) {
-            require("./log").debug("start resource-sqs module", 3);
+            require("./log").debug("start sqs resource", 3);
             $sqs.open(callback);
             return this;
         },
         stop: function (callback) {
-            require("./log").debug("stop resource-sqs module", 3);
+            require("./log").debug("stop sqs resource", 3);
             if (typeof callback === "function") {
                 callback(null, this);
             }

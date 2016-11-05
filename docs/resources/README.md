@@ -20,7 +20,7 @@ Resources are referenced within the ```resources``` key in sxapi.json. This obje
 {
     "resources": {
         "resource-id": {
-            "_class": "resource-class",
+            "_class": "resource_name",
             "param": "value"
         }
     }

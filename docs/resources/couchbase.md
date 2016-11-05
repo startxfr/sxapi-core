@@ -1,12 +1,12 @@
 # SXAPI Resource : couchbase
 
-This resource allow you to interact with a couchbase Enterprise Server Cluster. Based on [Couchase NodeJS SDK 2.1.8](http://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/introduction.html). This resource can be used using ```require('/app/core/resource-couchbase)``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a couchbase Enterprise Server Cluster. Based on [Couchase NodeJS SDK 2.1.8](http://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/introduction.html). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
 ### **Config parameters**
 
--   `class` **string** Must be resource-couchbase for this resource
+-   `class` **string** Must be resource/couchbase for this resource
 -   `cluster` **string** URL of the couchbase cluster to use. You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine, please use docker host IP (like 172.17.x.x). Example : http://172.17.42.1:8091
 -   `bucket` **string** Bucket to use for this resource. If you need to connect to several bucket, you'll have to create several resources
 -   `password` **string** Password used for this bucket
@@ -29,7 +29,7 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 "resources": {
     ...
     "couchbase-sample": {
-        "_class": "resource-couchbase",
+        "_class": "resource/couchbase",
         "cluster": "http://172.17.42.1:8091",
         "bucket": "beer-sample",
         "insertOptions": {

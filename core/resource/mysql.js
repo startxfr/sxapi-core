@@ -2,170 +2,168 @@
 //'use strict';
 
 /**
- * couchbase resource handler
- * @module resource-couchbase
+ * mysql resource handler
+ * @module resource/mysql
  * @constructor
  * @param {string} id
  * @param {object} config
  * @type resource
  */
 module.exports = function (id, config) {
-    var $cbdb = {
+    var $mqdb = {
         id: id,
         config: {},
         init: function (config) {
             if (config) {
-                $cbdb.config = config;
+                $mqdb.config = config;
             }
-            require("./log").debug("init couchbase resource '" + $cbdb.id + "'", 3);
-            if (!$cbdb.config.cluster) {
-                throw new Error("no 'cluster' key found in config");
+            require("./log").debug(
+                    "init mysql resource '" + $mqdb.id + "'", 3);
+            if (!$mqdb.config.server) {
+                throw new Error("no 'server' key found in config");
             }
-            if (!$cbdb.config.bucket) {
-                throw new Error("no 'bucket' key found in config");
+            if (!$mqdb.config.server.host) {
+                throw new Error("no 'server.host' key found in config");
             }
-            $cbdb.cb = require("couchbase");
-            if (typeof $cbCluster === 'undefined') {
-                $cbCluster = [];
+            if (!$mqdb.config.server.database) {
+                throw new Error("no 'server.database' key found in config");
             }
-            if (typeof $cbCluster[$cbdb.config.cluster] === 'undefined') {
-                require("./log").debug("new link to couchbase cluster " + $cbdb.config.cluster, 4);
-                $cbCluster[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
+            $mqdb.config._sign = $mqdb.config.server.host + '::' + $mqdb.config.server.database;
+            $mqdb.conn = require("mysql");
+            if (typeof $mysqlPool === 'undefined') {
+                $mysqlPool = [];
+            }
+            if (typeof $mysqlPool[$mqdb.config._sign] === 'undefined') {
+                require("./log").debug("new link to mysql " + $mqdb.config._sign, 4);
+                $mysqlPool[$mqdb.config._sign] = $mqdb.conn.createConnection($mqdb.config.server);
             }
             else {
-                require("./log").debug("use previous link to couchbase cluster " + $cbdb.config.cluster, 4);
+                require("./log").debug("use previous link to mysql " + $mqdb.config._sign, 4);
             }
-            return $cbdb;
+            return $mqdb;
         },
         start: function (callback) {
-            require("./log").debug("start resource-couchbase module", 3);
-            $cbdb.open(callback);
-            return $cbdb;
+            require("./log").debug("start mysql resource", 3);
+            $mqdb.open(callback);
+            return $mqdb;
         },
         stop: function (callback) {
-            require("./log").debug("stop resource-couchbase module", 3);
+            require("./log").debug("stop mysql resource", 3);
+            $mysqlPool[$mqdb.config._sign].destroy();
             if (typeof callback === "function") {
-                callback(null, $cbdb);
+                callback(null, $mqdb);
             }
-            return $cbdb;
+            return $mqdb;
         },
         open: function (callback) {
-            if (typeof $cbBuckets === 'undefined') {
-                $cbBuckets = [];
-            }
-            if (typeof $cbBuckets[$cbdb.config.bucket] === 'undefined') {
-                require("./log").debug("new couchbase connection to bucket " + $cbdb.config.bucket, 4);
-                if (typeof $cbdb.config.password === 'undefined') {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.config.password, $cbdb.__openHandler(callback));
+            require("./log").debug("open mysql resource", 3);
+            $mysqlPool[$mqdb.config._sign].connect(function (err) {
+                if (err) {
+                    throw new Error('error connecting to ' + $mqdb.config._sign + ' : ' + err.stack);
                 }
                 else {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback));
+                    require("./log").debug('connected to ' + $mqdb.config._sign, 3);
                 }
-            }
-            else {
-                require("./log").debug("use previous couchbase connection to bucket " + $cbdb.config.bucket, 4);
-                callback(null, $cbdb);
-            }
-            return $cbdb;
-        },
-        __openHandler: function (callback) {
-            return function (bucketerr) {
-                if (bucketerr) {
-                    require("./log").error('EXITING because ' + bucketerr.message);
-                    process.exit(5);
-                }
-                require("./log").debug("couchbase bucket " + $cbdb.config.bucket + " opened", 2);
                 if (typeof callback === "function") {
-                    callback(null, $cbdb);
+                    callback(null, $mqdb);
                 }
-            };
+            });
+            return $mqdb;
         },
-        get: function (docId, callback) {
-            require("./log").debug("get document " + docId + " from couchbase bucket " + $cbdb.config.bucket, 4);
-            return $cbBuckets[$cbdb.config.bucket].get(docId, (callback) ? callback : $cbdb.__queryDefaultCallback);
+        query: function (sql, callback) {
+            require("./log").debug("query SQL from mysql database " + $mqdb.config.server.database, 4);
+            return $mysqlPool[$mqdb.config._sign].query(sql, (callback) ? callback : $mqdb.__queryDefaultCallback);
         },
-        query: function (n1ql, callback) {
-            require("./log").debug("query N1QL from couchbase bucket " + $cbdb.config.bucket, 4);
-            var N1qlQuery = require('couchbase').N1qlQuery;
-            var query = N1qlQuery.fromString(n1ql);
-            return $cbBuckets[$cbdb.config.bucket].query(query, (callback) ? callback : $cbdb.__queryDefaultCallback);
+        __queryDefaultCallback: function (error, results, fields) {
+            if (error) {
+                require("./log").error('query could not be executed because ' + error.message + ' [' + error.code + ']');
+            }
         },
-        queryFree: function (query, callback) {
-            require("./log").debug("query free view " + query.ddoc + ":" + query.name + " from couchbase bucket " + $cbdb.config.bucket, 4);
-            return $cbBuckets[$cbdb.config.bucket].query(query, (callback) ? callback : $cbdb.__queryDefaultCallback);
+        /**
+         * Insert a new document into the mysql storage
+         * @param {string} key
+         * @param {object} doc
+         * @param {function} callback
+         */
+        insert: function (table, data, callback) {
+            var connection = $mysqlPool[$mqdb.config._sign];
+            var fields = '';
+            var vals = '';
+            for (var i in data) {
+                fields += "`" + i + "`,";
+                vals += connection.escape(data[i]) + ",";
+            }
+            var sql = "INSERT INTO " + table + " (" + fields.slice(0, -1) + ") VALUES(" + vals.slice(0, -1) + ");";
+            return connection.query(sql, (callback) ? callback : $mqdb.__insertDefaultCallback);
         },
-        __queryDefaultCallback: function (err, results) {
-            if (err) {
-                require("./log").error('query could not be executed because ' + err.message + ' [' + err.code + ']');
+        __insertDefaultCallback: function (error, results, fields) {
+            if (error) {
+                require("./log").warn("error saving new entry in mysql because " + error.message);
             }
             else {
-                require("./log").debug(results);
+                require("./log").debug("saved new entry in mysql ", 4);
             }
         },
         /**
-         * Insert a new document into the couchbase storage
+         * Update a document into the mysql storage
          * @param {string} key
          * @param {object} doc
          * @param {function} callback
          */
-        insert: function (key, doc, callback) {
-            var options = ($cbdb.config.insertOptions) ? $cbdb.config.insertOptions : {};
-            $cbBuckets[$cbdb.config.bucket].insert(key, doc, options, (callback) ? callback(key) : $cbdb.__insertDefaultCallback(key));
+        update: function (table, data, filter, callback) {
+            var connection = $mysqlPool[$mqdb.config._sign];
+            var sqlFrag = '';
+            var sqlFilter = '';
+            if (typeof filter === 'object' && Object.keys(filter).length > 0) {
+                for (var i in filter) {
+                    sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
+                }
+                for (var i in data) {
+                    sqlFrag += "`" + i + "` = " + connection.escape(data[i]) + ",";
+                }
+                var sql = "UPDATE " + table + " SET " + sqlFrag.slice(0, -1) + " WHERE " + sqlFilter.slice(0, -3) + ";";
+                return connection.query(sql, (callback) ? callback : $mqdb.__updateDefaultCallback);
+            }
+            else {
+                require("./log").warn("error updating entry in mysql because no filter found (prevent updating all table)");
+                return false;
+            }
         },
-        __insertDefaultCallback: function (key) {
-            return function (coucherr, doc) {
-                if (coucherr) {
-                    require("./log").warn("error saving new document " + key + ' because ' + coucherr.message);
-                }
-                else {
-                    require("./log").debug("saved new document " + key + " in couchbase bucket " + $cbdb.config.bucket, 4);
-                }
-            };
-        },
-        /**
-         * Update a document into the couchbase storage
-         * @param {string} key
-         * @param {object} doc
-         * @param {function} callback
-         */
-        update: function (key, doc, callback) {
-            var options = ($cbdb.config.updateOptions) ? $cbdb.config.updateOptions : {};
-            $cbBuckets[$cbdb.config.bucket].replace(key,
-                    doc,
-                    options,
-                    (callback) ?
-                    callback(key) :
-                    $cbdb.__updateDefaultCallback(key));
-        },
-        __updateDefaultCallback: function (key) {
-            return function (coucherr, doc) {
-                if (coucherr) {
-                    require("./log").warn("error updating document " + key + ' because ' + coucherr.message);
-                }
-                else {
-                    require("./log").debug("saved document " + key + " in couchbase bucket " + $cbdb.config.bucket, 4);
-                }
-            };
+        __updateDefaultCallback: function (error, results, fields) {
+            if (error) {
+                require("./log").warn("error updating entry in mysql because " + error.message);
+            }
+            else {
+                require("./log").debug("updating entry in mysql ", 4);
+            }
         },
         /**
-         * delete a document into the couchbase storage
+         * delete a document into the mysql storage
          * @param {string} key
          * @param {function} callback
          */
-        delete: function (key, callback) {
-            require("./timer").start('delete_document_' + key);
-            var options = ($cbdb.config.deleteOptions) ? $cbdb.config.deleteOptions : {};
-            $cbBuckets[$cbdb.config.bucket].remove(key, options, (callback) ? callback(key) : $cbdb.__deleteDefaultCallback(key));
+        delete: function (table, filter, callback) {
+            var connection = $mysqlPool[$mqdb.config._sign];
+            var sqlFrag = '';
+            if (typeof filter === 'object' && Object.keys(filter).length > 0) {
+                for (var i in filter) {
+                    sqlFrag += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
+                }
+                var sql = "DELETE FROM " + table + " WHERE " + sqlFrag.slice(0, -3) + ";";
+                return connection.query(sql, (callback) ? callback : $mqdb.__deleteDefaultCallback);
+            }
+            else {
+                require("./log").warn("error deleting entry in mysql because no filter found (prevent erasing all table)");
+                return false;
+            }
         },
-        __deleteDefaultCallback: function (key) {
-            return function (coucherr) {
-                if (coucherr) {
-                    require("./log").warn("error deleting document " + key + ' because ' + coucherr.message);
-                }
-                else {
-                    require("./log").debug("document " + key + " deleted in couchbase bucket " + $cbdb.config.bucket, 4);
-                }
-            };
+        __deleteDefaultCallback: function (error, results, fields) {
+            if (error) {
+                require("./log").warn("error deleting entry in mysql because " + error.message);
+            }
+            else {
+                require("./log").debug("deleting entry in mysql ", 4);
+            }
         },
         endpoints: {
             test: function () {
@@ -190,7 +188,7 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.query(config.n1ql, function (err, reponse) {
+                            rs.query(config.sql, function (err, reponse) {
                                 if (err) {
                                     require("./ws").nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
                                     require("./log").warn(message_prefix + "error saving log  because " + err.message);
@@ -245,7 +243,6 @@ module.exports = function (id, config) {
                     var path = req.url.split("?")[0];
                     var ress = require('./resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
                     require("./log").debug(message_prefix + "called", 1);
                     if (!config.resource) {
                         require("./ws").nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
@@ -254,17 +251,15 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.insert(docId, req.body, function (key) {
-                                return function (err, reponse) {
-                                    if (err) {
-                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        require("./log").warn(message_prefix + "error saving document because " + err.message);
-                                    }
-                                    else {
-                                        require("./ws").okResponse(res, "document " + docId + " recorded", reponse).send();
-                                        require("./log").info(message_prefix + "document " + docId);
-                                    }
-                                };
+                            rs.insert(config.table, req.body, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix + "error saving document because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "document recorded in" + config.table, reponse).send();
+                                    require("./log").info(message_prefix + "document recorded in " + config.table);
+                                }
                             });
                         }
                         else {
@@ -288,17 +283,19 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.update(docId, req.body, function (key) {
-                                return function (err, reponse) {
-                                    if (err) {
-                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        require("./log").warn(message_prefix + "error updating document because " + err.message);
-                                    }
-                                    else {
-                                        require("./ws").okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                        require("./log").info(message_prefix + "document " + docId);
-                                    }
-                                };
+                            var filter = {};
+                            if (docId && config.id_fields) {
+                                eval("filter." + config.id_fields + "=docId;");
+                            }
+                            rs.update(config.table, req.body, filter, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix + "error updating document because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "document " + docId + " updated", reponse.value).send();
+                                    require("./log").info(message_prefix + "document " + docId);
+                                }
                             });
                         }
                         else {
@@ -322,17 +319,19 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.delete(docId, function (key) {
-                                return function (err, reponse) {
-                                    if (err) {
-                                        require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        require("./log").warn(message_prefix + "error deleting document because " + err.message);
-                                    }
-                                    else {
-                                        require("./ws").okResponse(res, "document " + docId + " deleted", reponse).send();
-                                        require("./log").info(message_prefix + "document " + docId);
-                                    }
-                                };
+                            var filter = {};
+                            if (docId && config.id_fields) {
+                                eval("filter." + config.id_fields + "=docId;");
+                            }
+                            rs.delete(config.table, filter, function (err, reponse) {
+                                if (err) {
+                                    require("./ws").nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    require("./log").warn(message_prefix + "error deleting document because " + err.message);
+                                }
+                                else {
+                                    require("./ws").okResponse(res, "document " + docId + " deleted", reponse).send();
+                                    require("./log").info(message_prefix + "document " + docId);
+                                }
                             });
                         }
                         else {
@@ -344,6 +343,6 @@ module.exports = function (id, config) {
             }
         }
     };
-    $cbdb.init(config);
-    return $cbdb;
+    $mqdb.init(config);
+    return $mqdb;
 };
