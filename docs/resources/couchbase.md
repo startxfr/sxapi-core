@@ -54,10 +54,10 @@ Get a document for the bucket according to the given docId.  Use KV capabilities
 
 #### **Parameters**
 
--   `docId`**string** The document ID to find
--   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **Boolean** True if and error occur. Response describe this error
-    -   `response` **Object, Array** Content responded for the couchbase cluster
+-   `docId` **string** The document ID to find
+-   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **boolean** True if and error occur. Response describe this error
+    -   `response` **object, array** Content responded for the couchbase cluster
 
 #### **Sample code**
 
@@ -74,10 +74,10 @@ Send a N1QL request to the query service of the couchbase cluster defined in the
 
 #### **Parameters**
 
--   `n1ql`**string** The N1QL request to send to the query node for the resource's cluster
--   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **Boolean** True if and error occur. Response describe this error
-    -   `response` **Object, Array** Content responded for the couchbase cluster
+-   `n1ql` **string** The N1QL request to send to the query node for the resource's cluster
+-   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **boolean** True if and error occur. Response describe this error
+    -   `response` **object, array** Content responded for the couchbase cluster
 
 #### **Sample code**
 
@@ -94,11 +94,11 @@ Insert a document into the bucket according to the given docId.  Use KV capabili
 
 #### **Parameters**
 
--   `docId`**string** The document ID to create
--   `document`**string** The document body
--   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__insertDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **Boolean** True if and error occur. Response describe this error
-    -   `response` **Object, Array** Content responded for the couchbase cluster
+-   `docId` **string** The document ID to create
+-   `document` **string** The document body
+-   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__insertDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **boolean** True if and error occur. Response describe this error
+    -   `response` **object, array** Content responded for the couchbase cluster
 
 #### **Sample code**
 
@@ -115,11 +115,11 @@ Update a document into the bucket according to the given docId.  Use KV capabili
 
 #### **Parameters**
 
--   `docId`**string** The document ID to create
--   `document`**string** The document body
--   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__updateDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **Boolean** True if and error occur. Response describe this error
-    -   `response` **Object, Array** Content responded for the couchbase cluster
+-   `docId` **string** The document ID to create
+-   `document` **string** The document body
+-   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__updateDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **boolean** True if and error occur. Response describe this error
+    -   `response` **object, array** Content responded for the couchbase cluster
 
 #### **Sample code**
 
@@ -136,10 +136,10 @@ Remove a document into the bucket according to the given docId.  Use KV capabili
 
 #### **Parameters**
 
--   `docId`**string** The document ID to create
--   `callback` **Function** Callback function used to handle the answer. If not provided, $cbdb.__deleteDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **Boolean** True if and error occur. Response describe this error
-    -   `response` **Object, Array** Content responded for the couchbase cluster
+-   `docId` **string** The document ID to create
+-   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__deleteDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
+    -   `error` **boolean** True if and error occur. Response describe this error
+    -   `response` **object, array** Content responded for the couchbase cluster
 
 #### **Sample code**
 
@@ -160,10 +160,10 @@ Return a list resulting from a N1ql query
 
 #### **Config parameters**
 
--   `path`**string** Serveur path to bind this entrypoint to
--   `method`**string** http method to listen to
--   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.list***
+-   `path` **string** Serveur path to bind this entrypoint to
+-   `method` **string** http method to listen to
+-   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
 -   `n1ql` **string** N1QL query to execute whent his entrypoint is called
 
 #### **Sample code**
@@ -183,10 +183,10 @@ Return a document coresponding to the given docId
 
 #### **Config parameters**
 
--   `path`**string** Serveur path to bind this entrypoint to
--   `method`**string** http method to listen to
--   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.get***
+-   `path` **string** Serveur path to bind this entrypoint to
+-   `method` **string** http method to listen to
+-   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
 
 #### **Sample code**
 
@@ -204,10 +204,10 @@ Insert a new document in the bucket. You could give and id or leave the system c
 
 #### **Config parameters**
 
--   `path`**string** Serveur path to bind this entrypoint to
--   `method`**string** http method to listen to
--   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.create***
+-   `path` **string** Serveur path to bind this entrypoint to
+-   `method` **string** http method to listen to
+-   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
 
 #### **Sample code**
 
@@ -218,7 +218,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
     "resource_handler": "endpoints.create"
 }
 ```
-```
+```json
 {
     "path": "/beer", "method": "POST",
     "resource": "couchbase-sample",
@@ -232,10 +232,10 @@ Update the document coresponding to the given docId with the new document
 
 #### **Config parameters**
 
--   `path`**string** Serveur path to bind this entrypoint to
--   `method`**string** http method to listen to
--   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.update***
+-   `path` **string** Serveur path to bind this entrypoint to
+-   `method` **string** http method to listen to
+-   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
 
 #### **Sample code**
 
@@ -253,10 +253,10 @@ Remove the document coresponding to the given docId with the new document
 
 #### **Config parameters**
 
--   `path`**string** Serveur path to bind this entrypoint to
--   `method`**string** http method to listen to
--   `resource`**string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler`**string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
+-   `path` **string** Serveur path to bind this entrypoint to
+-   `method` **string** http method to listen to
+-   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
+-   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
 
 #### **Sample code**
 
