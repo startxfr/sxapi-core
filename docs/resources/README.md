@@ -14,7 +14,7 @@ If you wan't to have sample config for various resources, you can visit [sxapi-s
 
 ### Declaring a resource in your config file
 
-Resources are referenced within the ```resources``` key in config file. This object reference all resources available in you API by their key.
+Resources are **referenced** within the ```resources``` key in config file. This object reference, with and *resource-id*) all resources available in you API by their key.
 
 ```json
 {
@@ -26,7 +26,7 @@ Resources are referenced within the ```resources``` key in config file. This obj
     }
 }
 ```
-You can then use the ``resource-id`` in your [endpoints](#using-a-resource-endpoint) or with the [resource manager](#using-a-resource-method)
+You can then use the --resource-id-- in your [endpoints](#using-a-resource-endpoint) or with the [resource manager](#using-a-resource-method)
 
 ### Using a resource endpoint
 
