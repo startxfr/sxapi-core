@@ -248,7 +248,7 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.get(docId, function (err, reponse) {
+                            rs.get(config.table, docId, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error reading document because " + err.message);
