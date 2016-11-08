@@ -6,7 +6,7 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 
 ### **Config parameters**
 
--   `class` **string** Must be resource/couchbase for this resource
+-   `class` **string** Must be couchbase for this resource
 -   `cluster` **string** URL of the couchbase cluster to use. You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine, please use docker host IP (like 172.17.x.x). Example : http://172.17.42.1:8091
 -   `bucket` **string** Bucket to use for this resource. If you need to connect to several bucket, you'll have to create several resources
 -   `password` **string** Password used for this bucket
@@ -57,7 +57,7 @@ Get a document for the bucket according to the given docId.  Use KV capabilities
 -   `docId` **string** The document ID to find
 -   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the couchbase cluster
+    -   `response` **object, array** Content returned from the couchbase cluster
 
 #### **Sample code**
 
@@ -77,7 +77,7 @@ Send a N1QL request to the query service of the couchbase cluster defined in the
 -   `n1ql` **string** The N1QL request to send to the query node for the resource's cluster
 -   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the couchbase cluster
+    -   `response` **object, array** Content returned from the couchbase cluster
 
 #### **Sample code**
 
@@ -98,7 +98,7 @@ Insert a document into the bucket according to the given docId.  Use KV capabili
 -   `document` **string** The document body
 -   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__insertDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the couchbase cluster
+    -   `response` **object, array** Content returned from the couchbase cluster
 
 #### **Sample code**
 
@@ -115,11 +115,11 @@ Update a document into the bucket according to the given docId.  Use KV capabili
 
 #### **Parameters**
 
--   `docId` **string** The document ID to create
+-   `docId` **string** The document ID to update
 -   `document` **string** The document body
 -   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__updateDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the couchbase cluster
+    -   `response` **object, array** Content returned from the couchbase cluster
 
 #### **Sample code**
 
@@ -136,10 +136,10 @@ Remove a document into the bucket according to the given docId.  Use KV capabili
 
 #### **Parameters**
 
--   `docId` **string** The document ID to create
+-   `docId` **string** The document ID to delete
 -   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__deleteDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the couchbase cluster
+    -   `response` **object, array** Content returned from the couchbase cluster
 
 #### **Sample code**
 
