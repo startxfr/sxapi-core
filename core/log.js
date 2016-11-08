@@ -32,7 +32,7 @@ var $log = {
     isDebug: false,
     booted: false,
     /**
-     * Initialise log according to the log section in config.json. 
+     * Initialise log according to the log section in sxapi.json. 
      * @param {type} config
      * @param {type} isDebug
      * @returns {log}
@@ -215,7 +215,7 @@ var $log = {
     sqs: {
         isActive: false,
         /**
-         * Initialise SQS queue using the $log.sqs section in config.json. 
+         * Initialise SQS queue using the $log.sqs section in sxapi.json. 
          * @returns {$log.sqs}
          */
         init: function () {
@@ -266,7 +266,7 @@ var $log = {
     couchbase: {
         isActive: false,
         /**
-         * Initialise SQS queue using the $log.couchbase section in config.json. 
+         * Initialise SQS queue using the $log.couchbase section in sxapi.json. 
          * @returns {$log.couchbase}
          */
         init: function () {
