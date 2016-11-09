@@ -1,4 +1,4 @@
-/* global module, require, process */
+/* global module, require, process, chris */
 
 // declaring global variable $timer 
 $timer = require('./timer');
@@ -14,6 +14,7 @@ var $app = {
         network_port: 8080
     },
     config: {
+        test:'dsdsd',
         ip: require("ip").address(),
         log: {}
     },
