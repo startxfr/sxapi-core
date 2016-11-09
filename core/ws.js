@@ -24,7 +24,7 @@ var $ws = {
         this._initApp();
         this._initEndpoints($ws.config.endpoints, true);
         $ws.server = $ws.http.createServer($ws.app);
-        if ($ws.config.io && $ws.config.io === true) {
+        if ($ws.config.websockets && $ws.config.websockets === true) {
             $ws.io = require('socket.io').listen($ws.server);
         }
         return this;
@@ -34,20 +34,22 @@ var $ws = {
         $ws.http = require('http');
         $ws.app = $ws.express();
         var bodyParser = require('body-parser');
-        if ($ws.config.bodyParserJson && $ws.config.bodyParserJson === true) {
+        if ($ws.config.bodyParserJson !== false) {
             $ws.app.use(bodyParser.json());
         }
-        if ($ws.config.bodyParserUrl && $ws.config.bodyParserUrl === true) {
+        if ($ws.config.bodyParserUrl !== false) {
             $ws.app.use(bodyParser.urlencoded({extended: true}));
         }
-        $ws.app.use(require('cors')({
-            origin: true,
-            methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-            exposedHeaders: "*",
-            credentials: true
-        }));
-        if ($ws.config.static && $ws.config.static !== "") {
-            $ws.app.use('/', $ws.express.static('webapp'));
+        if ($ws.config.useCors !== false) {
+            $ws.app.use(require('cors')({
+                origin: true,
+                methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+                exposedHeaders: "*",
+                credentials: true
+            }));
+        }
+        if ($ws.config.static === true) {
+            $ws.app.use('/static', $ws.express.static('webapp'));
         }
         return this;
     },
@@ -61,52 +63,47 @@ var $ws = {
         return this;
     },
     _initEndpoint: function (config, withRouting) {
-        var $ws = require("./ws");
-        config.method = config.method ? config.method : 'GET';
-        config.path = config.path ? config.path : '/';
+        var method = config.method || 'GET';
+        var path = config.path || '/';
         if (withRouting === true) {
-            if (!$ws.routing[config.path]) {
-                $ws.routing[config.path] = {};
+            if (!$ws.routing[path]) {
+                $ws.routing[path] = {};
             }
-            if (!$ws.routing[config.path][config.method]) {
-                $ws.routing[config.path][config.method] = config;
+            if (!$ws.routing[path][method]) {
+                $ws.routing[path][method] = config;
             }
             else {
-                $ws.routing[config.path][config.method] =
-                        require('merge').recursive(true,
-                        $ws.routing[config.path][config.method],
-                        config);
+                $ws.routing[path][method] = require('merge').recursive(true,$ws.routing[path][method],config);
             }
         }
         $ws._initEndpointConfig(config);
-
         return this;
     },
     _initEndpointConfig: function (config) {
-        var $ws = require("./ws");
-        var eptype = (typeof config.handler === "string") ? "dynamic" : "static ";
-        var ephdname = (config.handler) ? config.handler : "$ws.__endpointCallback";
-        if (typeof config.handler === "string") {
+        var handler = config.handler || false;
+        var eptype = (typeof handler === "string") ? "dynamic" : "static ";
+        var ephdname = (handler) ? handler : "$ws.__endpointCallback";
+        if (typeof handler === "string") {
             eptype = "dynamic";
-            config.handler = eval(config.handler);
+            handler = eval(handler);
         }
-        else if (typeof config.handler === "undefined" && config.method !== "ROUTER") {
+        else if (typeof handler === "undefined" && config.method !== "ROUTER") {
             if (typeof config.resource === "string" && typeof config.resource_handler === "string") {
                 eptype = "dynamic";
                 var rs = require('./resource').get(config.resource);
                 ephdname = config.resource+"::"+config.resource_handler;
-                config.handler = eval('rs.'+config.resource_handler);
+                handler = eval('rs.'+config.resource_handler);
             }
             else {
                 ephdname = "$ws.__endpointCallback";
-                config.handler = $ws.__endpointCallback;
+                handler = $ws.__endpointCallback;
             }
         }
         switch (config.method) {
             case "ROUTER":
                 var fct = null;
-                if (typeof config.handler === "function") {
-                    fct = config.handler;
+                if (typeof handler === "function") {
+                    fct = handler;
                 }
                 else {
                     fct = $ws.defaultRouter;
@@ -115,19 +112,19 @@ var $ws = {
                 break;
             case "POST":
                 $log.debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
-                $ws.app.post(config.path, config.handler(config));
+                $ws.app.post(config.path, handler(config));
                 break;
             case "PUT":
                 $log.debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
-                $ws.app.put(config.path, config.handler(config));
+                $ws.app.put(config.path, handler(config));
                 break;
             case "DELETE":
                 $log.debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
-                $ws.app.delete(config.path, config.handler(config));
+                $ws.app.delete(config.path, handler(config));
                 break;
             default:
                 $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
-                $ws.app.get(config.path, config.handler(config));
+                $ws.app.get(config.path, handler(config));
         }
 
         return this;
@@ -159,15 +156,15 @@ var $ws = {
                 res.end("<html><head></head><body><h1>Not Found</h1></body></html>");
                 $log.warn("Endpoint " + req.method + " '" + path + "' not found");
             }
-        }
+        };
     },
     start: function (callback) {
         $log.debug("Start web server on port " + $ws.config.port, 2);
         try {
-            $ws.server.listen($ws.config.port);
+            $ws.server.listen($ws.config.port || 8080);
         }
-        catch (e) {
-            $log.error('web server can\'t start because ' + e.message + ' [' + e.code + ']');
+        catch (error) {
+            $log.error('web server can\'t start because ' + error.message);
         }
         if (typeof callback === "function") {
             callback();
@@ -279,7 +276,6 @@ var $ws = {
         };
     },
     defaultRouter: function (configs) {
-        var $ws = require("./ws");
         var endpoints = configs.endpoints;
         delete configs.endpoints;
         $log.debug("Use router '$ws.defaultRouter' for '" + configs.path + "'", 2);

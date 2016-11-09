@@ -8,7 +8,7 @@ var $timer = {
         return this;
     },
     get: function (label) {
-        if (label === null || label === undefined) {
+        if (label === null || label === undefined || label === "") {
             label = "default";
         }
         return this.timer.get(label);
@@ -26,7 +26,7 @@ var $timer = {
         return t;
     },
     stop: function (label) {
-        if (label === null || label === undefined) {
+        if (label === null || label === undefined || label === "") {
             label = "default";
         }
         this.timer.destroy(label);
