@@ -19,7 +19,7 @@ module.exports = function (id, config) {
             if (config) {
                 $cbdb.config = config;
             }
-            $log.debug("resource '" + $cbdb.id + "' : initialize", 3);
+            $log.debug("resource '" + $cbdb.id + "' : initializing", 3);
             if (!$cbdb.config.cluster) {
                 throw new Error("no 'cluster' key found in resource '" + $cbdb.id + "' config");
             }
@@ -37,16 +37,23 @@ module.exports = function (id, config) {
             else {
                 $log.debug("resource '" + $cbdb.id + "' : use existing connection to cluster " + $cbdb.config.cluster, 4);
             }
-            $log.debug("resource '" + $cbdb.id + "' : initialized ", 3, $timer.timeStop(timerId));
+            $log.debug("resource '" + $cbdb.id + "' : initialized ", 1, $timer.timeStop(timerId));
             return $cbdb;
         },
         start: function (callback) {
-            $log.debug("resource '" + $cbdb.id + "' : start ", 3);
-            $cbdb.open(callback);
+            var timerId = 'resource_cb_start_' + $cbdb.id;
+            $log.debug("resource '" + $cbdb.id + "' : starting ", 2);
+            var cb = function () {
+                $log.debug("resource '" + $cbdb.id + "' : started ", 1, $timer.timeStop(timerId));
+                if (typeof callback === "function") {
+                    callback();
+                }
+            };
+            $cbdb.open(cb);
             return $cbdb;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $cbdb.id + "' : stop ", 3);
+            $log.debug("resource '" + $cbdb.id + "' : stop ", 1);
             if (typeof callback === "function") {
                 callback(null, $cbdb);
             }
@@ -78,7 +85,7 @@ module.exports = function (id, config) {
                 var duration = $timer.timeStop(timerId);
                 if (bucketerr) {
                     $log.error("resource '" + $cbdb.id + "' : failed opening bucket '" + $cbdb.config.bucket + "' because " + bucketerr.message, duration);
-                    process.exit(5);
+                    process.quit(5);
                 }
                 $log.debug("resource '" + $cbdb.id + "' : bucket '" + $cbdb.config.bucket + "' opened", 4, duration);
                 if (typeof callback === "function") {

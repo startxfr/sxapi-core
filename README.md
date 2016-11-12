@@ -4,7 +4,7 @@ SXAPI Core
 [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=master)](https://travis-ci.org/startxfr/sxapi-core)
 
 ***SXAPI*** for Simple and eXtensible Application Programming Interface 
-It's an open-source framework for quickly building simple and small microservices.
+It's an open-source framework for quickly building simple and small microservices API.
 
 
 Getting Started

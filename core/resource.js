@@ -30,9 +30,7 @@ var $resources = {
      * @returns {$resources}
      */
     add: function (id, config) {
-        $log
-                .debug("Adding resource "
-                        + id + " to resources pool", 2);
+        $log.debug("Adding resource " + id + " to resources pool", 2);
         if (typeof id !== "string") {
             throw new Error("resource 'id' must be a string");
         }
@@ -42,7 +40,7 @@ var $resources = {
         if (config._class === undefined) {
             throw new Error("resource must have a _class param");
         }
-        this.config[id] = require('./resource/'+config._class)(id, config);
+        this.config[id] = require('./resource/' + config._class)(id, config);
         return this;
     },
     /**
@@ -67,8 +65,7 @@ var $resources = {
      * @returns {$resources}
      */
     starts: function (callback) {
-        $log
-                .debug("Starting all resources pool", 2);
+        $log.debug("Starting all resources pool", 2);
         var series = [];
         for (var id in this.config) {
             if (this.config[id] &&
@@ -85,8 +82,7 @@ var $resources = {
      * @returns {$resources}
      */
     stops: function (callback) {
-        $log
-                .debug("Stopping all resources pool", 2);
+        $log.debug("Stopping all resources pool", 2);
         var series = [];
         for (var id in this.config) {
             if (this.config[id] &&
@@ -103,8 +99,7 @@ var $resources = {
      * @returns {$resources}
      */
     start: function (id) {
-        $log
-                .debug("Starting '" + id + "' resources pool", 2);
+        $log.debug("Starting '" + id + "' resources pool", 2);
         if (this.config[id] &&
                 typeof this.config[id].start === "function") {
             this.config[id].start();
@@ -117,8 +112,7 @@ var $resources = {
      * @returns {$resources}
      */
     stop: function (id) {
-        $log
-                .debug("Stopping '" + id + "' resources pool", 2);
+        $log.debug("Stopping '" + id + "' resources pool", 2);
         if (this.config[id] &&
                 typeof this.config[id].stop === "function") {
             this.config[id].stop();
