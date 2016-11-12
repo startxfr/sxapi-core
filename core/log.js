@@ -11,14 +11,8 @@
     ['error', '\x1b[41m'],
     ['log', '\x1b[30m']
 ].forEach(function (pair) {
-    var method = pair[0],
-            reset = '\x1b[0m',
-            color = '\x1b[36m' + pair[1];
-    console[method] = console[method].bind(
-            console,
-            color,
-            method.toUpperCase(),
-            reset);
+    var method = pair[0],reset = '\x1b[0m',color = '\x1b[36m' + pair[1];
+    console[method] = console[method].bind(console,color,method.toUpperCase(),reset);
 });
 
 /**
@@ -32,7 +26,7 @@ var $log = {
     isDebug: false,
     booted: false,
     /**
-     * Initialise log according to the log section in config.json. 
+     * Initialise log according to the log section in sxapi.json. 
      * @param {type} config
      * @param {type} isDebug
      * @returns {log}
@@ -54,7 +48,7 @@ var $log = {
             this.booted = true;
         }
         else {
-            this.debug("Init core module : sxapi-core-log core", 2);
+            this.debug("Init core module : sxapi-core-log core", 4);
         }
         if (this.config.sqs) {
             this.sqs.init();
@@ -74,23 +68,18 @@ var $log = {
      */
     debug: function (a, b, duration, cancelBackend) {
         var level = parseInt(b);
-        var ident = (level > 0) ? Array(level).join("  ") + "- " : "- ";
+        var ident = (level > 0) ? Array(level).join(" ") : "";
         var dur = "";
         if (duration !== null && duration !== undefined) {
             dur += "  (" + duration + "ms)";
         }
-        if (this.isDebug &&
-                !this.isExcluded("debug", level)) {
+        if (this.isDebug && !this.isExcluded("debug", level)) {
             console.log(ident + a + dur);
         }
-        if (this.sqs.isActive &&
-                !this.isExcluded("debug", level) &&
-                cancelBackend !== true) {
+        if (this.sqs.isActive && !this.isExcluded("debug", level) && cancelBackend !== true) {
             this.sqs.log(a, duration);
         }
-        if (this.couchbase.isActive &&
-                !this.isExcluded("debug", level) &&
-                cancelBackend !== true) {
+        if (this.couchbase.isActive && !this.isExcluded("debug", level) && cancelBackend !== true) {
             this.couchbase.log(a, duration);
         }
         return this;
@@ -110,14 +99,10 @@ var $log = {
         if (!this.isExcluded("info", 0)) {
             console.info(a + dur);
         }
-        if (this.sqs.isActive &&
-                !this.isExcluded('info', 0) &&
-                cancelBackend !== true) {
+        if (this.sqs.isActive && !this.isExcluded('info', 0) && cancelBackend !== true) {
             this.sqs.log(a, duration, 'info');
         }
-        if (this.couchbase.isActive &&
-                !this.isExcluded('info', 0) &&
-                cancelBackend !== true) {
+        if (this.couchbase.isActive && !this.isExcluded('info', 0) && cancelBackend !== true) {
             this.couchbase.log(a, duration, 'info');
         }
         return this;
@@ -137,14 +122,10 @@ var $log = {
         if (!this.isExcluded("warn", 0)) {
             console.warn(a + dur);
         }
-        if (this.sqs.isActive &&
-                !this.isExcluded('warn', 0) &&
-                cancelBackend !== true) {
+        if (this.sqs.isActive && !this.isExcluded('warn', 0) && cancelBackend !== true) {
             this.sqs.log(a, duration, 'warn');
         }
-        if (this.couchbase.isActive &&
-                !this.isExcluded('warn', 0) &&
-                cancelBackend !== true) {
+        if (this.couchbase.isActive && !this.isExcluded('warn', 0) && cancelBackend !== true) {
             this.couchbase.log(a, duration, 'warn');
         }
         return this;
@@ -164,14 +145,10 @@ var $log = {
         if (!this.isExcluded("error", 0)) {
             console.error(a + dur);
         }
-        if (this.sqs.isActive &&
-                !this.isExcluded('error', 0) &&
-                cancelBackend !== true) {
+        if (this.sqs.isActive && !this.isExcluded('error', 0) && cancelBackend !== true) {
             this.sqs.log(a, duration, 'error');
         }
-        if (this.couchbase.isActive &&
-                !this.isExcluded('error', 0) &&
-                cancelBackend !== true) {
+        if (this.couchbase.isActive && !this.isExcluded('error', 0) && cancelBackend !== true) {
             this.couchbase.log(a, duration, 'error');
         }
         return this;
@@ -215,7 +192,7 @@ var $log = {
     sqs: {
         isActive: false,
         /**
-         * Initialise SQS queue using the $log.sqs section in config.json. 
+         * Initialise SQS queue using the $log.sqs section in sxapi.json. 
          * @returns {$log.sqs}
          */
         init: function () {
@@ -225,9 +202,7 @@ var $log = {
                 throw new Error("no 'resource' key found in log config 'sqs'");
             }
             if (!require('./resource').exist(conf.resource)) {
-                throw new Error("resource '"
-                        + conf.resource
-                        + "' in log config 'sqs' doesn't exist");
+                throw new Error("resource '" + conf.resource + "' in log config 'sqs' doesn't exist");
             }
             this.resource = require('./resource').get(conf.resource);
             this.isActive = true;
@@ -254,11 +229,8 @@ var $log = {
             }
             $log.sqs.resource.sendMessage(message, function (err) {
                 if (err) {
-                    $log.warn("error saving log  because "
-                            + err.message
-                            + ' [' + err.code + ']', null, true);
+                    $log.warn("error saving log  because "  + err.message, null, true);
                 }
-                ;
             });
             return this;
         }
@@ -266,19 +238,17 @@ var $log = {
     couchbase: {
         isActive: false,
         /**
-         * Initialise SQS queue using the $log.couchbase section in config.json. 
+         * Initialise SQS queue using the $log.couchbase section in sxapi.json. 
          * @returns {$log.couchbase}
          */
         init: function () {
             $log.debug("adding couchbase log backend", 3, null, true);
             var conf = $log.config.couchbase;
             if (!conf.resource) {
-                throw new Error("no 'resource' key found"
-                        + " in log config 'couchbase'");
+                throw new Error("no 'resource' key found" + " in log config 'couchbase'");
             }
             if (!require('./resource').exist(conf.resource)) {
-                throw new Error("resource '" + conf.resource
-                        + "' in log config 'couchbase' doesn't exist");
+                throw new Error("resource '" + conf.resource + "' in log config 'couchbase' doesn't exist");
             }
             $log.couchbase.resource = require('./resource').get(conf.resource);
             $log.couchbase.isActive = true;
@@ -308,9 +278,7 @@ var $log = {
                 return function (coucherr, b) {
                     if (coucherr) {
                         console.warn(doc);
-                        $log.warn("error saving log " + key
-                                + ' because ' + coucherr.message
-                                + ' [' + coucherr.code + ']', null, true);
+                        $log.warn("error saving log " + key + ' because ' + coucherr.message, null, true);
                     }
                 };
             });

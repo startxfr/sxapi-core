@@ -1,4 +1,4 @@
-/* global module, require, process */
+/* global module, require, process, $log */
 
 //'use strict';
 
@@ -8,12 +8,9 @@ var $ws = {
         if (config) {
             $ws.config = config;
         }
-        require('./log').debug("Init ws module", 2);
+        $log.debug("Init ws module", 2);
         if (!$ws.config) {
             throw new Error("no 'server' section in config");
-        }
-        if (!$ws.config.port) {
-            throw new Error("no 'port' key found in config 'server' section");
         }
         if (!$ws.config.endpoints) {
             throw new Error("no 'endpoints' key found in config 'server' section");
@@ -24,7 +21,7 @@ var $ws = {
         this._initApp();
         this._initEndpoints($ws.config.endpoints, true);
         $ws.server = $ws.http.createServer($ws.app);
-        if ($ws.config.io && $ws.config.io === true) {
+        if ($ws.config.websockets === true) {
             $ws.io = require('socket.io').listen($ws.server);
         }
         return this;
@@ -34,20 +31,22 @@ var $ws = {
         $ws.http = require('http');
         $ws.app = $ws.express();
         var bodyParser = require('body-parser');
-        if ($ws.config.bodyParserJson && $ws.config.bodyParserJson === true) {
+        if ($ws.config.bodyParserJson !== false) {
             $ws.app.use(bodyParser.json());
         }
-        if ($ws.config.bodyParserUrl && $ws.config.bodyParserUrl === true) {
+        if ($ws.config.bodyParserUrl !== false) {
             $ws.app.use(bodyParser.urlencoded({extended: true}));
         }
-        $ws.app.use(require('cors')({
-            origin: true,
-            methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-            exposedHeaders: "*",
-            credentials: true
-        }));
-        if ($ws.config.static && $ws.config.static !== "") {
-            $ws.app.use('/', $ws.express.static('webapp'));
+        if ($ws.config.useCors !== false) {
+            $ws.app.use(require('cors')({
+                origin: true,
+                methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+                exposedHeaders: "*",
+                credentials: true
+            }));
+        }
+        if ($ws.config.static === true) {
+            $ws.app.use('/static', $ws.express.static('webapp'));
         }
         return this;
     },
@@ -61,52 +60,47 @@ var $ws = {
         return this;
     },
     _initEndpoint: function (config, withRouting) {
-        var $ws = require("./ws");
-        config.method = config.method ? config.method : 'GET';
-        config.path = config.path ? config.path : '/';
+        var method = config.method || 'GET';
+        var path = config.path || '/';
         if (withRouting === true) {
-            if (!$ws.routing[config.path]) {
-                $ws.routing[config.path] = {};
+            if (!$ws.routing[path]) {
+                $ws.routing[path] = {};
             }
-            if (!$ws.routing[config.path][config.method]) {
-                $ws.routing[config.path][config.method] = config;
+            if (!$ws.routing[path][method]) {
+                $ws.routing[path][method] = config;
             }
             else {
-                $ws.routing[config.path][config.method] =
-                        require('merge').recursive(true,
-                        $ws.routing[config.path][config.method],
-                        config);
+                $ws.routing[path][method] = require('merge').recursive(true, $ws.routing[path][method], config);
             }
         }
         $ws._initEndpointConfig(config);
-
         return this;
     },
     _initEndpointConfig: function (config) {
-        var $ws = require("./ws");
-        var eptype = (typeof config.handler === "string") ? "dynamic" : "static ";
-        var ephdname = (config.handler) ? config.handler : "$ws.__endpointCallback";
-        if (typeof config.handler === "string") {
+        var handler = config.handler;
+        var eptype = (typeof handler === "string") ? "dynamic" : "static ";
+        var ephdname = (handler) ? handler : "defaultEndpoint";
+        if (typeof handler === "string") {
             eptype = "dynamic";
-            config.handler = eval(config.handler);
+            handler = eval(handler);
         }
-        else if (typeof config.handler === "undefined" && config.method !== "ROUTER") {
+        else if (typeof handler === "undefined" && config.method !== "ROUTER") {
             if (typeof config.resource === "string" && typeof config.resource_handler === "string") {
                 eptype = "dynamic";
                 var rs = require('./resource').get(config.resource);
-                ephdname = config.resource+"::"+config.resource_handler;
-                config.handler = eval('rs.'+config.resource_handler);
+                ephdname = config.resource + "::" + config.resource_handler;
+                handler = eval('rs.' + config.resource_handler);
             }
             else {
-                ephdname = "$ws.__endpointCallback";
-                config.handler = $ws.__endpointCallback;
+                ephdname = "defaultEndpoint";
+                handler = $ws.__defaultEndpointCb;
             }
         }
         switch (config.method) {
             case "ROUTER":
                 var fct = null;
-                if (typeof config.handler === "function") {
-                    fct = config.handler;
+                if (typeof handler === "function") {
+                    fct = handler;
                 }
                 else {
                     fct = $ws.defaultRouter;
@@ -114,79 +108,110 @@ var $ws = {
                 fct(config);
                 break;
             case "POST":
-                require("./log").debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
-                $ws.app.post(config.path, config.handler(config));
+                $log.debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
+                $ws.app.post(config.path, handler(config));
                 break;
             case "PUT":
-                require("./log").debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
-                $ws.app.put(config.path, config.handler(config));
+                $log.debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
+                $ws.app.put(config.path, handler(config));
                 break;
             case "DELETE":
-                require("./log").debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
-                $ws.app.delete(config.path, config.handler(config));
+                $log.debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
+                $ws.app.delete(config.path, handler(config));
                 break;
             default:
-                require("./log").debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
-                $ws.app.get(config.path, config.handler(config));
+                $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
+                $ws.app.get(config.path, handler(config));
         }
-
         return this;
     },
     /**
-     * Callback called when a defined endpoint is called
+     * Method used to generate the callback function associated with an endpoint and with config of this endpoint is wrapped inside
      * @param {object} config
-     * @returns {undefined}
+     * @returns {function} the callback function used as a default endpoint
      */
-    __endpointCallback: function (config) {
+    __defaultEndpointCb: function (config) {
         /**
-         * Callback called when a defined endpoint is called
+         * Callback called when a defined endpoint is received by express webserver
          * @param {object} req
          * @param {object} res
          * @returns {undefined}
          */
         return function (req, res) {
             var path = req.url.split("?")[0];
-            require("./log").debug("Endpoint '" + path + "' called", 1);
+            $log.debug("Endpoint '" + path + "' called", 1);
             if (config.body) {
                 var code = (config.code) ? config.code : 200;
                 var header = (config.header) ? config.header : {"Content-Type": "text/html"};
                 res.writeHead(code, header);
                 res.end(config.body);
-                require("./log").info("Endpoint '" + path + "' answered static document [" + code + "]");
+                $log.info("Endpoint '" + path + "' answered static document [" + code + "]");
             }
             else {
                 res.writeHead(404, {"Content-Type": "text/html"});
                 res.end("<html><head></head><body><h1>Not Found</h1></body></html>");
-                require("./log").warn("Endpoint " + req.method + " '" + path + "' not found");
+                $log.warn("Endpoint " + req.method + " '" + path + "' not found");
             }
-        }
+        };
     },
+    /**
+     * Start the webserver
+     * @param callback {function} function to call after starting the webserver
+     * @returns {object} the current object ($ws)
+     */
     start: function (callback) {
-        require("./log").debug("Start web server on port " + $ws.config.port, 2);
+        $log.debug("Start web server on port " + $ws.config.port, 2);
         try {
-            $ws.server.listen($ws.config.port);
+            $ws.server.listen($ws.config.port || 8080);
         }
-        catch (e) {
-            require("./log").error('web server can\'t start because ' + e.message + ' [' + e.code + ']');
+        catch (error) {
+            $log.error('web server can\'t start because ' + error.message);
         }
         if (typeof callback === "function") {
             callback();
         }
         return this;
     },
+    /**
+     * Stop the webserver
+     * @param callback {function} function to call after stopping the webserver
+     * @returns {object} the current object ($ws)
+     */
     stop: function (callback) {
-        require("./log").debug("Stop web server ", 2);
+        $log.debug("Stop web server ", 2);
         if (typeof callback === "function") {
             callback();
         }
         return this;
     },
+    /**
+     * Function used to get a sxapi-response object setting up with a OK response
+     * @param res {object} the response object from the webserver
+     * @param message {string} message describing these data
+     * @param data {all} the data to return
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     okResponse: function (res, message, data) {
         return this.response(res, 'ok', message, data);
     },
+    /**
+     * Function used to get a sxapi-response object setting up with a NOT OK response
+     * @param res {object} the response object from the webserver
+     * @param message {string} message describing the problem or error
+     * @param data {all} additionals data usefull for error troubleshooting
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     nokResponse: function (res, message, data) {
         return this.response(res, 'nok', message, data);
     },
+    /**
+     * Return a sxapi-response object
+     * @param res {object} the response object from the webserver
+     * @param type {string} ok or nok
+     * @param message {string} message describing the problem or error
+     * @param data {all} additionals data usefull for error troubleshooting
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     response: function (res, type, message, data) {
         var obj = {
             res: res,
@@ -198,7 +223,7 @@ var $ws = {
             send: function () {
                 res.writeHead(this.httpcode, this.httpheader);
                 res.end(JSON.stringify(this.msg));
-                require("./log").debug("okResponse sended to client");
+                $log.debug(this.msg.code + "Response sended to client");
             },
             httpCode: function (code) {
                 if (code) {
@@ -274,15 +299,14 @@ var $ws = {
         return function (req, res) {
             res.writeHead(200);
             res.end("this text was generated with require('./ws').dynamicRequestHandlerTest. Le param_sample a été défini à " + config.param_sample);
-            require("./log").debug("Endpoint '" + config.path + "' answered with dynamic document", 3);
+            $log.debug("Endpoint '" + config.path + "' answered with dynamic document", 3);
             return this;
         };
     },
     defaultRouter: function (configs) {
-        var $ws = require("./ws");
         var endpoints = configs.endpoints;
         delete configs.endpoints;
-        require("./log").debug("Use router '$ws.defaultRouter' for '" + configs.path + "'", 2);
+        $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
         for (var i = 0; i < endpoints.length; i++) {
             var config = require('merge').recursive(true, configs, endpoints[i]);
             $ws._initEndpointConfig(config);
