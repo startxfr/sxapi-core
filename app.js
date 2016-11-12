@@ -145,7 +145,7 @@ process.$api = $api;
 
 $app
         .onStop(function () {
-            $log.info('application stopped', $timer.timeStop('app'));
+            $log.info('application stopped', $timer.time('app'));
             return this;
         })
         .launch(function () {

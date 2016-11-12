@@ -12,9 +12,6 @@ var $ws = {
         if (!$ws.config) {
             throw new Error("no 'server' section in config");
         }
-        if (!$ws.config.port) {
-            throw new Error("no 'port' key found in config 'server' section");
-        }
         if (!$ws.config.endpoints) {
             throw new Error("no 'endpoints' key found in config 'server' section");
         }
@@ -24,7 +21,7 @@ var $ws = {
         this._initApp();
         this._initEndpoints($ws.config.endpoints, true);
         $ws.server = $ws.http.createServer($ws.app);
-        if ($ws.config.websockets && $ws.config.websockets === true) {
+        if ($ws.config.websockets === true) {
             $ws.io = require('socket.io').listen($ws.server);
         }
         return this;
@@ -73,16 +70,16 @@ var $ws = {
                 $ws.routing[path][method] = config;
             }
             else {
-                $ws.routing[path][method] = require('merge').recursive(true,$ws.routing[path][method],config);
+                $ws.routing[path][method] = require('merge').recursive(true, $ws.routing[path][method], config);
             }
         }
         $ws._initEndpointConfig(config);
         return this;
     },
     _initEndpointConfig: function (config) {
-        var handler = config.handler || false;
+        var handler = config.handler;
         var eptype = (typeof handler === "string") ? "dynamic" : "static ";
-        var ephdname = (handler) ? handler : "$ws.__endpointCallback";
+        var ephdname = (handler) ? handler : "defaultEndpoint";
         if (typeof handler === "string") {
             eptype = "dynamic";
             handler = eval(handler);
@@ -91,12 +88,12 @@ var $ws = {
             if (typeof config.resource === "string" && typeof config.resource_handler === "string") {
                 eptype = "dynamic";
                 var rs = require('./resource').get(config.resource);
-                ephdname = config.resource+"::"+config.resource_handler;
-                handler = eval('rs.'+config.resource_handler);
+                ephdname = config.resource + "::" + config.resource_handler;
+                handler = eval('rs.' + config.resource_handler);
             }
             else {
-                ephdname = "$ws.__endpointCallback";
-                handler = $ws.__endpointCallback;
+                ephdname = "defaultEndpoint";
+                handler = $ws.__defaultEndpointCb;
             }
         }
         switch (config.method) {
@@ -126,17 +123,16 @@ var $ws = {
                 $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
                 $ws.app.get(config.path, handler(config));
         }
-
         return this;
     },
     /**
-     * Callback called when a defined endpoint is called
+     * Method used to generate the callback function associated with an endpoint and with config of this endpoint is wrapped inside
      * @param {object} config
-     * @returns {undefined}
+     * @returns {function} the callback function used as a default endpoint
      */
-    __endpointCallback: function (config) {
+    __defaultEndpointCb: function (config) {
         /**
-         * Callback called when a defined endpoint is called
+         * Callback called when a defined endpoint is received by express webserver
          * @param {object} req
          * @param {object} res
          * @returns {undefined}
@@ -158,6 +154,11 @@ var $ws = {
             }
         };
     },
+    /**
+     * Start the webserver
+     * @param callback {function} function to call after starting the webserver
+     * @returns {object} the current object ($ws)
+     */
     start: function (callback) {
         $log.debug("Start web server on port " + $ws.config.port, 2);
         try {
@@ -171,6 +172,11 @@ var $ws = {
         }
         return this;
     },
+    /**
+     * Stop the webserver
+     * @param callback {function} function to call after stopping the webserver
+     * @returns {object} the current object ($ws)
+     */
     stop: function (callback) {
         $log.debug("Stop web server ", 2);
         if (typeof callback === "function") {
@@ -178,12 +184,34 @@ var $ws = {
         }
         return this;
     },
+    /**
+     * Function used to get a sxapi-response object setting up with a OK response
+     * @param res {object} the response object from the webserver
+     * @param message {string} message describing these data
+     * @param data {all} the data to return
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     okResponse: function (res, message, data) {
         return this.response(res, 'ok', message, data);
     },
+    /**
+     * Function used to get a sxapi-response object setting up with a NOT OK response
+     * @param res {object} the response object from the webserver
+     * @param message {string} message describing the problem or error
+     * @param data {all} additionals data usefull for error troubleshooting
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     nokResponse: function (res, message, data) {
         return this.response(res, 'nok', message, data);
     },
+    /**
+     * Return a sxapi-response object
+     * @param res {object} the response object from the webserver
+     * @param type {string} ok or nok
+     * @param message {string} message describing the problem or error
+     * @param data {all} additionals data usefull for error troubleshooting
+     * @returns {object} response object ready to send a response (using send() method)
+     */
     response: function (res, type, message, data) {
         var obj = {
             res: res,
@@ -195,7 +223,7 @@ var $ws = {
             send: function () {
                 res.writeHead(this.httpcode, this.httpheader);
                 res.end(JSON.stringify(this.msg));
-                $log.debug("okResponse sended to client");
+                $log.debug(this.msg.code + "Response sended to client");
             },
             httpCode: function (code) {
                 if (code) {
@@ -278,7 +306,7 @@ var $ws = {
     defaultRouter: function (configs) {
         var endpoints = configs.endpoints;
         delete configs.endpoints;
-        $log.debug("Use router '$ws.defaultRouter' for '" + configs.path + "'", 2);
+        $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
         for (var i = 0; i < endpoints.length; i++) {
             var config = require('merge').recursive(true, configs, endpoints[i]);
             $ws._initEndpointConfig(config);

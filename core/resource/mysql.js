@@ -19,7 +19,7 @@ module.exports = function (id, config) {
             if (config) {
                 $mqdb.config = config;
             }
-            $log.debug("resource '" + $mqdb.id + "' : initialize", 3);
+            $log.debug("resource '" + $mqdb.id + "' : initializing", 3);
             if (!$mqdb.config.server) {
                 throw new Error("no 'server' key found in resource '" + $mqdb.id + "' config");
             }
@@ -41,16 +41,23 @@ module.exports = function (id, config) {
             else {
                 $log.debug("resource '" + $mqdb.id + "' : use existing connection to mysql " + $mqdb.config._sign, 4);
             }
-            $log.debug("resource '" + $mqdb.id + "' : initialized ", 3, $timer.timeStop(timerId));
+            $log.debug("resource '" + $mqdb.id + "' : initialized ", 1, $timer.timeStop(timerId));
             return $mqdb;
         },
         start: function (callback) {
-            $log.debug("resource '" + $mqdb.id + "' : start ", 3);
+            var timerId = 'resource_mysql_start_' + $mqdb.id;
+            $log.debug("resource '" + $mqdb.id + "' : starting ", 2);
+            var cb = function () {
+                $log.debug("resource '" + $mqdb.id + "' : started ", 1, $timer.timeStop(timerId));
+                if (typeof callback === "function") {
+                    callback();
+                }
+            };
             $mqdb.open(callback);
             return $mqdb;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $mqdb.id + "' : stop ", 3);
+            $log.debug("resource '" + $mqdb.id + "' : stop ", 1);
             $mysqlPool[$mqdb.config._sign].destroy();
             if (typeof callback === "function") {
                 callback(null, $mqdb);

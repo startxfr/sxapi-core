@@ -19,7 +19,7 @@ module.exports = function (id, config) {
             if (config) {
                 $sqs.config = config;
             }
-            $log.debug("resource '" + $sqs.id + "' : initialize", 3);
+            $log.debug("resource '" + $sqs.id + "' : initializing", 3);
             if (!$sqs.config.config) {
                 throw new Error("no 'config' key found in resource '" + $sqs.id + "' config");
             }
@@ -27,16 +27,23 @@ module.exports = function (id, config) {
                 throw new Error("no 'QueueUrl' key found in resource '" + $sqs.id + "' config");
             }
             $sqs.AWS = require('aws-sdk');
-            $log.debug("resource '" + $sqs.id + "' : initialized ", 3, $timer.timeStop(timerId));
+            $log.debug("resource '" + $sqs.id + "' : initialized ", 1, $timer.timeStop(timerId));
             return this;
         },
         start: function (callback) {
-            $log.debug("resource '" + $sqs.id + "' : start ", 3);
-            $sqs.open(callback);
+            var timerId = 'resource_sqs_start_' + $sqs.id;
+            $log.debug("resource '" + $sqs.id + "' : starting ", 2);
+            var cb = function () {
+                $log.debug("resource '" + $sqs.id + "' : started ", 1, $timer.timeStop(timerId));
+                if (typeof callback === "function") {
+                    callback();
+                }
+            };
+            $sqs.open(cb);
             return this;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $sqs.id + "' : stop ", 3);
+            $log.debug("resource '" + $sqs.id + "' : stop ", 1);
             if (typeof callback === "function") {
                 callback(null, this);
             }
