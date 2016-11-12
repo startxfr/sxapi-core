@@ -2,8 +2,6 @@ v0.0.7:
   build: .
   container_name: "sxapi-core-v0.0.7"
   privileged: true
-  ports:
-    - "1977:8080"
   volumes:
     - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
     - "/tmp/sxapi-data:/data:rw"
