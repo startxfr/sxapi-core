@@ -203,9 +203,9 @@ module.exports = function (id, config) {
                     var ws = require("../ws");
                     var path = req.url.split("?")[0];
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 4);
                     ws.okResponse(res, "test message ").send();
-                    $log.info(message_prefix + "returned test message");
+                    $log.debug(message_prefix + "returned test message", 2);
                 };
             },
             list: function (config) {
@@ -214,7 +214,7 @@ module.exports = function (id, config) {
                     var ws = require("../ws");
                     var ress = require('../resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 1);
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -229,7 +229,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, "returned " + reponse.length + 'items', reponse).addTotal(reponse.length).send();
-                                    $log.info(message_prefix + "list of " + reponse.length + " items");
+                                    $log.debug(message_prefix + "list of " + reponse.length + " items", 2);
                                 }
                             });
                         }
@@ -247,7 +247,7 @@ module.exports = function (id, config) {
                     var ress = require('../resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 1);
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -262,7 +262,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, "returned " + reponse.length + 'items', reponse).send();
-                                    $log.info(message_prefix + "document " + docId);
+                                    $log.debug(message_prefix + "document " + docId, 2);
                                 }
                             });
                         }
@@ -279,7 +279,7 @@ module.exports = function (id, config) {
                     var ws = require("../ws");
                     var ress = require('../resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 1);
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -294,7 +294,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, "document recorded in" + config.table, reponse).send();
-                                    $log.info(message_prefix + "document recorded in " + config.table);
+                                    $log.debug(message_prefix + "document recorded in " + config.table, 2);
                                 }
                             });
                         }
@@ -312,7 +312,7 @@ module.exports = function (id, config) {
                     var ress = require('../resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 1);
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -331,7 +331,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                    $log.info(message_prefix + "document " + docId);
+                                    $log.debug(message_prefix + "document " + docId, 2);
                                 }
                             });
                         }
@@ -349,7 +349,7 @@ module.exports = function (id, config) {
                     var ress = require('../resource');
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    $log.debug(message_prefix + "called", 1);
+                    $log.debug(message_prefix + "start", 1);
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -368,7 +368,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                    $log.info(message_prefix + "document " + docId);
+                                    $log.debug(message_prefix + "document " + docId, 2);
                                 }
                             });
                         }

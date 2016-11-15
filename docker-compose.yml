@@ -2,6 +2,8 @@ dev:
   build: .
   container_name: "sxapi-core-dev"
   privileged: true
+  ports:
+    - "8080:8080"
   volumes:
     - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
     - "/secure/dev/startx/sxapi-core:/app:ro"

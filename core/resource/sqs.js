@@ -202,7 +202,7 @@ module.exports = function (id, config) {
                                 }
                                 else {
                                     ws.okResponse(res, message_prefix + "recorded message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
-                                    $log.info(message_prefix + "returned " + reponse.MessageId);
+                                    $log.debug(message_prefix + "returned " + reponse.MessageId, 2);
                                 }
                             });
                         }
