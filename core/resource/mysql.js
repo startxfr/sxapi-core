@@ -321,8 +321,8 @@ module.exports = function (id, config) {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
                             var filter = {};
-                            if (docId && config.id_fields) {
-                                eval("filter." + config.id_fields + "=docId;");
+                            if (docId && config.id_field) {
+                                eval("filter." + config.id_field + "=docId;");
                             }
                             rs.update(config.table, req.body, filter, function (err, reponse) {
                                 if (err) {
@@ -358,8 +358,8 @@ module.exports = function (id, config) {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
                             var filter = {};
-                            if (docId && config.id_fields) {
-                                eval("filter." + config.id_fields + "=docId;");
+                            if (docId && config.id_field) {
+                                eval("filter." + config.id_field + "=docId;");
                             }
                             rs.delete(config.table, filter, function (err, reponse) {
                                 if (err) {
