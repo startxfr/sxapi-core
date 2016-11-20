@@ -46,7 +46,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_mysql_start_' + $mqdb.id;
-            $log.debug("resource '" + $mqdb.id + "' : starting ", 2);
+            $log.debug("Starting resource '" + $mqdb.id + "'", 2);
             var cb = function () {
                 $log.debug("resource '" + $mqdb.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
@@ -57,7 +57,7 @@ module.exports = function (id, config) {
             return $mqdb;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $mqdb.id + "' : stop ", 1);
+            $log.debug("Stopping resource '" + $mqdb.id + "'", 2);
             $mysqlPool[$mqdb.config._sign].destroy();
             if (typeof callback === "function") {
                 callback(null, $mqdb);

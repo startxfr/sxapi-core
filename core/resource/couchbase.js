@@ -42,7 +42,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_cb_start_' + $cbdb.id;
-            $log.debug("resource '" + $cbdb.id + "' : starting ", 2);
+            $log.debug("Starting resource '" + $cbdb.id + "'", 2);
             var cb = function () {
                 $log.debug("resource '" + $cbdb.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
@@ -53,7 +53,7 @@ module.exports = function (id, config) {
             return $cbdb;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $cbdb.id + "' : stop ", 1);
+            $log.debug("Stopping resource '" + $cbdb.id + "'", 2);
             if (typeof callback === "function") {
                 callback(null, $cbdb);
             }

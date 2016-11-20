@@ -127,19 +127,37 @@ var $sess = {
      * @returns {object} the current object ($ws)
      */
     required: function (req, res, callbackOK, callbackNOK) {
-        $log.debug("Check session ", 2);
-        try {
-            switch (this.config.transport.type) {
-                case "cookie" :
-                    return this.transports.cookie.required(req, res, callbackOK, callbackNOK);
-                    break;
-                case "token" :
-                    return this.transports.token.required(req, res, callbackOK, callbackNOK);
-                    break;
+        var cbOK = function (result) {
+            var message = 'found session ' + $sess.transports.sessID;
+            $log.info(message);
+            require("./ws").okResponse(res, message).send();
+        };
+        var cbNOK = function (code, message) {
+            require("./ws").nokResponse(res, message).httpCode(500).send();
+        };
+        if (this.config === false) {
+            if (typeof callbackOK === "function") {
+                callbackOK(null);
             }
         }
-        catch (error) {
-            $log.error('session check returned error because ' + error.message);
+        else {
+            try {
+                switch (this.config.transport.type) {
+                    case "cookie" :
+                        this.transports.cookie.required(req, res, callbackOK || cbOK, callbackNOK || cbNOK);
+                        break;
+                    case "token" :
+                        this.transports.token.required(req, res, callbackOK || cbOK, callbackNOK || cbNOK);
+                        break;
+                    default :
+                        var fn = callbackNOK || cbNOK;
+                        fn(10, "transport type is not implemented in required method");
+                        break;
+                }
+            }
+            catch (error) {
+                $log.error('session check returned error because ' + error.message);
+            }
         }
     },
     transports: {
@@ -163,22 +181,19 @@ var $sess = {
                 return this;
             },
             required: function (req, res, callbackOK, callbackNOK) {
-                var sessID = eval('req.query.' + $sess.config.transport.param);
-                if (sessID !== undefined) {
-                    $log.debug("session cookie is '" + sessID + "'", 3);
+                $sess.transports.sessID = eval('req.query.' + $sess.config.transport.param);
+                if ($sess.transports.sessID !== undefined) {
+                    $log.debug("session cookie is '" + $sess.transports.sessID + "'", 3);
                     switch ($sess.config.backend.type) {
                         case "mysql" :
-                            $sess.backends.mysql.check(sessID, res, callbackOK, callbackNOK);
+                            $sess.backends.mysql.check($sess.transports.sessID, res, callbackOK, callbackNOK);
                             break;
                     }
                 }
                 else {
                     $log.warn("could not find a session cookie in request " + req.method + ' ' + req.url);
                     if (typeof callbackNOK === 'function') {
-                        callbackNOK();
-                    }
-                    else {
-                        require("./ws").nokResponse(res, "could not find a session cookie in your request").httpCode(500).send();
+                        callbackNOK(110, "could not find a session cookie in your request");
                     }
 
                 }
@@ -202,22 +217,19 @@ var $sess = {
                 return this;
             },
             required: function (req, res, callbackOK, callbackNOK) {
-                var sessID = eval('req.query.' + $sess.config.transport.param);
-                if (sessID !== undefined) {
-                    $log.debug("session token is '" + sessID + "'", 3);
+                $sess.transports.sessID = eval('req.query.' + $sess.config.transport.param);
+                if ($sess.transports.sessID !== undefined) {
+                    $log.debug("session token is '" + $sess.transports.sessID + "'", 3);
                     switch ($sess.config.backend.type) {
                         case "mysql" :
-                            $sess.backends.mysql.check(sessID, res, callbackOK, callbackNOK);
+                            $sess.backends.mysql.check($sess.transports.sessID, res, callbackOK, callbackNOK);
                             break;
                     }
                 }
                 else {
                     $log.warn("could not find a session token in request " + req.method + ' ' + req.url);
                     if (typeof callbackNOK === 'function') {
-                        callbackNOK();
-                    }
-                    else {
-                        require("./ws").nokResponse(res, "could not find a session token in your request").httpCode(500).send();
+                        callbackNOK(120, "could not find a session token in your request");
                     }
 
                 }
@@ -240,6 +252,9 @@ var $sess = {
                 }
                 if (!$sess.config.backend.sid_field) {
                     throw new Error("no 'sid_field' key found in config 'session.backend.mysql'");
+                }
+                if ($sess.config.backend.auto_create === undefined) {
+                    $sess.config.backend.auto_create = false;
                 }
                 return this;
             },
@@ -267,26 +282,25 @@ var $sess = {
                         if (error) {
                             $log.warn("session '" + sessID + "' is not valid because " + error.message, duration);
                             if (typeof callbackNOK === "function") {
-                                callbackNOK();
-                            }
-                            else {
-                                require("./ws").nokResponse(res, "error using 'mysql' session backend").httpCode(500).send();
+                                callbackNOK(210, "error using 'mysql' session backend");
                             }
                         }
                         else {
                             if (results.length === 1) {
                                 $log.debug("session '" + sessID + "' is valid in 'mysql' backend", 2, duration);
                                 if (typeof callbackOK === "function") {
-                                    callbackOK();
+                                    callbackOK(results);
                                 }
                             }
                             else {
                                 $log.warn("session '" + sessID + "' doesn't exist in 'mysql' backend", duration);
-                                if (typeof callbackNOK === "function") {
-                                    callbackNOK();
+                                if ($sess.config.backend.auto_create === true) {
+                                    this.createcallbackNOK(211, "could not find a valid session for " + sessID);
                                 }
                                 else {
-                                    require("./ws").nokResponse(res, "could not find a valid session for " + sessID).httpCode(500).send();
+                                    if (typeof callbackNOK === "function") {
+                                        callbackNOK(211, "could not find a valid session for " + sessID);
+                                    }
                                 }
                             }
                         }
