@@ -129,6 +129,38 @@ mysql backend
 }
 ```
 
+### backend using 'couchbase'
+
+couchbase backend 
+
+#### **Config parameters**
+
+-   `type` **string** Must be 'couchbase' for this backend layer
+-   `resource` **string** ID of the couchbase resource [see resource for configuration](../resources/README.md).
+-   `key_ns` **string** the key namespace for this kind of document. used as a key prefix
+-   `fields` **object** an object with special field list
+  -   `token` **string** name of the field containing the session token
+  -   `ip` **string** name of the field containing the session IP
+  -   `start` **string** name of the field containing the session start time
+  -   `stop` **string** name of the field containing the session end time (defined with duration and used for expiration control)
+
+### **Sample sxapi.json**
+
+```json
+"session": {
+    "backend": {
+        "type": "couchbase",
+        "resource": "couchbase-sample",
+        "key_ns": "sess::",
+        "fields": {
+            "token": "token",
+            "ip": "ipAdress",
+            "start": "startDate",
+            "stop": "stopDate"
+        }
+    }
+}
+```
 
 
 

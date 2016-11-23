@@ -142,8 +142,8 @@ var $sess = {
      * @returns {object} the current object ($ws)
      */
     required: function (req, res, callbackOK, callbackNOK) {
-        if (req === undefined) throw "session.backends.mysql.getSession require first param to be a request";
-        if (res === undefined) throw "session.backends.mysql.getSession require second param to be a response";
+        if (req === undefined) throw "session.required require first param to be a request";
+        if (res === undefined) throw "session.required require second param to be a response";
         var cbOK = function (result) {
             var message = 'found session';
             $log.info(message);
@@ -165,6 +165,9 @@ var $sess = {
                     case "mysql" :
                         $sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                         break;
+                    case "couchbase" :
+                        $sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                        break;
                     default :
                         fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 20);
                         break;
@@ -176,6 +179,9 @@ var $sess = {
                     switch ($sess.config.backend.type) {
                         case "mysql" :
                             $sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                            break;
+                        case "couchbase" :
+                            $sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                             break;
                         default :
                             fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 30);
@@ -272,7 +278,7 @@ var $sess = {
                 if (typeof callbackOK !== "function") throw "session.transports.bearer.setSID require a callbackOK";
                 if (typeof callbackNOK !== "function") throw "session.transports.bearer.setSID require a callbackNOK";
                 $sess.transports.sessID = sid;
-                res.set('Authorization', 'Bearer '+sid);
+                res.set('Authorization', 'Bearer ' + sid);
                 $log.debug("setting session bearer token '" + $sess.transports.sessID + "'", 3);
                 callbackOK(session);
                 return this;
@@ -433,7 +439,7 @@ var $sess = {
                             }
                             else {
                                 $log.warn("session '" + sessID + "' doesn't exist in 'mysql' backend", duration);
-                                callbackNOK("could not find a valid session for " + sessID, 220);
+                                callbackNOK("could not find an existing session for " + sessID, 220);
                             }
                         }
                     };
@@ -472,6 +478,126 @@ var $sess = {
                         else {
                             $log.debug("session '" + sessId + "' is created in 'mysql' backend", 2, duration);
                             callbackOK(sessId, session);
+                        }
+                    };
+                });
+                return this;
+            }
+        },
+        couchbase: {
+            init: function () {
+                $log.debug("Init 'couchbase' session backend", 3);
+                if (!$sess.config.backend.resource) {
+                    throw new Error("no 'resource' key found in config 'session.backend.couchbase'");
+                }
+                else if (!require('./resource').exist($sess.config.backend.resource)) {
+                    throw new Error("resource '" + $sess.config.backend.resource + "' defined in config 'session.backend.couchbase' doesn't exist");
+                }
+                return this;
+            },
+            start: function (callback) {
+                $log.debug("Start 'couchbase' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            stop: function (callback) {
+                $log.debug("Stop 'couchbase' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            getSession: function (sessID, callbackOK, callbackNOK) {
+                if (sessID === undefined) throw "session.backends.couchbase.getSession require a sessID";
+                if (typeof callbackOK !== "function") throw "session.backends.couchbase.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.couchbase.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var docID = sessID;
+                if ($sess.config.backend.key_ns) {
+                    docID = $sess.config.backend.key_ns + sessID;
+                }
+                rs.get(docID, function (timerId) {
+                    return function (error, results) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            if (error.code === 13) {
+                                $log.warn("session '" + sessID + "' doesn't exist in 'couchbase' backend", duration);
+                                callbackNOK("could not find an existing session for " + sessID, 220);
+                            }
+                            else {
+                                $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
+                                callbackNOK("error using 'couchbase' session backend", 210);
+                            }
+                        }
+                        else {
+                            if (results.value) {
+                                var session = results.value;
+                                if ($sess.config.backend.fields && $sess.config.backend.fields.stop) {
+                                    var dateStop = session[$sess.config.backend.fields.stop];
+                                    var moment = require('moment');
+                                    if (moment(dateStop, 'YYYY-MM-DD HH:mm:ss').valueOf() - Date.now() > 0) {
+                                        $log.debug("session '" + sessID + "' exist and is active in 'couchbase' backend", 2, duration);
+                                        callbackOK(session);
+                                    }
+                                    else {
+                                        $log.warn("session '" + sessID + "' exist but is obsolete", duration);
+                                        callbackNOK("session '" + sessID + "' exist but is obsolete", 230);
+                                    }
+                                }
+                                else {
+                                    $log.debug("session '" + sessID + "' exist in 'couchbase' backend", 2, duration);
+                                    callbackOK(session);
+                                }
+                            }
+                            else {
+                                $log.warn("session '" + sessID + "' doesn't exist in 'couchbase' backend", duration);
+                                callbackNOK("could not find a valid session for " + sessID, 220);
+                            }
+                        }
+                    };
+                });
+                return this;
+            },
+            createSession: function (req, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.backends.couchbase.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.couchbase.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var sessID = require('uuid').v4();
+                var docID = sessID;
+                if ($sess.config.backend.key_ns) {
+                    docID = $sess.config.backend.key_ns + sessID;
+                }
+                var session = {};
+                if ($sess.config.backend.fields) {
+                    if ($sess.config.backend.fields.ip) {
+                        session[$sess.config.backend.fields.ip] = req.headers['x-forwarded-for'] ||
+                                req.connection.remoteAddress ||
+                                req.socket.remoteAddress ||
+                                req.connection.socket.remoteAddress;
+                    }
+                    if ($sess.config.backend.fields.token) {
+                        session[$sess.config.backend.fields.token] = sessID;
+                    }
+                    var moment = require('moment');
+                    if ($sess.config.backend.fields.start) {
+                        session[$sess.config.backend.fields.start] = moment().format('YYYY-MM-DD HH:mm:ss');
+                    }
+                    if ($sess.config.backend.fields.stop) {
+                        session[$sess.config.backend.fields.stop] = moment(Date.now() + ($sess.config.duration * 1000)).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }
+                rs.insert(docID, session, function (timerId) {
+                    return function (error) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            $log.warn("could not create session '" + sessID + "' is not valid because " + error.message, duration);
+                            callbackNOK("error using 'couchbase' session backend", 310);
+                        }
+                        else {
+                            $log.debug("session '" + sessID + "' is created in 'couchbase' backend", 2, duration);
+                            callbackOK(sessID, session);
                         }
                     };
                 });
