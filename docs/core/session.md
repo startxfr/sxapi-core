@@ -6,8 +6,19 @@ This core module allow you to track user and calls using a session mechanism. Yo
 
 In your sxapi.json config file, you can add a 'session' property coresponding to an object with at least 2 sub-properties: 'transport' and 'backend'. 
 
+#### **Config parameters**
+
+-   `duration` **int** time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport layer.
+-   `auto_create` **boolean** If transport layer could not find a session ID, create a new session transparently. Default is false
+-   `transport` **object** An object describing the transport layer used to get and set session ID. See [transport section](#transport-layer)
+-   `backend` **object** An object describing the backend layer used to store and retrive session context. See [backend section](#backend-layer)
+
+### **Sample sxapi.json**
+
 ```json
 "session": {
+    "duration": 3600,
+    "auto_create": false,
     "transport": {
         ...
     },
@@ -41,6 +52,27 @@ Token transport allow you to get the session ID by reading the session ID from a
 }
 ```
 
+### transport using 'cookie'
+
+Cookie transport allow you to get the session ID by reading the session ID from an http cookie. You can call you api's endpoint using a browser cookie and this session transport layer will be able to get the session ID and pass it to the configured backend to find the coresponding session.
+
+#### **Config parameters**
+
+-   `cookie_name` **string** name of the cookie to find or define. Default is 'sxapi-sess'
+-   `cookie_options` **object** option used for creation a cookie. [See cookies documentation](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
+
+### **Sample sxapi.json**
+
+```json
+"session": {
+    "transport": {
+        "type": "cookie",
+        "cookie_name": "sxapi-sess",
+        "cookie_options" : {...}
+    }
+}
+```
+
 
 ## Backend layer
 
@@ -59,7 +91,8 @@ mysql backend
 -   `id_field` **string** name of the field containing the table ID
 -   `fields` **object** an object with special field list
   -   `ip` **string** name of the field containing the session IP
-  -   `date` **string** name of the field containing the session date
+  -   `start` **string** name of the field containing the session start time
+  -   `stop` **string** name of the field containing the session end time (defined with duration and used for expiration control)
 
 ### **Sample sxapi.json**
 
@@ -72,8 +105,9 @@ mysql backend
         "sid_field": "token_sess",
         "id_field": "id_sess",
         "fields": {
-            "ip" : "ip_sess",
-            "date" : "date_sess"
+            "ip": "ip_sess",
+            "start": "start_sess",
+            "stop": "stop_sess"
         }
     }
 }
