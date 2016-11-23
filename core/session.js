@@ -41,6 +41,9 @@ var $sess = {
                 case "token" :
                     this.transports.token.init();
                     break;
+                case "bearer" :
+                    this.transports.bearer.init();
+                    break;
                 default :
                     throw new Error("session transport of type '" + this.config.transport.type + "' doesn't exist");
                     break;
@@ -72,6 +75,9 @@ var $sess = {
                     break;
                 case "token" :
                     this.transports.token.start();
+                    break;
+                case "bearer" :
+                    this.transports.bearer.start();
                     break;
             }
             switch (this.config.backend.type) {
@@ -105,6 +111,9 @@ var $sess = {
                     break;
                 case "token" :
                     this.transports.token.stop();
+                    break;
+                case "bearer" :
+                    this.transports.bearer.stop();
                     break;
             }
             switch (this.config.backend.type) {
@@ -194,6 +203,9 @@ var $sess = {
                     case "cookie" :
                         $sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                         break;
+                    case "bearer" :
+                        $sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                        break;
                     default :
                         fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 30);
                         break;
@@ -217,6 +229,9 @@ var $sess = {
                 case "token" :
                     this.transports.token.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
                     break;
+                case "bearer" :
+                    this.transports.bearer.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
+                    break;
                 default :
                     fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 10);
                     break;
@@ -224,6 +239,45 @@ var $sess = {
         }
     },
     transports: {
+        bearer: {
+            init: function () {
+                $log.debug("Init 'bearer' session transport", 3);
+                return this;
+            },
+            start: function () {
+                $log.debug("Start 'bearer' session transport", 3);
+                return this;
+            },
+            stop: function () {
+                $log.debug("Stop 'bearer' session transport", 3);
+                return this;
+            },
+            getSID: function (req, res, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.transports.bearer.getSID require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.transports.bearer.getSID require a callbackNOK";
+                var result = req.get('Authorization') || '';
+                $sess.transports.sessID = result.split(" ")[1];
+                if ($sess.transports.sessID !== undefined) {
+                    $log.debug("session bearer token is '" + $sess.transports.sessID + "'", 3);
+                    callbackOK($sess.transports.sessID);
+                }
+                else {
+                    $log.warn("could not find a session bearer token in request " + req.method + ' ' + req.url);
+                    callbackNOK("could not find a session bearer token in your request", 110);
+
+                }
+                return this;
+            },
+            setSID: function (sid, session, req, res, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.transports.bearer.setSID require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.transports.bearer.setSID require a callbackNOK";
+                $sess.transports.sessID = sid;
+                res.set('Authorization', 'Bearer '+sid);
+                $log.debug("setting session bearer token '" + $sess.transports.sessID + "'", 3);
+                callbackOK(session);
+                return this;
+            }
+        },
         cookie: {
             init: function () {
                 $log.debug("Init 'cookie' session transport", 3);
@@ -243,8 +297,7 @@ var $sess = {
             getSID: function (req, res, callbackOK, callbackNOK) {
                 if (typeof callbackOK !== "function") throw "session.transports.cookie.getSID require a callbackOK";
                 if (typeof callbackNOK !== "function") throw "session.transports.cookie.getSID require a callbackNOK";
-                var Cookies = require("cookies");
-                var cookies = new Cookies(req, res);
+                var cookies = new require("cookies")(req, res);
                 $sess.transports.sessID = cookies.get($sess.config.transport.cookie_name);
                 if ($sess.transports.sessID !== undefined) {
                     $log.debug("session cookie is '" + $sess.transports.sessID + "'", 3);
@@ -261,14 +314,12 @@ var $sess = {
                 if (typeof callbackOK !== "function") throw "session.transports.cookie.setSID require a callbackOK";
                 if (typeof callbackNOK !== "function") throw "session.transports.cookie.setSID require a callbackNOK";
                 $sess.transports.sessID = sid;
-                var Cookies = require("cookies");
-                var cookies = new Cookies(req, res);
+                var cookies = new require("cookies")(req, res);
                 var cookieOpt = {maxAge: $sess.config.duration * 1000};
                 if ($sess.config.transport.cookie_options) {
                     require('merge').recursive(cookieOpt, $sess.config.transport.cookie_options, cookieOpt);
                 }
                 cookies.set($sess.config.transport.cookie_name, sid, cookieOpt);
-                $sess.transports.sessID = sid;
                 $log.debug("setting session cookie '" + $sess.transports.sessID + "'", 3);
                 callbackOK(session);
                 return this;

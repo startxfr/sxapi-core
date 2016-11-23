@@ -73,6 +73,22 @@ Cookie transport allow you to get the session ID by reading the session ID from 
 }
 ```
 
+### transport using 'bearer'
+
+Bearer transport allow you to get the session ID by reading it from a `Authentification: Bearer <token>` http header. session token is also transmitted using this header
+
+#### **Config parameters**
+
+### **Sample sxapi.json**
+
+```json
+"session": {
+    "transport": {
+        "type": "bearer"
+    }
+}
+```
+
 
 ## Backend layer
 
