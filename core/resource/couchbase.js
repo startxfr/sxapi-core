@@ -194,7 +194,7 @@ module.exports = function (id, config) {
             return function (coucherr) {
                 var duration = $timer.timeStop('couchbase_delete_' + key);
                 if (coucherr) {
-                    $log.warn("resource '" + $cbdb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration);
+                    $log.warn("resource '" + $cbdb.id + "' : error deleting document '" + key + "' because " + coucherr.message, duration);
                 }
                 else {
                     $log.debug("resource '" + $cbdb.id + "' : document '" + key + "' deleted", 3, duration);

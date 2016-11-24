@@ -132,9 +132,7 @@ var $app = {
             $log.error("config file : " + cfg_file + " IS MISSING");
             process.exit(5);
         }
-        $app.config.appsign =
-                $app.config.log.appsign =
-                $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
+        $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
         $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
         var logConf = JSON.parse(JSON.stringify($app.config.log));
         delete logConf['couchbase'];
