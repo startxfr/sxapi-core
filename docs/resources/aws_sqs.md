@@ -11,11 +11,13 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 -   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
 -   `SESSION_TOKEN` **string** token to use for authentication
 -   `region` **string** AWS datacenter region
--   `config` **object** options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.sqs.com/sdk-api/sqs-node-client-2.1.0/Bucket.html#insert) for more informations
-    -   `QueueUrl` **int** Give the url of the endpoint to use for connecting to the queue
-    -   `MaxNumberOfMessages` **int** give the number of message you wan't to receive from this request
-    -   `VisibilityTimeout` **int** Set the time during received message won't be visible for other application
-    -   `WaitTimeSeconds` **int** Set a pause time before starting to retreive a list of message
+-   `QueueUrl` **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by xx_options or by an endpoint config
+-   `read_options` **object** options used when reading a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#receiveMessage-property) for more options
+    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
+-   `delete_options` **object** options used when deleting a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property) for more options
+    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
+-   `send_options` **object** options used when sending a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
+    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
 
 ### **Sample sxapi.json**
 
@@ -24,12 +26,26 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
     ...
     "sqs-sample": {
         "_class": "aws_sqs",
-        "config": {
-            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXXX/admin",
-            "MaxNumberOfMessages": 10,
-            "VisibilityTimeout": 10,
-            "WaitTimeSeconds": 0
-        },
+            "read_options": {
+                "MaxNumberOfMessages": 10,
+                "VisibilityTimeout": 10,
+                "WaitTimeSeconds": 0
+            },
+            "delete_options": {
+                "MaxNumberOfMessages": 10,
+                "VisibilityTimeout": 10,
+                "WaitTimeSeconds": 0
+            },
+            "send_options": {
+                "DelaySeconds": 10,
+                "MessageAttributes": {
+                    "from": {
+                        "DataType": "String",
+                        "StringValue": "startx"
+                    }
+                }
+            },
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXX/admin",
         "ACCESS_ID": ">>>>>>YOUR ID<<<<<<",
         "ACCESS_KEY": ">>>>>>YOUR KEY<<<<<<",
         "SESSION_TOKEN": "",
@@ -47,6 +63,7 @@ read a bunch of message from the queue. This method use queue configuration as d
 
 #### **Parameters**
 
+-   `options` **object** options used when reading a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#receiveMessage-property) for more options
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
     -   `response` **object, array** Content responded for the AWS SQS cluster
@@ -67,6 +84,7 @@ sendMessage a message to the queue. Use it to broadcast a message throught all y
 
 -   `message` **object** The message to send to the queue
 -   `message.id` **string** OPTIONAL define inside the message the ID of this message
+-   `options` **object** options used when sendding a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
 -   `callback` **function** OPTIONAL Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
     -   `response` **object, array** Content responded for the AWS SQS cluster
@@ -89,6 +107,7 @@ Remove a message from the queue according to the given messageId. This method us
 -   `message` **object** The message to remove
 -   `message.MessageId` **string** The messageID of this message. Used to remove from the queue
 -   `message.ReceiptHandle` **string** OPTIONAL Token used to remove from the queue
+-   `options` **object** options used when deleting a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property) for more options
 -   `callback` **function** Callback function used to handle the answer.  If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
     -   `response` **object, array** Content responded for the AWS SQS cluster
@@ -116,6 +135,7 @@ Add a message to the SQS queue
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_sqs resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.addMessage***
+-   `...` **string** endpoint config object will be to configure the AWS SQS sending params. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
 
 #### **Sample code**
 
@@ -125,5 +145,6 @@ Add a message to the SQS queue
     "method": "POST",
     "resource": "sqs-sample",
     "resource_handler": "endpoints.addMessage"
+    "xxx": "XXX"
 }
 ```

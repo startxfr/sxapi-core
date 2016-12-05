@@ -23,8 +23,14 @@ module.exports = function (id, config) {
             if (!$sqs.config.config) {
                 throw new Error("no 'config' key found in resource '" + $sqs.id + "' config");
             }
-            if (!$sqs.config.config.QueueUrl) {
-                throw new Error("no 'QueueUrl' key found in resource '" + $sqs.id + "' config");
+            if (!$sqs.config.ACCESS_ID) {
+                throw new Error("no 'ACCESS_ID' key found in resource '" + $sqs.id + "' config");
+            }
+            if (!$sqs.config.ACCESS_KEY) {
+                throw new Error("no 'ACCESS_KEY' key found in resource '" + $sqs.id + "' config");
+            }
+            if (!$sqs.config.SESSION_TOKEN) {
+                throw new Error("no 'SESSION_TOKEN' key found in resource '" + $sqs.id + "' config");
             }
             $sqs.AWS = require('aws-sdk');
             $log.debug("resource '" + $sqs.id + "' : initialized ", 1, $timer.timeStop(timerId));
@@ -69,24 +75,35 @@ module.exports = function (id, config) {
         },
         __openHandler: function (callback, timerId) {
             var duration = $timer.timeStop(timerId);
-            $log.debug("resource '" + $sqs.id + "' : connected to '" + $sqs.config.config.QueueUrl + "'", 4, duration);
+            $log.debug("resource '" + $sqs.id + "' : connected with '" + $sqs.config.ACCESS_ID + "'", 4, duration);
             if (typeof callback === "function") {
                 callback(null, this);
             }
         },
         /**
          * Read the SQS queue  defined in the config.queue section of sxapi.json
+         * @param {object} options object with options to pass to the AWS receiveMessage method
+         * @param {function} callback to call when AWS answer
          * @returns {$queue.sqs}
          */
-        read: function (callback) {
+        read: function (options, callback) {
             var timerId = 'resource_aws.sqs_read_' + $sqs.id;
             $timer.start(timerId);
-            $log.debug("Read SQS queue " + $sqs.config.config.QueueUrl, 4, null, true);
+            var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+            if ($sqs.config.read_options && $sqs.config.read_options.QueueUrl) {
+                QueueUrl = $sqs.config.read_options.QueueUrl;
+            }
+            var config = $sqs.config.read_options || {};
+            config.QueueUrl = QueueUrl;
+            if (typeof options === 'object') {
+                require('merge').recursive(config, options);
+                QueueUrl = config.QueueUrl;
+            }
+            $log.debug("Read SQS queue " + QueueUrl, 4, null, true);
             var cb = (typeof callback === "function") ? callback : $sqs.__readDefaultCallback;
-            $sqs.sqsqueue.receiveMessage($sqs.config.config,
-                    function (error, response) {
-                        cb(error, response, cb, timerId);
-                    });
+            $sqs.sqsqueue.receiveMessage(config, function (error, response) {
+                cb(error, response, cb, timerId);
+            });
             return this;
         },
         __readDefaultCallback: function (error, response, cb, timerId) {
@@ -118,13 +135,24 @@ module.exports = function (id, config) {
         },
         /**
          * Remove a message from the SQS queue
-         * @param {object} message
-         * @param {function} callback
+         * @param {object} message the ReceiptHandle of the message you want to remove 
+         * @param {object} options object with options to pass to the AWS deleteMessage method
+         * @param {function} callback to call when AWS answer
          * @returns {$queue.sqs}
          */
-        removeMessage: function (message, callback) {
-            var timerId = 'sqs_delete_' + $sqs.id + '::' + message.MessageId;
+        removeMessage: function (message, options, callback) {
+            var timerId = 'resource_aws.sqs_removeMessage_' + $sqs.id + '::' + message.MessageId;
             $timer.start(timerId);
+            var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+            if ($sqs.config.delete_options && $sqs.config.delete_options.QueueUrl) {
+                QueueUrl = $sqs.config.delete_options.QueueUrl;
+            }
+            var config = $sqs.config.delete_options || {};
+            config.QueueUrl = QueueUrl;
+            if (typeof options === 'object') {
+                require('merge').recursive(config, options);
+                QueueUrl = config.QueueUrl;
+            }
             var defaultCallback = function (error, response) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
@@ -141,21 +169,27 @@ module.exports = function (id, config) {
             return this;
         },
         /**
-         * Remove a message from the SQS queue
-         * @param {object} message
-         * @param {function} callback
+         * Read the SQS queue  defined in the config.queue section of sxapi.json
+         * @param {string} message body of the message whe want to send
+         * @param {object} options object with options to pass to the AWS sendMessage method
+         * @param {function} callback to call when AWS answer
          * @returns {$queue.sqs}
          */
-        sendMessage: function (message, callback) {
+        sendMessage: function (message, options, callback) {
             var messId = message.id;
-            var timerId = 'send_event_' + $sqs.id + '::' + messId;
+            var timerId = 'resource_aws.sqs_sendMessage_' + $sqs.id + '::' + messId;
             $timer.start(timerId);
-            var $this = this;
-            var params = {
-                MessageBody: JSON.stringify(message),
-                QueueUrl: $sqs.config.config.QueueUrl,
-                DelaySeconds: 0
-            };
+            var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+            if ($sqs.config.send_options && $sqs.config.send_options.QueueUrl) {
+                QueueUrl = $sqs.config.send_options.QueueUrl;
+            }
+            var config = $sqs.config.send_options || {};
+            config.QueueUrl = QueueUrl;
+            if (typeof options === 'object') {
+                require('merge').recursive(config, options);
+                QueueUrl = config.QueueUrl;
+            }
+            config.MessageBody = JSON.stringify(message);
             var defaultCallback = function (error, response) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
@@ -165,7 +199,7 @@ module.exports = function (id, config) {
                     $log.debug("sended AWS SQS message " + response.MessageId, 4, duration, true);
                 }
             };
-            $sqs.sqsqueue.sendMessage(params, callback ? callback : defaultCallback);
+            $sqs.sqsqueue.sendMessage(config, callback ? callback : defaultCallback);
             return this;
         },
         endpoints: {
@@ -195,7 +229,7 @@ module.exports = function (id, config) {
                                 time: Date.now(),
                                 server: $log.config.appsign
                             };
-                            rs.sendMessage(message, function (err, reponse) {
+                            rs.sendMessage(message, config, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error saving log  because " + err.message);
