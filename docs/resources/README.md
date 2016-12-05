@@ -4,11 +4,11 @@ Resources are one core componement of SXAPI. They expose method you can use in y
 
 ## Availables resources
 
+- **aws_sqs** (SDK : aws-sdk v2.6 ) [read documentation](aws_sqs.md)
 - **couchbase** (SDK : couchbase v2.1.8) [read documentation](couchbase.md)
+- **http** (SDK : request v2.79.0 ) [read documentation](http.md)
 - **mysql** (SDK : mysql v2.11.1 ) [read documentation](mysql.md)
 - **redis** (SDK : node_redis v2.6.3 ) [read documentation](redis.md)
-- **http** (SDK : request v2.79.0 ) [read documentation](http.md)
-- **sqs** (SDK : aws-sdk v2.6 ) [read documentation](sqs.md)
 - **serviceinfo** [read documentation](serviceinfo.md)
 
 ## Using a resource

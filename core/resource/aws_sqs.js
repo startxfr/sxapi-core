@@ -2,8 +2,8 @@
 //'use strict';
 
 /**
- * sqs resource handler
- * @module resource/sqs
+ * aws_sqs resource handler
+ * @module resource/aws_sqs
  * @constructor
  * @param {string} id
  * @param {object} config
@@ -14,7 +14,7 @@ module.exports = function (id, config) {
         id: id,
         config: {},
         init: function (config) {
-            var timerId = 'resource_sqs_init_' + $sqs.id;
+            var timerId = 'resource_aws.sqs_init_' + $sqs.id;
             $timer.start(timerId);
             if (config) {
                 $sqs.config = config;
@@ -31,7 +31,7 @@ module.exports = function (id, config) {
             return this;
         },
         start: function (callback) {
-            var timerId = 'resource_sqs_start_' + $sqs.id;
+            var timerId = 'resource_aws.sqs_start_' + $sqs.id;
             $log.debug("Starting resource '" + $sqs.id + "'", 2);
             var cb = function () {
                 $log.debug("resource '" + $sqs.id + "' : started ", 1, $timer.timeStop(timerId));
@@ -50,7 +50,7 @@ module.exports = function (id, config) {
             return this;
         },
         open: function (callback) {
-            var timerId = 'sqs_open_' + $sqs.id;
+            var timerId = 'resource_aws.sqs_open_' + $sqs.id;
             $timer.start(timerId);
             var config = {};
             if ($sqs.config.ACCESS_ID) {
@@ -79,7 +79,7 @@ module.exports = function (id, config) {
          * @returns {$queue.sqs}
          */
         read: function (callback) {
-            var timerId = 'sqs_read_' + $sqs.id;
+            var timerId = 'resource_aws.sqs_read_' + $sqs.id;
             $timer.start(timerId);
             $log.debug("Read SQS queue " + $sqs.config.config.QueueUrl, 4, null, true);
             var cb = (typeof callback === "function") ? callback : $sqs.__readDefaultCallback;
@@ -91,7 +91,7 @@ module.exports = function (id, config) {
         },
         __readDefaultCallback: function (error, response, cb, timerId) {
             if (error) {
-                $log.warn("error from SQS queue because" + error.message, $timer.time(timerId));
+                $log.warn("error from AWS SQS queue because" + error.message, $timer.time(timerId));
                 if (error.retryable) {
                     $log.debug('retry to call this queue in ' + error.retryDelay + 'sec', 2, null, true);
                     var t = (error.retryDelay * 1000) - $sqs.config.frequency;
@@ -109,10 +109,10 @@ module.exports = function (id, config) {
             else {
                 if (response.Messages) {
                     var nb = response.Messages.length;
-                    $log.debug("received " + nb + " messages from SQS queue", 4, $timer.timeStop(timerId));
+                    $log.debug("received " + nb + " messages from AWS SQS queue", 4, $timer.timeStop(timerId));
                 }
                 else {
-                    $log.debug("received an empty response from SQS queue", 4, $timer.timeStop(timerId));
+                    $log.debug("received an empty response from AWS SQS queue", 4, $timer.timeStop(timerId));
                 }
             }
         },
@@ -131,7 +131,7 @@ module.exports = function (id, config) {
                     $log.warn('message ' + message.MessageId + ' could not be removed because ' + error.message, duration, true);
                 }
                 else {
-                    $log.debug("removed sqs message " + message.MessageId, 4, duration, true);
+                    $log.debug("removed AWS SQS message " + message.MessageId, 4, duration, true);
                 }
             };
             $sqs.sqsqueue.deleteMessage({
@@ -162,7 +162,7 @@ module.exports = function (id, config) {
                     $log.warn('message ' + message.id + ' could not be send because ' + error.message, duration, true);
                 }
                 else {
-                    $log.debug("sended sqs message " + response.MessageId, 4, duration, true);
+                    $log.debug("sended AWS SQS message " + response.MessageId, 4, duration, true);
                 }
             };
             $sqs.sqsqueue.sendMessage(params, callback ? callback : defaultCallback);
@@ -201,7 +201,7 @@ module.exports = function (id, config) {
                                     $log.warn(message_prefix + "error saving log  because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + "recorded message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
+                                    ws.okResponse(res, message_prefix + "recorded AWS SQS message " + reponse.MessageId, reponse).addTotal(reponse.length).send();
                                     $log.debug(message_prefix + "returned " + reponse.MessageId, 2);
                                 }
                             });

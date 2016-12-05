@@ -1,4 +1,4 @@
-# SXAPI Resource : sqs
+# SXAPI Resource : aws_sqs
 
 This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
@@ -6,7 +6,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 
 ### **Config parameters**
 
--   `class` **string** Must be sqs for this resource
+-   `class` **string** Must be aws_sqs for this resource
 -   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
 -   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
 -   `SESSION_TOKEN` **string** token to use for authentication
@@ -23,7 +23,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 "resources": {
     ...
     "sqs-sample": {
-        "_class": "sqs",
+        "_class": "aws_sqs",
         "config": {
             "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXXX/admin",
             "MaxNumberOfMessages": 10,
@@ -49,7 +49,7 @@ read a bunch of message from the queue. This method use queue configuration as d
 
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the sqs cluster
+    -   `response` **object, array** Content responded for the AWS SQS cluster
 
 #### **Sample code**
 
@@ -69,7 +69,7 @@ sendMessage a message to the queue. Use it to broadcast a message throught all y
 -   `message.id` **string** OPTIONAL define inside the message the ID of this message
 -   `callback` **function** OPTIONAL Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the sqs cluster
+    -   `response` **object, array** Content responded for the AWS SQS cluster
 
 #### **Sample code**
 
@@ -91,7 +91,7 @@ Remove a message from the queue according to the given messageId. This method us
 -   `message.ReceiptHandle` **string** OPTIONAL Token used to remove from the queue
 -   `callback` **function** Callback function used to handle the answer.  If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the sqs cluster
+    -   `response` **object, array** Content responded for the AWS SQS cluster
 
 #### **Sample code**
 
@@ -114,7 +114,7 @@ Add a message to the SQS queue
 
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
--   `resource` **string** define the sqs resource to use. Fill with a resource name as defined in the resource pool
+-   `resource` **string** define the aws_sqs resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.addMessage***
 
 #### **Sample code**
