@@ -1,6 +1,6 @@
 # SXAPI Resource : aws_sqs
 
-This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS SQS resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -45,7 +45,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
                     }
                 }
             },
-            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXX/admin",
+        "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXX/admin",
         "ACCESS_ID": ">>>>>>YOUR ID<<<<<<",
         "ACCESS_KEY": ">>>>>>YOUR KEY<<<<<<",
         "SESSION_TOKEN": "",
@@ -59,7 +59,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 
 ### Method read
 
-read a bunch of message from the queue. This method use queue configuration as defined in the resource ```config``` section of ([resource configuration](#resource-configuration))
+read a bunch of message from the queue. This method use queue configuration as defined in the resource ```read_options``` section of ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -75,10 +75,11 @@ var resource = require('/app/core/resource').get('resource-id');
 resource.read(function (error, response) {
     console.log(error, response);
 });
+```
 
 ### Method sendMessage
 
-sendMessage a message to the queue. Use it to broadcast a message throught all you applications. This method use queue endpoint as defined in the resource ```config.QueueUrl``` ([see resource configuration](#resource-configuration))
+sendMessage a message to the queue. Use it to broadcast a message throught all you applications.  This method use queue configuration as defined in the resource ```send_options``` section of ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -100,7 +101,7 @@ resource.sendMessage({id:'test',key:'value'}, function (error, response) {
 
 ### Method removeMessage
 
-Remove a message from the queue according to the given messageId. This method use queue endpoint as defined in the resource ```config.QueueUrl``` ([see resource configuration](#resource-configuration)). Use this method when a message is fully consumed by your services and other microservices API incharge of handling this kind of message.
+Remove a message from the queue according to the given messageId.  This method use queue configuration as defined in the resource ```delete_options``` section of ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -120,8 +121,6 @@ resource.removeMessage({MessageId:'test',ReceiptHandle:'value'}, function (error
     console.log(error, response);
 });
 ```
-
-
 
 ## Available Endpoints
 
