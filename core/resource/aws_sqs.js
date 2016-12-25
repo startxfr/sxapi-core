@@ -65,7 +65,7 @@ module.exports = function (id, config) {
             return this;
         },
         /**
-         * Open a connection the SQS queue  defined in the resource config
+         * Open a connection the SQS queue defined in the resource config
          * @param {function} callback to call when AWS answer
          * @returns {$queue.sqs}
          */
@@ -91,7 +91,7 @@ module.exports = function (id, config) {
             return this;
         },
         /**
-         * Read the SQS queue  defined in the config.queue section of sxapi.json
+         * Read the SQS queue defined in the config.queue section of sxapi.json
          * @param {object} options object with options to pass to the AWS receiveMessage method
          * @param {function} callback to call when AWS answer
          * @returns {$queue.sqs}
@@ -117,7 +117,7 @@ module.exports = function (id, config) {
             return this;
         },
         /**
-         * Default callback used for handling  from the AWS SQS cluster
+         * Default callback used for handling from the AWS SQS cluster
          * @param {object} error object returned by AWS SQS
          * @param {object} response object returned by AWS SQS
          * @param {function} callback to call when AWS answer
@@ -182,7 +182,7 @@ module.exports = function (id, config) {
             return this;
         },
         /**
-         * Read the SQS queue  defined in the config.queue section of sxapi.json
+         * Read the SQS queue defined in the config.queue section of sxapi.json
          * @param {string} message body of the message whe want to send
          * @param {object} options object with options to pass to the AWS sendMessage method
          * @param {function} callback to call when AWS answer
@@ -363,7 +363,7 @@ module.exports = function (id, config) {
                             rs.sendMessage(message, config.config || {}, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error saving message because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error saving message  because " + err.message);
+                                    $log.warn(message_prefix + "error saving message because " + err.message);
                                 }
                                 else {
                                     ws.okResponse(res, message_prefix + "recorded AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
@@ -416,7 +416,7 @@ module.exports = function (id, config) {
                             rs.removeMessage(config.config || {}, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error deleting message because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error saving message  because " + err.message);
+                                    $log.warn(message_prefix + "error saving message because " + err.message);
                                 }
                                 else {
                                     ws.okResponse(res, message_prefix + "deleted AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
@@ -449,7 +449,6 @@ module.exports = function (id, config) {
                     var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
-                    var data = req.body;
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -463,7 +462,7 @@ module.exports = function (id, config) {
                                     $log.warn(message_prefix + "error getting queue list because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + "founded " + reponse.QueueUrls.length + " queue(s) available ", reponse.QueueUrls).addTotal(reponse.length).send();
+                                    ws.okResponse(res, message_prefix + "founded " + reponse.QueueUrls.length + " queue(s) available ", reponse.QueueUrls).addTotal(reponse.QueueUrls.length).send();
                                     $log.debug(message_prefix + "returned " + reponse.QueueUrls.length + " queue(s) available ", 2);
                                 }
                             });
@@ -506,7 +505,7 @@ module.exports = function (id, config) {
                             rs.createQueue(params, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error creating AWS SQS queue because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error creating queue  because " + err.message);
+                                    $log.warn(message_prefix + "error creating queue because " + err.message);
                                 }
                                 else {
                                     ws.okResponse(res, message_prefix + "new AWS SQS queue " + params.QueueName, reponse.QueueUrl).addTotal(reponse.length).send();
@@ -553,7 +552,7 @@ module.exports = function (id, config) {
                             rs.deleteQueue(params, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error deleting AWS SQS queue because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error creating queue  because " + err.message);
+                                    $log.warn(message_prefix + "error creating queue because " + err.message);
                                 }
                                 else {
                                     ws.okResponse(res, message_prefix + "deleted AWS SQS queue " + params.queueId, true).addTotal(reponse.length).send();
