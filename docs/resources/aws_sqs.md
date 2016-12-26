@@ -147,20 +147,3 @@ Add a message to the SQS queue
     "xxx": "XXX"
 }
 ```
-
-
-
-
-Faire la création d’un kit de présentation STARTX pour les salons. 
-    1 kakemono STARTX neutre, avec logo, fond selon orientation de la charte graphique STARTX, nuages de mots clefs (techno, partenaires, mot-clefs), logo partenaires et CLEM STARTX 
-    1 kakemono Partenaires avec logo STARTX, fond selon orientation de la charte graphique STARTX, logo partenaires + champs d'action et CLEM STARTX 
-    1 desk portable avec logo STARTX et possibilité de personnaliser le desk
-    Prévoir un système portable de spot de lumière pour éclairer les kakemono par le haut (clipsable)
-    Prévoir un système de prise electrique + ralonge. (pour bancher portable lors des salons)
-    Prévoir élément de deco pour le stand
-Préparer le planning des salons 2017 :
-    Créer un agenda des évènements marketing + rajouter les boites streak pour les evenements partenaires (forum redhat, couchbase live, puppetcamp). Se renseigner auprès des services marketing des partenaires pour être tenu informé des evènements a venir
-    Préparer un document de présentation des principaux salons professionnels tournant autour des sujets suivants : big data, cloud privé, PAAS, container, microservices, digitalisation, agile, open source. Il en faudrait 6 a 8 que tu nous décrit dans ton document (date, lieu, nb visiteur, public ciblé, ancienneté, description, cout stand, liens). Une fois que tu nous aura fait cette synthèse, on décidera ensemble des salon sur lequel on se concentre. L'ideal serai d'avoir cette note mi-janvier, pour décider de notre présence sur ces salon au plus tot et valider le budget alloué. 
-    Organiser et coordonner la communication vers nos clients autour de ces événements (newsletter, mise a jour du site web, stimulation des reseaux sociaux, création de bannières de signature mail pour les commerciaux
-    Se mettre en relation avec les partenaires pour faire financer notre participation à ces évènements. Bien definir avec eux les moyens de mesures du retour de ces évènements.
-
