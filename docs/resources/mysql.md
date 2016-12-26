@@ -158,7 +158,7 @@ Return a document coresponding to the given entryId
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
 -   `table` **string** table name to use for geting this entry
--   `id_fields` **string** table field name used a key
+-   `id_field` **string** table field name used a key
 
 #### **Sample code**
 
@@ -169,7 +169,7 @@ Return a document coresponding to the given entryId
     "resource": "mysql-sample",
     "resource_handler": "endpoints.get",
     "table": "log",
-    "id_fields": "id"
+    "id_field": "id"
 }
 ```
 
@@ -184,7 +184,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
 -   `table` **string** table name to use for geting this entry
--   `id_fields` **string** table field name used a key
+-   `id_field` **string** table field name used a key
 
 #### **Sample code**
 
@@ -195,7 +195,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
     "resource": "mysql-sample",
     "resource_handler": "endpoints.create",
     "table": "log",
-    "id_fields": "id"
+    "id_field": "id"
 }
 ```
 
@@ -210,7 +210,7 @@ Update the document coresponding to the given entryId with the new document
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
 -   `table` **string** table name to use for geting this entry
--   `id_fields` **string** table field name used a key
+-   `id_field` **string** table field name used a key
 
 #### **Sample code**
 
@@ -221,7 +221,7 @@ Update the document coresponding to the given entryId with the new document
     "resource": "mysql-sample",
     "resource_handler": "endpoints.update",
     "table": "log",
-    "id_fields": "id"
+    "id_field": "id"
 }
 ```
 
@@ -236,7 +236,7 @@ Remove the document coresponding to the given entryId with the new document
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
 -   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
 -   `table` **string** table name to use for geting this entry
--   `id_fields` **string** table field name used a key
+-   `id_field` **string** table field name used a key
 
 #### **Sample code**
 
@@ -247,6 +247,6 @@ Remove the document coresponding to the given entryId with the new document
     "resource": "mysql-sample",
     "resource_handler": "endpoints.delete",
     "table": "log",
-    "id_fields": "id"
+    "id_field": "id"
 }
 ```

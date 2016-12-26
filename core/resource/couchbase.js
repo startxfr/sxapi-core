@@ -42,7 +42,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_cb_start_' + $cbdb.id;
-            $log.debug("resource '" + $cbdb.id + "' : starting ", 2);
+            $log.debug("Starting resource '" + $cbdb.id + "'", 2);
             var cb = function () {
                 $log.debug("resource '" + $cbdb.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
@@ -53,7 +53,7 @@ module.exports = function (id, config) {
             return $cbdb;
         },
         stop: function (callback) {
-            $log.debug("resource '" + $cbdb.id + "' : stop ", 1);
+            $log.debug("Stopping resource '" + $cbdb.id + "'", 2);
             if (typeof callback === "function") {
                 callback(null, $cbdb);
             }
@@ -194,7 +194,7 @@ module.exports = function (id, config) {
             return function (coucherr) {
                 var duration = $timer.timeStop('couchbase_delete_' + key);
                 if (coucherr) {
-                    $log.warn("resource '" + $cbdb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration);
+                    $log.warn("resource '" + $cbdb.id + "' : error deleting document '" + key + "' because " + coucherr.message, duration);
                 }
                 else {
                     $log.debug("resource '" + $cbdb.id + "' : document '" + key + "' deleted", 3, duration);
@@ -207,9 +207,9 @@ module.exports = function (id, config) {
                     var path = req.url.split("?")[0];
                     var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":test() ";
-                    $log.debug(message_prefix + "start", 1);
+                    $log.debug(message_prefix + "start", 4);
                     ws.okResponse(res, "test message ").send();
-                    $log.info(message_prefix + " return test response");
+                    $log.debug(message_prefix + " return test response", 2);
                 };
             },
             list: function (config) {
@@ -236,7 +236,7 @@ module.exports = function (id, config) {
                                     }
                                     else {
                                         ws.okResponse(res, "returned " + reponse.length + ' items', reponse).addTotal(reponse.length).send();
-                                        $log.info(message_prefix + " return list of " + reponse.length + " items", duration);
+                                        $log.debug(message_prefix + " return list of " + reponse.length + " items", 2, duration);
                                     }
                                 };
                             };
@@ -275,7 +275,7 @@ module.exports = function (id, config) {
                                     }
                                     else {
                                         ws.okResponse(res, "return document " + docId, reponse).send();
-                                        $log.info(message_prefix + " return document " + docId, duration);
+                                        $log.debug(message_prefix + " return document " + docId, 2, duration);
                                     }
                                 };
                             };
@@ -314,7 +314,7 @@ module.exports = function (id, config) {
                                     }
                                     else {
                                         ws.okResponse(res, "document " + docId + " recorded", reponse).send();
-                                        $log.info(message_prefix + " create document " + docId, duration);
+                                        $log.debug(message_prefix + " create document " + docId, 2, duration);
                                     }
                                 };
                             };
@@ -353,7 +353,7 @@ module.exports = function (id, config) {
                                     }
                                     else {
                                         ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                        $log.info(message_prefix + " update document " + docId, duration);
+                                        $log.debug(message_prefix + " update document " + docId, 2, duration);
                                     }
                                 };
                             };
@@ -392,7 +392,7 @@ module.exports = function (id, config) {
                                     }
                                     else {
                                         ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                        $log.info(message_prefix + " delete document " + docId, duration);
+                                        $log.info(message_prefix + " delete document " + docId, 2, duration);
                                     }
                                 };
                             };

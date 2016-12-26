@@ -28,7 +28,13 @@
     "aws-sdk": "~2.6",
     "couchbase": "~2.1.8",
     "uuid": "~2.0.3",
-    "mysql": "~2.11.1"
+    "mysql": "~2.11.1",
+    "moment": "~2.17.0",
+    "cookies": "~0.6.2",
+    "redis": "~2.6.3",
+    "request": "~2.79.0",
+    "googleapis": "~15.0.0",
+    "google-auth-library": "~0.9.10"
   },
   "bugs": {
     "url": "https://github.com/startxfr/sxapi-core/issues"
