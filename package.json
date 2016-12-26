@@ -4,7 +4,7 @@
     "startx",
     "microservice",
     "modejs",
-    "v0.0.7"
+    "v0.0.8"
   ],
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
   "license": "Apache-2.0",
   "author": "startxfr",
   "name": "sxapi-core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": false,
   "description": "sxapi-core is an simple and extensible framework for building microservices using javascript"
 }

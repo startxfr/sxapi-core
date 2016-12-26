@@ -1,6 +1,6 @@
-v0.0.7:
+v0.0.8:
   build: .
-  container_name: "sxapi-core-v0.0.7"
+  container_name: "sxapi-core-v0.0.8"
   privileged: true
   ports:
     - "8080:8080"
