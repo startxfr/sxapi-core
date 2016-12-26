@@ -46,6 +46,15 @@ var $app = {
         if ($app.config.resources) {
             require('./resource').init($app.config.resources);
         }
+        if ($app.config.session) {
+            require("./session").init($app.config.session);
+            $app.onStart(function () {
+                require("./session").start();
+            });
+            $app.onStop(function () {
+                require("./session").stop();
+            });
+        }
         if ($app.config.server) {
             require("./ws").init($app.config.server);
             $app.onStart(function () {
@@ -123,9 +132,7 @@ var $app = {
             $log.error("config file : " + cfg_file + " IS MISSING");
             process.exit(5);
         }
-        $app.config.appsign =
-                $app.config.log.appsign =
-                $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
+        $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
         $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
         var logConf = JSON.parse(JSON.stringify($app.config.log));
         delete logConf['couchbase'];
@@ -149,7 +156,7 @@ var $app = {
         };
         process.__exceptionHandler = function (error) {
             $log.error("exception " + error.message);
-            $log.debug(error.stack,0);
+            $log.debug(error.stack, 0);
             process.exit(0);
         };
         process.quit = process.__quitHandler;

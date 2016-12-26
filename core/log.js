@@ -48,7 +48,7 @@ var $log = {
             this.booted = true;
         }
         else {
-            this.debug("Init core module : sxapi-core-log core", 4);
+            this.debug("Init core module : sxapi-core-log", 4);
         }
         if (this.config.sqs) {
             this.sqs.init();
@@ -68,7 +68,8 @@ var $log = {
      */
     debug: function (a, b, duration, cancelBackend) {
         var level = parseInt(b);
-        var ident = (level > 0) ? Array(level).join(" ") : "";
+//        var ident = (level > 0) ? Array(level).join(" ") : "";
+        var ident = "";
         var dur = "";
         if (duration !== null && duration !== undefined) {
             dur += "  (" + duration + "ms)";

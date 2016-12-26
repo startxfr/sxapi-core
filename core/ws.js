@@ -8,9 +8,12 @@ var $ws = {
         if (config) {
             $ws.config = config;
         }
-        $log.debug("Init ws module", 2);
+        $log.debug("Init core module : sxapi-core-ws", 4);
         if (!$ws.config) {
             throw new Error("no 'server' section in config");
+        }
+        if (!$ws.config.port) {
+            $ws.config.port = 8080;
         }
         if (!$ws.config.endpoints) {
             throw new Error("no 'endpoints' key found in config 'server' section");
@@ -20,10 +23,6 @@ var $ws = {
         }
         this._initApp();
         this._initEndpoints($ws.config.endpoints, true);
-        $ws.server = $ws.http.createServer($ws.app);
-        if ($ws.config.websockets === true) {
-            $ws.io = require('socket.io').listen($ws.server);
-        }
         return this;
     },
     _initApp: function () {
@@ -139,13 +138,13 @@ var $ws = {
          */
         return function (req, res) {
             var path = req.url.split("?")[0];
-            $log.debug("Endpoint '" + path + "' called", 1);
+            $log.debug("Endpoint '" + path + "' start", 4);
             if (config.body) {
                 var code = (config.code) ? config.code : 200;
                 var header = (config.header) ? config.header : {"Content-Type": "text/html"};
                 res.writeHead(code, header);
                 res.end(config.body);
-                $log.info("Endpoint '" + path + "' answered static document [" + code + "]");
+                $log.debug("Endpoint '" + path + "' answered static document [" + code + "]", 2);
             }
             else {
                 res.writeHead(404, {"Content-Type": "text/html"});
@@ -162,6 +161,10 @@ var $ws = {
     start: function (callback) {
         $log.debug("Start web server on port " + $ws.config.port, 2);
         try {
+            $ws.server = $ws.http.createServer($ws.app);
+            if ($ws.config.websockets === true) {
+                $ws.io = require('socket.io').listen($ws.server);
+            }
             $ws.server.listen($ws.config.port || 8080);
         }
         catch (error) {
@@ -297,9 +300,11 @@ var $ws = {
          * @returns {undefined}
          */
         return function (req, res) {
-            res.writeHead(200);
-            res.end("this text was generated with require('./ws').dynamicRequestHandlerTest. Le param_sample a été défini à " + config.param_sample);
-            $log.debug("Endpoint '" + config.path + "' answered with dynamic document", 3);
+            require("./session").required(req, res, function () {
+                res.writeHead(200);
+                res.end("this text was generated with require('./ws').dynamicRequestHandlerTest. Le param_sample a été défini à " + config.param_sample);
+                $log.debug("Endpoint '" + config.path + "' answered with dynamic document", 2);
+            });
             return this;
         };
     },

@@ -15,7 +15,7 @@ var $resources = {
      * @returns {$resources}
      */
     init: function (config) {
-        $log.debug("Init resource module", 2);
+        $log.debug("Init core module : sxapi-core-resource", 4);
         if (config) {
             for (var id in config) {
                 this.add(id, config[id]);

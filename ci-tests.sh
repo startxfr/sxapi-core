@@ -5,9 +5,9 @@ set -ev
 mkdir /tmp/sxapi-core;
 cd /tmp/sxapi-core;
 git clone https://github.com/startxfr/sxapi-core.git .
-echo "========> BUILDING Service Container (latest)"
+echo "========> BUILDING Service Container (master)"
 sudo docker-compose build
-echo "========> TESTING OS Container (latest)"
+echo "========> TESTING OS Container (master)"
 sudo docker-compose up -d
 echo "========> RESULT"
 sudo docker-compose ps
