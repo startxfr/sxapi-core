@@ -1,4 +1,17 @@
 {
+  "name": "sxapi-core",
+  "version": "0.0.8",
+  "description": "sxapi-core is an simple and extensible framework for building microservices using javascript",
+  "author": "STARTX <dev+sxapi_core@startx.fr>",
+  "license": "Apache-2.0",
+  "private": false,
+  "analyze": true,
+  "contributors": [
+    {
+      "name": "mallowtek",
+      "email": "mallowtek@gmail.com"
+    }
+  ],
   "keywords": [
     "sxapi",
     "startx",
@@ -6,14 +19,22 @@
     "modejs",
     "dev"
   ],
+  "main": "app.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha",
+    "start": "node app.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/startxfr/sxapi-core.git"
   },
-  "scripts": {
-    "test": "ci-tests.sh"
+  "bugs": {
+    "url": "https://github.com/startxfr/sxapi-core/issues"
   },
-  "main": "app.js",
   "dependencies": {
     "change-case": "~2.3.1",
     "async": "~1.0.0",
@@ -37,13 +58,8 @@
     "google-auth-library": "~0.9.10",
     "busboy": "~0.2.13"
   },
-  "bugs": {
-    "url": "https://github.com/startxfr/sxapi-core/issues"
-  },
-  "license": "Apache-2.0",
-  "author": "startxfr",
-  "name": "sxapi-core",
-  "version": "0.0.0",
-  "private": false,
-  "description": "sxapi-core is an simple and extensible framework for building microservices using javascript"
+  "devDependencies": {
+    "mocha": "~3.4.2",
+    "chai": "~4.0.2"
+  }
 }

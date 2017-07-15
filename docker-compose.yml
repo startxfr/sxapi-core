@@ -1,22 +1,14 @@
 dev:
-  build: .
+  image: node:8
   container_name: "sxapi-core-dev"
+  mem_limit: 1g
+  memswap_limit: 2g
   privileged: true
   ports:
     - "8080:8080"
+  environment:
+  - NODE_ENV=development
   volumes:
-    - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
-    - "/secure/dev/startx/sxapi-core:/app:ro"
-    - "/tmp/sxapi-data:/data:rw"
-    - "/tmp/sxapi-logs:/logs:rw"
-    
-#couchbase:
-#  image: couchbase:latest
-#  ports:
-#    - "8091-8094:8091-8094"
-#    - "11210:11210"
-
-#redis:
-#  image: redis:latest
-#  ports:
-#    - "6379:6379"
+  - "./:/usr/src/app:Z"
+  working_dir: /usr/src/app
+  entrypoint: /usr/src/app/run.sh
