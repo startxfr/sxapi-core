@@ -42,7 +42,7 @@ module.exports = function (id, config) {
          */
         start: function (callback) {
             var timerId = 'resource_aws.s3_start_' + $s3.id;
-            $log.debug("Starting resource '" + $s3.id + "'", 2);
+            $log.debug("resource '" + $s3.id + "' : starting", 3);
             var cb = function () {
                 $log.debug("resource '" + $s3.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
@@ -92,127 +92,126 @@ module.exports = function (id, config) {
         },
         /**
          * Read the S3 bucket defined in the config.bucket section of sxapi.json
+         * @param {string} id object ID
+         * @param {string} bucket bucket name
          * @param {object} options object with options to pass to the AWS receiveObject method
          * @param {function} callback to call when AWS answer
          * @returns {$bucket.s3}
          */
-        read: function (options, callback) {
-            var timerId = 'resource_aws.s3_read_' + $s3.id;
+        getObject: function (id, bucket, options, callback) {
+            var timerId = 'resource_aws.s3_getObject_' + $s3.id;
             $timer.start(timerId);
-            var BucketUrl = $s3.config.BucketUrl || "https://s3.eu-west-1.amazonaws.com";
-            if ($s3.config.read_options && $s3.config.read_options.BucketUrl) {
-                BucketUrl = $s3.config.read_options.BucketUrl;
-            }
-            var config = $s3.config.read_options || {};
-            config.BucketUrl = BucketUrl;
+            var config = $s3.config.getObject_options || {};
             if (typeof options === 'object') {
                 require('merge').recursive(config, options);
-                BucketUrl = config.BucketUrl;
             }
-            $log.debug("Read S3 bucket " + BucketUrl, 4, null, true);
-            var cb = (typeof callback === "function") ? callback : $s3.__readDefaultCallback;
-            $s3.s3bucket.receiveObject(config, function (error, response) {
+            config.Bucket = bucket || config.Bucket;
+            config.Key = id || config.Key;
+            $log.debug("Get S3 object " + config.Key + " in bucket " + config.Bucket, 4, null, true);
+            var defaultCallback = function (error, response) {
+                var duration = $timer.timeStop(timerId);
+                if (error) {
+                    $log.warn('could not get object ' + config.Key + ' in bucket ' + config.Bucket + ' because ' + error.message, duration, true);
+                }
+                else {
+                    $log.debug("object " + config.Key + " found in bucket " + config.Bucket, 4, duration, true);
+                }
+            };
+            var cb = (typeof callback === "function") ? callback : defaultCallback;
+            $s3.s3bucket.getObject(config, function (error, response) {
                 cb(error, response, cb, timerId);
             });
             return this;
         },
         /**
-         * Default callback used for handling from the AWS S3 cluster
-         * @param {object} error object returned by AWS S3
-         * @param {object} response object returned by AWS S3
+         * get the list of availables objects in a bucket
+         * @param {string} bucket bucket name
+         * @param {object} options object with options to pass to the AWS listObjectsV2 method
          * @param {function} callback to call when AWS answer
-         * @param {object} timerId ID of the timer used for this read operation
          * @returns {$bucket.s3}
          */
-        __readDefaultCallback: function (error, response, callback, timerId) {
-            if (error) {
-                $log.warn("error from AWS S3 bucket because" + error.message, $timer.time(timerId));
-                if (error.retryable) {
-                    $log.debug('retry to call this bucket in ' + error.retryDelay + 'sec', 2, null, true);
-                    var t = (error.retryDelay * 1000) - $s3.config.frequency;
-                    var timer = (t > 0) ? t : 30;
-                    $s3.stop();
-                    $s3.timer = setTimeout(function () {
-                        $s3.read(callback);
-                    }, timer);
+        listObjects: function (bucket, options, callback) {
+            var timerId = 'resource_aws.s3_listObjects_' + $s3.id;
+            $timer.start(timerId);
+            var config = $s3.config.listObjects_options || {};
+            if (typeof options === 'object') {
+                require('merge').recursive(config, options);
+            }
+            config.Bucket = bucket || config.Bucket;
+            var defaultCallback = function (error, response) {
+                var duration = $timer.timeStop(timerId);
+                if (error) {
+                    $log.warn('could not list objects in bucket ' + config.Bucket + ' because ' + error.message, duration, true);
                 }
                 else {
-                    $log.warn('this bucket error is not retryable', $timer.timeStop(timerId));
-                    $s3.stop();
+                    $log.debug(response.Contents.length + "objects found in bucket " + config.Bucket, 4, duration, true);
                 }
-            }
-            else {
-                if (response.Objects) {
-                    var nb = response.Objects.length;
-                    $log.debug("received " + nb + " objects from AWS S3 bucket", 4, $timer.timeStop(timerId));
-                }
-                else {
-                    $log.debug("received an empty response from AWS S3 bucket", 4, $timer.timeStop(timerId));
-                }
-            }
+            };
+            $s3.s3bucket.listObjectsV2(config, (callback) ? callback : defaultCallback);
+            return this;
         },
         /**
-         * Remove a object from the S3 bucket
+         * Add an object into an AWS S3 bucket
+         * @param {string} id object ID
+         * @param {string} object body of the object whe want to send
+         * @param {string} bucket bucket name
+         * @param {object} options object with options to pass to the AWS putObject method
+         * @param {function} callback to call when AWS answer
+         * @returns {$bucket.s3}
+         */
+        addObject: function (id, object, bucket, options, callback) {
+            var messId = object.id;
+            var timerId = 'resource_aws.s3_addObject_' + $s3.id + '::' + messId;
+            $timer.start(timerId);
+            var config = $s3.config.addObject_options || {};
+            if (typeof options === 'object') {
+                require('merge').recursive(config, options);
+            }
+            config.Bucket = bucket || config.Bucket;
+            config.Key = id || config.Key;
+            config.Body = object;
+            $log.debug("Add S3 object " + config.Key + " in bucket " + config.Bucket, 4, null, true);
+            var defaultCallback = function (error, response) {
+                var duration = $timer.timeStop(timerId);
+                if (error) {
+                    $log.warn('object ' + id + ' could not be send because ' + error.message, duration, true);
+                }
+                else {
+                    $log.debug("Adding AWS S3 object " + id, 4, duration, true);
+                }
+            };
+            $s3.s3bucket.putObject(config, callback ? callback : defaultCallback);
+            return this;
+        },
+        updateObject : this.addObject,
+        /**
+         * Delete an object from an AWS S3 bucket
+         * @param {string} id object ID
+         * @param {string} bucket bucket name
          * @param {object} options object with options to pass to the AWS deleteObject method
          * @param {function} callback to call when AWS answer
          * @returns {$bucket.s3}
          */
-        removeObject: function (options, callback) {
-            var timerId = 'resource_aws.s3_removeObject_' + $s3.id + '::' + options.ReceiptHandle;
+        deleteObject: function (id, bucket, options, callback) {
+            var timerId = 'resource_aws.s3_deleteObject_' + $s3.id + '::' + id;
             $timer.start(timerId);
-            var BucketUrl = ((options.config) ? options.config.BucketUrl : false) || options.BucketUrl || $s3.config.BucketUrl || "https://s3.eu-west-1.amazonaws.com";
-            if ($s3.config.delete_options && $s3.config.delete_options.BucketUrl) {
-                BucketUrl = $s3.config.delete_options.BucketUrl;
-            }
-            var config = $s3.config.delete_options || {};
-            config.BucketUrl = BucketUrl;
+            var config = $s3.config.deleteObject_options || {};
             if (typeof options === 'object') {
                 require('merge').recursive(config, options);
             }
+            config.Bucket = bucket || config.Bucket;
+            config.Key = id || config.Key;
+            $log.debug("Delete S3 object " + config.Key + " in bucket " + config.Bucket, 4, null, true);
             var defaultCallback = function (error, response) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.warn('object ' + config.ReceiptHandle + ' could not be removed because ' + error.message, duration, true);
+                    $log.warn('object ' + id + ' could not be deleted because ' + error.message, duration, true);
                 }
                 else {
-                    $log.debug("removed AWS S3 object " + config.ReceiptHandle, 4, duration, true);
+                    $log.debug("Deleting AWS S3 object " + id, 4, duration, true);
                 }
             };
-            $s3.s3bucket.deleteObject(config, (callback) ? callback : defaultCallback);
-            return this;
-        },
-        /**
-         * Read the S3 bucket defined in the config.bucket section of sxapi.json
-         * @param {string} object body of the object whe want to send
-         * @param {object} options object with options to pass to the AWS sendObject method
-         * @param {function} callback to call when AWS answer
-         * @returns {$bucket.s3}
-         */
-        sendObject: function (object, options, callback) {
-            var messId = object.id;
-            var timerId = 'resource_aws.s3_sendObject_' + $s3.id + '::' + messId;
-            $timer.start(timerId);
-            var BucketUrl = $s3.config.BucketUrl || "https://s3.eu-west-1.amazonaws.com";
-            if ($s3.config.send_options && $s3.config.send_options.BucketUrl) {
-                BucketUrl = $s3.config.send_options.BucketUrl;
-            }
-            var config = $s3.config.send_options || {};
-            config.BucketUrl = BucketUrl;
-            if (typeof options === 'object') {
-                require('merge').recursive(config, options);
-                BucketUrl = config.BucketUrl;
-            }
-            config.ObjectBody = JSON.stringify(object);
-            var defaultCallback = function (error, response) {
-                var duration = $timer.timeStop(timerId);
-                if (error) {
-                    $log.warn('object ' + object.id + ' could not be send because ' + error.message, duration, true);
-                }
-                else {
-                    $log.debug("sended AWS S3 object " + response.ObjectId, 4, duration, true);
-                }
-            };
-            $s3.s3bucket.sendObject(config, callback ? callback : defaultCallback);
+            $s3.s3bucket.deleteObject(config.Key, config.Bucket, config, callback ? callback : defaultCallback);
             return this;
         },
         /**
@@ -347,7 +346,7 @@ module.exports = function (id, config) {
                         else callback(null, data);
                     });
                 }
-            },  (cb) ? cb : defaultCallback);
+            }, (cb) ? cb : defaultCallback);
             return this;
         },
         /**
@@ -423,15 +422,16 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.read(config.config || {}, function (err, reponse) {
+                            var bucketId = req.params.id || req.body.id || config.Bucket || (config.config && config.config.Bucket) ? config.config.Bucket : "bucketname";
+                            rs.listObjects(bucketId, config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error reading bucket because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error reading bucket because " + err.message);
+                                    ws.nokResponse(res, message_prefix + "error listing objects because " + err.message).httpCode(500).send();
+                                    $log.warn(message_prefix + "error listing objects because " + err.message);
                                 }
                                 else {
-                                    var ct = (reponse.Objects) ? reponse.Objects.length : 0;
-                                    ws.okResponse(res, message_prefix + "readding AWS S3 bucket " + config.config.BucketUrl, reponse).addTotal(ct).send();
-                                    $log.debug(message_prefix + "returned OK from transaction " + reponse.ResponseMetadata.RequestId, 2);
+                                    var ct = (reponse.Contents) ? reponse.Contents.length : 0;
+                                    ws.okResponse(res, message_prefix + "readding AWS S3 objects in bucket " + config.config.Bucket, reponse.Contents).addTotal(ct).send();
+                                    $log.debug(message_prefix + "returned OK from transaction " + config.config.Bucket, 2);
                                 }
                             });
                         }
@@ -443,7 +443,53 @@ module.exports = function (id, config) {
                 };
             },
             /**
-             * Endpoint who send a object to the AWS S3 service
+             * Endpoint who return a raw file stored into an AWS S3 bucket
+             * @param {object} config object used to define where to get object from
+             * @returns {function} the function used to handle the server response
+             */
+            getObject: function (config) {
+                /**
+                 * Callback used when the endpoint is called
+                 * @param {object} req request object from the webserver
+                 * @param {object} res response object from the webserver
+                 * @returns {undefined} 
+                 */
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('../resource');
+                    var ws = require("../ws");
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    $log.debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $log.warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            var bucketId = req.params.bid || req.body.bid || config.Bucket || ((config.config && config.config.Bucket) ? config.config.Bucket : "bucketname");
+                            var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
+                            rs.getObject(objectId, bucketId, config.config || {}, function (err, reponse) {
+                                if (err) {
+                                    ws.nokResponse(res, message_prefix + "error getting " + objectId+" object in bucket " + bucketId+" because " + err.message).httpCode(500).send();
+                                    $log.warn(message_prefix + "error getting " + objectId+" object in bucket " + bucketId+" because " + err.message);
+                                }
+                                else {
+                                    res.set("Content-Type", reponse.ContentType);
+                                    res.send(reponse.Body);
+                                    $log.debug(message_prefix + "returned object " + objectId+" from bucket " + bucketId, 2);
+                                }
+                            });
+                        }
+                        else {
+                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
+            },
+            /**
+             * Endpoint who add an object to the AWS S3 service
              * @param {object} config object used to define where and how to store the object
              * @returns {function} the function used to handle the server response
              */
@@ -460,7 +506,6 @@ module.exports = function (id, config) {
                     var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
-                    var data = req.body;
                     if (!config.resource) {
                         ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
@@ -468,12 +513,9 @@ module.exports = function (id, config) {
                     else {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            var object = {
-                                object: data,
-                                time: Date.now(),
-                                server: $log.config.appsign
-                            };
-                            rs.sendObject(object, config.config || {}, function (err, reponse) {
+                            var bucketId = req.params.bid || req.body.bid || config.Bucket || ((config.config && config.config.Bucket) ? config.config.Bucket : "bucketname");
+                            var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
+                            rs.addObject(objectId, req.body, bucketId, config.config || {}, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error saving object because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error saving object because " + err.message);
@@ -491,6 +533,7 @@ module.exports = function (id, config) {
                     }
                 };
             },
+            updateObject : this.addObject,
             /**
              * Endpoint who delete a object stored in the AWS S3 service
              * @param {object} config object used to define where and how to store the object
@@ -526,7 +569,7 @@ module.exports = function (id, config) {
                         params.ReceiptHandle = objectId;
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
-                            rs.removeObject(config.config || {}, function (err, reponse) {
+                            rs.deleteObject(config.config || {}, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error deleting object because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error saving object because " + err.message);

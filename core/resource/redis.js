@@ -32,7 +32,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_cb_start_' + $rddb.id;
-            $log.debug("Starting resource '" + $rddb.id + "'", 2);
+            $log.debug("resource '" + $rddb.id + "' : starting", 3);
             var cb = function () {
                 $log.debug("resource '" + $rddb.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {

@@ -36,7 +36,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_http_start_' + $htcli.id;
-            $log.debug("Starting resource '" + $htcli.id + "'", 2);
+            $log.debug("resource '" + $htcli.id + "' : starting", 3);
             $log.debug("resource '" + $htcli.id + "' : started ", 1, $timer.timeStop(timerId));
             if (typeof callback === "function") {
                 callback();

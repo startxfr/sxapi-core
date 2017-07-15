@@ -42,7 +42,7 @@ module.exports = function (id, config) {
          */
         start: function (callback) {
             var timerId = 'resource_aws.sqs_start_' + $sqs.id;
-            $log.debug("Starting resource '" + $sqs.id + "'", 2);
+            $log.debug("resource '" + $sqs.id + "' : starting", 3);
             var cb = function () {
                 $log.debug("resource '" + $sqs.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {

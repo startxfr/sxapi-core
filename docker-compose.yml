@@ -1,10 +1,11 @@
-v0.0.8:
+v0.0.9:
   build: .
-  container_name: "sxapi-core-v0.0.8"
+  container_name: "sxapi-core-v0.0.9"
+  mem_limit: 1g
+  memswap_limit: 2g
   privileged: true
   ports:
     - "8080:8080"
-  volumes:
-    - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
-    - "/tmp/sxapi-data:/data:rw"
-    - "/tmp/sxapi-logs:/logs:rw"
+  environment:
+  - NODE_ENV=production
+  entrypoint: npm start
