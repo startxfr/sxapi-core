@@ -42,7 +42,7 @@ module.exports = function (id, config) {
         },
         start: function (callback) {
             var timerId = 'resource_cb_start_' + $cbdb.id;
-            $log.debug("Starting resource '" + $cbdb.id + "'", 2);
+            $log.debug("resource '" + $cbdb.id + "' : starting", 3);
             var cb = function () {
                 $log.debug("resource '" + $cbdb.id + "' : started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {

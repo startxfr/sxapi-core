@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $app */
+/* global module, require, process, $log, $timer */
 //'use strict';
 
 /**
@@ -24,7 +24,7 @@ module.exports = function (id, config) {
             return this;
         },
         start: function (callback) {
-            $log.debug("Starting resource '" + $svif.id + "'", 2);
+            $log.debug("resource '" + $svif.id + "' : starting", 3);
             var cb = function () {
                 $log.debug("resource '" + $svif.id + "' : started ", 1);
                 if (typeof callback === "function") {

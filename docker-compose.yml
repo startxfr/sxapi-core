@@ -1,10 +1,14 @@
 master:
-  build: .
+  image: node:8
   container_name: "sxapi-core-master"
+  mem_limit: 1g
+  memswap_limit: 2g
   privileged: true
   ports:
     - "8080:8080"
+  environment:
+  - NODE_ENV=development
   volumes:
-    - "/secure/dev/startx/sxapi-sample/samples/full:/conf:ro"
-    - "/tmp/sxapi-data:/data:rw"
-    - "/tmp/sxapi-logs:/logs:rw"
+  - "./:/usr/src/app:Z"
+  working_dir: /usr/src/app
+  entrypoint: /usr/src/app/run.sh
