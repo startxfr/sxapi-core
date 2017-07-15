@@ -34,7 +34,8 @@
     "redis": "~2.6.3",
     "request": "~2.79.0",
     "googleapis": "~15.0.0",
-    "google-auth-library": "~0.9.10"
+    "google-auth-library": "~0.9.10",
+    "busboy": "~0.2.13"
   },
   "bugs": {
     "url": "https://github.com/startxfr/sxapi-core/issues"

@@ -97,7 +97,7 @@ module.exports = function (id, config, google) {
             $timer.start(timerId);
             var config = options || {};
             config.fileId = id;
-            config.fields='id,name,title,mimeType';
+            config.fields = 'id,name,title,mimeType';
             $gapid.service.files.get(config, function (err, doc) {
                 var duration = $timer.time(timerId);
                 if (err) {
@@ -112,8 +112,8 @@ module.exports = function (id, config, google) {
                             "Content-Type": 'application/octet-stream',
                             "Content-Disposition": 'attachment; filename=' + (doc.name || doc.title)
                         };
-                        if(doc.mimeType) {
-                        outh["Content-Type"]=doc.mimeType;
+                        if (doc.mimeType) {
+                            outh["Content-Type"] = doc.mimeType;
                         }
                         response.writeHead(200, outh);
                     }
@@ -165,6 +165,48 @@ module.exports = function (id, config, google) {
             return this;
         },
         /**
+         * Add a file into a given directory
+         * @param {string} name folder name
+         * @param {string} parent folder ID
+         * @param {string} mime the mimeTYpe of the document
+         * @param {string} body file content (should be a Buffer for binary)
+         * @param {object} options to use when retriving file
+         * @param {function} callback to call for returning service
+         * @returns {$gapid}
+         */
+        addFile: function (name, parent, mime, body, options, callback) {
+            var timerId = 'resource_google_drive_addFile_' + $gapid.id + '_' + id;
+            $timer.start(timerId);
+            var config = options || {};
+            config.uploadType = 'multipart';
+            config.parents = [{id: parent}];
+            var opt = {
+                resource: {
+                    title: name,
+                    mimeType: 'text/plain'
+                },
+                media: {
+                    mimeType: mime,
+                    body: body
+                },
+                fields: 'id'
+            };
+            require('merge').recursive(config, opt);
+
+            $gapid.service.files.insert(config, function (err, response) {
+                var duration = $timer.timeStop(timerId);
+                if (err) {
+                    $log.warn('could not create directory ' + config.title + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+                    callback('could not create directory');
+                }
+                else {
+                    $log.debug("directory " + config.title + " created in resource " + $gapid.id, 4, duration, true);
+                    callback(null, response);
+                }
+            });
+            return this;
+        },
+        /**
          * Get file list of a given directory
          * @param {string} id file ID
          * @param {object} options to use when retriving file
@@ -176,7 +218,7 @@ module.exports = function (id, config, google) {
             $timer.start(timerId);
             var config = options || {};
             config.folderId = id;
-            config.fields='id,title,name,mimeType';
+            config.fields = 'id,title,name,mimeType';
             $gapid.service.children.list(config, function (err, list) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
@@ -187,7 +229,7 @@ module.exports = function (id, config, google) {
                     $log.debug("folder " + config.folderId + " found in resource " + $gapid.id, 4, duration, true);
                     var result = [];
                     require('async').each(list.items, function (file, cb) {
-                        $gapid.service.files.get({fileId: file.id,fields:'id,title,mimeType'}, function (err, fileinfo) {
+                        $gapid.service.files.get({fileId: file.id, fields: 'id,title,mimeType'}, function (err, fileinfo) {
                             if (err) {
                                 result.push(file);
                                 cb(null, file);
@@ -213,7 +255,7 @@ module.exports = function (id, config, google) {
          * @returns {$gapid}
          */
         addDirectory: function (name, parent, options, callback) {
-            var timerId = 'resource_google_drive_getDirectory_' + $gapid.id + '_' + id;
+            var timerId = 'resource_google_drive_addDirectory_' + $gapid.id + '_' + id;
             $timer.start(timerId);
             var config = options || {};
             config.title = name;
@@ -294,7 +336,7 @@ module.exports = function (id, config, google) {
                         if (ress.exist(config.resource)) {
                             var rs = ress.get(config.resource);
                             var qr = req.params.q || req.body.q || config.q;
-                            var q = "fullText contains '"+qr+"'";
+                            var q = "fullText contains '" + qr + "'";
                             rs.getService("drive").findFile(q, config.config || {}, function (err, reponse) {
                                 if (err) {
                                     ws.nokResponse(res, message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
@@ -305,6 +347,68 @@ module.exports = function (id, config, google) {
                                     $log.debug(message_prefix + "returned files matching " + q + " from resource " + rs.id, 2);
                                 }
                             });
+                        }
+                        else {
+                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                        }
+                    }
+                };
+            },
+            /**
+             * Endpoint who add a new directory into another one
+             * @param {object} config object used to define where to get object from
+             * @returns {function} the function used to handle the server response
+             */
+            addFile: function (config) {
+                return function (req, res) {
+                    var path = req.url.split("?")[0];
+                    var ress = require('../resource');
+                    var ws = require("../ws");
+                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
+                    $log.debug(message_prefix + "called", 1);
+                    if (!config.resource) {
+                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $log.warn(message_prefix + "resource is not defined for this endpoint");
+                    }
+                    else {
+                        if (ress.exist(config.resource)) {
+                            var rs = ress.get(config.resource);
+                            var name, mime;
+
+                            var inspect = require('util').inspect;
+                            var Busboy = require('busboy');
+                            var busboy = new Busboy({headers: req.headers});
+                            busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+                                $log.debug(message_prefix + " received file " + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype, 2);
+                                name = filename;
+                                mime = mimetype;
+                                file.on('data', function (data) {
+                                    console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+                                });
+                                file.on('end', function () {
+                                    console.log('File [' + fieldname + '] Finished');
+                                });
+                            });
+                            busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+                                console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+                            });
+                            busboy.on('finish', function () {
+                                console.log('Done parsing form!');
+                                var folderId = req.params.name || name;
+                                var parentId = req.params.parent || req.body.parent || config.parent || "root";
+                                rs.getService("drive").addFile(folderId, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
+                                    if (err) {
+                                        ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                        $log.warn(message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                                    }
+                                    else {
+                                        ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
+                                        $log.debug(message_prefix + "created folder " + folderId + " in resource " + rs.id, 2);
+                                    }
+                                });
+                            });
+                            req.pipe(busboy);
                         }
                         else {
                             ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
