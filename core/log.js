@@ -11,8 +11,8 @@
     ['error', '\x1b[41m'],
     ['log', '\x1b[30m']
 ].forEach(function (pair) {
-    var method = pair[0],reset = '\x1b[0m',color = '\x1b[36m' + pair[1];
-    console[method] = console[method].bind(console,color,method.toUpperCase(),reset);
+    var method = pair[0], reset = '\x1b[0m', color = '\x1b[36m' + pair[1];
+    console[method] = console[method].bind(console, color, method.toUpperCase(), reset);
 });
 
 /**
@@ -230,7 +230,7 @@ var $log = {
             }
             $log.sqs.resource.sendMessage(message, function (err) {
                 if (err) {
-                    $log.warn("error saving log  because "  + err.message, null, true);
+                    $log.warn("error saving log  because " + err.message, null, true);
                 }
             });
             return this;
@@ -285,7 +285,8 @@ var $log = {
             });
             return this;
         }
-    }
+    },
+    format: require("mustache").render
 };
 
 module.exports = $log;
