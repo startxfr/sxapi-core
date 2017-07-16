@@ -227,7 +227,7 @@ var $app = {
             if (typeof callback === "function") {
                 callback();
             }
-        }
+        };
         require('./resource').stops(cb);
     },
     /**

@@ -44,6 +44,9 @@ module.exports = function (id, config, google) {
                 auth: $gapid.google.gapi_auth
             });
             $log.debug("resource '" + $gapid.id + "' : started ", 1, $timer.timeStop(timerId));
+            if (typeof callback === "function") {
+                callback(null, this);
+            }
             return this;
         },
         /**
