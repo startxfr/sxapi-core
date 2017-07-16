@@ -22,38 +22,42 @@ var $sess = {
         }
         $log.debug("Init core module : sxapi-core-session", 4);
         if (this.config !== false && this.config !== undefined && this.config !== null && this.config !== 0) {
-            if (!this.config.transport) {
-                throw new Error("no 'transport' key found in config 'session' section");
-            }
-            if (!this.config.backend) {
-                throw new Error("no 'backend' key found in config 'session' section");
-            }
             if (!this.config.auto_create) {
                 this.config.auto_create = false;
             }
             if (!$sess.config.duration) {
                 $sess.config.duration = 3600;
             }
-            switch (this.config.transport.type) {
-                case "cookie" :
-                    this.transports.cookie.init();
-                    break;
-                case "token" :
-                    this.transports.token.init();
-                    break;
-                case "bearer" :
-                    this.transports.bearer.init();
-                    break;
-                default :
-                    throw new Error("session transport of type '" + this.config.transport.type + "' doesn't exist");
-                    break;
+            if (this.config.transport) {
+                switch (this.config.transport.type) {
+                    case "cookie" :
+                        this.transports.cookie.init();
+                        break;
+                    case "token" :
+                        this.transports.token.init();
+                        break;
+                    case "bearer" :
+                        this.transports.bearer.init();
+                        break;
+                    default :
+                        throw new Error("session transport of type '" + this.config.transport.type + "' doesn't exist");
+                        break;
+                }
             }
-            switch (this.config.backend.type) {
-                case "mysql" :
-                    this.backends.mysql.init();
-                    break;
-                    throw new Error("session backend of type '" + this.config.transport.type + "' doesn't exist");
-                    break;
+            else {
+                $log.warn("no 'transport' key found in config 'session' section. Disabling session");
+            }
+            if (this.config.backend) {
+                switch (this.config.backend.type) {
+                    case "mysql" :
+                        this.backends.mysql.init();
+                        break;
+                        throw new Error("session backend of type '" + this.config.transport.type + "' doesn't exist");
+                        break;
+                }
+            }
+            else {
+                $log.warn("no 'backend' key found in config 'session' section. Disabling session");
             }
         }
         else {
@@ -69,28 +73,31 @@ var $sess = {
     start: function (callback) {
         $log.debug("Start session ", 2);
         try {
-            switch (this.config.transport.type) {
-                case "cookie" :
-                    this.transports.cookie.start();
-                    break;
-                case "token" :
-                    this.transports.token.start();
-                    break;
-                case "bearer" :
-                    this.transports.bearer.start();
-                    break;
+            if (this.config.transport) {
+                switch (this.config.transport.type) {
+                    case "cookie" :
+                        this.transports.cookie.start();
+                        break;
+                    case "token" :
+                        this.transports.token.start();
+                        break;
+                    case "bearer" :
+                        this.transports.bearer.start();
+                        break;
+                }
             }
-            switch (this.config.backend.type) {
-                case "mysql" :
-                    this.backends.mysql.start(callback);
-                    break;
-                default:
-                    if (typeof callback === "function") {
-                        callback();
-                    }
-                    break;
+            if (this.config.backend) {
+                switch (this.config.backend.type) {
+                    case "mysql" :
+                        this.backends.mysql.start(callback);
+                        break;
+                    default:
+                        if (typeof callback === "function") {
+                            callback();
+                        }
+                        break;
+                }
             }
-
         }
         catch (error) {
             $log.error('session start returned error because ' + error.message);
@@ -105,28 +112,31 @@ var $sess = {
     stop: function (callback) {
         $log.debug("Stop session ", 2);
         try {
-            switch (this.config.transport.type) {
-                case "cookie" :
-                    this.transports.cookie.stop();
-                    break;
-                case "token" :
-                    this.transports.token.stop();
-                    break;
-                case "bearer" :
-                    this.transports.bearer.stop();
-                    break;
+            if (this.config.transport) {
+                switch (this.config.transport.type) {
+                    case "cookie" :
+                        this.transports.cookie.stop();
+                        break;
+                    case "token" :
+                        this.transports.token.stop();
+                        break;
+                    case "bearer" :
+                        this.transports.bearer.stop();
+                        break;
+                }
             }
-            switch (this.config.backend.type) {
-                case "mysql" :
-                    this.backends.mysql.stop(callback);
-                    break;
-                default:
-                    if (typeof callback === "function") {
-                        callback();
-                    }
-                    break;
+            if (this.config.backend) {
+                switch (this.config.backend.type) {
+                    case "mysql" :
+                        this.backends.mysql.stop(callback);
+                        break;
+                    default:
+                        if (typeof callback === "function") {
+                            callback();
+                        }
+                        break;
+                }
             }
-
         }
         catch (error) {
             $log.error('session stop returned error because ' + error.message);
@@ -161,31 +171,42 @@ var $sess = {
             var fnOK = callbackOK || cbOK;
             var fnNOK = callbackNOK || cbNOK;
             var cbGetSIDOK = function (sid) {
-                switch ($sess.config.backend.type) {
-                    case "mysql" :
-                        $sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
-                        break;
-                    case "couchbase" :
-                        $sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
-                        break;
-                    default :
-                        fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 20);
-                        break;
+                if (this.config.backend) {
+                    switch ($sess.config.backend.type) {
+                        case "mysql" :
+                            $sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
+                        case "couchbase" :
+                            $sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
+                        default :
+                            fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 20);
+                            break;
+                    }
+                }
+                else {
+                    fnOK({});
                 }
             };
             var cbGetSIDNOK = function (message, code) {
                 if ($sess.config.auto_create) {
                     $log.warn("could not find a session ID because " + message);
-                    switch ($sess.config.backend.type) {
-                        case "mysql" :
-                            $sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
-                            break;
-                        case "couchbase" :
-                            $sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
-                            break;
-                        default :
-                            fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 30);
-                            break;
+                    if (this.config.backend) {
+                        switch ($sess.config.backend.type) {
+                            case "mysql" :
+                                $sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "couchbase" :
+                                $sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            default :
+                                fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 30);
+                                break;
+                        }
+                    }
+                    else {
+                        $log.error("could not auto create a session because no backend is configured");
+                        fnNOK(message, code);
                     }
                 }
                 else {
@@ -202,19 +223,24 @@ var $sess = {
             };
             var cbCreateSessionOK = function (sessId, session) {
                 $log.info("auto created session " + sessId);
-                switch ($sess.config.transport.type) {
-                    case "token" :
-                        $sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
-                        break;
-                    case "cookie" :
-                        $sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
-                        break;
-                    case "bearer" :
-                        $sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
-                        break;
-                    default :
-                        fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 30);
-                        break;
+                if (this.config.transport) {
+                    switch ($sess.config.transport.type) {
+                        case "token" :
+                            $sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            break;
+                        case "cookie" :
+                            $sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            break;
+                        case "bearer" :
+                            $sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            break;
+                        default :
+                            fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 30);
+                            break;
+                    }
+                }
+                else {
+                    fnOK({});
                 }
             };
             var cbCreateSessionNOK = function (message, code) {
@@ -228,19 +254,24 @@ var $sess = {
                 $log.error("could not record a session ID because " + message);
                 fnNOK(message, code);
             };
-            switch (this.config.transport.type) {
-                case "cookie" :
-                    this.transports.cookie.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
-                    break;
-                case "token" :
-                    this.transports.token.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
-                    break;
-                case "bearer" :
-                    this.transports.bearer.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
-                    break;
-                default :
-                    fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 10);
-                    break;
+            if (this.config.transport) {
+                switch (this.config.transport.type) {
+                    case "cookie" :
+                        this.transports.cookie.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
+                        break;
+                    case "token" :
+                        this.transports.token.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
+                        break;
+                    case "bearer" :
+                        this.transports.bearer.getSID(req, res, cbGetSIDOK, cbGetSIDNOK);
+                        break;
+                    default :
+                        fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 10);
+                        break;
+                }
+            }
+            else {
+                fnOK({});
             }
         }
     },

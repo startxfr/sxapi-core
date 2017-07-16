@@ -8,7 +8,11 @@ dev:
     - "8080:8080"
   environment:
   - NODE_ENV=development
+  - APP_PATH=/usr/src/app
+  - DATA_PATH=/data
+  - CONF_PATH=/conf
   volumes:
   - "./:/usr/src/app:Z"
+  - "./sxapi-test.json:/conf/sxapi.json:Z"
   working_dir: /usr/src/app
   entrypoint: /usr/src/app/run.sh

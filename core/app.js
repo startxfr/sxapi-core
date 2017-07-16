@@ -32,8 +32,8 @@ var $app = {
         $log.debug("Hostname : " + this.config.hostname, 4);
         $log.debug("App path : " + this.config.app_path, 4);
         $log.debug("Conf path : " + this.config.conf_path, 4);
-        $log.debug("Data path : " + this.config.data_path, 4);
-        $log.debug("Log path : " + $log.config.log_path, 4);
+        $log.debug("Data path : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 4);
+        $log.debug("Log path : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 4);
         $log.debug("package file : " + this.config.app_path + '/package.json  LOADED', 3);
         $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
         $log.debug("sxapi-framework : " + $app.package.name + ' v' + $app.package.version, 3);
@@ -99,10 +99,6 @@ var $app = {
         }
         if (process.env.DATA_PATH) {
             this.config.data_path = process.env.DATA_PATH;
-        }
-        else {
-            $log.error('FATAL : environment variable DATA_PATH must be set');
-            process.exit(5);
         }
         if (process.env.LOG_PATH) {
             $log.config.log_path = process.env.LOG_PATH;
