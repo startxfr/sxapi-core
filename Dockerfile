@@ -1,5 +1,5 @@
-MAINTAINER STARTX "dev@startx.fr"
 FROM node:8-alpine
+MAINTAINER STARTX "dev@startx.fr"
 
 ENV  NODE_ENV=development \
      APP_PATH=/usr/src/app \
