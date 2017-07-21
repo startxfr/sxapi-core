@@ -15,5 +15,6 @@ RUN  npm install \
  &&  npm cache verify \
  &&  npm cache clean --force
 
+USER node:node
 EXPOSE 8080
 ENTRYPOINT  "npm test"

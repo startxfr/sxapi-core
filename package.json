@@ -59,8 +59,6 @@
   },
   "devDependencies": {
     "mocha": "~3.4.2",
-    "chai": "~4.0.2",
-    "couchbase": "~2.1.8",
-    "redis": "~2.6.5"
+    "chai": "~4.0.2"
   }
 }
