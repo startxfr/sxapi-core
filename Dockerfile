@@ -1,3 +1,4 @@
+MAINTAINER STARTX "dev@startx.fr"
 FROM node:8-alpine
 
 ENV  NODE_ENV=development \
