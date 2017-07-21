@@ -1,6 +1,6 @@
 api:
   build: .
-  container_name: "sxapi-core-v0.0.11"
+  container_name: "sxapi-core-v0.0.12"
   mem_limit: 1g
   memswap_limit: 2g
   privileged: true
