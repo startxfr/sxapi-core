@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "sxapi-core is an simple and extensible framework for building microservices using javascript",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "license": "Apache-2.0",
@@ -17,7 +17,7 @@
     "startx",
     "microservice",
     "modejs",
-    "v0.0.10"
+    "v0.0.11"
   ],
   "main": "app.js",
   "directories": {
