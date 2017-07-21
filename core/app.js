@@ -29,15 +29,6 @@ var $app = {
         this._initProcessSignals();
         this._initCheckEnv();
         this._initLoadConfigFiles();
-        $log.debug("Hostname : " + this.config.hostname, 4);
-        $log.debug("App path : " + this.config.app_path, 4);
-        $log.debug("Conf path : " + this.config.conf_path, 4);
-        $log.debug("Data path : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 4);
-        $log.debug("Log path : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 4);
-        $log.debug("package file : " + this.config.app_path + '/package.json  LOADED', 3);
-        $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
-        $log.debug("sxapi-framework : " + $app.package.name + ' v' + $app.package.version, 3);
-        $log.info("sxapi-framework v" + $app.package.version + " initialized", $timer.time('app'));
         $log.debug("initializing application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
         $log.debug("container ip : " + $app.config.ip, 4);
         $log.debug("service name : " + $app.config.name, 4);
@@ -103,6 +94,11 @@ var $app = {
         if (process.env.LOG_PATH) {
             $log.config.log_path = process.env.LOG_PATH;
         }
+        $log.debug("Hostname : " + this.config.hostname, 4);
+        $log.debug("App path : " + this.config.app_path, 4);
+        $log.debug("Conf path : " + this.config.conf_path, 4);
+        $log.debug("Data path : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 4);
+        $log.debug("Log path : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 4);
         return this;
     },
     /**
@@ -116,16 +112,40 @@ var $app = {
         var cfg_file = this.config.conf_path + '/sxapi.json';
         try {
             mg.recursive($app.package, JSON.parse(fs.readFileSync(pkg_file, 'utf-8')));
+            $log.debug("package file : " + this.config.app_path + '/package.json  LOADED', 3);
         }
         catch (e) {
             $log.error("package file : " + pkg_file + " IS MISSING");
             process.exit(5);
         }
-        try {
-            mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
+        if (process.env.SXAPI_CONF) {
+            $log.debug("config environement : LOADED", 3);
+            mg.recursive($app.config, JSON.parse(process.env.SXAPI_CONF));
         }
-        catch (e) {
-            $log.error("config file : " + cfg_file + " IS MISSING");
+        else {
+            $log.debug("env SXAPI_CONF : IS MISSING",3);
+            try {
+                mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
+                $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
+            }
+            catch (e) {
+                $log.debug("config file : " + cfg_file + " IS MISSING",3);
+                $log.error("config description IS MISSING");
+                $log.debug("add a env variable SXAPI_CONF or place a sxapi.json config file",3);
+                console.log(process.env);
+                process.exit(5);
+            }
+        }
+        if (!$app.config.name) {
+            $log.error('FATAL : config file must have a "name" property');
+            process.exit(5);
+        }
+        if (!$app.config.name) {
+            $log.error('FATAL : config file must have a "name" property');
+            process.exit(5);
+        }
+        if (!$app.config.version) {
+            $log.error('FATAL : config file must have a "version" property');
             process.exit(5);
         }
         $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
@@ -133,6 +153,12 @@ var $app = {
         var logConf = JSON.parse(JSON.stringify($app.config.log));
         delete logConf['couchbase'];
         delete logConf['sqs'];
+        $log.debug("sxapi-framework : " + $app.package.name + ' v' + $app.package.version, 3);
+        $log.debug("application : " + $app.config.name + ' v' + $app.config.version, 3);
+        if (process.env.npm_config_user_agent) {
+            $log.debug("node environement : " + process.env.npm_config_user_agent, 3);
+            $log.config.npm_config_user_agent += " (" + $app.package.name + ' v' + $app.package.version + ")";
+        }
         $log.init(logConf, $app.config.debug);
         return this;
     },

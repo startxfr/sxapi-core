@@ -10,6 +10,7 @@
  */
 
 var $sess = {
+    cached: {},
     config: {},
     /**
      * Initialise log according to the log section in sxapi.json. 
@@ -632,6 +633,85 @@ var $sess = {
                         }
                     };
                 });
+                return this;
+            }
+        },
+        memory: {
+            init: function () {
+                $log.debug("Init 'memory' session backend", 3);
+                if (!$sess.config.backend.sid_field) {
+                    throw new Error("no 'sid_field' key found in config 'session.backend.memory'");
+                }
+                return this;
+            },
+            start: function (callback) {
+                $log.debug("Start 'memory' session backend", 3);
+                $sess.cached = {};
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            stop: function (callback) {
+                $log.debug("Stop 'memory' session backend", 3);
+                $sess.cached = {};
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            getSession: function (sessID, callbackOK, callbackNOK) {
+                if (sessID === undefined) throw "session.backends.memory.getSession require a sessID";
+                if (typeof callbackOK !== "function") throw "session.backends.memory.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.memory.getSession require a callbackNOK";
+                if (!$sess.cached[sessID]) {
+                    $log.warn("session '" + sessID + "' is not found in cache ");
+                    callbackNOK("error using 'memory' session backend", 210);
+                }
+                else {
+                    var session = $sess.cached[sessID];
+                    if ($sess.config.backend.fields && $sess.config.backend.fields.stop) {
+                        var dateStop = session[$sess.config.backend.fields.stop];
+                        var moment = require('moment');
+                        if (moment(dateStop, 'YYYY-MM-DD HH:mm:ss').valueOf() - Date.now() > 0) {
+                            $log.debug("session '" + sessID + "' exist and is active in 'memory' backend", 2);
+                            callbackOK(session);
+                        }
+                        else {
+                            $log.warn("session '" + sessID + "' exist but is obsolete");
+                            callbackNOK("session '" + sessID + "' exist but is obsolete", 230);
+                        }
+                    }
+                    else {
+                        $log.debug("session '" + sessID + "' exist in 'memory' backend", 2);
+                        callbackOK(session);
+                    }
+                }
+                return this;
+            },
+            createSession: function (req, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.backends.memory.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.memory.getSession require a callbackNOK";
+                var sessId = require('uuid').v4();
+                var session = {};
+                session[$sess.config.backend.sid_field] = sessId;
+                if ($sess.config.backend.fields) {
+                    if ($sess.config.backend.fields.ip) {
+                        session[$sess.config.backend.fields.ip] = req.headers['x-forwarded-for'] ||
+                                req.connection.remoteAddress ||
+                                req.socket.remoteAddress ||
+                                req.connection.socket.remoteAddress;
+                    }
+                    var moment = require('moment');
+                    if ($sess.config.backend.fields.start) {
+                        session[$sess.config.backend.fields.start] = moment().format('YYYY-MM-DD HH:mm:ss');
+                    }
+                    if ($sess.config.backend.fields.stop) {
+                        session[$sess.config.backend.fields.stop] = moment(Date.now() + ($sess.config.duration * 1000)).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }
+                $sess.cached[sessId] = session;
+                callbackOK(sessId, session);
                 return this;
             }
         }

@@ -1,0 +1,49 @@
+{
+    "name": "sxapi-dev-default",
+    "description": "sxapi default config file",
+    "version": "dev",
+    "debug": true,
+    "session": {
+        "duration": 3600,
+        "auto_create": true,
+        "transport": {
+            "type": "cookie",
+            "cookie_name": "sxapi-sess"
+        },
+        "backend": {
+            "type": "memory",
+            "sid_field": "token_sess",
+            "fields": {
+                "stop": "datefin_sess"
+            }
+        }
+    },
+    "resources": {
+    },
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        }
+    },
+    "server": {
+        "type": "express",
+        "port": "8080",
+        "bodyParserJson": true,
+        "bodyParserUrl": true,
+        "endpoints": [
+            {
+                "path": "/",
+                "body": "<html><head></head><body><h1>SXAPI is Working !!!!</h1></body></html>"
+            },
+            {
+                "path": "/ping",
+                "code": "200",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{\"health\":\"good\"}"
+            }
+        ]
+    }
+}
