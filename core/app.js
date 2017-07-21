@@ -118,30 +118,33 @@ var $app = {
             $log.error("package file : " + pkg_file + " IS MISSING");
             process.exit(5);
         }
-        try {
-            mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
-            $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
+        if (process.env.SXAPI_CONF) {
+            $log.debug("config environement : LOADED", 3);
+            mg.recursive($app.config, JSON.parse(process.env.SXAPI_CONF));
         }
-        catch (e) {
-            $log.error("config file : " + cfg_file + " IS MISSING");
-            if (process.env.SXAPI_CONF) {
-                $log.debug("config environement : LOADED", 3);
-                mg.recursive($app.config, JSON.parse(process.env.SXAPI_CONF));
+        else {
+            $log.debug("env SXAPI_CONF : IS MISSING",3);
+            try {
+                mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
+                $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
             }
-            else {
+            catch (e) {
+                $log.debug("config file : " + cfg_file + " IS MISSING",3);
+                $log.error("config description IS MISSING");
+                $log.debug("add a env variable SXAPI_CONF or place a sxapi.json config file",3);
                 console.log(process.env);
                 process.exit(5);
             }
         }
-        if (! $app.config.name) {
+        if (!$app.config.name) {
             $log.error('FATAL : config file must have a "name" property');
             process.exit(5);
         }
-        if (! $app.config.name) {
+        if (!$app.config.name) {
             $log.error('FATAL : config file must have a "name" property');
             process.exit(5);
         }
-        if (! $app.config.version) {
+        if (!$app.config.version) {
             $log.error('FATAL : config file must have a "version" property');
             process.exit(5);
         }
