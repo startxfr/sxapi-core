@@ -1,3 +1,4 @@
+MAINTAINER STARTX "dev@startx.fr"
 FROM node:8-alpine
 
 ENV  NODE_ENV=production \
@@ -14,5 +15,6 @@ RUN  npm install -production \
  &&  npm cache verify \
  &&  npm cache clean --force
 
+USER node:node
 EXPOSE 8080
 CMD  npm start
