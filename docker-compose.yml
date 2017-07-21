@@ -6,3 +6,5 @@ master:
   privileged: true
   ports:
     - "8080:8080"
+  volumes:
+    - "./sxapi-test.json:/conf/sxapi.json:ro"
