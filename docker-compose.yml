@@ -1,8 +1,7 @@
-master:
+testing:
   build: .
-  container_name: "sxapi-core-master"
-  mem_limit: 1g
-  memswap_limit: 2g
-  privileged: true
+  container_name: "sxapi-core-testing"
+  mem_limit: 200m
+  memswap_limit: 500m
   ports:
     - "8080:8080"
