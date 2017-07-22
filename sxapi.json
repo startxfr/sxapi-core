@@ -1,5 +1,5 @@
 {
-    "name": "sxapi-dev-default",
+    "name": "sxapi-0.0.12-default",
     "description": "sxapi default config file",
     "version": "dev",
     "debug": true,
@@ -34,7 +34,7 @@
         "endpoints": [
             {
                 "path": "/",
-                "body": "<html><head></head><body><h1>SXAPI is Working !!!!</h1></body></html>"
+                "body": "<html><head></head><body><h1>SXAPI v0.0.12 is Working !!!!</h1></body></html>"
             },
             {
                 "path": "/ping",

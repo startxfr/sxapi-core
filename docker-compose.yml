@@ -1,9 +1,8 @@
 api:
+testing:
   build: .
   container_name: "sxapi-core-v0.0.12"
-  mem_limit: 1g
-  memswap_limit: 2g
-  privileged: true
+  mem_limit: 200m
+  memswap_limit: 500m
   ports:
     - "8080:8080"
-  entrypoint: npm start
