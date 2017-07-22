@@ -23,5 +23,6 @@ RUN  cd $APP_PATH \
  &&  chown -R node:node $APP_PATH /bin/sxapi $CONF_PATH $DATA_PATH
 
 USER node:node
+EXPOSE 8080
 WORKDIR $APP_PATH
 CMD [ "/bin/sxapi" , "start" ]
