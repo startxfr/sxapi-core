@@ -1,7 +1,7 @@
 api:
 testing:
   build: .
-  container_name: "sxapi-core-v0.0.12"
+  container_name: "sxapi-core-v0.0.13"
   mem_limit: 200m
   memswap_limit: 500m
   ports:
