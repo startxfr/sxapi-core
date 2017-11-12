@@ -1,7 +1,10 @@
 /* global require, process, $log, $timer */
 
-var $app = require("./core/app");
+exports.printMsg = function() {
+	  console.log("This is a message from the demo package");
+}
+//exports = require("./core/app");
 
-$app.launch(function () {
-    $log.info("application started", $timer.time('app'));
-});
+//$app.launch(function () {
+//    $log.info("application started", $timer.time('app'));
+//});

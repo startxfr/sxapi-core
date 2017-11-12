@@ -1,0 +1,10 @@
+nbproject
+node_modules
+sxapi-test.json
+docker-compose.yml
+docs
+template-openshift.yml
+travis.sh
+Dockerfile
+run.sh
+test
