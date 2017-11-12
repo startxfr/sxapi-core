@@ -1,7 +1,7 @@
 SXAPI Core
 ==========
 
-[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=v0.0.17-npm)](https://travis-ci.org/startxfr/sxapi-core)
+[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=v0.0.18-npm)](https://travis-ci.org/startxfr/sxapi-core)
 
 ***SXAPI*** for Simple and eXtensible Application Programming Interface 
 It's an open-source framework for quickly building simple and small 
