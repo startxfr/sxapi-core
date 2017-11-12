@@ -10,10 +10,36 @@ It's an open-source framework for quickly building simple and small microservice
 Getting Started
 ---------------
 
+sxapi-core is delivered in 2 ways :
 
-### Troubleshooting
+### Container version
 
-If you run into difficulties installing or running sxapi, please report [issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) or  [issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
+You can use sxapi within a container by using our public [official sxapi docker image](https://hub.docker.com/r/startx/sxapi/)
+```bash
+docker pull startx/sxapi:latest
+docker run -d -p 8080:8080 startx/sxapi
+```
+
+For more information on how to use this container, see [use docker image](USE_docker.md)
+
+### NPM version
+
+You can use sxapi with our [official sxapi NPM module](https://www.npmjs.com/package/sxapi-core)
+```bash
+docker pull startx/sxapi:latest
+docker run -d -p 8080:8080 startx/sxapi
+```
+
+For more information on how to use this container, see [use docker image](USE_docker.md)
+
+
+
+Troubleshooting
+---------------
+
+If you run into difficulties installing or running sxapi, please report 
+[issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) or  
+[issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
 
 License
 -------
