@@ -12,7 +12,6 @@ metadata:
       about using this template, including OpenShift considerations, see
       https://github.com/startxfr/sxapi-core/blob/master/README.md.
 
-
       WARNING: Any data stored will be lost upon pod destruction. Only use this
       template for testing." 
     template.openshift.io/long-description: >-
@@ -40,12 +39,61 @@ objects:
     annotations:
       openshift.io/generated-by: STARTX
   data:
-    sxapi.json:  |
-        {"name":"test","version":"0.111"}
+    sxapi.json: |
+      {
+        "name": "sxapi-dev-default",
+        "description": "sxapi default config file",
+        "version": "dev",
+        "debug": true,
+        "session": {
+            "duration": 3600,
+            "auto_create": true,
+            "transport": {
+                "type": "cookie",
+                "cookie_name": "sxapi-sess"
+            },
+            "backend": {
+                "type": "memory",
+                "sid_field": "token_sess",
+                "fields": {
+                    "stop": "datefin_sess"
+                }
+            }
+        },
+        "resources": {
+        },
+        "log": {
+            "filters": {
+                "level": "0,1,2,3,4",
+                "type": "debug,info,error,warn"
+            }
+        },
+        "server": {
+            "type": "express",
+            "port": "8080",
+            "bodyParserJson": true,
+            "bodyParserUrl": true,
+            "endpoints": [
+                {
+                    "path": "/",
+                    "body": "<html><head></head><body><h1>SXAPI sample is working !</h1></body></html>"
+                },
+                {
+                    "path": "/ping",
+                    "code": "200",
+                    "header": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"health\":\"good\"}"
+                }
+            ]
+        }
+      }
 - kind: ImageStream
   apiVersion: v1
   metadata:
     annotations:
+      openshift.io/display-name: "SXAPI"
       openshift.io/generated-by: STARTX
     labels:
       app: "${APP_NAME}"
@@ -53,7 +101,13 @@ objects:
   spec:
     tags:
     - annotations:
+        openshift.io/display-name: "SXAPI (${SXAPI_VERSION})"
         openshift.io/generated-by: STARTX
+        description: "Build and run Node.js SXAPI application sample. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md"
+        iconClass: "icon-nodejs"
+        tags: "builder,nodejs,sxapi"
+        supports: "sxapi"
+        sampleRepo: "https://github.com/startxfr/sxapi-sample.git"
       from:
         kind: DockerImage
         name: "startx/sxapi:${SXAPI_VERSION}"
@@ -76,14 +130,14 @@ objects:
       app: "${APP_NAME}"
       deploymentconfig: "${APP_NAME}"
     strategy:
-      activeDeadlineSeconds: 21600
+      activeDeadlineSeconds: 60
       resources: {}
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
-        maxUnavailable: 25%
-        timeoutSeconds: 600
-        updatePeriodSeconds: 1
+        maxUnavailable: 0%
+        timeoutSeconds: 10
+        updatePeriodSeconds: 2
       type: Rolling
     template:
       metadata:
@@ -153,78 +207,6 @@ objects:
     replicas: 0
     unavailableReplicas: 0
     updatedReplicas: 0
-- kind: ReplicationController
-  apiVersion: v1
-  metadata:
-    annotations:
-      openshift.io/generated-by: STARTX
-    labels:
-      app: "${APP_NAME}"
-      openshift.io/deployment-config.name: "${APP_NAME}"
-    name: "${APP_NAME}"
-  spec:
-    replicas: 1
-    selector:
-      app: "${APP_NAME}"
-      deployment: "${APP_NAME}"
-      deploymentconfig: "${APP_NAME}"
-    template:
-      metadata:
-        annotations:
-          openshift.io/deployment-config.latest-version: "1"
-          openshift.io/deployment-config.name: "${APP_NAME}"
-          openshift.io/deployment.name: "${APP_NAME}"
-          openshift.io/generated-by: STARTX
-        creationTimestamp: null
-        labels:
-          app: "${APP_NAME}"
-          deployment: "${APP_NAME}"
-          deploymentconfig: "${APP_NAME}"
-      spec:
-        containers:
-        - image: startx/sxapi@sha256:78fc008ef281f16eaa244e2df0df6b89e91fa24a56124202e7938ffd366b3923
-          imagePullPolicy: Always
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /ping
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 4
-          name: "${APP_NAME}"
-          ports:
-          - containerPort: 8080
-            protocol: TCP
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /ping
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 4
-          volumeMounts:
-          - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-            name: "${APP_NAME}-config"
-            readOnly: true
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-        volumes:
-        - name: "${APP_NAME}-config"
-          secret:
-            defaultMode: 420
-            secretName: "${APP_NAME}-config"
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        securityContext: {}
-        terminationGracePeriodSeconds: 30
-  status:
-    replicas: 0
 - kind: Route
   apiVersion: v1
   metadata:
@@ -260,57 +242,3 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
-- kind: Pod
-  apiVersion: v1
-  metadata:
-    creationTimestamp: null
-    generateName: "${APP_NAME}-"
-    labels:
-      app: "${APP_NAME}"
-      deployment: "${APP_NAME}"
-      deploymentconfig: "${APP_NAME}"
-  spec:
-    containers:
-    - image: startx/sxapi@sha256:78fc008ef281f16eaa244e2df0df6b89e91fa24a56124202e7938ffd366b3923
-      imagePullPolicy: Always
-      livenessProbe:
-        failureThreshold: 3
-        httpGet:
-          path: /ping
-          port: 8080
-          scheme: HTTP
-        initialDelaySeconds: 10
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 4
-      name: "${APP_NAME}"
-      ports:
-      - containerPort: 8080
-        protocol: TCP
-      readinessProbe:
-        failureThreshold: 3
-        httpGet:
-          path: /ping
-          port: 8080
-          scheme: HTTP
-        initialDelaySeconds: 10
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 4
-      volumeMounts:
-      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-        name: "${APP_NAME}-config"
-        readOnly: true
-    dnsPolicy: ClusterFirst
-    imagePullSecrets:
-    - name: default-dockercfg-54h97
-    nodeName: ip-192-168-0-100.eu-west-1.compute.internal
-    restartPolicy: Always
-    serviceAccount: default
-    serviceAccountName: default
-    terminationGracePeriodSeconds: 30
-    volumes:
-    - name: "${APP_NAME}-config"
-      secret:
-        defaultMode: 420
-        secretName: "${APP_NAME}-config"
