@@ -13,7 +13,7 @@ Resources are one core componement of SXAPI. They expose method you can use in y
 
 ## Using a resource
 
-If you wan't to see sample sxapi.json config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.0.16-npm/samples)
+If you wan't to see sample sxapi.json config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.0.17-npm/samples)
 
 ### Declaring a resource in your sxapi.json
 
