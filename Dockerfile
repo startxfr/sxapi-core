@@ -24,4 +24,4 @@ RUN  cd $APP_PATH \
 USER node:node
 EXPOSE 8080
 WORKDIR $APP_PATH
-CMD [ "/bin/sxapi" , "start_docker" ]
+CMD [ "/bin/sxapi" , "start" ]
