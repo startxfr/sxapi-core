@@ -1,5 +1,4 @@
-api:
-testing:
+sxapi-core:
   build: .
   container_name: "sxapi-core-v0.0.15"
   mem_limit: 200m

@@ -1,7 +1,7 @@
-/* global require, process, $log, $timer */
+/* global require, exports */
 
 exports.app = require("./core/app");
 
-$app.launch(function () {
-    $log.info("application started", $timer.time('app'));
+exports.app.launch(function () {
+    exports.app.log.info("application started", exports.app.timer.time('app'));
 });
