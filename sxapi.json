@@ -1,7 +1,7 @@
 {
-    "name": "sxapi-0.0.13-default",
+    "name": "sxapi-default",
     "description": "sxapi default config file",
-    "version": "0.0.1",
+    "version": "0.0.15",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -34,7 +34,7 @@
         "endpoints": [
             {
                 "path": "/",
-                "body": "<html><head></head><body><h1>SXAPI v0.0.13 is Working !!!!</h1></body></html>"
+                "body": "<html><head></head><body><h1>SXAPI v0.0.15 is Working !!!!</h1></body></html>"
             },
             {
                 "path": "/ping",
