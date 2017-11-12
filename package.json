@@ -34,7 +34,8 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "start": "node app.js"
+    "start": "node app.js",
+    "start_docker": "node app-docker.js"
   },
   "repository": {
     "type": "git",

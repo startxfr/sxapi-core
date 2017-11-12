@@ -1,0 +1,8 @@
+.git
+README.md
+docker-compose.yml
+docs
+nbproject
+.npmignore
+npm-publish.sh
+node_modules
