@@ -10,14 +10,14 @@ metadata:
     description: >-
       An example SXAPI application with a simple home page. For more information
       about using this template, including OpenShift considerations, see
-      https://github.com/startxfr/sxapi-core/blob/master/README.md.
+      https://github.com/startxfr/sxapi-core/blob/testing/README.md.
 
       WARNING: Any data stored will be lost upon pod destruction. Only use this
       template for testing." 
     template.openshift.io/long-description: >-
       This template defines resources needed to develop a SXAPI application,
       you only have to access the config Map and configure your api
-      https://github.com/startxfr/sxapi-core/blob/master/Openshift.md. 
+      https://github.com/startxfr/sxapi-core/blob/testing/Openshift.md. 
     tags: "quickstart,nodejs,sxapi" 
     iconClass: icon-nodejs 
     template.openshift.io/provider-display-name: "STARTX" 
@@ -103,7 +103,7 @@ objects:
     - annotations:
         openshift.io/display-name: "SXAPI (${SXAPI_VERSION})"
         openshift.io/generated-by: STARTX
-        description: "Build and run Node.js SXAPI application sample. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md"
+        description: "Build and run Node.js SXAPI application sample. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/testing/README.md"
         iconClass: "icon-nodejs"
         tags: "builder,nodejs,sxapi"
         supports: "sxapi"
