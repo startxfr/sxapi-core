@@ -10,6 +10,8 @@ $log.init({}, true);
 
 //'use strict';
 var $app = {
+    timer: $timer,
+    log: $log,
     package: {
         network_port: 8080
     },
@@ -17,8 +19,8 @@ var $app = {
         ip: require("ip").address(),
         log: {}
     },
-    onstopQueue: [],
-    onstartQueue: [],
+    _onstopQueue: [],
+    _onstartQueue: [],
     /**
      * Main init function who start the application
      * @param {function} callback
@@ -73,21 +75,15 @@ var $app = {
             $log.error('FATAL : environment variable HOSTNAME must be set');
             process.exit(5);
         }
-        if (process.env.APP_PATH) {
-            this.config.app_path = process.env.APP_PATH;
-            process.chdir(process.env.APP_PATH);
+        if (!process.env.APP_PATH) {
+            process.env.APP_PATH = require('path').dirname(__dirname);
         }
-        else {
-            $log.error('FATAL : environment variable APP_PATH must be set');
-            process.exit(5);
+        this.config.app_path = process.env.APP_PATH;
+        process.chdir(this.config.app_path);
+        if (!process.env.CONF_PATH) {
+            process.env.CONF_PATH = process.env.APP_PATH;
         }
-        if (process.env.CONF_PATH) {
-            this.config.conf_path = process.env.CONF_PATH;
-        }
-        else {
-            $log.error('FATAL : environment variable CONF_PATH must be set');
-            process.exit(5);
-        }
+        this.config.conf_path = process.env.CONF_PATH;
         if (process.env.DATA_PATH) {
             this.config.data_path = process.env.DATA_PATH;
         }
@@ -123,15 +119,15 @@ var $app = {
             mg.recursive($app.config, JSON.parse(process.env.SXAPI_CONF));
         }
         else {
-            $log.debug("env SXAPI_CONF : IS MISSING",3);
+            $log.debug("env SXAPI_CONF : IS MISSING", 3);
             try {
                 mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
                 $log.debug("config file  : " + this.config.conf_path + '/sxapi.json  LOADED', 3);
             }
             catch (e) {
-                $log.debug("config file : " + cfg_file + " IS MISSING",3);
+                $log.debug("config file : " + cfg_file + " IS MISSING", 3);
                 $log.error("config description IS MISSING");
-                $log.debug("add a env variable SXAPI_CONF or place a sxapi.json config file",3);
+                $log.debug("add a env variable SXAPI_CONF or place a sxapi.json config file", 3);
                 console.log(process.env);
                 process.exit(5);
             }
@@ -201,7 +197,7 @@ var $app = {
      */
     onStart: function (callback) {
         if (typeof callback === "function") {
-            $app.onstartQueue.push(callback);
+            $app._onstartQueue.push(callback);
         }
         return this;
     },
@@ -213,8 +209,8 @@ var $app = {
     start: function (callback) {
         $log.debug("starting application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
         var cbResources = function () {
-            for (var i in $app.onstartQueue) {
-                $app.onstartQueue[i]();
+            for (var i in $app._onstartQueue) {
+                $app._onstartQueue[i]();
             }
             if (typeof callback === "function") {
                 callback();
@@ -235,7 +231,7 @@ var $app = {
      */
     onStop: function (callback) {
         if (typeof callback === "function") {
-            $app.onstopQueue.push(callback);
+            $app._onstopQueue.push(callback);
         }
         return this;
     },
@@ -247,8 +243,8 @@ var $app = {
     stop: function (callback) {
         $log.debug("Stopping application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
         var cb = function () {
-            for (var i in $app.onstopQueue) {
-                $app.onstopQueue[i]();
+            for (var i in $app._onstopQueue) {
+                $app._onstopQueue[i]();
             }
             if (typeof callback === "function") {
                 callback();
