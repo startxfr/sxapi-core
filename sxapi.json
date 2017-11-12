@@ -1,7 +1,7 @@
 {
     "name": "sxapi-0.0.13-default",
     "description": "sxapi default config file",
-    "version": "dev",
+    "version": "0.0.1",
     "debug": true,
     "session": {
         "duration": 3600,

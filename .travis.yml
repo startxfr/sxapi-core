@@ -6,5 +6,5 @@ services:
   - docker
 
 # command to run tests
-script: ./ci-tests.sh
+script: ./travis.sh
 
