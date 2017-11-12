@@ -10,6 +10,30 @@ It's an open-source framework for quickly building simple and small microservice
 Getting Started
 ---------------
 
+Open a shell terminal and type the following command
+```bash
+mkdir test
+cd test
+npm install sxapi-core
+vi test.js
+```
+
+In your editor, write this sample code
+```javascript
+var sxapi = require("sxapi-core");
+
+sxapi.app.launch(function () {
+    sxapi.app.log.info("application started", sxapi.app.timer.time('app'));
+});
+```
+
+Then execute your application with
+```bash
+node test.js
+```
+
+You will see some logging and applicaiton exposed on http:localhost:8080
+
 
 ### Troubleshooting
 
