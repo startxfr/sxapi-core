@@ -1,6 +1,6 @@
 # Contributors
 
-* **Startx dev** - [startxfr](https://github.com/startxfr)
-* **Meyer A Dev** - [startxfr](https://github.com/meyeradev)
-* **Mallowtek** - [startxfr](https://github.com/mallowtek)
-* **Milobe** - [startxfr](https://github.com/Milobe)
+* **Startx dev** - [startxfr homepage](https://github.com/startxfr)
+* **Meyer A Dev** - [meyeradev homepage](https://github.com/meyeradev)
+* **Mallowtek** - [mallowtek homepage](https://github.com/mallowtek)
+* **Milobe** - [Milobe homepage](https://github.com/Milobe)

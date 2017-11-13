@@ -2,7 +2,7 @@
 
 Build status : [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=dev)](https://travis-ci.org/startxfr/sxapi-core)
 
-***sxapi*** for ***s***imple and e***x***tensible ***api*** 
+**sxapi** for **s**imple and e**x**tensible **api** 
 (Application Programming Interface) is an an open-source framework for 
 quickly building simple and small API based on microservice architecture.
 
@@ -13,35 +13,36 @@ API endpoints as well as big enterprise sized API.
 ## Getting Started
 
 sxapi is shipped in 3 ways : 
-- a container image published in dockerhub public registry ([see project page](https://hub.docker.com/r/startx/sxapi/))
-- a npm module published in npm public database ([see project page](https://www.npmjs.com/package/sxapi-core))
-- as a source code published in github ([see project page](https://github.com/startxfr/sxapi-core/tree/dev))
-
+- [container image](https://hub.docker.com/r/startx/sxapi) published in dockerhub public registry
 The simplest and fastest way to get a running sxapi application is to use the
 public docker image. For more information on how to run your first sxapi 
 application using sxapi docker image, please read the 
 [Using docker image user guide](docs2/guides/USE_docker.md)
-
+- [npm module](https://www.npmjs.com/package/sxapi-core) published in npm public database
 If you plan to develop your own component or embed you api into another 
 application, you should be more interested by the npm method. For more 
 information on how to run your first sxapi application using sxapi npm module, 
 please read the [Using nm module user guide](docs2/guides/USE_npm.md)
-
+- [source code](https://github.com/startxfr/sxapi-core/tree/dev) published in github
 If you plan to extend sxapi capabilities with your own component, change 
 default software design, extend core functinalities or more globaly improve
 this application, please read the [Using source code user guide](docs2/guides/USE_source.md)
 
 ## Want to try ?
 
-If you simply want to try this application before working on it, the best way 
-is to use the container version. If you follow these steps, you will run
+To try this application before working on it, the easiest way 
+is to use the container version. Follow the following steps to run
 a sxapi application within the next couple of minutes. 
 
-You can skip the first step if you already have a live docker daemon.
+You can skip the first step if you already have [docker](https://www.docker.com)
+installed and running.
 
-1. Install and run docker runtime. Theses command are for a Red Hat Linux like
+### 1. Install and start docker
+
+Theses command are for a Red Hat Linux like
 environement (Fedora, CentOS, RHEL, Suse). Please adapt ```yum``` command to the 
 ```apt-get``` equivalent if you are using a Debian like system (Ubuntu, Debian)
+
 ```bash
 sudo yum install -y docker
 sudo service docker start
@@ -52,25 +53,33 @@ Please be sure that your user can interact with the docker daemon. The next
 docker command require your user to interact with the docker daemon and have the
 proper right to start and stop a container.
 
-2. Create your local developpement environement and isolate your sxapi test from 
-your current work.
+### 2. Create your working directory
+
+In order to run you test in a sandbox, you should isolate your sxapi test from 
+your current work by creating a working directory.
 ```bash
 mkdir ~/test-sxapi
 cd ~/test-sxapi
 ```
 
-3. Get the last version of sxapi container from docker hub registry and update
-your local docker image cache
+### 3. Get the last version of sxapi container
+
+Use docker command to get sxapi container image from the docker hub registry. 
+This will update your local docker image cache.
+
 ```bash
 docker pull startx/sxapi:latest
 ```
 
-4. Create a file named sxapi.json
+### 4. Create your own configuration file
+
+Create a file named sxapi.json
+
 ```bash
 vi ~/test-sxapi/sxapi.json
 ```
 
-edit it with the following content
+Edit it with the following content
 
 ```javascript
 {
@@ -98,12 +107,15 @@ edit it with the following content
 You can change ```name```, ```description```, ```version``` and 
 ```server.endpoints.body``` with personalized content
 
-5. Run your application
+### 5. Run your application
+
 ```bash
 docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx/sxapi
 ```
 
-6. Connect to ```http://localhost:8080``` with your favorite navigator
+### 6. Explore your api
+
+Connect to ```http://localhost:8080``` with your favorite navigator
 
 For more information on how to use this project as a container, 
 see [use docker image](docs2/guides/USE_docker.md)
@@ -115,12 +127,10 @@ relflecting your needs, please read carefully
 
 ## Creating your own API
 
-sxapi-core come with many components to help you build extensible api by using a 
-single json config file. As soon as you have an api instance working, you should 
-focus on making change to your ```sxapi.json``` config file and implement api 
-endpoints you want to create. 
-
-You must :
+sxapi-core come with many components to help you build your own api. As soon as 
+you have an api instance working, you should focus on making change to your 
+```sxapi.json``` config file and implement api endpoints you want to create. 
+To help you understand how you can configure your api, you can :
 1. Visit [sxapi-core official documentation](docs/README.md) and read carefully
 the develop section
 2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and
@@ -139,10 +149,9 @@ sections :
 
 ## Troubleshooting
 
-If you run into difficulties installing or running sxapi, please report 
-[issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) or  
-[issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
-
+If you run into difficulties installing or running sxapi, please 
+report [issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) 
+or [issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
 
 ## Built With
 
@@ -158,10 +167,10 @@ our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-* **Startx dev** - [startxfr](https://github.com/startxfr)
-* **Meyer A Dev** - [startxfr](https://github.com/meyeradev)
-* **Mallowtek** - [startxfr](https://github.com/mallowtek)
-* **Milobe** - [startxfr](https://github.com/Milobe)
+* **Startx dev** - [startxfr homepage](https://github.com/startxfr)
+* **Meyer A Dev** - [meyeradev homepage](https://github.com/meyeradev)
+* **Mallowtek** - [mallowtek homepage](https://github.com/mallowtek)
+* **Milobe** - [Milobe homepage](https://github.com/Milobe)
 
 See also the list of [contributors](docs2/CONTRIBUTORS.md) who participated 
 in this project.
