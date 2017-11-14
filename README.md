@@ -8,7 +8,7 @@ quickly building simple and small API based on microservice architecture.
 
 Very light (application less than 100Ko, full container stack for less than 30Mo)
 and configured with a single json file, you can build instantly small atomic
-API endpoints as well as big enterprise sized API.
+API endpoints as well as fully featured enterprise-sized API.
 
 ## Getting Started
 
@@ -31,11 +31,10 @@ this application, please read the [Using source code user guide](docs2/guides/US
 ## Want to try ?
 
 To try this application before working on it, the easiest way 
-is to use the container version. Follow the following steps to run
+is to use the container version. Follow theses steps to run
 a sxapi application within the next couple of minutes. 
-
-You can skip the first step if you already have [docker](https://www.docker.com)
-installed and running.
+(You can skip the first step if you already have [docker](https://www.docker.com)
+installed and running)
 
 ### 1. Install and start docker
 
@@ -49,20 +48,19 @@ sudo service docker start
 ```
 For more information on how to install and execute a docker runtime, please see
 the [official docker installation guide](https://docs.docker.com/engine/installation/)
-Please be sure that your user can interact with the docker daemon. The next 
-docker command require your user to interact with the docker daemon and have the
-proper right to start and stop a container.
+After installation, pay attention to your user authorisation. Your current user
+must interact with the docker daemon.
 
 ### 2. Create your working directory
 
-In order to run you test in a sandbox, you should isolate your sxapi test from 
+To run you test in a sandbox, you should isolate your sxapi test from 
 your current work by creating a working directory.
 ```bash
 mkdir ~/test-sxapi
 cd ~/test-sxapi
 ```
 
-### 3. Get the last version of sxapi container
+### 3. Get the sxapi container image
 
 Use docker command to get sxapi container image from the docker hub registry. 
 This will update your local docker image cache.
@@ -71,7 +69,7 @@ This will update your local docker image cache.
 docker pull startx/sxapi:latest
 ```
 
-### 4. Create your own configuration file
+### 4. Create your sxapi.json configuration file
 
 Create a file named sxapi.json
 
@@ -115,14 +113,8 @@ docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx
 
 ### 6. Explore your api
 
-Connect to ```http://localhost:8080``` with your favorite navigator
-
-For more information on how to use this project as a container, 
-see [use docker image](docs2/guides/USE_docker.md)
-
-For more information on how to change your configuration file and create an API
-relflecting your needs, please read carefully 
-[use docker image](docs2/guides/USE_docker.md)
+Connect to ```http://localhost:8080/``` with your favorite navigator. You should
+see an html message "My Sample API".
 
 
 ## Creating your own API
@@ -131,21 +123,28 @@ sxapi-core come with many components to help you build your own api. As soon as
 you have an api instance working, you should focus on making change to your 
 ```sxapi.json``` config file and implement api endpoints you want to create. 
 To help you understand how you can configure your api, you can :
-1. Visit [sxapi-core official documentation](docs/README.md) and read carefully
+1. Visit [sxapi-core official documentation](docs2/README.md) and read carefully
 the develop section
 2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and
 explore sample config file to help find sample code or ready-to-use config file
+
+For more information on how to use this project as a container, 
+see [use docker image](docs2/guides/USE_docker.md)
+
+For more information on how to change your configuration file and create an API
+relflecting your needs, please read carefully our 
+[building api user guide](docs2/guides/xxxxxxxxxxxxxx.md)
 
 ## Documentation
 
 If you want to have more information on how to install, develop and run this
 framework and use it in your project, please read the 
-[sxapi official documentation](docs/README.md) with the following 
+[full documentation](docs2/README.md) or our [user guides](docs2/guides/)
 sections :
-1. [Install sxapi](docs/1.Install.md)
-2. [Configure sxapi](docs/2.Configure.md)
-3. [Run sxapi](docs/3.Run.md)
-4. [Develop sxapi resource](docs/4.Develop.md)
+1. [Install sxapi](docs2/guides/1.Install.md)
+2. [Configure sxapi](docs2/guides/2.Configure.md)
+3. [Run sxapi](docs2/guides/3.Run.md)
+4. [Develop sxapi resource](docs2/guides/4.Develop.md)
 
 ## Troubleshooting
 
@@ -167,16 +166,12 @@ our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-* **Startx dev** - [startxfr homepage](https://github.com/startxfr)
-* **Meyer A Dev** - [meyeradev homepage](https://github.com/meyeradev)
-* **Mallowtek** - [mallowtek homepage](https://github.com/mallowtek)
-* **Milobe** - [Milobe homepage](https://github.com/Milobe)
-
-See also the list of [contributors](docs2/CONTRIBUTORS.md) who participated 
-in this project.
+This project is mainly developped by the [startx](https://www.startx.fr) dev team.
+You can see the complete list of contributors who participated in this project
+by reading [CONTRIBUTORS.md](docs2/CONTRIBUTORS.md).
 
 ## License
 
-This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) 
-file for details
+This project is licensed under the GPL Version 3 - 
+see the [LICENSE.md](docs2/LICENSE.md) file for details
 
