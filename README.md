@@ -1,6 +1,6 @@
 # sxapi-core project
 
-Build status : [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=master)](https://travis-ci.org/startxfr/sxapi-core)
+Build status : [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=testing)](https://travis-ci.org/startxfr/sxapi-core)
 
 **sxapi** for **s**imple and e**x**tensible **api** 
 (Application Programming Interface) is an an open-source framework for 
