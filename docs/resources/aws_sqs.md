@@ -1,5 +1,6 @@
 # SXAPI Resource : aws_sqs
 
+## Resource configuration
 This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS SQS resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
