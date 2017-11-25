@@ -5,8 +5,8 @@ information between client and API server using a session mechanism.<br>
 This component comes with various transport layer ([cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 
 session identifier from and to the consumer. <br> 
-You can use various storage backend ([mysql](#backend-mysql), 
-[couchbase](#backend-couchbase), [memory](#backend-memory) or [redis](#backend-redis)) 
+You can use various storage backend ([mysql](#backend-using-mysql), 
+[couchbase](#backend-using-couchbase), [memory](#backend-using-memory) or [redis](#backend-using-redis)) 
 to persist session context across request and micro-services instances.
 
 ## Configuration
@@ -25,7 +25,7 @@ used a buildin mecanism for user context persistance.
 | **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport layer.
 | **auto_create** | no        | bool | false   | If transport layer could not find a session ID, create a new session transparently
 | **transport**   | no        | obj  | null    | An object describing the transport layer used to get and set session ID. See [transport section](#transport-using-layer)
-| **backend**     | no        | obj  | null    | An object describing the backend layer used to store and retrive session context. See [backend section](#backend-layer)
+| **backend**     | no        | obj  | null    | An object describing the backend layer used to store and retrive session context. See [backend section](#backend-using-layer)
 
 
 ### Config Sample
@@ -51,22 +51,23 @@ In you `transport` section, you must have a property `type` coresponding to a
 supported type. Available transport types are [cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)
 
+
 ### transport using `token`
 
 Token transport allow you to retrive the session ID by reading an http param. 
 You can call your API endpoint's using `?token=xxx` and this transport layer will
-extract the `xxx` session ID and pass it to the backend.
+extract the `xxx` session ID and pass it to the backend.<br>
 This transport type is very light. Client is in charge of storing the session ID.
 Choose carefully your `param` name to avoid naming conflict with your API endpoints.
 
-#### Config parameters
+#### Token config parameters 
 
 | Param       | Mandatory | Type    | default | Description
 |-------------|:---------:|:-------:|---------|---------------
 | **type**    | yes       | string  | token   | Must be `token` for this transport layer
-| **param**   | no        | string  | _token  | Name of the http param to read. Default is `_token`
+| **param**   | no        | string  | _token  | Name of the http parameter transporting session ID
 
-#### Config sample
+#### Token config sample
 
 ```json
 "session": {
@@ -79,32 +80,53 @@ Choose carefully your `param` name to avoid naming conflict with your API endpoi
 
 ### transport using `cookie`
 
-Cookie transport allow you to get the session ID by reading the session ID from an http cookie. You can call you api's endpoint using a browser cookie and this session transport layer will be able to get the session ID and pass it to the configured backend to find the coresponding session.
+Cookie transport allow you to get the session ID by reading the session ID 
+from an http cookie. You can call you api's endpoint using a browser cookie and 
+this session transport layer will be able to get the session ID and pass it to 
+the configured backend to find the coresponding session.<br>
+This transport type is statefull as it create the cookie when required. Client is 
+not in charge of persisting the session ID and giving it to the http Object used
+to send request to our API.
+Choose carefully your `cookie_name` name to avoid naming conflict with other domain
+cookies.
 
-#### **Config parameters**
+#### Cookie config parameters 
 
--   `cookie_name` **string** name of the cookie to find or define. Default is `sxapi-sess`
--   `cookie_options` **object** option used for creation a cookie. [See cookies documentation](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
+| Param               | Mandatory | Type    | default    | Description
+|---------------------|:---------:|:-------:|------------|---------------
+| **type**            | yes       | string  | cookie     | Must be `cookie` for this transport layer
+| **cookie_name**     | no        | string  | sxapi-sess | name of the cookie to find or define
+| **cookie_options**  | no        | object  | {}         | option used for creation a cookie. [See cookies documentation](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
 
-### **Sample sxapi.json**
+#### Cookie config sample
 
 ```json
 "session": {
     "transport": {
         "type": "cookie",
         "cookie_name": "sxapi-sess",
-        "cookie_options" : {...}
+        "cookie_options" : { ... }
     }
 }
 ```
 
+
 ### transport using `bearer`
 
-Bearer transport allow you to get the session ID by reading it from a `Authentification: Bearer <token>` http header. session token is also transmitted using this header
+Bearer transport allow you to get the session ID by reading it from a 
+`Authentification: Bearer <token>` http header. session token is also transmitted 
+to the client using the same header.
+This transport type is stateless as client is in charge of storing and sending
+the session ID.
 
-#### **Config parameters**
 
-### **Sample sxapi.json**
+#### Bearer config parameters 
+
+| Param               | Mandatory | Type    | default    | Description
+|---------------------|:---------:|:-------:|------------|---------------
+| **type**            | yes       | string  | bearer     | Must be `bearer` for this transport layer
+
+#### Bearer config sample
 
 ```json
 "session": {
@@ -115,27 +137,31 @@ Bearer transport allow you to get the session ID by reading it from a `Authentif
 ```
 
 
+
 ## Backend layer
 
-In you `backend` section, you must have a property named `type` and coresponding to a supported type. Actualy supported type is `mysql`.
+In you `backend` section, you must have a property named `type` and coresponding 
+to a supported backend type. Available backend types are  [mysql](#backend-using-mysql), 
+[couchbase](#backend-using-couchbase), [memory](#backend-using-memory) or [redis](#backend-using-redis)
 
 ### backend using `mysql`
 
-mysql backend 
+This backend layer use [mysql resource](../resource/mysql.md) to persist session context across executions.
 
-#### **Config parameters**
+#### mysql config parameters
 
--   `type` **string** Must be `mysql` for this backend layer
--   `resource` **string** ID of the mysql resource [see resource for configuration](../resources/README.md).
--   `table` **string** table name used for session storage
--   `sid_field` **string** name of the field containing the session ID
--   `id_field` **string** name of the field containing the table ID
--   `fields` **object** an object with special field list
-  -   `ip` **string** name of the field containing the session IP
-  -   `start` **string** name of the field containing the session start time
-  -   `stop` **string** name of the field containing the session end time (defined with duration and used for expiration control)
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | mysql      | Must be `mysql` for this backend layer
+| **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/README.md).
+| **table**        | yes       | string  |            | table name used for session storage
+| **sid_field**    | yes       | string  |            | name of the field containing the session ID
+| **fields**       | no        | obj     | {}         | an object with special field list
+| **fields.ip**    | no        | string  | {}         | name of the field containing the session IP
+| **fields.start** | no        | string  | {}         | name of the field containing the session start time
+| **fields.stop**  | no        | string  | {}         | name of the field containing the session end time (defined with duration and used for expiration control)
 
-### **Sample sxapi.json**
+#### mysql config sample
 
 ```json
 "session": {
@@ -144,7 +170,6 @@ mysql backend
         "resource": "mysql-sample",
         "table": "sessions",
         "sid_field": "token_sess",
-        "id_field": "id_sess",
         "fields": {
             "ip": "ip_sess",
             "start": "start_sess",
@@ -156,32 +181,34 @@ mysql backend
 
 ### backend using `couchbase`
 
-couchbase backend 
+This backend layer use [couchbase resource](../resource/couchbase.md) to persist session context across executions.
 
-#### **Config parameters**
+#### couchbase config parameters
 
--   `type` **string** Must be `couchbase` for this backend layer
--   `resource` **string** ID of the couchbase resource [see resource for configuration](../resources/README.md).
--   `key_ns` **string** the key namespace for this kind of document. used as a key prefix
--   `fields` **object** an object with special field list
-  -   `token` **string** name of the field containing the session token
-  -   `ip` **string** name of the field containing the session IP
-  -   `start` **string** name of the field containing the session start time
-  -   `stop` **string** name of the field containing the session end time (defined with duration and used for expiration control)
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend layer
+| **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/README.md).
+| **key_ns**       | yes       | string  |            | the key namespace for this kind of document. used as a key prefix
+| **fields**       | no        | obj     | {}         | an object with special field list
+| **fields.token** | no        | string  | {}         | name of the field containing the session token
+| **fields.ip**    | no        | string  | {}         | name of the field containing the session IP
+| **fields.start** | no        | string  | {}         | name of the field containing the session start time
+| **fields.stop**  | no        | string  | {}         | name of the field containing the session end time (defined with duration and used for expiration control)
 
-### **Sample sxapi.json**
+#### couchbase config sample
 
 ```json
 "session": {
     "backend": {
-        "type": "couchbase",
+        "type"    : "couchbase",
         "resource": "couchbase-sample",
-        "key_ns": "sess::",
-        "fields": {
+        "key_ns"  : "sess::",
+        "fields"  : {
             "token": "token",
-            "ip": "ipAdress",
+            "ip"   : "ipAdress",
             "start": "startDate",
-            "stop": "stopDate"
+            "stop" : "stopDate"
         }
     }
 }
