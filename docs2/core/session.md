@@ -214,5 +214,64 @@ This backend layer use [couchbase resource](../resource/couchbase.md) to persist
 }
 ```
 
+### backend using `memory`
 
+This backend layer use application memory space to persist session context across executions.
 
+#### memory config parameters
+
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | memory     | Must be `memory` for this backend layer
+| **sid_field**    | no        | string  | sid        | name of the field containing the session ID
+| **fields**       | no        | obj     |            | an object with special field list
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
+
+#### memory config sample
+
+```javascript
+"session": {
+    "backend": {
+        "type"     : "memory",
+        "sid_field": "sessionID",
+        "fields"   : {
+            "ip"   : "ipAdress",
+            "start": "startDate",
+            "stop" : "stopDate"
+        }
+    }
+}
+```
+
+### backend using `redis`
+
+This backend layer use [redis resource](../resource/redis.md) to persist session context across executions.
+
+#### redis config parameters
+
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | redis      | Must be `redis` for this backend layer
+| **resource**     | yes       | string  |            | ID of the redis resource [see resource for configuration](../resources/README.md).
+| **sid_field**    | yes       | string  |            | name of the field containing the session ID
+| **fields**       | no        | obj     |            | an object with special field list
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
+
+#### redis config sample
+
+```javascript
+"session": {
+    "backend": {
+        "type"      : "redis",
+        "resource"  : "redis-sample",
+        "sid_field" : "token",
+        "fields"    : {
+            "stop"  : "stopDate"
+        }
+    }
+}
+```

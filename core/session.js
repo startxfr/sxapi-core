@@ -681,7 +681,7 @@ var $sess = {
             init: function () {
                 $log.debug("Init 'memory' session backend", 3);
                 if (!$sess.config.backend.sid_field) {
-                    throw new Error("no 'sid_field' key found in config 'session.backend.memory'");
+                    $sess.config.backend.sid_field = "sid";
                 }
                 return this;
             },
