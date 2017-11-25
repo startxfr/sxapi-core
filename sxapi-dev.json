@@ -11,7 +11,8 @@
             "cookie_name": "sxapi-sess"
         },
         "backend": {
-            "type": "memory",
+            "type": "redis",
+            "resource": "redis-sample",
             "sid_field": "token_sess",
             "fields": {
                 "ip": "ip_sess",
