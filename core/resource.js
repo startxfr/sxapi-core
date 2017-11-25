@@ -49,6 +49,9 @@ var $resources = {
      * @returns {$resources.config}
      */
     get: function (id) {
+        if (!this.exist(id)) {
+            throw new Error("resource '"+id+"' doesn't exist");
+        }
         return this.config[id];
     },
     /**
