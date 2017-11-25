@@ -77,7 +77,7 @@ module.exports = function (id, config) {
                     $log.error("resource '" + $rddb.id + "' : get could not be executed because " + err.message, duration);
                 }
                 else {
-                    if (results[0] === '{' || results[0] === '[') {
+                    if (JSON.isParsable(results)) {
                         results = JSON.parse(results);
                     }
                     $log.debug("resource '" + $rddb.id + "' : get returned " + results.length + " results", 3, duration);
@@ -180,7 +180,7 @@ module.exports = function (id, config) {
                                         $log.warn(message_prefix + "error because " + err.message, duration);
                                     }
                                     else {
-                                        if (reponse[0] === '{' || reponse[0] === '[') {
+                                        if (JSON.isParsable(reponse)) {
                                             reponse = JSON.parse(reponse);
                                         }
                                         ws.okResponse(res, "return document " + docId, reponse).send();

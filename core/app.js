@@ -1,5 +1,8 @@
 /* global module, require, process, __dirname */
 
+// import low level tools
+require('./tools');
+
 // declaring global variable $timer 
 $timer = require('./timer');
 $timer.start('app');
@@ -142,7 +145,7 @@ var $app = {
         }
         $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
         $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
-        var logConf = JSON.parse(JSON.stringify($app.config.log));
+        var logConf = JSON.cleanObject($app.config.log); 
         delete logConf['couchbase'];
         delete logConf['sqs'];
         $log.debug("sxapi-core   : " + $app.package.name + ' v' + $app.package.version, 1);

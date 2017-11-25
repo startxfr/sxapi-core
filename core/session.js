@@ -794,7 +794,7 @@ var $sess = {
                     return function (error, session) {
                         var duration = $timer.timeStop(timerId);
                         var moment = require('moment');
-                        if (typeof session === 'string' && (session[0] === '{' || session[0] === '[')) {
+                        if (JSON.isParsable(session)) {
                             session = JSON.parse(session);
                         }
                         if (error) {
