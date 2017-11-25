@@ -1,7 +1,7 @@
 {
-    "name": "sxapi-default",
-    "description": "sxapi default config file",
-    "version": "0.0.20",
+    "name": "startx-api-dev",
+    "description": "sxapi developing config file",
+    "version": "0.0.1-beta",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -22,7 +22,7 @@
     },
     "log": {
         "filters": {
-            "level": "0,1,2",
+            "level": "0,1,2,3,4,5",
             "type": "debug,info,error,warn"
         }
     },
