@@ -30,15 +30,15 @@ used a buildin mecanism for user context persistance.
 
 ### Config Sample
 
-```json
+```javascript
 "session": {
-    "duration": 3600,
+    "duration"   : 3600,
     "auto_create": true,
-    "transport": {
+    "transport"  : {
         "type": "cookie",
         ...
     },
-    "backend": {
+    "backend"    : {
         "type": "memory",
         ...
     }
@@ -69,10 +69,10 @@ Choose carefully your `param` name to avoid naming conflict with your API endpoi
 
 #### Token config sample
 
-```json
+```javascript
 "session": {
     "transport": {
-        "type": "token",
+        "type" : "token",
         "param": "sid"
     }
 }
@@ -100,11 +100,11 @@ cookies.
 
 #### Cookie config sample
 
-```json
+```javascript
 "session": {
     "transport": {
-        "type": "cookie",
-        "cookie_name": "sxapi-sess",
+        "type"           : "cookie",
+        "cookie_name"    : "sxapi-sess",
         "cookie_options" : { ... }
     }
 }
@@ -128,10 +128,10 @@ the session ID.
 
 #### Bearer config sample
 
-```json
+```javascript
 "session": {
     "transport": {
-        "type": "bearer"
+        "type" : "bearer"
     }
 }
 ```
@@ -163,17 +163,17 @@ This backend layer use [mysql resource](../resource/mysql.md) to persist session
 
 #### mysql config sample
 
-```json
+```javascript
 "session": {
     "backend": {
-        "type": "mysql",
-        "resource": "mysql-sample",
-        "table": "sessions",
+        "type"     : "mysql",
+        "resource" : "mysql-sample",
+        "table"    : "sessions",
         "sid_field": "token_sess",
-        "fields": {
-            "ip": "ip_sess",
+        "fields"   : {
+            "ip"   : "ip_sess",
             "start": "start_sess",
-            "stop": "stop_sess"
+            "stop" : "stop_sess"
         }
     }
 }
