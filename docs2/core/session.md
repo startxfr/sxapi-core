@@ -53,14 +53,20 @@ supported type. Available transport types are [cookie](#transport-using-cookie),
 
 ### transport using `token`
 
-Token transport allow you to get the session ID by reading the session ID from an http param. You can call you api's endpoint using `?token=xxx` and this session transport layer will be able to get the `xxx` session ID and pass it to the configured backend to find the coresponding session.
+Token transport allow you to retrive the session ID by reading an http param. 
+You can call your API endpoint's using `?token=xxx` and this transport layer will
+extract the `xxx` session ID and pass it to the backend.
+This transport type is very light. Client is in charge of storing the session ID.
+Choose carefully your `param` name to avoid naming conflict with your API endpoints.
 
-#### **Config parameters**
+#### Config parameters
 
--   `type` **string** Must be `token` for this transport layer
--   `param` **string** Name of the http param to read. Default is `token`
+| Param       | Mandatory | Type    | default | Description
+|-------------|:---------:|:-------:|---------|---------------
+| **type**    | yes       | string  | token   | Must be `token` for this transport layer
+| **param**   | no        | string  | _token  | Name of the http param to read. Default is `_token`
 
-### **Sample sxapi.json**
+#### Config sample
 
 ```json
 "session": {

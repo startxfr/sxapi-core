@@ -408,7 +408,7 @@ var $sess = {
             init: function () {
                 $log.debug("Init 'token' session transport", 3);
                 if (!$sess.config.transport.param) {
-                    $sess.config.transport.param = "token";
+                    $sess.config.transport.param = "_token";
                 }
                 return this;
             },
