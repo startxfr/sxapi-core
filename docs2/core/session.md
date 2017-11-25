@@ -1,6 +1,7 @@
 # SXAPI Core : session
 
-This core module allow you to track user and calls using a session mechanism. You can use various transport layer (cookie, token) for getting the session identifier from the consumer. Backend section allow you to define a storage for these sessions identifier.
+This core module allow you to track user and calls using a session mechanism. 
+You can use various transport layer (cookie, token) for getting the session identifier from the consumer. Backend section allow you to define a storage for these sessions identifier.
 
 ## Configuration
 
