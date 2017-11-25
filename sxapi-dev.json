@@ -11,30 +11,117 @@
             "cookie_name": "sxapi-sess"
         },
         "backend": {
-            "type": "memory",
+            "type": "mysql",
+            "resource": "mysql-sample",
+            "table": "sessions",
             "sid_field": "token_sess",
+            "id_field": "id_sess",
             "fields": {
-                "stop": "datefin_sess"
+                "ip": "ip_sess",
+                "start": "start_sess",
+                "stop": "stop_sess"
             }
         }
     },
     "resources": {
+        "s3-sample": {
+            "_class": "aws_s3",
+            "listObjects_options": {
+            },
+            "getObject_options": {
+            },
+            "addObject_options": {
+            },
+            "updateObject_options": {
+            },
+            "deleteObject_options": {
+            },
+            "ACCESS_ID": "AKIAJ7JDWBNTZOXZRM6A",
+            "ACCESS_KEY": "VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl",
+            "SESSION_TOKEN": "",
+            "region": "eu-west-1",
+            "Bucket": "sxapitest"
+        },
+        "sqs-sample": {
+            "_class": "aws_sqs",
+            "read_options": {
+                "MaxNumberOfMessages": 10,
+                "VisibilityTimeout": 10,
+                "WaitTimeSeconds": 0
+            },
+            "delete_options": {
+            },
+            "send_options": {
+                "DelaySeconds": 10,
+                "MessageAttributes": {
+                    "from": {
+                        "DataType": "String",
+                        "StringValue": "startx"
+                    }
+                }
+            },
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test",
+            "ACCESS_ID": "AKIAJ7JDWBNTZOXZRM6A",
+            "ACCESS_KEY": "VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl",
+            "SESSION_TOKEN": "",
+            "region": "eu-west-1"
+        },
+        "serviceinfo-sample": {
+            "_class": "serviceinfo"
+        },
+        "redis-sample": {
+            "_class": "redis",
+            "url": "redis://db-redis:6379"
+        },
+        "http-sample": {
+            "_class": "http",
+            "url": "https://adobe.github.io/Spry/data/json/array-02.js"
+        },
+        "google-sample": {
+            "_class": "google",
+            "auth": {
+                "method": "jwt",
+                "jwt": {
+                    "type": "service_account",
+                    "project_id": "sxv4-dev",
+                    "private_key_id": "fbb88abc1f62290646efbfb70c57c71a719b1bf6",
+                    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDHG48853MXzRSg\nXeTZ+Yg2Y8zPeppTdRp+TMNfPtEoJHQjlI37ABX/3eRPo6akufARJYvO8ueBEONF\nA3hfg9LgHtZgjASIinC80Uml7B0ZE4O26MbKPvD/1t3DkvuKsIQCUhc2M6N6Uuxa\nGUFGaG0j4mL8v/2uxxjJIxWM4bqEQK3kInJU1VaHnkVm/jksqQX3BxLFlnI7Ma7G\nfOQlR+aDZOh1Lzks6nvifXGQSHkUgfnBxyg2qdmvEbDcTjEUQm+S4WVrCa4ojHMD\nfvNuMNdPyXYBUPBCRaxJ16tEzkYCLnXPIw7BsGaVljm4ZT+OIvZjp85e30BjFexK\naarGyzJ1AgMBAAECggEAXcbiMOpF7/jcdSekCPIZMJzSswnos9Qc1U2sWyjH9CMv\nPC7UrFp/AhLtXIEUlNMqebj4X1FSrhxZHoEi6cG5yWtcxv5LiE/EB3p/OJG7prrl\nN3ntXwZEFguKSXnp1YmLs1gcrJ+nqI5z2X+5mcLHXLZcrvRyNCZ7ywgmN0N9yJmk\n6EaaKytfa/8ZWP0EOQZeuuZUTsDFMU+nm6qGCmWdyBLmSEaabxE7ehLpk+0dldhi\nUzD7CyRBR0LfA7DsbN8ZqSj++m53HS89Y3oOP3m0EjLmqnFOJsTf2oep4MY3SyGK\nk8BcIUzuUj9QyEqaly33r8/5RF3FKQWGQJUwxhNDRQKBgQDxVfjFC617gkZe7lpX\nYnfZfLsrmK4UDT0659BwirgPpu5Hni1yudS7iPavvl4C/brXLPq9nE1Mp8uVkiMW\nTxAV0xTvtGvf3f5SRnc3NYFUolNX1/hpGux0mTrUiyZjIBscrYbxtgCDF87PkexT\nJRXbL2cIDi56vs/KDc39p2LyTwKBgQDTNLhKb4jA7Q4kW5OCMme2/NinHVcBblTZ\nsDHoNo03jzPR65N9Gm/becbz7Fmqo0oB5kXTPi73LK1NWpLfq+WOJ5R1wFMZtVD9\nm95YC937yEAHHFEVZ91UhgdeBi41qLwTmEz8GQoRj6FBXYn55+obsfzOvRzxE8a/\n1OzxWBGx+wKBgQDHLte1ed/jEjCWZU721HRqckHgx5DVR+ADYBRu7m7frDz5qxmD\nmNB1P6OqhQn+mf+9XIhOOlSqMcsbVZPT88ko2iBrfpOSHxyqNzJpxKVLfvYeiEek\nJ+6EhXtCtN4n7fWyg53enQJrMBkmxB8yuGcDkmoNAfdmo1nIQACFm8NUjQKBgQCX\n5TmJJw/GGHbsRQQgRdn7a3rxLROuzsetS5+I7vq+83mERpVrCsFZqgog0WFnbEpE\ndXTQSM+EKph0omgw/rJ4exS1Xt0lBxa5XgkZb2d1tf3+XyodZ/Zw3Hed8nn3U2P3\n/7eWMvffy1lg5kHd/iGLS4WStcWDyAJPYnYJ2JnZUwKBgQDDh6VwbeUkaHZmJKkp\nAJ1uRADKxj1/qihwkiYAhC2oqWKaIQqXmXCXSQoMOnVT/9YX0NaxrYPCGMS8Mz1s\n0HdVdiFv99QIOvTO1qcm03mhDagd1dZGgdHK8hUiGbud2jYBOTfK1G5N3LIUC4xB\n6Qa6iMBLhw4w3+7j/QMWW556Ww==\n-----END PRIVATE KEY-----\n",
+                    "client_email": "api-831@sxv4-dev.iam.gserviceaccount.com",
+                    "client_id": "110440463286648657550",
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://accounts.google.com/o/oauth2/token",
+                    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/api-831%40sxv4-dev.iam.gserviceaccount.com"
+                },
+                "scopes": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive"
+            },
+            "services": {
+                "drive": {
+                }
+            }
+        },
+        "mysql-sample": {
+            "_class": "mysql",
+            "server": {
+                "host": "172.17.42.1",
+                "port": "3306",
+                "user": "dev",
+                "password": "dev",
+                "database": "sxapi"
+            }
+        }
     },
     "log": {
         "filters": {
-            "level": "0,1,2,3,4,5",
+            "level": "0,1,2,3,4",
             "type": "debug,info,error,warn"
         }
     },
     "server": {
-        "type": "express",
-        "port": "8080",
-        "bodyParserJson": true,
-        "bodyParserUrl": true,
         "endpoints": [
             {
                 "path": "/",
-                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.20 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API endpoints.</p></body></html>"
+                "body": "<html><head></head><body><h1>SXAPI full response catalog</h1></body></html>"
             },
             {
                 "path": "/ping",
@@ -43,6 +130,271 @@
                     "Content-Type": "application/json"
                 },
                 "body": "{\"health\":\"good\"}"
+            },
+            {
+                "path": "/google",
+                "method": "ROUTER",
+                "resource": "s3-sample",
+                "endpoints": [
+                    {
+                        "path": "/google/token",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.getToken"
+                    },
+                    {
+                        "path": "/google/:q",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.findFile"
+                    },
+                    {
+                        "path": "/google/file/:id",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.getFile"
+                    },
+                    {
+                        "path": "/google/file/:name",
+                        "method": "POST",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.addFile",
+                        "parent": "root"
+                    },
+                    {
+                        "path": "/google/directory",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.listDirectory"
+                    },
+                    {
+                        "path": "/google/directory/:id",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.listDirectory"
+                    },
+                    {
+                        "path": "/google/directory/:name",
+                        "method": "POST",
+                        "resource": "google-sample",
+                        "resource_handler": "endpoints.drive.addDirectory",
+                        "parent": "root"
+                    }
+                ]
+            },
+            {
+                "path": "/html",
+                "body": "<html><head></head><body><h1>Static html content</h1></body></html>"
+            },
+            {
+                "path": "/txt",
+                "code": "201",
+                "header": {
+                    "Content-Type": "text/plain"
+                },
+                "body": "text response"
+            },
+            {
+                "path": "/json",
+                "code": "200",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{\"key\":\"value\"}"
+            },
+            {
+                "path": "/function",
+                "handler": "$ws.dynamicRequestHandlerTest",
+                "param_sample": "value de param_sample"
+            },
+            {
+                "path": "/message",
+                "method": "ROUTER",
+                "resource": "sqs-sample",
+                "endpoints": [
+                    {
+                        "path": "/message/queue",
+                        "method": "GET",
+                        "resource_handler": "endpoints.listQueue",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message/queue/:id",
+                        "method": "POST",
+                        "resource_handler": "endpoints.addQueue",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message/queue/:id",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.deleteQueue",
+                        "queueUrlPrefix": "https://sqs.eu-west-1.amazonaws.com/791728029433/",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message",
+                        "method": "GET",
+                        "resource_handler": "endpoints.listMessages",
+                        "config": {
+                            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test"
+                        }
+                    },
+                    {
+                        "path": "/message",
+                        "method": "POST",
+                        "resource_handler": "endpoints.addMessage"
+                    },
+                    {
+                        "path": "/message",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.deleteMessage",
+                        "config": {
+                            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test"
+                        }
+                    }
+                ]
+            },
+            {
+                "path": "/s3store",
+                "method": "ROUTER",
+                "resource": "s3-sample",
+                "endpoints": [
+                    {
+                        "path": "/s3store",
+                        "method": "GET",
+                        "resource_handler": "endpoints.listObjects",
+                        "Bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:id",
+                        "method": "GET",
+                        "resource_handler": "endpoints.getObject",
+                        "bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:id",
+                        "method": "POST",
+                        "resource_handler": "endpoints.addObject",
+                        "bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:bid/:id",
+                        "method": "GET",
+                        "resource_handler": "endpoints.getObject"
+                    },
+                    {
+                        "path": "/s3store/:bid/:id",
+                        "method": "POST",
+                        "resource_handler": "endpoints.addObject"
+                    },
+                    {
+                        "path": "/s3store",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.deleteObject"
+                    },
+                    {
+                        "path": "/s3store-bucket",
+                        "method": "GET",
+                        "resource_handler": "endpoints.listBuckets",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "POST",
+                        "resource_handler": "endpoints.addBucket",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "GET",
+                        "resource_handler": "endpoints.infoBucket",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.deleteBucket",
+                        "config": {}
+                    }
+                ]
+            },
+            {
+                "path": "/info",
+                "resource": "serviceinfo-sample",
+                "resource_handler": "endpoints.info"
+            },
+            {
+                "path": "/http",
+                "resource": "http-sample",
+                "resource_handler": "endpoints.call",
+                "url": "https://adobe.github.io/Spry/data/json/object-01.js"
+            },
+            {
+                "path": "/redis",
+                "method": "ROUTER",
+                "resource": "redis-sample",
+                "endpoints": [
+                    {
+                        "path": "/redis",
+                        "method": "POST",
+                        "resource_handler": "endpoints.create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "POST",
+                        "resource_handler": "endpoints.create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "GET",
+                        "resource_handler": "endpoints.get"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "PUT",
+                        "resource_handler": "endpoints.update"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.delete"
+                    }
+                ]
+            },
+            {
+                "path": "/mysql",
+                "method": "ROUTER",
+                "resource": "mysql-sample",
+                "table": "sessions",
+                "id_field": "id_sess",
+                "endpoints": [
+                    {
+                        "path": "/mysql",
+                        "method": "GET",
+                        "resource_handler": "endpoints.list",
+                        "sql": "SELECT * FROM `composantes` LIMIT 10"
+                    },
+                    {
+                        "path": "/mysql",
+                        "method": "POST",
+                        "resource_handler": "endpoints.create"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "GET",
+                        "resource_handler": "endpoints.get"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "PUT",
+                        "resource_handler": "endpoints.update"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "DELETE",
+                        "resource_handler": "endpoints.delete"
+                    }
+                ]
             }
         ]
     }
