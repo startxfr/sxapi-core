@@ -166,7 +166,7 @@ Return a list resulting from a N1ql query
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
 -   `n1ql` **string** N1QL query to execute whent his entrypoint is called
 
 #### **Sample code**
@@ -175,7 +175,7 @@ Return a list resulting from a N1ql query
 {
     "path": "/beer", "method": "GET",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.list",
+    "endpoint": "endpoints.list",
     "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
 }
 ```
@@ -189,7 +189,7 @@ Return a document coresponding to the given docId
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
 
 #### **Sample code**
 
@@ -197,7 +197,7 @@ Return a document coresponding to the given docId
 {
     "path": "/beer/:id", "method": "GET",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.get"
+    "endpoint": "endpoints.get"
 }
 ```
 
@@ -210,7 +210,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
 
 #### **Sample code**
 
@@ -218,14 +218,14 @@ Insert a new document in the bucket. You could give and id or leave the system c
 {
     "path": "/beer/:id", "method": "POST",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.create"
+    "endpoint": "endpoints.create"
 }
 ```
 ```json
 {
     "path": "/beer", "method": "POST",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.create"
+    "endpoint": "endpoints.create"
 }
 ```
 
@@ -238,7 +238,7 @@ Update the document coresponding to the given docId with the new document
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
 
 #### **Sample code**
 
@@ -246,7 +246,7 @@ Update the document coresponding to the given docId with the new document
 {
     "path": "/beer/:id", "method": "PUT",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.update"
+    "endpoint": "endpoints.update"
 }
 ```
 
@@ -259,7 +259,7 @@ Remove the document coresponding to the given docId with the new document
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the couchbase resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
 
 #### **Sample code**
 
@@ -267,6 +267,6 @@ Remove the document coresponding to the given docId with the new document
 {
     "path": "/beer/:id", "method": "DELETE",
     "resource": "couchbase-sample",
-    "resource_handler": "endpoints.delete"
+    "endpoint": "endpoints.delete"
 }
 ```

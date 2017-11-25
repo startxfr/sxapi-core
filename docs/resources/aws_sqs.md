@@ -134,7 +134,7 @@ Add a message to the SQS queue
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_sqs resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.addMessage***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.addMessage***
 -   `...` **string** endpoint config object will be to configure the AWS SQS sending params. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
 
 #### **Sample code**
@@ -144,7 +144,7 @@ Add a message to the SQS queue
     "path": "/message",
     "method": "POST",
     "resource": "sqs-sample",
-    "resource_handler": "endpoints.addMessage"
+    "endpoint": "endpoints.addMessage"
     "xxx": "XXX"
 }
 ```
