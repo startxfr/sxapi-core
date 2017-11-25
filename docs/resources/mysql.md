@@ -132,7 +132,7 @@ Return a list resulting from a SQL query
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
 -   `sql` **string** SQL query to execute whent his entrypoint is called
 
 #### **Sample code**
@@ -142,7 +142,7 @@ Return a list resulting from a SQL query
     "path": "/",
     "method": "GET",
     "resource": "mysql-sample",
-    "resource_handler": "endpoints.list",
+    "endpoint": "endpoints.list",
     "sql": "SELECT * FROM `log` LIMIT 10"
 }
 ```
@@ -156,7 +156,7 @@ Return a document coresponding to the given entryId
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
 -   `table` **string** table name to use for geting this entry
 -   `id_field` **string** table field name used a key
 
@@ -167,7 +167,7 @@ Return a document coresponding to the given entryId
     "path": "/:id",
     "method": "GET",
     "resource": "mysql-sample",
-    "resource_handler": "endpoints.get",
+    "endpoint": "endpoints.get",
     "table": "log",
     "id_field": "id"
 }
@@ -182,7 +182,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
 -   `table` **string** table name to use for geting this entry
 -   `id_field` **string** table field name used a key
 
@@ -193,7 +193,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
     "path": "/",
     "method": "POST",
     "resource": "mysql-sample",
-    "resource_handler": "endpoints.create",
+    "endpoint": "endpoints.create",
     "table": "log",
     "id_field": "id"
 }
@@ -208,7 +208,7 @@ Update the document coresponding to the given entryId with the new document
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
 -   `table` **string** table name to use for geting this entry
 -   `id_field` **string** table field name used a key
 
@@ -219,7 +219,7 @@ Update the document coresponding to the given entryId with the new document
     "path": "/:id",
     "method": "PUT",
     "resource": "mysql-sample",
-    "resource_handler": "endpoints.update",
+    "endpoint": "endpoints.update",
     "table": "log",
     "id_field": "id"
 }
@@ -234,7 +234,7 @@ Remove the document coresponding to the given entryId with the new document
 -   `path` **string** Serveur path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the mysql resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
 -   `table` **string** table name to use for geting this entry
 -   `id_field` **string** table field name used a key
 
@@ -245,7 +245,7 @@ Remove the document coresponding to the given entryId with the new document
     "path": "/:id",
     "method": "DELETE",
     "resource": "mysql-sample",
-    "resource_handler": "endpoints.delete",
+    "endpoint": "endpoints.delete",
     "table": "log",
     "id_field": "id"
 }

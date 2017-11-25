@@ -146,7 +146,7 @@ List objects stored in a bucket
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
 -   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 
@@ -157,7 +157,7 @@ List objects stored in a bucket
     "path": "/s3",
     "method": "GET",
     "resource": "s3-sample",
-    "resource_handler": "endpoints.listObjects",
+    "endpoint": "endpoints.listObjects",
     "bucket" : "sxapitest",
     "config": {
         "Bucket" : "sxapitest"
@@ -180,7 +180,7 @@ Get one object stored in a bucket
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
 -   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
@@ -192,7 +192,7 @@ Get one object stored in a bucket
     "path": "/s3/:id",
     "method": "GET",
     "resource": "s3-sample",
-    "resource_handler": "endpoints.getObject",
+    "endpoint": "endpoints.getObject",
     "bucket" : "sxapitest"
 }
 ```
@@ -212,7 +212,7 @@ Add one object into a bucket
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
 -   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
@@ -224,7 +224,7 @@ Add one object into a bucket
     "path": "/s3/:id",
     "method": "POST",
     "resource": "s3-sample",
-    "resource_handler": "endpoints.addObject",
+    "endpoint": "endpoints.addObject",
     "bucket" : "sxapitest"
 }
 ```
@@ -244,7 +244,7 @@ Update one object into a bucket
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
 -   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
--   `resource_handler` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
+-   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
 -   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
@@ -256,7 +256,7 @@ Update one object into a bucket
     "path": "/s3/:id",
     "method": "PUT",
     "resource": "s3-sample",
-    "resource_handler": "endpoints.updateObject",
+    "endpoint": "endpoints.updateObject",
     "bucket" : "sxapitest"
 }
 ```

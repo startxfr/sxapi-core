@@ -84,11 +84,11 @@ var $ws = {
             handler = eval(handler);
         }
         else if (typeof handler === "undefined" && config.method !== "ROUTER") {
-            if (typeof config.resource === "string" && typeof config.resource_handler === "string") {
+            if (typeof config.resource === "string" && typeof config.endpoint === "string") {
                 eptype = "dynamic";
                 var rs = require('./resource').get(config.resource);
-                ephdname = config.resource + "::" + config.resource_handler;
-                handler = eval('rs.' + config.resource_handler);
+                ephdname = config.resource + "::" + config.endpoint;
+                handler = eval('rs.endpoints.' + config.endpoint);
             }
             else {
                 ephdname = "defaultEndpoint";
@@ -292,6 +292,15 @@ var $ws = {
         }
         return obj;
     },
+    defaultRouter: function (configs) {
+        var endpoints = configs.endpoints;
+        delete configs.endpoints;
+        $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
+        for (var i = 0; i < endpoints.length; i++) {
+            var config = require('merge').recursive(true, configs, endpoints[i]);
+            $ws._initEndpointConfig(config);
+        }
+    },
     dynamicRequestHandlerTest: function (config) {
         /**
          * Callback called when a hv endpoint is called
@@ -307,15 +316,6 @@ var $ws = {
             });
             return this;
         };
-    },
-    defaultRouter: function (configs) {
-        var endpoints = configs.endpoints;
-        delete configs.endpoints;
-        $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
-        for (var i = 0; i < endpoints.length; i++) {
-            var config = require('merge').recursive(true, configs, endpoints[i]);
-            $ws._initEndpointConfig(config);
-        }
     }
 };
 

@@ -155,6 +155,7 @@ var $sess = {
     required: function (req, res, callbackOK, callbackNOK) {
         if (req === undefined) throw "session.required require first param to be a request";
         if (res === undefined) throw "session.required require second param to be a response";
+        var sess = this;
         var cbOK = function (result) {
             var message = 'found session';
             $log.info(message);
@@ -172,16 +173,19 @@ var $sess = {
             var fnOK = callbackOK || cbOK;
             var fnNOK = callbackNOK || cbNOK;
             var cbGetSIDOK = function (sid) {
-                if (this.config.backend) {
-                    switch ($sess.config.backend.type) {
+                if (sess.config.backend) {
+                    switch (sess.config.backend.type) {
                         case "mysql" :
-                            $sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
                         case "couchbase" :
-                            $sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
+                        case "memory" :
+                            sess.backends.memory.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
                         default :
-                            fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 20);
+                            fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 20);
                             break;
                     }
                 }
@@ -190,18 +194,21 @@ var $sess = {
                 }
             };
             var cbGetSIDNOK = function (message, code) {
-                if ($sess.config.auto_create) {
+                if (sess.config.auto_create) {
                     $log.warn("could not find a session ID because " + message);
-                    if (this.config.backend) {
-                        switch ($sess.config.backend.type) {
+                    if (sess.config.backend) {
+                        switch (sess.config.backend.type) {
                             case "mysql" :
-                                $sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             case "couchbase" :
-                                $sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "memory" :
+                                sess.backends.memory.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             default :
-                                fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 30);
+                                fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 30);
                                 break;
                         }
                     }
@@ -224,16 +231,16 @@ var $sess = {
             };
             var cbCreateSessionOK = function (sessId, session) {
                 $log.info("auto created session " + sessId);
-                if (this.config.transport) {
-                    switch ($sess.config.transport.type) {
+                if (sess.config.transport) {
+                    switch (sess.config.transport.type) {
                         case "token" :
-                            $sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         case "cookie" :
-                            $sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         case "bearer" :
-                            $sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         default :
                             fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 30);
