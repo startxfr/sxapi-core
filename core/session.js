@@ -488,7 +488,7 @@ var $sess = {
                         var duration = $timer.timeStop(timerId);
                         if (error) {
                             $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
-                            callbackNOK("error using 'mysql' session backend", 210);
+                            callbackNOK("error reading session using 'mysql' backend", 210);
                         }
                         else {
                             if (results.length === 1) {
@@ -601,7 +601,7 @@ var $sess = {
                             }
                             else {
                                 $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
-                                callbackNOK("error using 'couchbase' session backend", 210);
+                                callbackNOK("error reading session using 'couchbase' backend", 210);
                             }
                         }
                         else {
@@ -707,7 +707,7 @@ var $sess = {
                 if (typeof callbackNOK !== "function") throw "session.backends.memory.getSession require a callbackNOK";
                 if (!$sess.cached[sessID]) {
                     $log.warn("session '" + sessID + "' is not found in cache ");
-                    callbackNOK("error using 'memory' session backend", 210);
+                    callbackNOK("session '" + sessID + "' could not be found", 220);
                 }
                 else {
                     var session = $sess.cached[sessID];
@@ -799,7 +799,7 @@ var $sess = {
                         }
                         if (error) {
                             $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
-                            callbackNOK("error using 'redis' session backend", 210);
+                            callbackNOK("session '" + sessID + "' could not be found", 220);
                         }
                         else {
                             if (session !== null) {
