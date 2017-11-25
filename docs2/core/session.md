@@ -156,10 +156,10 @@ This backend layer use [mysql resource](../resource/mysql.md) to persist session
 | **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/README.md).
 | **table**        | yes       | string  |            | table name used for session storage
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
-| **fields**       | no        | obj     | {}         | an object with special field list
-| **fields.ip**    | no        | string  | {}         | name of the field containing the session IP
-| **fields.start** | no        | string  | {}         | name of the field containing the session start time
-| **fields.stop**  | no        | string  | {}         | name of the field containing the session end time (defined with duration and used for expiration control)
+| **fields**       | no        | obj     |            | an object with special field list
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
 
 #### mysql config sample
 
@@ -190,15 +190,15 @@ This backend layer use [couchbase resource](../resource/couchbase.md) to persist
 | **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend layer
 | **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/README.md).
 | **key_ns**       | yes       | string  |            | the key namespace for this kind of document. used as a key prefix
-| **fields**       | no        | obj     | {}         | an object with special field list
-| **fields.token** | no        | string  | {}         | name of the field containing the session token
-| **fields.ip**    | no        | string  | {}         | name of the field containing the session IP
-| **fields.start** | no        | string  | {}         | name of the field containing the session start time
-| **fields.stop**  | no        | string  | {}         | name of the field containing the session end time (defined with duration and used for expiration control)
+| **fields**       | no        | obj     |            | an object with special field list
+| **fields.token** | no        | string  |            | name of the field containing the session token
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
 
 #### couchbase config sample
 
-```json
+```javascript
 "session": {
     "backend": {
         "type"    : "couchbase",
