@@ -1,8 +1,8 @@
 # SXAPI Core : session component
 
-The session component is a [core component](./README.md) allow you to keep presistant 
+The session component is a [core component](./README.md) allow you to keep persistant 
 information between client and API server using a session mechanism.<br> 
-This component comes with various transport layer ([cookie](#transport-using-cookie), 
+This component comes with various transport type ([cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 
 session identifier from and to the consumer. <br> 
 You can use various storage backend ([mysql](#backend-using-mysql), 
@@ -22,10 +22,10 @@ used a buildin mecanism for user context persistance.
 
 | Param           | Mandatory | Type | default | Description
 |-----------------|:---------:|:----:|---------|---------------
-| **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport layer.
-| **auto_create** | no        | bool | false   | If transport layer could not find a session ID, create a new session transparently
-| **transport**   | no        | obj  | null    | An object describing the transport layer used to get and set session ID. See [transport section](#transport-using-layer)
-| **backend**     | no        | obj  | null    | An object describing the backend layer used to store and retrive session context. See [backend section](#backend-using-layer)
+| **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport type.
+| **auto_create** | no        | bool | false   | If transport type could not find a session ID, create a new session transparently
+| **transport**   | no        | obj  | null    | An object describing the transport type used to get and set session ID. See [transport section](#transport-using-type)
+| **backend**     | no        | obj  | null    | An object describing the backend type used to store and retrive session context. See [backend section](#backend-using-type)
 
 
 ### Config Sample
@@ -45,7 +45,7 @@ used a buildin mecanism for user context persistance.
 }
 ```
 
-## Transport layer
+## Transport type
 
 In you `transport` section, you must have a property `type` coresponding to a 
 supported type. Available transport types are [cookie](#transport-using-cookie), 
@@ -55,7 +55,7 @@ supported type. Available transport types are [cookie](#transport-using-cookie),
 ### transport using `token`
 
 Token transport allow you to retrive the session ID by reading an http param. 
-You can call your API endpoint's using `?token=xxx` and this transport layer will
+You can call your API endpoint's using `?token=xxx` and this transport type will
 extract the `xxx` session ID and pass it to the backend.<br>
 This transport type is very light. Client is in charge of storing the session ID.
 Choose carefully your `param` name to avoid naming conflict with your API endpoints.
@@ -64,7 +64,7 @@ Choose carefully your `param` name to avoid naming conflict with your API endpoi
 
 | Param       | Mandatory | Type    | default | Description
 |-------------|:---------:|:-------:|---------|---------------
-| **type**    | yes       | string  | token   | Must be `token` for this transport layer
+| **type**    | yes       | string  | token   | Must be `token` for this transport type
 | **param**   | no        | string  | _token  | Name of the http parameter transporting session ID
 
 #### Token config sample
@@ -82,7 +82,7 @@ Choose carefully your `param` name to avoid naming conflict with your API endpoi
 
 Cookie transport allow you to get the session ID by reading the session ID 
 from an http cookie. You can call you api's endpoint using a browser cookie and 
-this session transport layer will be able to get the session ID and pass it to 
+this session transport type will be able to get the session ID and pass it to 
 the configured backend to find the coresponding session.<br>
 This transport type is statefull as it create the cookie when required. Client is 
 not in charge of persisting the session ID and giving it to the http Object used
@@ -94,7 +94,7 @@ cookies.
 
 | Param               | Mandatory | Type    | default    | Description
 |---------------------|:---------:|:-------:|------------|---------------
-| **type**            | yes       | string  | cookie     | Must be `cookie` for this transport layer
+| **type**            | yes       | string  | cookie     | Must be `cookie` for this transport type
 | **cookie_name**     | no        | string  | sxapi-sess | name of the cookie to find or define
 | **cookie_options**  | no        | object  | {}         | option used for creation a cookie. [See cookies documentation](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
 
@@ -124,7 +124,7 @@ the session ID.
 
 | Param               | Mandatory | Type    | default    | Description
 |---------------------|:---------:|:-------:|------------|---------------
-| **type**            | yes       | string  | bearer     | Must be `bearer` for this transport layer
+| **type**            | yes       | string  | bearer     | Must be `bearer` for this transport type
 
 #### Bearer config sample
 
@@ -138,7 +138,7 @@ the session ID.
 
 
 
-## Backend layer
+## Backend type
 
 In you `backend` section, you must have a property named `type` and coresponding 
 to a supported backend type. Available backend types are  [mysql](#backend-using-mysql), 
@@ -146,13 +146,13 @@ to a supported backend type. Available backend types are  [mysql](#backend-using
 
 ### backend using `mysql`
 
-This backend layer use [mysql resource](../resource/mysql.md) to persist session context across executions.
+This backend type use [mysql resource](../resource/mysql.md) to persist session context across executions.
 
 #### mysql config parameters
 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
-| **type**         | yes       | string  | mysql      | Must be `mysql` for this backend layer
+| **type**         | yes       | string  | mysql      | Must be `mysql` for this backend type
 | **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/README.md).
 | **table**        | yes       | string  |            | table name used for session storage
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
@@ -181,13 +181,13 @@ This backend layer use [mysql resource](../resource/mysql.md) to persist session
 
 ### backend using `couchbase`
 
-This backend layer use [couchbase resource](../resource/couchbase.md) to persist session context across executions.
+This backend type use [couchbase resource](../resource/couchbase.md) to persist session context across executions.
 
 #### couchbase config parameters
 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
-| **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend layer
+| **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend type
 | **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/README.md).
 | **key_ns**       | yes       | string  |            | the key namespace for this kind of document. used as a key prefix
 | **fields**       | no        | obj     |            | an object with special field list
@@ -216,13 +216,13 @@ This backend layer use [couchbase resource](../resource/couchbase.md) to persist
 
 ### backend using `memory`
 
-This backend layer use application memory space to persist session context across executions.
+This backend type use application memory space to persist session context across executions.
 
 #### memory config parameters
 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
-| **type**         | yes       | string  | memory     | Must be `memory` for this backend layer
+| **type**         | yes       | string  | memory     | Must be `memory` for this backend type
 | **sid_field**    | no        | string  | sid        | name of the field containing the session ID
 | **fields**       | no        | obj     |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
@@ -247,13 +247,13 @@ This backend layer use application memory space to persist session context acros
 
 ### backend using `redis`
 
-This backend layer use [redis resource](../resource/redis.md) to persist session context across executions.
+This backend type use [redis resource](../resource/redis.md) to persist session context across executions.
 
 #### redis config parameters
 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
-| **type**         | yes       | string  | redis      | Must be `redis` for this backend layer
+| **type**         | yes       | string  | redis      | Must be `redis` for this backend type
 | **resource**     | yes       | string  |            | ID of the redis resource [see resource for configuration](../resources/README.md).
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
 | **fields**       | no        | obj     |            | an object with special field list
