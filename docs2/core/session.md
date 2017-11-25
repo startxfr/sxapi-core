@@ -8,12 +8,12 @@ In your sxapi.json config file, you can add a 'session' property coresponding to
 
 #### **Config parameters**
 
-| Param           | Type   | Mandatory | default | Description   |
-|-----------------|:------:|:---------:|---------|---------------|
-| **duration**    | `int`  | no        | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport layer. |
-| **auto_create** | `bool` | no        | false   | If transport layer could not find a session ID, create a new session transparently. Default is false |
-| **transport**   | `obj`  | no        | null    | An object describing the transport layer used to get and set session ID. See [transport section](#transport-layer) |
-| **backend**     | `obj`  | no        | null    | An object describing the backend layer used to store and retrive session context. See [backend section](#backend-layer) |
+| Param           | Mandatory | Type | default | Description
+|-----------------|:---------:|:----:|---------|---------------
+| **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport layer.
+| **auto_create** | no        | bool | false   | If transport layer could not find a session ID, create a new session transparently
+| **transport**   | no        | obj  | null    | An object describing the transport layer used to get and set session ID. See [transport section](#transport-layer)
+| **backend**     | no        | obj  | null    | An object describing the backend layer used to store and retrive session context. See [backend section](#backend-layer)
 
 
 ### **Sample sxapi.json**
