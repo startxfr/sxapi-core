@@ -1,0 +1,123 @@
+{
+    "name": "startx-api-dev",
+    "description": "sxapi developing config file",
+    "version": "0.0.1-beta",
+    "debug": true,
+    "session": {
+        "duration": 3600,
+        "auto_create": true,
+        "transport": {
+            "type": "cookie",
+            "cookie_name": "sxapi-sess"
+        },
+        "backend": {
+            "type": "redis",
+            "resource": "redis-sample",
+            "sid_field": "token_sess",
+            "fields": {
+                "ip": "ip_sess",
+                "start": "start_sess",
+                "stop": "stop_sess"
+            }
+        }
+    },
+    "resources": {
+        "serviceinfo-sample": {
+            "_class": "serviceinfo"
+        },
+        "redis-sample": {
+            "_class": "redis",
+            "url": "redis://db-redis:6379"
+        },
+        "http-sample": {
+            "_class": "http",
+            "url": "https://adobe.github.io/Spry/data/json/array-02.js"
+        }
+    },
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        }
+    },
+    "server": {
+        "endpoints": [
+            {
+                "path": "/",
+                "body": "<html><head></head><body><h1>STARTX-API v0.0.1</h1></body></html>"
+            },
+            {
+                "path": "/health",
+                "code": "200",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{\"health\":\"good\"}"
+            },
+            {
+                "path": "/txt",
+                "code": "201",
+                "header": {
+                    "Content-Type": "text/plain"
+                },
+                "body": "text response"
+            },
+            {
+                "path": "/json",
+                "code": "200",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{\"key\":\"value\"}"
+            },
+            {
+                "path": "/function",
+                "handler": "$ws.dynamicRequestHandlerTest",
+                "param_sample": "value de param_sample"
+            },
+            {
+                "path": "/info",
+                "resource": "serviceinfo-sample",
+                "endpoint": "info"
+            },
+            {
+                "path": "/http",
+                "resource": "http-sample",
+                "endpoint": "call",
+                "url": "https://adobe.github.io/Spry/data/json/object-01.js"
+            },
+            {
+                "path": "/redis",
+                "method": "ROUTER",
+                "resource": "redis-sample",
+                "endpoints": [
+                    {
+                        "path": "/redis",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -53,7 +53,17 @@ var $sess = {
                     case "mysql" :
                         this.backends.mysql.init();
                         break;
-                        throw new Error("session backend of type '" + this.config.transport.type + "' doesn't exist");
+                    case "couchbase" :
+                        this.backends.couchbase.init();
+                        break;
+                    case "memory" :
+                        this.backends.memory.init();
+                        break;
+                    case "redis" :
+                        this.backends.redis.init();
+                        break;
+                    default:
+                        throw new Error("session backend of type '" + this.config.backend.type + "' doesn't exist");
                         break;
                 }
             }
@@ -91,6 +101,15 @@ var $sess = {
                 switch (this.config.backend.type) {
                     case "mysql" :
                         this.backends.mysql.start(callback);
+                        break;
+                    case "couchbase" :
+                        this.backends.couchbase.start(callback);
+                        break;
+                    case "memory" :
+                        this.backends.memory.start(callback);
+                        break;
+                    case "redis" :
+                        this.backends.redis.start(callback);
                         break;
                     default:
                         if (typeof callback === "function") {
@@ -131,6 +150,15 @@ var $sess = {
                     case "mysql" :
                         this.backends.mysql.stop(callback);
                         break;
+                    case "couchbase" :
+                        this.backends.couchbase.stop(callback);
+                        break;
+                    case "memory" :
+                        this.backends.memory.stop(callback);
+                        break;
+                    case "redis" :
+                        this.backends.redis.stop(callback);
+                        break;
                     default:
                         if (typeof callback === "function") {
                             callback();
@@ -155,6 +183,7 @@ var $sess = {
     required: function (req, res, callbackOK, callbackNOK) {
         if (req === undefined) throw "session.required require first param to be a request";
         if (res === undefined) throw "session.required require second param to be a response";
+        var sess = this;
         var cbOK = function (result) {
             var message = 'found session';
             $log.info(message);
@@ -172,16 +201,22 @@ var $sess = {
             var fnOK = callbackOK || cbOK;
             var fnNOK = callbackNOK || cbNOK;
             var cbGetSIDOK = function (sid) {
-                if (this.config.backend) {
-                    switch ($sess.config.backend.type) {
+                if (sess.config.backend) {
+                    switch (sess.config.backend.type) {
                         case "mysql" :
-                            $sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
                         case "couchbase" :
-                            $sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
+                        case "memory" :
+                            sess.backends.memory.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
+                        case "redis" :
+                            sess.backends.redis.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
                         default :
-                            fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 20);
+                            fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 20);
                             break;
                     }
                 }
@@ -190,18 +225,24 @@ var $sess = {
                 }
             };
             var cbGetSIDNOK = function (message, code) {
-                if ($sess.config.auto_create) {
+                if (sess.config.auto_create) {
                     $log.warn("could not find a session ID because " + message);
-                    if (this.config.backend) {
-                        switch ($sess.config.backend.type) {
+                    if (sess.config.backend) {
+                        switch (sess.config.backend.type) {
                             case "mysql" :
-                                $sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             case "couchbase" :
-                                $sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "memory" :
+                                sess.backends.memory.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "redis" :
+                                sess.backends.redis.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             default :
-                                fnNOK("backend type '" + this.config.backend.type + "' is not implemented in required() method", 30);
+                                fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 30);
                                 break;
                         }
                     }
@@ -224,16 +265,16 @@ var $sess = {
             };
             var cbCreateSessionOK = function (sessId, session) {
                 $log.info("auto created session " + sessId);
-                if (this.config.transport) {
-                    switch ($sess.config.transport.type) {
+                if (sess.config.transport) {
+                    switch (sess.config.transport.type) {
                         case "token" :
-                            $sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.token.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         case "cookie" :
-                            $sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.cookie.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         case "bearer" :
-                            $sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
+                            sess.transports.bearer.setSID(sessId, session, req, res, cbSetSIDOK, cbSetSIDNOK);
                             break;
                         default :
                             fnNOK("transport type '" + this.config.transport.type + "' is not implemented in required() method", 30);
@@ -367,7 +408,7 @@ var $sess = {
             init: function () {
                 $log.debug("Init 'token' session transport", 3);
                 if (!$sess.config.transport.param) {
-                    $sess.config.transport.param = "token";
+                    $sess.config.transport.param = "_token";
                 }
                 return this;
             },
@@ -447,7 +488,7 @@ var $sess = {
                         var duration = $timer.timeStop(timerId);
                         if (error) {
                             $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
-                            callbackNOK("error using 'mysql' session backend", 210);
+                            callbackNOK("error reading session using 'mysql' backend", 210);
                         }
                         else {
                             if (results.length === 1) {
@@ -560,7 +601,7 @@ var $sess = {
                             }
                             else {
                                 $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
-                                callbackNOK("error using 'couchbase' session backend", 210);
+                                callbackNOK("error reading session using 'couchbase' backend", 210);
                             }
                         }
                         else {
@@ -640,7 +681,7 @@ var $sess = {
             init: function () {
                 $log.debug("Init 'memory' session backend", 3);
                 if (!$sess.config.backend.sid_field) {
-                    throw new Error("no 'sid_field' key found in config 'session.backend.memory'");
+                    $sess.config.backend.sid_field = "sid";
                 }
                 return this;
             },
@@ -666,7 +707,7 @@ var $sess = {
                 if (typeof callbackNOK !== "function") throw "session.backends.memory.getSession require a callbackNOK";
                 if (!$sess.cached[sessID]) {
                     $log.warn("session '" + sessID + "' is not found in cache ");
-                    callbackNOK("error using 'memory' session backend", 210);
+                    callbackNOK("session '" + sessID + "' could not be found", 220);
                 }
                 else {
                     var session = $sess.cached[sessID];
@@ -712,6 +753,117 @@ var $sess = {
                 }
                 $sess.cached[sessId] = session;
                 callbackOK(sessId, session);
+                return this;
+            }
+        },
+        redis: {
+            init: function () {
+                $log.debug("Init 'redis' session backend", 3);
+                if (!$sess.config.backend.resource) {
+                    throw new Error("no 'resource' key found in config 'session.backend.redis'");
+                }
+                else if (!require('./resource').exist($sess.config.backend.resource)) {
+                    throw new Error("resource '" + $sess.config.backend.resource + "' defined in config 'session.backend.redis' doesn't exist");
+                }
+                if (!$sess.config.backend.sid_field) {
+                    throw new Error("no 'sid_field' key found in config 'session.backend.redis'");
+                }
+                return this;
+            },
+            start: function (callback) {
+                $log.debug("Start 'redis' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            stop: function (callback) {
+                $log.debug("Stop 'redis' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            getSession: function (sessID, callbackOK, callbackNOK) {
+                if (sessID === undefined) throw "session.backends.redis.getSession require a sessID";
+                if (typeof callbackOK !== "function") throw "session.backends.redis.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.redis.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var key = $sess.config.backend.sid_field + "::" + sessID;
+                rs.get(key, function (timerId) {
+                    return function (error, session) {
+                        var duration = $timer.timeStop(timerId);
+                        var moment = require('moment');
+                        if (JSON.isParsable(session)) {
+                            session = JSON.parse(session);
+                        }
+                        if (error) {
+                            $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
+                            callbackNOK("session '" + sessID + "' could not be found", 220);
+                        }
+                        else {
+                            if (session !== null) {
+                                if ($sess.config.backend.fields && $sess.config.backend.fields.stop && session[$sess.config.backend.fields.stop]) {
+                                    var dateStop = session[$sess.config.backend.fields.stop];
+                                    if (moment(dateStop, 'YYYY-MM-DD HH:mm:ss').valueOf() - Date.now() > 0) {
+                                        $log.debug("session '" + sessID + "' exist and is active in 'redis' backend", 2, duration);
+                                        callbackOK(session);
+                                    }
+                                    else {
+                                        $log.warn("session '" + sessID + "' exist but is obsolete", duration);
+                                        callbackNOK("session '" + sessID + "' exist but is obsolete", 230);
+                                    }
+                                }
+                                else {
+                                    $log.debug("session '" + sessID + "' exist in 'redis' backend", 2, duration);
+                                    callbackOK(session);
+                                }
+                            }
+                            else {
+                                $log.warn("session '" + sessID + "' doesn't exist in 'redis' backend", duration);
+                                callbackNOK("could not find an existing session for " + sessID, 220);
+                            }
+                        }
+                    };
+                });
+                return this;
+            },
+            createSession: function (req, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.backends.redis.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.redis.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var sessId = require('uuid').v4();
+                var session = {};
+                session[$sess.config.backend.sid_field] = sessId;
+                if ($sess.config.backend.fields) {
+                    if ($sess.config.backend.fields.ip) {
+                        session[$sess.config.backend.fields.ip] = req.headers['x-forwarded-for'] ||
+                                req.connection.remoteAddress ||
+                                req.socket.remoteAddress ||
+                                req.connection.socket.remoteAddress;
+                    }
+                    var moment = require('moment');
+                    if ($sess.config.backend.fields.start) {
+                        session[$sess.config.backend.fields.start] = moment().format('YYYY-MM-DD HH:mm:ss');
+                    }
+                    if ($sess.config.backend.fields.stop) {
+                        session[$sess.config.backend.fields.stop] = moment(Date.now() + ($sess.config.duration * 1000)).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }
+                var key = $sess.config.backend.sid_field + "::" + sessId;
+                rs.insert(key, session, function (timerId) {
+                    return function (error) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            $log.warn("could not create session '" + sessId + "' is not valid because " + error.message, duration);
+                            callbackNOK("error using 'redis' session backend", 310);
+                        }
+                        else {
+                            $log.debug("session '" + sessId + "' is created in 'redis' backend", 2, duration);
+                            callbackOK(sessId, session);
+                        }
+                    };
+                });
                 return this;
             }
         }
