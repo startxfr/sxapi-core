@@ -1,11 +1,21 @@
 # SXAPI Core : session
 
-This core module allow you to track user and calls using a session mechanism. 
-You can use various transport layer (cookie, token) for getting the session identifier from the consumer. Backend section allow you to define a storage for these sessions identifier.
+This [core component](./README.md) allow you to keep presistant information between
+the client and your API using a session mechanism.<br> 
+The session component comes with various transport layer ([cookie](#transport-cookie), 
+[token](#transport-token) or [bearer](#transport-bearer)) for getting the 
+session identifier from the consumer. <br> 
+You can use various storage backend ([cookie](#transport-cookie), 
+[token](#transport-token) or [bearer](#transport-bearer)) to persist session
+context informations
 
 ## Configuration
 
-In your sxapi.json config file, you can add a 'session' property coresponding to an object with at least 2 sub-properties: 'transport' and 'backend'. 
+In your `sxapi.json` config file, you can add a `"session"` main property. 
+The coresponding value should be an object with the following configuration parameters.<br>
+If `"session"` property is not defined, or set to false (`"session" : false`), no
+session context will be defined and your API will be stateless unless your resources
+used a buildin mecanism for user context persistance.
 
 #### **Config parameters**
 
