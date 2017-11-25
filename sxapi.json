@@ -1,7 +1,7 @@
 {
     "name": "sxapi-default",
     "description": "sxapi default config file",
-    "version": "0.0.19",
+    "version": "0.0.26",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -22,7 +22,7 @@
     },
     "log": {
         "filters": {
-            "level": "0,1,2,3,4",
+            "level": "0,1,2",
             "type": "debug,info,error,warn"
         }
     },
@@ -34,7 +34,7 @@
         "endpoints": [
             {
                 "path": "/",
-                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.19 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API endpoints.</p></body></html>"
+                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.26 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
             },
             {
                 "path": "/ping",

@@ -33,10 +33,10 @@ You can then use the *resource-id* in your [endpoints](#using-a-resource-endpoin
 
 ### Using a resource endpoint
 
-If a resource come with endpoints, they are all available using the ```endpoints``` property of the resource instance. In your sxapi.json, you can use them in your declared endpoints. You must use the configuration property ```resource_handler: "endpoints.method"``` in your endpoint configuration object. This method will receive the full config endpoint object (with inherited property of parents if required). You can use as many times the same resource endpoint with various configuration options.
+If a resource come with endpoints, they are all available using the ```endpoints``` property of the resource instance. In your sxapi.json, you can use them in your declared endpoints. You must use the configuration property ```endpoint: "endpoints.method"``` in your endpoint configuration object. This method will receive the full config endpoint object (with inherited property of parents if required). You can use as many times the same resource endpoint with various configuration options.
 
 -   `resource` **string** REQUIRED *resource-id* of the resource to use
--   `resource_handler` **string** REQUIRED resource method to use for handling response
+-   `endpoint` **string** REQUIRED resource method to use for handling response
 
 ```json
 "server": {
@@ -45,7 +45,7 @@ If a resource come with endpoints, they are all available using the ```endpoints
             "path": "/beer",
             "method": "POST",
             "resource": "resource-id",
-            "resource_handler": "endpoints.method"
+            "endpoint": "endpoints.method"
         }
     ]
 }
