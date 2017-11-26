@@ -8,12 +8,12 @@ Very light (application less than 100Ko, full container stack for less than 30Mo
 and configured with a single json file, you can build instantly small atomic
 API endpoints as well as fully featured enterprise-sized API.
 
-[![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
-[![npm dependencies](https://david-dm.org/startxfr/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
-[![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
-[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=dev)](https://travis-ci.org/startxfr/sxapi-core)
-[![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/)
-[![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+[![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core) 
+[![npm dependencies](https://david-dm.org/startxfr/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core) 
+[![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core) 
+[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=dev)](https://travis-ci.org/startxfr/sxapi-core) 
+[![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/) 
+[![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core) 
 
 ## Getting Started
 
