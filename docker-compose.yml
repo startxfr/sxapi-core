@@ -6,4 +6,4 @@ master:
   ports:
     - "8080:8080"
   volumes:
-    - "./sxapi.json:/conf/sxapi.json:ro"
+    - "./sxapi.json:/conf/sxapi.json:ro" 
