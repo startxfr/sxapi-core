@@ -58,22 +58,15 @@ module.exports = function (id, config) {
             $timer.start(timerId);
             $log.debug("Read service info ", 4);
             var cb = (typeof callback === "function") ? callback : $svif.__readDefaultCallback;
-            var obj = {server: {}, paths: {}, service: {}};
+            var obj = {
+                server: {}, 
+                endpoints: [], 
+                service: {}
+            };
             var app = require("../app");
+            var ws = require("../ws");
             if (process.env.HOSTNAME) {
                 obj.server.hostname = process.env.HOSTNAME;
-            }
-            if (process.env.APP_PATH) {
-                obj.paths.app = process.env.APP_PATH;
-            }
-            if (process.env.CONF_PATH) {
-                obj.paths.conf = process.env.CONF_PATH;
-            }
-            if (process.env.DATA_PATH) {
-                obj.paths.data = process.env.DATA_PATH;
-            }
-            if (process.env.LOG_PATH) {
-                obj.paths.logs = process.env.LOG_PATH;
             }
             if (app.config.ip) {
                 obj.server.ip = app.config.ip;
@@ -97,12 +90,15 @@ module.exports = function (id, config) {
                 }
                 obj.service.resources = ls.join(", ");
             }
-            if (app.config.server.endpoints) {
-                var ct = 0;
-                for (var id in app.config.server.endpoints) {
-                    ct++;
+            if (ws.urlList) {
+                for (var urlID in ws.urlList) {
+                    obj.endpoints.push({ 
+                        path: ws.urlList[urlID].path,
+                        method: ws.urlList[urlID].method,
+                        type: ws.urlList[urlID].type,
+                        desc: ws.urlList[urlID].desc
+                    });
                 }
-                obj.service.endpoints = '' + ct + ' endpoints';
             }
             cb(null, obj);
             return this;
