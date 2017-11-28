@@ -4,6 +4,7 @@
 
 var $ws = {
     config: {},
+    urlList: {},
     init: function (config) {
         if (config) {
             $ws.config = config;
@@ -75,6 +76,9 @@ var $ws = {
         $ws._initEndpointConfig(config);
         return this;
     },
+    _initEndpointGenerateUrlSign: function (d) {
+        return d.path + ':' + d.method + ':' + d.type + ':' + d.endpoint;
+    },
     _initEndpointConfig: function (config) {
         var handler = config.handler;
         var eptype = (typeof handler === "string") ? "dynamic" : "static ";
@@ -95,6 +99,7 @@ var $ws = {
                 handler = $ws.__defaultEndpointCb;
             }
         }
+        var urlDescriptor = {path: config.path, type: eptype, endpoint: ephdname, desc: config.desc};
         switch (config.method) {
             case "ROUTER":
                 var fct = null;
@@ -104,21 +109,31 @@ var $ws = {
                 else {
                     fct = $ws.defaultRouter;
                 }
+                urlDescriptor.method = "ROUTER";
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 fct(config);
                 break;
             case "POST":
+                urlDescriptor.method = "POST";
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 $log.debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
                 $ws.app.post(config.path, handler(config));
                 break;
             case "PUT":
+                urlDescriptor.method = "PUT";
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 $log.debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
                 $ws.app.put(config.path, handler(config));
                 break;
             case "DELETE":
+                urlDescriptor.method = "DELETE";
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 $log.debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
                 $ws.app.delete(config.path, handler(config));
                 break;
             default:
+                urlDescriptor.method = "GET";
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
                 $ws.app.get(config.path, handler(config));
         }
