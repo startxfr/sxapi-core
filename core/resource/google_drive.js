@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer */
+/* global module, require, process, $log, $timer, $app */
 //'use strict';
 
 /**
@@ -289,21 +289,19 @@ module.exports = function (id, config, google) {
             getFile: function (config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             var fileId = req.params.id || req.body.id || config.fileId || "fileId";
                             rs.getService("drive").getFile(fileId, config.config || {}, res, function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error getting " + fileId + " file in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $app.ws.nokResponse(res, message_prefix + "error getting " + fileId + " file in resource " + rs.id + " because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error getting " + fileId + " file in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
@@ -313,7 +311,7 @@ module.exports = function (id, config, google) {
                             });
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
@@ -327,32 +325,30 @@ module.exports = function (id, config, google) {
             findFile: function (config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             var qr = req.params.q || req.body.q || config.q;
                             var q = "fullText contains '" + qr + "'";
                             rs.getService("drive").findFile(q, config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $app.ws.nokResponse(res, message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + "returned files matching " + q + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
+                                    $app.ws.okResponse(res, message_prefix + "returned files matching " + q + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
                                     $log.debug(message_prefix + "returned files matching " + q + " from resource " + rs.id, 2);
                                 }
                             });
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
@@ -366,17 +362,15 @@ module.exports = function (id, config, google) {
             addFile: function (config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             var name, mime;
 
                             var inspect = require('util').inspect;
@@ -402,11 +396,11 @@ module.exports = function (id, config, google) {
                                 var parentId = req.params.parent || req.body.parent || config.parent || "root";
                                 rs.getService("drive").addFile(folderId, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
                                     if (err) {
-                                        ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                        $app.ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
                                         $log.warn(message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
                                     }
                                     else {
-                                        ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
+                                        $app.ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
                                         $log.debug(message_prefix + "created folder " + folderId + " in resource " + rs.id, 2);
                                     }
                                 });
@@ -414,7 +408,7 @@ module.exports = function (id, config, google) {
                             req.pipe(busboy);
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
@@ -428,31 +422,29 @@ module.exports = function (id, config, google) {
             listDirectory: function (config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             var folderId = req.params.id || req.body.id || config.folderId || "root";
                             rs.getService("drive").getDirectory(folderId, config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $app.ws.nokResponse(res, message_prefix + "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + "returned folder " + folderId + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
+                                    $app.ws.okResponse(res, message_prefix + "returned folder " + folderId + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
                                     $log.debug(message_prefix + "returned folder " + folderId + " from resource " + rs.id, 2);
                                 }
                             });
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
@@ -466,32 +458,30 @@ module.exports = function (id, config, google) {
             addDirectory: function (config) {
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             var folderId = req.params.name || req.body.name || config.name || "folder name";
                             var parentId = req.params.parent || req.body.parent || config.parent || "root";
                             rs.getService("drive").addDirectory(folderId, parentId, config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $app.ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
+                                    $app.ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
                                     $log.debug(message_prefix + "created folder " + folderId + " in resource " + rs.id, 2);
                                 }
                             });
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }

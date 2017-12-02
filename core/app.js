@@ -12,7 +12,7 @@ $log = require('./log');
 $log.init({}, true);
 
 //'use strict';
-var $app = {
+$app = {
     timer: $timer,
     log: $log,
     package: {

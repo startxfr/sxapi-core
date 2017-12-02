@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer */
+/* global module, require, process, $log, $timer, $app */
 //'use strict';
 
 /**
@@ -64,7 +64,7 @@ module.exports = function (id, config) {
                 service: {}
             };
             var app = require("../app");
-            var ws = require("../ws");
+            var ws = $app.ws;
             if (process.env.HOSTNAME) {
                 obj.server.hostname = process.env.HOSTNAME;
             }
@@ -119,30 +119,28 @@ module.exports = function (id, config) {
                  */
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
                     $log.debug(message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                         $log.warn(message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
                             rs.read(function (err, reponse) {
                                 if (err) {
-                                    ws.nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
+                                    $app.ws.nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
                                     $log.warn(message_prefix + "error reading service info because " + err.message);
                                 }
                                 else {
-                                    ws.okResponse(res, message_prefix + " read service info ", reponse).send();
+                                    $app.ws.okResponse(res, message_prefix + " read service info ", reponse).send();
                                     $log.debug(message_prefix + "returned service info", 2);
                                 }
                             });
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                             $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }

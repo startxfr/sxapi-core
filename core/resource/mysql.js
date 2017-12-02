@@ -247,10 +247,10 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($app.resources.exist(config.resource)) {
                             var params = $mqdb.tools.generateParams4Template(config, req);
                             var sql = $mqdb.tools.format(config.sql, params);
-                            $mqdb.tools.ress
+                            $app.ressources
                                     .get(config.resource)
                                     .query(sql, function (timerId) {
                                         return function (err, results) {
@@ -288,12 +288,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .read(config.table, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -328,8 +328,8 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
-                            $mqdb.tools.ress
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
+                            $app.resources
                                     .get(config.resource)
                                     .insert(config.table, req.body, function (timerId) {
                                         return function (err, reponse) {
@@ -365,12 +365,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .update(config.table, req.body, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -406,12 +406,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .delete(config.table, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -441,7 +441,6 @@ module.exports = function (id, config) {
             }
         },
         tools: {
-            ress: require('../resource'),
             generateParams4Template: function (config, req) {
                 var params = require('merge').recursive({}, config);
                 if (req.params) {
@@ -462,18 +461,15 @@ module.exports = function (id, config) {
                 return message_prefix;
             },
             responseResourceNotDefined: function (message_prefix, res) {
-                var ws = require("../ws");
-                ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
                 $log.warn(message_prefix + "resource is not defined for this endpoint");
             },
             responseResourceDoesntExist: function (message_prefix, res, config) {
-                var ws = require("../ws");
-                ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
                 $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
             },
             responseOK: function (res, message, response, message_prefix, duration, total) {
-                var ws = require("../ws");
-                var answser = ws.okResponse(res, message, response);
+                var answser = $app.ws.okResponse(res, message, response);
                 if (total) {
                     answser.addTotal(total);
                 }
@@ -481,8 +477,7 @@ module.exports = function (id, config) {
                 $log.debug(message_prefix + message, 2, duration);
             },
             responseNOK: function (res, message, message_prefix, duration) {
-                var ws = require("../ws");
-                ws.nokResponse(res, "responded " + message).httpCode(500).send();
+                $app.ws.nokResponse(res, "responded " + message).httpCode(500).send();
                 $log.warn(message_prefix + "responded " + message, duration);
             },
             format: $log.format

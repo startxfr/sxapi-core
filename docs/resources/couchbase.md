@@ -1,6 +1,6 @@
 # SXAPI Resource : couchbase
 
-This resource allow you to interact with a couchbase Enterprise Server Cluster. Based on [Couchase NodeJS SDK 2.1.8](http://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/introduction.html). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a couchbase Enterprise Server Cluster. Based on [Couchase NodeJS SDK 2.1.8](http://developer.couchbase.com/documentation/server/4.1/sdks/node-2.0/introduction.html). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Couchbase resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 
 
@@ -65,7 +65,7 @@ Get a document for the bucket according to the given docId.  Use KV capabilities
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.get('my-doc-id', function (error, response) {
     console.log(error, response);
 });
@@ -85,7 +85,7 @@ Send a N1QL request to the query service of the couchbase cluster defined in the
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.query('SELECT * FROM `beer-sample` LIMIT 0, 5', function (error, response) {
     console.log(error, response);
 });
@@ -106,7 +106,7 @@ Insert a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.insert('my-doc-id', {key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -127,7 +127,7 @@ Update a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.update('my-doc-id', {key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -147,7 +147,7 @@ Remove a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.delete('my-doc-id', function (error, response) {
     console.log(error, response);
 });

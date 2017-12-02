@@ -1,7 +1,7 @@
 # SXAPI Resource : serviceinfo
 
 This resource allow you to get information about the running service. 
-This resource can be used using ```javascript require('/app/core/resource').get('resource-id')``` in your own modules. 
+This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. 
 
 ## Resource configuration
 
@@ -36,7 +36,7 @@ Execute the HTTP call to the remote server defined in the resource.
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.read(function (error, response) {
     console.log(error, response);
 });
@@ -53,7 +53,7 @@ Get informations about the running service
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.info(function (error, response) {
     console.log(error, response);
 });

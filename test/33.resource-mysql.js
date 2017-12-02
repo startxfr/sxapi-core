@@ -34,9 +34,6 @@ describe("mysql resource component", function () {
             expect(test.tools).to.be.an('object');
         });
         describe("#tools", function () {
-            it("should have ress property", function () {
-                expect(test.tools).to.have.any.keys('ress');
-            });
             describe("#generateParams4Template()", function () {
                 it("should exist", function () {
                     expect(test.tools).to.have.any.keys('generateParams4Template');
