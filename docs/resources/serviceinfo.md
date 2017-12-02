@@ -9,7 +9,7 @@ well as the endpoint list of exposed path for your API.
 To configure this resource, you must add a config key under the ```resources```
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
-must be an object who must have the following configuration parameters.
+must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
 
 For a better understanting of the sxapi
 configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
@@ -44,7 +44,7 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with one single method.
 
-1. [Read](#method-read)
+[1. Read method](#method-read)
 
 
 ### Method read
@@ -72,7 +72,7 @@ resource.read(function (error, response) {
 
 This module come with one single read-only endpoint.
 
-1. [Info](#info-endpoint)
+[1. Info endpoint](#info-endpoint)
 
 ### info endpoint
 
