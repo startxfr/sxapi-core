@@ -6,7 +6,7 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose http data.
 
-Based on request [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
+Based on request npm module [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
 
 ## Resource configuration
 
