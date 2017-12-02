@@ -16,17 +16,17 @@ module.exports = function (id, config) {
         init: function (config) {
             var timerId = 'resource_svif_init_' + $svif.id;
             $timer.start(timerId);
-            $log.debug("resource '" + $svif.id + "' : initializing", 3);
+            $log.tools.resourceDebug($svif.id, "initializing", 3);
             if (config) {
                 $svif.config = config;
             }
-            $log.debug("resource '" + $svif.id + "' : initialized ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($svif.id, "initialized ", 1, $timer.timeStop(timerId));
             return this;
         },
         start: function (callback) {
-            $log.debug("resource '" + $svif.id + "' : starting", 3);
+            $log.tools.resourceDebug($svif.id, "starting", 3);
             var cb = function () {
-                $log.debug("resource '" + $svif.id + "' : started ", 1);
+                $log.tools.resourceDebug($svif.id, "started ", 1);
                 if (typeof callback === "function") {
                     callback();
                 }
@@ -35,14 +35,14 @@ module.exports = function (id, config) {
             return this;
         },
         stop: function (callback) {
-            $log.debug("Stopping resource '" + $svif.id + "'", 2);
+            $log.tools.resourceDebug($svif.id, "Stopping", 2);
             if (typeof callback === "function") {
                 callback(null, this);
             }
             return this;
         },
         open: function (callback) {
-            $log.debug("resource '" + $svif.id + "' : opened", 4);
+            $log.tools.resourceDebug($svif.id, "opened", 4);
             if (typeof callback === "function") {
                 callback(null, this);
             }
@@ -56,11 +56,11 @@ module.exports = function (id, config) {
         read: function (callback) {
             var timerId = 'svif_read_' + $svif.id;
             $timer.start(timerId);
-            $log.debug("Read service info ", 4);
+            $log.tools.resourceInfo($svif.id, "read service info");
             var cb = (typeof callback === "function") ? callback : $svif.__readDefaultCallback;
             var obj = {
-                server: {}, 
-                endpoints: [], 
+                server: {},
+                endpoints: [],
                 service: {}
             };
             var app = require("../app");
@@ -92,7 +92,7 @@ module.exports = function (id, config) {
             }
             if (ws.urlList) {
                 for (var urlID in ws.urlList) {
-                    obj.endpoints.push({ 
+                    obj.endpoints.push({
                         path: ws.urlList[urlID].path,
                         method: ws.urlList[urlID].method,
                         type: ws.urlList[urlID].type,
@@ -104,7 +104,7 @@ module.exports = function (id, config) {
             return this;
         },
         __readDefaultCallback: function (error, serviceinfo) {
-            $log.debug("return service info", 4);
+            $log.tools.resourceDebug($svif.id, "default callback", 4);
             if (typeof cb === "function") {
                 cb(error, serviceinfo);
             }
@@ -118,31 +118,22 @@ module.exports = function (id, config) {
                  * @param {object} res
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.debug(message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.warn(message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($svif.id, req, "called", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        $app.resources.get(config.resource).read(function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($svif.id, req, "error reading service info because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "return service informations", reponse).send();
+                                $log.tools.endpointDebug($svif.id, req, "returned service info", 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            rs.read(function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
-                                    $log.warn(message_prefix + "error reading service info because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + " read service info ", reponse).send();
-                                    $log.debug(message_prefix + "returned service info", 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($svif.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             }
