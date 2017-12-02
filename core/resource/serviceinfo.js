@@ -56,7 +56,7 @@ module.exports = function (id, config) {
         read: function (callback) {
             var timerId = 'svif_read_' + $svif.id;
             $timer.start(timerId);
-            $log.tools.resourceInfo($svif.id, "read service info");
+            $log.tools.resourceInfo($svif.id, "read()");
             var cb = (typeof callback === "function") ? callback : $svif.__readDefaultCallback;
             var obj = {
                 server: {},
@@ -116,7 +116,7 @@ module.exports = function (id, config) {
                  * @param {object} res
                  */
                 return function (req, res) {
-                    $log.tools.endpointDebug($svif.id, req, "called", 1);
+                    $log.tools.endpointDebug($svif.id, req, "info()", 1);
                     if ($app.resources.exist(config.resource)) {
                         $app.resources.get(config.resource).read(function (err, reponse) {
                             if (err) {

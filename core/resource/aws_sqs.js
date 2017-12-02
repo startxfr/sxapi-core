@@ -159,7 +159,7 @@ module.exports = function (id, config) {
          */
         removeMessage: function (options, callback) {
             var timerId = 'resource_aws.sqs_removeMessage_' + $sqs.id + '::' + options.ReceiptHandle;
-            $log.tools.resourceInfo($sqs.id, "remove message '" + options.ReceiptHandle+"'");
+            $log.tools.resourceInfo($sqs.id, "remove message '" + options.ReceiptHandle + "'");
             $timer.start(timerId);
             var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
             if ($sqs.config.delete_options && $sqs.config.delete_options.QueueUrl) {
@@ -192,7 +192,7 @@ module.exports = function (id, config) {
         sendMessage: function (message, options, callback) {
             var messId = message.id;
             var timerId = 'resource_aws.sqs_sendMessage_' + $sqs.id + '::' + messId;
-            $log.tools.resourceInfo($sqs.id, "send message '" + messId+"'");
+            $log.tools.resourceInfo($sqs.id, "send message '" + messId + "'");
             $timer.start(timerId);
             var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
             if ($sqs.config.send_options && $sqs.config.send_options.QueueUrl) {
@@ -303,32 +303,24 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($sqs.id, req, "listMessages()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        rs.read(config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error reading queue because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($sqs.id, req, "error reading queue because " + err.message);
+                            }
+                            else {
+                                var ct = (reponse.Messages) ? reponse.Messages.length : 0;
+                                $app.ws.okResponse(res, "readding AWS SQS queue " + config.config.QueueUrl, reponse).addTotal(ct).send();
+                                $log.tools.endpointDebug($sqs.id, req, "returned OK from transaction " + reponse.ResponseMetadata.RequestId, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            rs.read(config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error reading queue because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error reading queue because " + err.message);
-                                }
-                                else {
-                                    var ct = (reponse.Messages) ? reponse.Messages.length : 0;
-                                    $app.ws.okResponse(res, message_prefix + "readding AWS SQS queue " + config.config.QueueUrl, reponse).addTotal(ct).send();
-                                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "returned OK from transaction " + reponse.ResponseMetadata.RequestId, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -345,37 +337,29 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
+                    $log.tools.endpointDebug($sqs.id, req, "addMessage()", 1);
                     var data = req.body;
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var message = {
+                            message: data,
+                            time: Date.now(),
+                            server: $log.config.appsign
+                        };
+                        rs.sendMessage(message, config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error saving message because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($sqs.id, req, "error saving message because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "recorded AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
+                                $log.tools.endpointDebug($sqs.id, req, "returned OK from transaction " + reponse.ResponseMetadata.MessageId, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var message = {
-                                message: data,
-                                time: Date.now(),
-                                server: $log.config.appsign
-                            };
-                            rs.sendMessage(message, config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error saving message because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error saving message because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "recorded AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "returned OK from transaction " + reponse.ResponseMetadata.MessageId, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -392,17 +376,11 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
+                    $log.tools.endpointDebug($sqs.id, req, "deleteMessage()", 1);
                     var messageId = req.params.id || req.body.id || config.config.receiptHandle || false;
                     if (messageId === false) {
-                        $app.ws.nokResponse(res, message_prefix + "no id param found in request").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "no id param found in request");
-                    }
-                    else if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                        $app.ws.nokResponse(res, "no id param found in request").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "no id param found in request");
                     }
                     else {
                         var QueueUrl = config.config.QueueUrl || config.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
@@ -414,18 +392,18 @@ module.exports = function (id, config) {
                             var rs = $app.resources.get(config.resource);
                             rs.removeMessage(config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error deleting message because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error saving message because " + err.message);
+                                    $app.ws.nokResponse(res, "error deleting message because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($sqs.id, req, "error saving message because " + err.message);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, message_prefix + "deleted AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "returned OK from transaction " + reponse.ResponseMetadata.MessageId, 2);
+                                    $app.ws.okResponse(res, "deleted AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, reponse).addTotal(reponse.length).send();
+                                    $log.tools.endpointDebug($sqs.id, req, "returned OK from transaction " + reponse.ResponseMetadata.MessageId, 2);
                                 }
                             });
                         }
                         else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
+                            $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                         }
                     }
                 };
@@ -443,31 +421,23 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($sqs.id, req, "listQueue()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        rs.listQueues(config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error getting queue list because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($sqs.id, req, "error getting queue list because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "founded " + reponse.QueueUrls.length + " queue(s) available ", reponse.QueueUrls).addTotal(reponse.QueueUrls.length).send();
+                                $log.tools.endpointDebug($sqs.id, req, "returned " + reponse.QueueUrls.length + " queue(s) available ", 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            rs.listQueues(config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error getting queue list because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error getting queue list because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "founded " + reponse.QueueUrls.length + " queue(s) available ", reponse.QueueUrls).addTotal(reponse.QueueUrls.length).send();
-                                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "returned " + reponse.QueueUrls.length + " queue(s) available ", 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -484,34 +454,26 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
+                    $log.tools.endpointDebug($sqs.id, req, "addQueue()", 1);
                     var queueId = req.params.id || req.body.id || config.config.QueueName || require('uuid').v1();
                     var params = config.config || {};
                     params.QueueName = queueId;
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        rs.createQueue(params, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error creating AWS SQS queue because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($sqs.id, req, "error creating queue because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "new AWS SQS queue " + params.QueueName, reponse.QueueUrl).addTotal(reponse.length).send();
+                                $log.tools.endpointDebug($sqs.id, req, "returned OK", 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            rs.createQueue(params, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error creating AWS SQS queue because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error creating queue because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "new AWS SQS queue " + params.QueueName, reponse.QueueUrl).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "returned OK", 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -520,7 +482,7 @@ module.exports = function (id, config) {
              * @param {object} config object used to define where and how to store the message
              * @returns {function} the function used to handle the server response
              */
-            deleteQueue: function (config) { 
+            deleteQueue: function (config) {
                 /**
                  * Callback used when the endpoint is called
                  * @param {object} req request object from the webserver
@@ -528,35 +490,27 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($sqs.id, req, message_prefix + "called", 1);
+                    $log.tools.endpointDebug($sqs.id, req, "deleteQueue()", 1);
                     var queueId = req.params.id || req.body.id || "";
                     var queueUrlPath = config.queueUrlPrefix || config.QueueUrl || "https://sqs.us-west-1.amazonaws.com/xxxxxx/";
                     var params = config.config || {};
                     params.QueueUrl = queueUrlPath + queueId;
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource is not defined for this endpoint");
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        rs.deleteQueue(params, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error deleting AWS SQS queue because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($sqs.id, req, "error creating queue because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "deleted AWS SQS queue " + params.queueId, true).addTotal(reponse.length).send();
+                                $log.tools.endpointDebug($sqs.id, "returned OK", 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            rs.deleteQueue(params, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error deleting AWS SQS queue because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($sqs.id, req, message_prefix + "error creating queue because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "deleted AWS SQS queue " + params.queueId, true).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($sqs.id, message_prefix + "returned OK", 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($sqs.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($sqs.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             }

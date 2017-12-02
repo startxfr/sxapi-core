@@ -73,7 +73,7 @@ module.exports = function (id, config) {
                     throw new Error("error connecting resource '" + $mqdb.id + "' to " + $mqdb.config._sign + ' : ' + err.message);
                 }
                 else {
-            $log.tools.resourceDebug($mqdb.id, "connected to '" + $mqdb.config._sign + "'", 4, duration);
+                    $log.tools.resourceDebug($mqdb.id, "connected to '" + $mqdb.config._sign + "'", 4, duration);
                 }
                 if (typeof callback === "function") {
                     callback(null, $mqdb);
@@ -110,7 +110,7 @@ module.exports = function (id, config) {
                 }
                 var timerId = 'mysql_read_' + table + '_' + sqlFilter.slice(0, -3);
                 $timer.start(timerId);
-            $log.tools.resourceInfo($mqdb.id, "read table " + table);
+                $log.tools.resourceInfo($mqdb.id, "read table " + table);
                 var sql = "SELECT * FROM " + table + " WHERE " + sqlFilter.slice(0, -3) + ";";
                 return connection.query(sql, (callback) ? callback(timerId) : $mqdb.__readDefaultCallback(timerId));
             }
@@ -239,206 +239,181 @@ module.exports = function (id, config) {
         endpoints: {
             test: function () {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
-                    $mqdb.tools.responseOK(res, "test message", {}, message_prefix);
+                    $log.tools.endpointDebug($mqdb.id, req, "test()", 1);
+                    $mqdb.tools.responseOK(res, "test message", {}, req);
                 };
             },
             list: function (config) {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
-                    if (!config.resource) {
-                        $mqdb.tools.responseResourceNotDefined(message_prefix, res);
+                    $log.tools.endpointDebug($mqdb.id, req, "list()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var params = $mqdb.tools.generateParams4Template(config, req);
+                        var sql = $mqdb.tools.format(config.sql, params);
+                        $app.ressources
+                                .get(config.resource)
+                                .query(sql, function (timerId) {
+                                    return function (err, results) {
+                                        var duration = $timer.timeStop(timerId);
+                                        if (err) {
+                                            var message = "could not execute " + sql + " because " + err.message;
+                                            $mqdb.tools.responseNOK(
+                                                    res,
+                                                    message,
+                                                    req,
+                                                    duration);
+                                        }
+                                        else {
+                                            $mqdb.tools.responseOK(res,
+                                                    results.length + ' items returned',
+                                                    results,
+                                                    req,
+                                                    duration,
+                                                    results.length);
+                                        }
+                                    };
+                                });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var params = $mqdb.tools.generateParams4Template(config, req);
-                            var sql = $mqdb.tools.format(config.sql, params);
-                            $app.ressources
-                                    .get(config.resource)
-                                    .query(sql, function (timerId) {
-                                        return function (err, results) {
-                                            var duration = $timer.timeStop(timerId);
-                                            if (err) {
-                                                var message = "could not execute " + sql + " because " + err.message;
-                                                $mqdb.tools.responseNOK(
-                                                        res,
-                                                        message,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                            else {
-                                                $mqdb.tools.responseOK(res,
-                                                        results.length + ' items returned',
-                                                        results,
-                                                        message_prefix,
-                                                        duration,
-                                                        results.length);
-                                            }
-                                        };
-                                    });
-                        }
-                        else {
-                            $mqdb.tools.responseResourceNotDefined(message_prefix, res, config);
-                        }
+                        $mqdb.tools.responseResourceNotDefined(req, res, config);
                     }
                 };
             },
             get: function (config) {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
+                    $log.tools.endpointDebug($mqdb.id, req, "get()", 1);
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    if (!config.resource) {
-                        $mqdb.tools.responseResourceNotDefined(message_prefix, res);
+                    if ($app.resources.exist(config.resource)) {
+                        var filter = {};
+                        if (docId && config.id_field) {
+                            eval("filter." + config.id_field + "=docId;");
+                        }
+                        $app.resources
+                                .get(config.resource)
+                                .read(config.table, filter, function (timerId) {
+                                    return function (err, reponse) {
+                                        var duration = $timer.timeStop(timerId);
+                                        if (err) {
+                                            var message = "could not find " + docId + " in " + config.table + " because " + err.message;
+                                            $mqdb.tools.responseNOK(res,
+                                                    message,
+                                                    req,
+                                                    duration);
+                                        }
+                                        else {
+                                            $mqdb.tools.responseOK(res,
+                                                    "returned " + reponse.length + ' item',
+                                                    reponse,
+                                                    req,
+                                                    duration);
+                                        }
+                                    };
+                                });
                     }
                     else {
-                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
-                            var filter = {};
-                            if (docId && config.id_field) {
-                                eval("filter." + config.id_field + "=docId;");
-                            }
-                            $app.resources
-                                    .get(config.resource)
-                                    .read(config.table, filter, function (timerId) {
-                                        return function (err, reponse) {
-                                            var duration = $timer.timeStop(timerId);
-                                            if (err) {
-                                                var message = "could not find " + docId + " in " + config.table + " because " + err.message;
-                                                $mqdb.tools.responseNOK(res,
-                                                        message,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                            else {
-                                                $mqdb.tools.responseOK(res,
-                                                        "returned " + reponse.length + ' item',
-                                                        reponse,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                        };
-                                    });
-                        }
-                        else {
-                            $mqdb.tools.responseResourceNotDefined(message_prefix, res, config);
-                        }
+                        $mqdb.tools.responseResourceNotDefined(req, res, config);
                     }
                 };
             },
             create: function (config) {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
-                    if (!config.resource) {
-                        $mqdb.tools.responseResourceNotDefined(message_prefix, res);
+                    $log.tools.endpointDebug($mqdb.id, req, "create()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        $app.resources
+                                .get(config.resource)
+                                .insert(config.table, req.body, function (timerId) {
+                                    return function (err, reponse) {
+                                        var duration = $timer.timeStop(timerId);
+                                        if (err) {
+                                            var message = "could not create record because " + err.message;
+                                            $mqdb.tools.responseNOK(res,
+                                                    message,
+                                                    req,
+                                                    duration);
+                                        }
+                                        else {
+                                            $mqdb.tools.responseOK(res,
+                                                    "document recorded in" + config.table,
+                                                    reponse,
+                                                    req,
+                                                    duration);
+                                        }
+                                    };
+                                });
                     }
                     else {
-                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
-                            $app.resources
-                                    .get(config.resource)
-                                    .insert(config.table, req.body, function (timerId) {
-                                        return function (err, reponse) {
-                                            var duration = $timer.timeStop(timerId);
-                                            if (err) {
-                                                var message = "could not create record because " + err.message;
-                                                $mqdb.tools.responseNOK(res,
-                                                        message,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                            else {
-                                                $mqdb.tools.responseOK(res,
-                                                        "document recorded in" + config.table,
-                                                        reponse,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                        };
-                                    });
-                        }
-                        else {
-                            $mqdb.tools.responseResourceNotDefined(message_prefix, res, config);
-                        }
+                        $mqdb.tools.responseResourceNotDefined(req, res, config);
                     }
                 };
             },
             update: function (config) {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
+                    $log.tools.endpointDebug($mqdb.id, req, "update()", 1);
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    if (!config.resource) {
-                        $mqdb.tools.responseResourceNotDefined(message_prefix, res);
+                    if ($app.resources.exist(config.resource)) {
+                        var filter = {};
+                        if (docId && config.id_field) {
+                            eval("filter." + config.id_field + "=docId;");
+                        }
+                        $app.resources
+                                .get(config.resource)
+                                .update(config.table, req.body, filter, function (timerId) {
+                                    return function (err, reponse) {
+                                        var duration = $timer.timeStop(timerId);
+                                        if (err) {
+                                            var message = "could not update " + docId + " because " + err.message;
+                                            $mqdb.tools.responseNOK(res,
+                                                    message,
+                                                    req,
+                                                    duration);
+                                        }
+                                        else {
+                                            $mqdb.tools.responseOK(res,
+                                                    "document " + docId + " updated",
+                                                    reponse.value,
+                                                    req,
+                                                    duration);
+                                        }
+                                    };
+                                });
                     }
                     else {
-                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
-                            var filter = {};
-                            if (docId && config.id_field) {
-                                eval("filter." + config.id_field + "=docId;");
-                            }
-                            $app.resources
-                                    .get(config.resource)
-                                    .update(config.table, req.body, filter, function (timerId) {
-                                        return function (err, reponse) {
-                                            var duration = $timer.timeStop(timerId);
-                                            if (err) {
-                                                var message = "could not update " + docId + " because " + err.message;
-                                                $mqdb.tools.responseNOK(res,
-                                                        message,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                            else {
-                                                $mqdb.tools.responseOK(res,
-                                                        "document " + docId + " updated",
-                                                        reponse.value,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                        };
-                                    });
-                        }
-                        else {
-                            $mqdb.tools.responseResourceNotDefined(message_prefix, res, config);
-                        }
+                        $mqdb.tools.responseResourceNotDefined(req, res, config);
                     }
                 };
             },
             delete: function (config) {
                 return function (req, res) {
-                    var message_prefix = $mqdb.tools.loadEndpoints(req);
+                    $log.tools.endpointDebug($mqdb.id, req, "delete()", 1);
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    if (!config.resource) {
-                        $mqdb.tools.responseResourceNotDefined(message_prefix, res);
+                    if ($app.resources.exist(config.resource)) {
+                        var filter = {};
+                        if (docId && config.id_field) {
+                            eval("filter." + config.id_field + "=docId;");
+                        }
+                        $app.resources
+                                .get(config.resource)
+                                .delete(config.table, filter, function (timerId) {
+                                    return function (err, reponse) {
+                                        var duration = $timer.timeStop(timerId);
+                                        if (err) {
+                                            var message = "could not delete " + docId + " because " + err.message;
+                                            $mqdb.tools.responseNOK(res,
+                                                    message,
+                                                    req,
+                                                    duration);
+                                        }
+                                        else {
+                                            $mqdb.tools.responseOK(res,
+                                                    "document " + docId + " deleted",
+                                                    reponse,
+                                                    req,
+                                                    duration);
+                                        }
+                                    };
+                                });
                     }
                     else {
-                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
-                            var filter = {};
-                            if (docId && config.id_field) {
-                                eval("filter." + config.id_field + "=docId;");
-                            }
-                            $app.resources
-                                    .get(config.resource)
-                                    .delete(config.table, filter, function (timerId) {
-                                        return function (err, reponse) {
-                                            var duration = $timer.timeStop(timerId);
-                                            if (err) {
-                                                var message = "could not delete " + docId + " because " + err.message;
-                                                $mqdb.tools.responseNOK(res,
-                                                        message,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                            else {
-                                                $mqdb.tools.responseOK(res,
-                                                        "document " + docId + " deleted",
-                                                        reponse,
-                                                        message_prefix,
-                                                        duration);
-                                            }
-                                        };
-                                    });
-                        }
-                        else {
-                            $mqdb.tools.responseResourceNotDefined(message_prefix, res, config);
-                        }
+                        $mqdb.tools.responseResourceNotDefined(req, res, config);
                     }
                 };
             }
@@ -457,31 +432,25 @@ module.exports = function (id, config) {
                 }
                 return params;
             },
-            loadEndpoints: function (req) {
-                var path = req.url.split("?")[0];
-                var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                $log.tools.endpointDebug($mqdb.id, req, message_prefix + "start", 1);
-                return message_prefix;
+            responseResourceNotDefined: function (req, res) {
+                $app.ws.nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
+                $log.tools.endpointWarn($mqdb.id, req, "resource is not defined for this endpoint");
             },
-            responseResourceNotDefined: function (message_prefix, res) {
-                $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "resource is not defined for this endpoint");
-            },
-            responseResourceDoesntExist: function (message_prefix, res, config) {
+            responseResourceDoesntExist: function (req, res, config) {
                 $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
+                $log.tools.endpointWarn($mqdb.id, req, "resource '" + config.resource + "' doesn't exist");
             },
-            responseOK: function (res, message, response, message_prefix, duration, total) {
+            responseOK: function (res, message, response, req, duration, total) {
                 var answser = $app.ws.okResponse(res, message, response);
                 if (total) {
                     answser.addTotal(total);
                 }
                 answser.send();
-                $log.tools.endpointDebug($mqdb.id, req, message_prefix + message, 2, duration);
+                $log.tools.endpointDebug($mqdb.id, req, message, 2, duration);
             },
-            responseNOK: function (res, message, message_prefix, duration) {
+            responseNOK: function (res, message, req, duration) {
                 $app.ws.nokResponse(res, "responded " + message).httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "responded " + message, duration);
+                $log.tools.endpointWarn($mqdb.id, req, "responded " + message, duration);
             },
             format: $log.format
         }

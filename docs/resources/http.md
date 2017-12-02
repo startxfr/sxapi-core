@@ -6,10 +6,7 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose http data.
 
-Based on [request SDK 2.79.0](https://github.com/request/request).
-
-[![request](https://img.shields.io/npm/v/sxapi-core.svg)](https://github.com/request/request) 
-
+Based on request [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
 
 ## Resource configuration
 
@@ -69,8 +66,8 @@ Call http server and return a single object describing the http response content
 
 | Param           | Mandatory | Type     | default | Description
 |-----------------|:---------:|:--------:|---------|---------------
-| **url**         | yes       | function | null    | url to get information from. could be a relative url if you've defined a `baseUrl` parameter in your [Resource configuration](#resource-configuration).  See [npm request options](https://www.npmjs.com/package/request#requestoptions-callback) for more details.
-| **options**     | no        | function |         | any request options. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
+| **url**         | yes       | string   | null    | url to get information from. could be a relative url if you've defined a `baseUrl` parameter in your [Resource configuration](#resource-configuration).  See [npm request options](https://www.npmjs.com/package/request#requestoptions-callback) for more details.
+| **options**     | no        | object   |         | any request options. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
 | **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
 

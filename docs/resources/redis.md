@@ -1,252 +1,266 @@
 # SXAPI Resource : redis
 
-This resource allow you to interact with a redis Enterprise Server Cluster. Based on [Node_redis 2.6.3](https://github.com/NodeRedis/node_redis). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Redis resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a Redis server or cluster.
+Programmers can access [resource methods](#resource-methods) and embed this module
+methods into there own method and endpoints.
+API developpers can use [resource endpoints](#resource-endpoints) into there
+[configuration profile](../guides/2.Configure.md) to expose redis data.
 
+Based on request [![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
 
 ## Resource configuration
 
-This config object will be used by node_redis package when executing `redis.CreateClient()`. [Read node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties) for a complete list of the parameters that you can use in this config objects.
+To configure this resource, you must add a config key under the ```resources```
+section of your configuration profile. 
+This key must be a unique string and will be considered as the resource id. The value 
+must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
 
-### **Config parameters**
+For a better understanting of the sxapi
+configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
--   `_class` **string** Must be redis for this resource
--   `url` **string** connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties)
--   `password` **string** Password used for this redis cluster
--   `...` any node_redis createClient configuration parameter
+This config object will be passed to `redis.CreateClient()` method of the nodejs redis module. 
+[Read node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties) 
+for a complete list of the parameters that you can use in this config object.
 
-### **Sample sxapi.json**
+### Resource config parameters
+
+| Param           | Mandatory | Type   | default   | Description
+|-----------------|:---------:|:------:|-----------|---------------
+| **_class**      | yes       | string |           | module name. Must be **redis** for this resource
+| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties)
+| **...**         | no        | N/A    |           | any request option. See [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties).
+
+### Example
+
+This is a sample configuration of this resource. You must add this section under 
+the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
     ...
-    "redis-sample": {
+    "redis-id": {
         "_class": "redis",
-        "url": "redis://172.17.42.1:6379",
-        "password": "123"
-        "..." : "..."
+        "url": "redis://dev:dev@localhost/bucket",
+        "return_buffers" : false
     }
     ...
 }
 ```
 
-## Available Methods
+## Resource methods
+
+If you want to use this resource in our own module, you can retrieve this resource 
+instance by using `$app.resources.get('redis-id')` where `redis-id` is the
+id of your resource as defined in the [resource configuration](#resource-configuration). 
+
+This module come with several methods for manipulating redis dataset.
+
+[1. Get method](#method-get)
+[2. Insert method](#method-insert)
+[3. Update method](#method-update)
+[4. Delete method](#method-delete)
+
 
 ### Method get
 
-Get a document for the bucket according to the given docId.  Use KV capabilities of Redis and work extremely fast on well sized cluster.
+get a redis value by it's given key.
 
-#### **Parameters**
+#### Parameters
 
--   `docId` **string** The document ID to find
--   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the redis cluster
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| **key**         | yes       | string   | null    | key to find
+| **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
-#### **Sample code**
 
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.get('my-doc-id', function (error, response) {
-    console.log(error, response);
-});
-```
-
-### Method query
-
-Send a N1QL request to the query service of the redis cluster defined in the given resource. Use Query and Index node as well as Data Node according to your query. Take care of having theses services optimized for the kind of query you perform.
-
-#### **Parameters**
-
--   `n1ql` **string** The N1QL request to send to the query node for the resource's cluster
--   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__queryDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the redis cluster
-
-#### **Sample code**
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.query('SELECT * FROM `beer-sample` LIMIT 0, 5', function (error, response) {
+var resource = $app.resources.get('redis-id');
+resource.get('myKey', function (error, response) {
     console.log(error, response);
 });
 ```
 
 ### Method insert
 
-Insert a document into the bucket according to the given docId.  Use KV capabilities of Redis and work extremely fast on well sized cluster.
+insert a redis value associated to the given key.
 
-#### **Parameters**
+#### Parameters
 
--   `docId` **string** The document ID to create
--   `document` **string** The document body
--   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__insertDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the redis cluster
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| **key**         | yes       | string   | null    | key to use
+| **value**       | yes       | string   | null    | value associated to this key
+| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.insert('my-doc-id', {key:'value'}, function (error, response) {
+var resource = $app.resources.get('redis-id');
+resource.insert('myKey', 'my value', function (error, response) {
     console.log(error, response);
 });
 ```
 
-### update
+### Method update
 
-Update a document into the bucket according to the given docId.  Use KV capabilities of Redis and work extremely fast on well sized cluster.
+update a redis value associated to the given key.
 
-#### **Parameters**
+#### Parameters
 
--   `docId` **string** The document ID to update
--   `document` **string** The document body
--   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__updateDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the redis cluster
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| **key**         | yes       | string   | null    | key to use
+| **value**       | yes       | string   | null    | the new value associated to this key
+| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.update('my-doc-id', {key:'value'}, function (error, response) {
+var resource = $app.resources.get('redis-id');
+resource.update('myKey', 'my new value', function (error, response) {
     console.log(error, response);
 });
 ```
 
-### delete
+### Method delete
 
-Remove a document into the bucket according to the given docId.  Use KV capabilities of Redis and work extremely fast on well sized cluster.
+delete a redis key and it associated value.
 
-#### **Parameters**
+#### Parameters
 
--   `docId` **string** The document ID to delete
--   `callback` **function** Callback function used to handle the answer. If not provided, $cbdb.__deleteDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the redis cluster
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| **key**         | yes       | string   | null    | key to delete
+| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.delete('my-doc-id', function (error, response) {
+var resource = $app.resources.get('redis-id');
+resource.delete('myKey', function (error, response) {
     console.log(error, response);
 });
 ```
 
+## Resource endpoints
 
+This module come with one single endpoint with can interact with any redis method.
 
-## Available Endpoints
+[1. Get endpoint](#get-endpoint)
+[2. Create endpoint](#create-endpoint)
+[3. Update endpoint](#update-endpoint)
+[4. Delete endpoint](#delete-endpoint)
 
-### list endpoint
+### Get endpoint
 
-Return a list resulting from a N1ql query
+The purpose of this endpoint is to make call to a redis server and to return 
+the value associated to the given key.
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the redis resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.list***
--   `n1ql` **string** N1QL query to execute whent his entrypoint is called
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
 
-#### **Sample code**
+#### Example
 
-```javascript 
-{
-    "path": "/beer", "method": "GET",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.list",
-    "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
-}
-```
-
-### get endpoint
-
-Return a document coresponding to the given docId
-
-#### **Config parameters**
-
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the redis resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.get***
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/beer/:id", "method": "GET",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.get"
-}
-```
-
-### create endpoint
-
-Insert a new document in the bucket. You could give and id or leave the system create one for you
-
-#### **Config parameters**
-
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the redis resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.create***
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/beer/:id", "method": "POST",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.create"
-}
-```
 ```javascript
-{
-    "path": "/beer", "method": "POST",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.create"
+"server": {
+    "endpoints": [
+        {
+            "path": "/redis",
+            "resource": "redis-id",
+            "endpoint": "get"
+        }
+    ]
 }
 ```
 
-### update endpoint
+### Create endpoint
 
-Update the document coresponding to the given docId with the new document
+The purpose of this endpoint is to insert a key into a redis server. Key Id is defined
+by the context, and document will be the HTTP body of the query.
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the redis resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.update***
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "create"
 
-#### **Sample code**
+#### Example
 
-```javascript 
-{
-    "path": "/beer/:id", "method": "PUT",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.update"
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/redis/:id",
+            "resource": "redis-id",
+            "endpoint": "create"
+        }
+    ]
 }
 ```
 
-### delete endpoint
 
-Remove the document coresponding to the given docId with the new document
+### Update endpoint
 
-#### **Config parameters**
+The purpose of this endpoint is to update a key into a redis server. Key Id is defined
+by the context, and document will be the HTTP body of the query.
 
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the redis resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.delete***
+#### Parameters
 
-#### **Sample code**
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "update"
 
-```javascript 
-{
-    "path": "/beer/:id", "method": "DELETE",
-    "resource": "redis-sample",
-    "endpoint": "endpoints.delete"
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/redis/:id",
+            "resource": "redis-id",
+            "endpoint": "update"
+        }
+    ]
+}
+```
+
+### Delete endpoint
+
+The purpose of this endpoint is to delete a key into a redis server. Key Id is defined
+by the context.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "delete"
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/redis/:id",
+            "resource": "redis-id",
+            "endpoint": "delete"
+        }
+    ]
 }
 ```
