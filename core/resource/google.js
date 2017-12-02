@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer */
+/* global module, require, process, $log, $timer, $app */
 //'use strict';
 
 /**
@@ -26,7 +26,7 @@ module.exports = function (id, config) {
             if (config) {
                 $gapi.config = config;
             }
-            $log.debug("resource '" + $gapi.id + "' : initializing", 3);
+            $log.tools.resourceDebug($gapi.id, "initializing", 3);
             if (!$gapi.config.auth) {
                 throw new Error("no 'auth' key found in resource '" + $gapi.id + "' config");
             }
@@ -44,7 +44,7 @@ module.exports = function (id, config) {
                     if (!$gapi.config.auth.jwt.client_id) {
                         throw new Error("no 'auth.jwt.client_id' key found in resource '" + $gapi.id + "' config");
                     }
-                    $log.debug("resource '" + $gapi.id + "' : use JWT auth " + $gapi.config.auth.jwt.client_id, 1, $timer.time(timerId));
+                    $log.tools.resourceDebug($gapi.id, "resource '" + $gapi.id + "' : use JWT auth " + $gapi.config.auth.jwt.client_id, 1, $timer.time(timerId));
                 }
                 else {
                     throw new Error("'auth.method' key '" + $gapi.config.auth.method + "' is not implemented in resource '" + $gapi.id + "' config");
@@ -64,7 +64,7 @@ module.exports = function (id, config) {
                 });
             }
             $gapi.gapi = require('googleapis');
-            $log.debug("resource '" + $gapi.id + "' : initialized ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($gapi.id, "initialized ", 1, $timer.timeStop(timerId));
             return this;
         },
         /**
@@ -74,12 +74,12 @@ module.exports = function (id, config) {
          */
         start: function (callback) {
             var timerId = 'resource_google_start_' + $gapi.id;
-            $log.debug("resource '" + $gapi.id + "' : starting", 3);
+            $log.tools.resourceDebug($gapi.id, "starting", 3);
             var cb = function () {
                 Object.keys($gapi.services).forEach(function (service) {
                     $gapi.services[service].start();
                 });
-                $log.debug("resource '" + $gapi.id + "' : started ", 1, $timer.timeStop(timerId));
+                $log.tools.resourceDebug($gapi.id, "started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
                     callback();
                 }
@@ -93,7 +93,7 @@ module.exports = function (id, config) {
          * @returns {$gapi}
          */
         stop: function (callback) {
-            $log.debug("Stopping resource '" + $gapi.id + "'", 2);
+            $log.tools.resourceDebug($gapi.id, "Stopping", 2);
             Object.keys($gapi.services).forEach(function (service) {
                 $gapi.services[service].stop();
             });
@@ -120,7 +120,7 @@ module.exports = function (id, config) {
                     return;
                 }
                 else {
-                    $log.debug("resource '" + $gapi.id + "' : authenticated with token " + tokens.access_token, 4, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($gapi.id, "authenticated with token " + tokens.access_token, 4, $timer.timeStop(timerId));
                     if (typeof callback === "function") {
                         callback(null, this);
                     }
@@ -163,23 +163,21 @@ module.exports = function (id, config) {
                  */
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var ress = require('../resource');
-                    var ws = require("../ws");
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.debug(message_prefix + "called", 1);
+                    $log.tools.endpointDebug($gapi.id, req, message_prefix + "called", 1);
                     if (!config.resource) {
-                        ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.warn(message_prefix + "resource is not defined for this endpoint");
+                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                        $log.tools.endpointWarn($gapi.id, req, message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
-                        if (ress.exist(config.resource)) {
-                            var rs = ress.get(config.resource);
-                            ws.okResponse(res, message_prefix + " returned auth token", rs.gapi_auth.credentials).send();
-                            $log.debug(message_prefix + "returned token " + rs.gapi_auth.credentials.access_token, 2);
+                        if ($app.resources.exist(config.resource)) {
+                            var rs = $app.resources.get(config.resource);
+                            $app.ws.okResponse(res, message_prefix + " returned auth token", rs.gapi_auth.credentials).send();
+                            $log.tools.endpointDebug($gapi.id, req, message_prefix + "returned token " + rs.gapi_auth.credentials.access_token, 2);
                         }
                         else {
-                            ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $log.tools.endpointWarn($gapi.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
                 };

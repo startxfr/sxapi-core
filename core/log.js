@@ -272,7 +272,67 @@ var $log = {
             return this;
         }
     },
-    format: require("mustache").render
+    format: require("mustache").render,
+    tools: {
+        endpointPrefix: function (rId, req) {
+            var res = this.resourcePrefix(rId);
+            var path = "";
+            var method = "UNKOWN";
+            if (req && req.url) {
+                path = req.url.split("?")[0];
+            }
+            if (req && req.method) {
+                method = req.method;
+            }
+            res += method + " : " + path + " : ";
+            return res;
+        },
+        endpointMessage: function (rId, req, message) {
+            var res = this.endpointPrefix(rId, req);
+            if (message !== null && message !== undefined) {
+                res += message;
+            }
+            return res;
+        },
+        endpointDebug: function (rId, req, message, level, timer, cancelBackend) {
+            $log.debug(this.endpointMessage(rId, req, message), level, timer, cancelBackend);
+        },
+        endpointInfo: function (rId, req, message, timer, cancelBackend) {
+            $log.info(this.endpointMessage(rId, req, message), timer, cancelBackend);
+        },
+        endpointWarn: function (rId, req, message, timer, cancelBackend) {
+            $log.warn(this.endpointMessage(rId, req, message), timer, cancelBackend);
+        },
+        endpointError: function (rId, req, message, timer, cancelBackend) {
+            $log.error(this.endpointMessage(rId, req, message), timer, cancelBackend);
+        },
+        resourcePrefix: function (rId) {
+            var res = "";
+            if (rId !== null && rId !== undefined) {
+                res += rId + " : ";
+            }
+            return res;
+        },
+        resourceMessage: function (rId, message) {
+            var res = this.resourcePrefix(rId);
+            if (message !== null && message !== undefined) {
+                res += message;
+            }
+            return res;
+        },
+        resourceDebug: function (rId, message, level, timer, cancelBackend) {
+            $log.debug(this.resourceMessage(rId, message), level, timer, cancelBackend);
+        },
+        resourceInfo: function (rId, message, timer, cancelBackend) {
+            $log.info(this.resourceMessage(rId, message), timer, cancelBackend);
+        },
+        resourceWarn: function (rId, message, timer, cancelBackend) {
+            $log.debug(this.resourceMessage(rId, message), timer, cancelBackend);
+        },
+        resourceError: function (rId, message, timer, cancelBackend) {
+            $log.error(this.resourceMessage(rId, message), timer, cancelBackend);
+        }
+    }
 };
 
 module.exports = $log;

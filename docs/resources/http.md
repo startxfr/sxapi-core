@@ -1,6 +1,6 @@
 # SXAPI Resource : http
 
-This resource allow you to interact with a HTTP server. Based on [request SDK 2.79.0](https://github.com/request/request). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). http resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a HTTP server. Based on [request SDK 2.79.0](https://github.com/request/request). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). http resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -43,7 +43,7 @@ Execute the HTTP call to the remote server defined in the resource.
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.call('http://example.com/json',{timeout: 1500}, function (error, response) {
     console.log(error, response);
 });

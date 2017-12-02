@@ -19,7 +19,7 @@ module.exports = function (id, config) {
             if (config) {
                 $mqdb.config = config;
             }
-            $log.debug("resource '" + $mqdb.id + "' : initializing", 3);
+            $log.tools.resourceDebug($mqdb.id, "initializing", 3);
             if (!$mqdb.config.server) {
                 throw new Error("no 'server' key found in resource '" + $mqdb.id + "' config");
             }
@@ -35,20 +35,20 @@ module.exports = function (id, config) {
                 $mysqlPool = [];
             }
             if (typeof $mysqlPool[$mqdb.config._sign] === 'undefined') {
-                $log.debug("resource '" + $mqdb.id + "' : new connection to mysql " + $mqdb.config._sign, 4);
+                $log.tools.resourceDebug($mqdb.id, "resource '" + $mqdb.id + "' : new connection to mysql " + $mqdb.config._sign, 4);
                 $mysqlPool[$mqdb.config._sign] = $mqdb.conn.createConnection($mqdb.config.server);
             }
             else {
-                $log.debug("resource '" + $mqdb.id + "' : use existing connection to mysql " + $mqdb.config._sign, 4);
+                $log.tools.resourceDebug($mqdb.id, "resource '" + $mqdb.id + "' : use existing connection to mysql " + $mqdb.config._sign, 4);
             }
-            $log.debug("resource '" + $mqdb.id + "' : initialized ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($mqdb.id, "initialized ", 1, $timer.timeStop(timerId));
             return $mqdb;
         },
         start: function (callback) {
             var timerId = 'resource_mysql_start_' + $mqdb.id;
-            $log.debug("resource '" + $mqdb.id + "' : starting", 3);
+            $log.tools.resourceDebug($mqdb.id, "starting", 3);
             var cb = function () {
-                $log.debug("resource '" + $mqdb.id + "' : started ", 1, $timer.timeStop(timerId));
+                $log.tools.resourceDebug($mqdb.id, "started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
                     callback();
                 }
@@ -57,7 +57,7 @@ module.exports = function (id, config) {
             return $mqdb;
         },
         stop: function (callback) {
-            $log.debug("Stopping resource '" + $mqdb.id + "'", 2);
+            $log.tools.resourceDebug($mqdb.id, "Stopping", 2);
             $mysqlPool[$mqdb.config._sign].destroy();
             if (typeof callback === "function") {
                 callback(null, $mqdb);
@@ -73,7 +73,7 @@ module.exports = function (id, config) {
                     throw new Error("error connecting resource '" + $mqdb.id + "' to " + $mqdb.config._sign + ' : ' + err.message);
                 }
                 else {
-                    $log.debug("resource '" + $mqdb.id + "' : connected to '" + $mqdb.config._sign + "'", 4, duration);
+            $log.tools.resourceDebug($mqdb.id, "connected to '" + $mqdb.config._sign + "'", 4, duration);
                 }
                 if (typeof callback === "function") {
                     callback(null, $mqdb);
@@ -84,14 +84,14 @@ module.exports = function (id, config) {
         query: function (sql, callback) {
             var timerId = 'mysql_query_' + sql;
             $timer.start(timerId);
-            $log.debug("resource '" + $mqdb.id + "' : exec sql " + sql, 4);
+            $log.tools.resourceInfo($mqdb.id, "exec sql " + sql);
             return $mysqlPool[$mqdb.config._sign].query(sql, (callback) ? callback(timerId) : $mqdb.__queryDefaultCallback(timerId));
         },
         __queryDefaultCallback: function (timerId) {
             return function (error, results, fields) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.error("resource '" + $mqdb.id + "' : query could not be executed because " + error.message, duration);
+                    $log.tools.resourceError("query could not be executed because " + error.message, duration);
                 }
             };
         },
@@ -110,11 +110,12 @@ module.exports = function (id, config) {
                 }
                 var timerId = 'mysql_read_' + table + '_' + sqlFilter.slice(0, -3);
                 $timer.start(timerId);
+            $log.tools.resourceInfo($mqdb.id, "read table " + table);
                 var sql = "SELECT * FROM " + table + " WHERE " + sqlFilter.slice(0, -3) + ";";
                 return connection.query(sql, (callback) ? callback(timerId) : $mqdb.__readDefaultCallback(timerId));
             }
             else {
-                $log.warn("error reading entry in mysql because no filter found (prevent reading all content in table)");
+                $log.tools.resourceWarn($mqdb.id, "error reading entry in mysql because no filter found (prevent reading all content in table)");
                 return false;
             }
         },
@@ -122,10 +123,10 @@ module.exports = function (id, config) {
             return function (error, results, fields) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.warn("error reading entry in mysql because " + error.message, duration);
+                    $log.tools.resourceWarn($mqdb.id, "error reading entry in mysql because " + error.message, duration);
                 }
                 else {
-                    $log.debug("reading entry in mysql ", 4, duration);
+                    $log.tools.resourceDebug($mqdb.id, "reading entry in mysql ", 4, duration);
                 }
             };
         },
@@ -138,7 +139,7 @@ module.exports = function (id, config) {
         insert: function (table, data, callback) {
             var timerId = 'mysql_insert_' + table;
             $timer.start(timerId);
-            $log.debug("resource '" + $mqdb.id + "' : adding new entry in table '" + table + "'", 4);
+            $log.tools.resourceInfo($mqdb.id, "add new entry in table '" + table + "'");
             var connection = $mysqlPool[$mqdb.config._sign];
             var fields = '';
             var vals = '';
@@ -153,10 +154,10 @@ module.exports = function (id, config) {
             return function (error, results, fields) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.warn("resource '" + $mqdb.id + "' : error adding new entry because " + error.message, duration);
+                    $log.tools.resourceWarn($mqdb.id, "resource '" + $mqdb.id + "' : error adding new entry because " + error.message, duration);
                 }
                 else {
-                    $log.debug("resource '" + $mqdb.id + "' : new entry added", 3, duration);
+                    $log.tools.resourceDebug($mqdb.id, "resource '" + $mqdb.id + "' : new entry added", 3, duration);
                 }
             };
         },
@@ -171,6 +172,7 @@ module.exports = function (id, config) {
             var connection = $mysqlPool[$mqdb.config._sign];
             var sqlFrag = '';
             var sqlFilter = '';
+            $log.tools.resourceInfo($mqdb.id, "update entry in table '" + table + "'");
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {
                 for (var i in filter) {
                     sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
@@ -184,7 +186,7 @@ module.exports = function (id, config) {
                 return connection.query(sql, (callback) ? callback(timerId) : $mqdb.__updateDefaultCallback(timerId));
             }
             else {
-                $log.warn("error updating entry in mysql because no filter found (prevent updating all table)");
+                $log.tools.resourceWarn($mqdb.id, "error updating entry in mysql because no filter found (prevent updating all table)");
                 return false;
             }
         },
@@ -192,10 +194,10 @@ module.exports = function (id, config) {
             return function (error, results, fields) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.warn("error updating entry in mysql because " + error.message, duration);
+                    $log.tools.resourceWarn($mqdb.id, "error updating entry in mysql because " + error.message, duration);
                 }
                 else {
-                    $log.debug("updating entry in mysql ", 4, duration);
+                    $log.tools.resourceDebug($mqdb.id, "updating entry in mysql ", 4, duration);
                 }
             };
         },
@@ -208,6 +210,7 @@ module.exports = function (id, config) {
         delete: function (table, filter, callback) {
             var connection = $mysqlPool[$mqdb.config._sign];
             var sqlFilter = '';
+            $log.tools.resourceInfo($mqdb.id, "delete entry in table '" + table + "'");
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {
                 for (var i in filter) {
                     sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
@@ -218,7 +221,7 @@ module.exports = function (id, config) {
                 return connection.query(sql, (callback) ? callback() : $mqdb.__deleteDefaultCallback());
             }
             else {
-                $log.warn("error deleting entry in mysql because no filter found (prevent erasing all table)");
+                $log.tools.resourceWarn($mqdb.id, "error deleting entry in mysql because no filter found (prevent erasing all table)");
                 return false;
             }
         },
@@ -226,10 +229,10 @@ module.exports = function (id, config) {
             return function (error, results, fields) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.warn("error deleting entry in mysql because " + error.message, duration);
+                    $log.tools.resourceWarn($mqdb.id, "error deleting entry in mysql because " + error.message, duration);
                 }
                 else {
-                    $log.debug("deleting entry in mysql ", 4, duration);
+                    $log.tools.resourceDebug($mqdb.id, "deleting entry in mysql ", 4, duration);
                 }
             };
         },
@@ -247,10 +250,10 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($app.resources.exist(config.resource)) {
                             var params = $mqdb.tools.generateParams4Template(config, req);
                             var sql = $mqdb.tools.format(config.sql, params);
-                            $mqdb.tools.ress
+                            $app.ressources
                                     .get(config.resource)
                                     .query(sql, function (timerId) {
                                         return function (err, results) {
@@ -288,12 +291,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .read(config.table, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -328,8 +331,8 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
-                            $mqdb.tools.ress
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
+                            $app.resources
                                     .get(config.resource)
                                     .insert(config.table, req.body, function (timerId) {
                                         return function (err, reponse) {
@@ -365,12 +368,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .update(config.table, req.body, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -406,12 +409,12 @@ module.exports = function (id, config) {
                         $mqdb.tools.responseResourceNotDefined(message_prefix, res);
                     }
                     else {
-                        if ($mqdb.tools.ress.exist(config.resource)) {
+                        if ($mqdb.tools.$app.resources.exist(config.resource)) {
                             var filter = {};
                             if (docId && config.id_field) {
                                 eval("filter." + config.id_field + "=docId;");
                             }
-                            $mqdb.tools.ress
+                            $app.resources
                                     .get(config.resource)
                                     .delete(config.table, filter, function (timerId) {
                                         return function (err, reponse) {
@@ -441,7 +444,6 @@ module.exports = function (id, config) {
             }
         },
         tools: {
-            ress: require('../resource'),
             generateParams4Template: function (config, req) {
                 var params = require('merge').recursive({}, config);
                 if (req.params) {
@@ -458,32 +460,28 @@ module.exports = function (id, config) {
             loadEndpoints: function (req) {
                 var path = req.url.split("?")[0];
                 var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                $log.debug(message_prefix + "start", 1);
+                $log.tools.endpointDebug($mqdb.id, req, message_prefix + "start", 1);
                 return message_prefix;
             },
             responseResourceNotDefined: function (message_prefix, res) {
-                var ws = require("../ws");
-                ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                $log.warn(message_prefix + "resource is not defined for this endpoint");
+                $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
+                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "resource is not defined for this endpoint");
             },
             responseResourceDoesntExist: function (message_prefix, res, config) {
-                var ws = require("../ws");
-                ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
             },
             responseOK: function (res, message, response, message_prefix, duration, total) {
-                var ws = require("../ws");
-                var answser = ws.okResponse(res, message, response);
+                var answser = $app.ws.okResponse(res, message, response);
                 if (total) {
                     answser.addTotal(total);
                 }
                 answser.send();
-                $log.debug(message_prefix + message, 2, duration);
+                $log.tools.endpointDebug($mqdb.id, req, message_prefix + message, 2, duration);
             },
             responseNOK: function (res, message, message_prefix, duration) {
-                var ws = require("../ws");
-                ws.nokResponse(res, "responded " + message).httpCode(500).send();
-                $log.warn(message_prefix + "responded " + message, duration);
+                $app.ws.nokResponse(res, "responded " + message).httpCode(500).send();
+                $log.tools.endpointWarn($mqdb.id, req, message_prefix + "responded " + message, duration);
             },
             format: $log.format
         }

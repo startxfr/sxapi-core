@@ -27,6 +27,18 @@ describe("Application core component", function () {
             expect(test).to.have.any.keys('log');
             expect(test.log).to.be.an('object');
         });
+        it("should have resources property", function () {
+            expect(test).to.have.any.keys('resources');
+            expect(test.resources).to.be.an('object');
+        });
+        it("should have session property", function () {
+            expect(test).to.have.any.keys('session');
+            expect(test.session).to.be.an('object');
+        });
+        it("should have ws property", function () {
+            expect(test).to.have.any.keys('ws');
+            expect(test.ws).to.be.an('object');
+        });
         it("should have _onstopQueue property", function () {
             expect(test).to.have.any.keys('_onstopQueue');
             expect(test._onstopQueue).to.be.an('array');

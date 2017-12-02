@@ -27,6 +27,9 @@ describe("Log core component", function () {
         it("should have format property", function () {
             expect(test).to.have.any.keys('format');
         });
+        it("should have tools property", function () {
+            expect(test).to.have.any.keys('tools');
+        });
     });
     describe("#init()", function () {
         var test2 = sinon.spy(test, 'init');
@@ -150,6 +153,83 @@ describe("Log core component", function () {
             it("should be a method", function () {
                 expect(test.couchbase).to.have.any.keys('log');
                 expect(test.couchbase.log).to.be.an('function');
+            });
+        });
+    });
+    describe("toolkit", function () {
+        it("should be an object", function () {
+            expect(test.tools).to.be.an('object');
+        });
+        describe("#endpointPrefix()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointPrefix');
+                expect(test.tools.endpointPrefix).to.be.an('function');
+            });
+        });
+        describe("#endpointMessage()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointMessage');
+                expect(test.tools.endpointMessage).to.be.an('function');
+            });
+        });
+        describe("#endpointDebug()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointDebug');
+                expect(test.tools.endpointDebug).to.be.an('function');
+            });
+        });
+        describe("#endpointInfo()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointInfo');
+                expect(test.tools.endpointInfo).to.be.an('function');
+            });
+        });
+        describe("#endpointWarn()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointWarn');
+                expect(test.tools.endpointWarn).to.be.an('function');
+            });
+        });
+        describe("#endpointError()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointError');
+                expect(test.tools.endpointError).to.be.an('function');
+            });
+        });
+        describe("#resourcePrefix()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourcePrefix');
+                expect(test.tools.resourcePrefix).to.be.an('function');
+            });
+        });
+        describe("#resourceMessage()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourceMessage');
+                expect(test.tools.resourceMessage).to.be.an('function');
+            });
+        });
+        describe("#resourceDebug()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourceDebug');
+                expect(test.tools.resourceDebug).to.be.an('function');
+            });
+        });
+        describe("#resourceInfo()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourceInfo');
+                expect(test.tools.resourceInfo).to.be.an('function');
+            });
+        });
+        describe("#resourceWarn()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourceWarn');
+                expect(test.tools.resourceWarn).to.be.an('function');
+            });
+        });
+        describe("#resourceError()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('resourceError');
+                expect(test.tools.resourceError).to.be.an('function');
             });
         });
     });

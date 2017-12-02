@@ -53,11 +53,11 @@ If a resource come with endpoints, they are all available using the ```endpoints
 
 ### Using a resource method
 
-When you are creating your own module and need to use a resource, you can access it using the ```require('/app/core/resource').get('resource-id')``` method. This method will return the coresponding resource initialized and started when you module is executed.
+When you are creating your own module and need to use a resource, you can access it using the ```$app.resources.get('resource-id')``` method. This method will return the coresponding resource initialized and started when you module is executed.
 
 ```javascript
 // Get the resource instance via resource manager
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 // Using a resource method
 resource.resource_method();
 ```
@@ -70,7 +70,7 @@ Resource manager is the core component used for resources management. He help mo
 
 ```javascript
 // Get the resource manager
-var rm = require('/app/core/resource');
+var rm = $app.resources;
 ```
 
 ### init method
