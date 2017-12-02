@@ -60,7 +60,7 @@ var $resources = {
      * @returns {Boolean}
      */
     exist: function (id) {
-        return (this.config[id]) ? true : false;
+        return (id && this.config[id]) ? true : false;
     },
     /**
      * start all resources

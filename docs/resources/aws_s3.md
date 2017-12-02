@@ -1,6 +1,6 @@
 # SXAPI Resource : aws_s3
 
-This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -60,7 +60,7 @@ list objects in a given bucket. This method use ```listObjects_options``` config
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.listObjects('bucketname',{}, function (error, response) {
     console.log(error, response);
 });
@@ -82,7 +82,7 @@ return an object given by it ID. This method use ```getObject_options``` configu
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.getObject('file.pdf','bucketname',{},function (error, response) {
     console.log(error, response);
 });
@@ -105,7 +105,7 @@ Add an object into a bucket. This method use ```addObject_options``` configurati
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.addObject('file.txt','content sample','bucketname',{},function (error, response) {
     console.log(error, response);
 });
@@ -129,7 +129,7 @@ Update an object into a bucket. This method use ```updateObject_options``` confi
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.updateObject('file.txt','content sample','bucketname',{},function (error, response) {
     console.log(error, response);
 });
