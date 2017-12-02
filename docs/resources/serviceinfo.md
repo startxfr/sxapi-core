@@ -6,30 +6,30 @@ well as the endpoint list of exposed path for your API.
 
 ## Resource configuration
 
-To configure this resource, you must add a config section under the ```resources```
+To configure this resource, you must add a config key under the ```resources```
 section of your configuration profile. 
-
-The key must be a unique string and will be considered as the resource id. The value 
+This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the following configuration parameters.
 
 For a better understanting of the sxapi
-configuration profile, please refer to the [confugration guide](../guides/2.Configure.md)
+configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-### Config parameters
+
+### Resource config parameters
 
 | Param           | Mandatory | Type   | default | Description
 |-----------------|:---------:|:------:|---------|---------------
-| **_class**      | yes       | string |         | endpoint name declared in this resource. Must be serviceinfo for this resource
+| **_class**      | yes       | string |         | module name. Must be **serviceinfo** for this resource
 
 ### Example
 
-This is a sample configuration of your resource. You must add this section under 
-the ```resources``` section of your configuration profile
+This is a sample configuration of this resource. You must add this section under 
+the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
     ...
-    "serviceinfo-sample": {
+    "serviceinfo-id": {
         "_class": "serviceinfo"
     }
     ...
@@ -38,9 +38,14 @@ the ```resources``` section of your configuration profile
 
 ## Resource methods
 
-If you wan to use this resource in our own module, you can retrieve a resource 
-instance by using ```$app.resources.get('resource-id')``` where `resource-id` is the
+If you want to use this resource in our own module, you can retrieve this resource 
+instance by using `$app.resources.get('serviceinfo-id')` where `serviceinfo-id` is the
 id of your resource as defined in the [resource configuration](#resource-configuration). 
+
+This module come with one single method.
+
+1. [Read](#method-read)
+
 
 ### Method read
 
@@ -51,13 +56,13 @@ details.
 
 | Param           | Mandatory | Type     | default | Description
 |-----------------|:---------:|:--------:|---------|---------------
-| callback        | yes       | function | default | callback function to get the returned informations. <br>this function take 2 parameters, first is error (must be null, false or undefined if no error) and second one is response object (if no error)<br>If not defined, dropped to a default function who output information to the console
+| callback        | yes       | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
 
 #### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
+var resource = $app.resources.get('serviceinfo-id');
 resource.read(function (error, response) {
     console.log(error, response);
 });
@@ -66,6 +71,8 @@ resource.read(function (error, response) {
 ## Resource endpoints
 
 This module come with one single read-only endpoint.
+
+1. [Info](#info-endpoint)
 
 ### info endpoint
 
@@ -87,7 +94,7 @@ the server as well as the list of all exposed endpoints for your API.
     "endpoints": [
         {
             "path": "/info",
-            "resource": "serviceinfo-sample",
+            "resource": "serviceinfo-id",
             "endpoint": "info"
         }
     ]
