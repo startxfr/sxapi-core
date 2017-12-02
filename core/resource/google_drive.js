@@ -44,7 +44,7 @@ module.exports = function (id, config, google) {
                 version: 'v2',
                 auth: $gapid.google.gapi_auth
             });
-                $log.tools.resourceDebug($gapid.id, "started ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($gapid.id, "started ", 1, $timer.timeStop(timerId));
             if (typeof callback === "function") {
                 callback(null, this);
             }
@@ -295,32 +295,24 @@ module.exports = function (id, config, google) {
              */
             getFile: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($gapid.id, req, "getFile()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var fileId = req.params.id || req.body.id || config.fileId || "fileId";
+                        rs.getService("drive").getFile(fileId, config.config || {}, res, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error getting " + fileId + " file in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($gapid.id, req, "error getting " + fileId + " file in resource " + rs.id + " because " + err.message);
+                            }
+                            else {
+                                res.end();
+                                $log.tools.endpointDebug($gapid.id, req, "returned file " + fileId + " from resource " + rs.id, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var fileId = req.params.id || req.body.id || config.fileId || "fileId";
-                            rs.getService("drive").getFile(fileId, config.config || {}, res, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error getting " + fileId + " file in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, message_prefix + "error getting " + fileId + " file in resource " + rs.id + " because " + err.message);
-                                }
-                                else {
-                                    res.end();
-                                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "returned file " + fileId + " from resource " + rs.id, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -331,33 +323,25 @@ module.exports = function (id, config, google) {
              */
             findFile: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($gapid.id, req, "findFile()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var qr = req.params.q || req.body.q || config.q;
+                        var q = "fullText contains '" + qr + "'";
+                        rs.getService("drive").findFile(q, config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($gapid.id, req, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "returned files matching " + q + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
+                                $log.tools.endpointDebug($gapid.id, req, "returned files matching " + q + " from resource " + rs.id, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var qr = req.params.q || req.body.q || config.q;
-                            var q = "fullText contains '" + qr + "'";
-                            rs.getService("drive").findFile(q, config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, message_prefix + "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "returned files matching " + q + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "returned files matching " + q + " from resource " + rs.id, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -368,56 +352,48 @@ module.exports = function (id, config, google) {
              */
             addFile: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($gapid.id, req, "addFile()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var name, mime;
+
+                        var inspect = require('util').inspect;
+                        var Busboy = require('busboy');
+                        var busboy = new Busboy({headers: req.headers});
+                        busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+                            $log.tools.endpointDebug($gapid.id, req, " received file " + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype, 2);
+                            name = filename;
+                            mime = mimetype;
+                            file.on('data', function (data) {
+                                console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+                            });
+                            file.on('end', function () {
+                                console.log('File [' + fieldname + '] Finished');
+                            });
+                        });
+                        busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+                            console.log('Field [' + fieldname + ']: value: ' + inspect(val));
+                        });
+                        busboy.on('finish', function () {
+                            console.log('Done parsing form!');
+                            var folderId = req.params.name || name;
+                            var parentId = req.params.parent || req.body.parent || config.parent || "root";
+                            rs.getService("drive").addFile(folderId, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "folder " + folderId + " created in resource " + rs.id, reponse).send();
+                                    $log.tools.endpointDebug($gapid.id, req, "created folder " + folderId + " in resource " + rs.id, 2);
+                                }
+                            });
+                        });
+                        req.pipe(busboy);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var name, mime;
-
-                            var inspect = require('util').inspect;
-                            var Busboy = require('busboy');
-                            var busboy = new Busboy({headers: req.headers});
-                            busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-                                $log.tools.endpointDebug($gapid.id, req, message_prefix + " received file " + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype, 2);
-                                name = filename;
-                                mime = mimetype;
-                                file.on('data', function (data) {
-                                    console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
-                                });
-                                file.on('end', function () {
-                                    console.log('File [' + fieldname + '] Finished');
-                                });
-                            });
-                            busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
-                                console.log('Field [' + fieldname + ']: value: ' + inspect(val));
-                            });
-                            busboy.on('finish', function () {
-                                console.log('Done parsing form!');
-                                var folderId = req.params.name || name;
-                                var parentId = req.params.parent || req.body.parent || config.parent || "root";
-                                rs.getService("drive").addFile(folderId, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
-                                    if (err) {
-                                        $app.ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
-                                        $log.tools.endpointDebug($gapid.id, req, message_prefix + "created folder " + folderId + " in resource " + rs.id, 2);
-                                    }
-                                });
-                            });
-                            req.pipe(busboy);
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -428,32 +404,24 @@ module.exports = function (id, config, google) {
              */
             listDirectory: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($gapid.id, req, "listDirectory()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var folderId = req.params.id || req.body.id || config.folderId || "root";
+                        rs.getService("drive").getDirectory(folderId, config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($gapid.id, req, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "returned folder " + folderId + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
+                                $log.tools.endpointDebug($gapid.id, req, "returned folder " + folderId + " from resource " + rs.id, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var folderId = req.params.id || req.body.id || config.folderId || "root";
-                            rs.getService("drive").getDirectory(folderId, config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, message_prefix + "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "returned folder " + folderId + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "returned folder " + folderId + " from resource " + rs.id, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             },
@@ -464,33 +432,25 @@ module.exports = function (id, config, google) {
              */
             addDirectory: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "called", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource is not defined for this endpoint");
+                    $log.tools.endpointDebug($gapid.id, req, "addDirectory()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var folderId = req.params.name || req.body.name || config.name || "folder name";
+                        var parentId = req.params.parent || req.body.parent || config.parent || "root";
+                        rs.getService("drive").addDirectory(folderId, parentId, config.config || {}, function (err, reponse) {
+                            if (err) {
+                                $app.ws.nokResponse(res, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                $log.tools.endpointWarn($gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                            }
+                            else {
+                                $app.ws.okResponse(res, "folder " + folderId + " created in resource " + rs.id, reponse).send();
+                                $log.tools.endpointDebug($gapid.id, req, "created folder " + folderId + " in resource " + rs.id, 2);
+                            }
+                        });
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var folderId = req.params.name || req.body.name || config.name || "folder name";
-                            var parentId = req.params.parent || req.body.parent || config.parent || "root";
-                            rs.getService("drive").addDirectory(folderId, parentId, config.config || {}, function (err, reponse) {
-                                if (err) {
-                                    $app.ws.nokResponse(res, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, message_prefix + "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
-                                }
-                                else {
-                                    $app.ws.okResponse(res, message_prefix + "folder " + folderId + " created in resource " + rs.id, reponse).send();
-                                    $log.tools.endpointDebug($gapid.id, req, message_prefix + "created folder " + folderId + " in resource " + rs.id, 2);
-                                }
-                            });
-                        }
-                        else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapid.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
                     }
                 };
             }

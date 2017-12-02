@@ -163,21 +163,20 @@ module.exports = function (id, config) {
                  */
                 return function (req, res) {
                     var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
-                    $log.tools.endpointDebug($gapi.id, req, message_prefix + "called", 1);
+                    $log.tools.endpointDebug($gapi.id, req, "getToken()", 1);
                     if (!config.resource) {
-                        $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapi.id, req, message_prefix + "resource is not defined for this endpoint");
+                        $app.ws.nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
+                        $log.tools.endpointWarn($gapi.id, req, "resource is not defined for this endpoint");
                     }
                     else {
                         if ($app.resources.exist(config.resource)) {
                             var rs = $app.resources.get(config.resource);
-                            $app.ws.okResponse(res, message_prefix + " returned auth token", rs.gapi_auth.credentials).send();
-                            $log.tools.endpointDebug($gapi.id, req, message_prefix + "returned token " + rs.gapi_auth.credentials.access_token, 2);
+                            $app.ws.okResponse(res, " returned auth token", rs.gapi_auth.credentials).send();
+                            $log.tools.endpointDebug($gapi.id, req, "returned token " + rs.gapi_auth.credentials.access_token, 2);
                         }
                         else {
-                            $app.ws.nokResponse(res, message_prefix + "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapi.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
+                            $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
+                            $log.tools.endpointWarn($gapi.id, req, "resource '" + config.resource + "' doesn't exist");
                         }
                     }
                 };

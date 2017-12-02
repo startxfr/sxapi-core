@@ -6,7 +6,7 @@ This resource allow you to interact with a mariaDB server. Based on [mysql NodeJ
 
 ### **Config parameters**
 
--   `class` **string** Must be mysql for this resource
+-   `_class` **string** Must be mysql for this resource
 -   `server` **object** configuration detail about server connexion
     -   `host` **string** hostname or IP of the mysql server to use. If you use you host, don't forget to use the docker0 interface ```# ifconfig docker0``` and not localhost or 127.0.0.1
     -   `port` **int** give a port if differents form default 3306 mysql port
@@ -16,7 +16,7 @@ This resource allow you to interact with a mariaDB server. Based on [mysql NodeJ
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "mysql-sample": {
@@ -137,7 +137,7 @@ Return a list resulting from a SQL query
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/",
     "method": "GET",
@@ -162,7 +162,7 @@ Return a document coresponding to the given entryId
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/:id",
     "method": "GET",
@@ -188,7 +188,7 @@ Insert a new document in the bucket. You could give and id or leave the system c
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/",
     "method": "POST",
@@ -214,7 +214,7 @@ Update the document coresponding to the given entryId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/:id",
     "method": "PUT",
@@ -240,7 +240,7 @@ Remove the document coresponding to the given entryId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/:id",
     "method": "DELETE",

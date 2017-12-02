@@ -1,21 +1,42 @@
 # SXAPI Resource : http
 
-This resource allow you to interact with a HTTP server. Based on [request SDK 2.79.0](https://github.com/request/request). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). http resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a HTTP server.
+Programmers can access [resource methods](#resource-methods) and embed this module
+methods into there own method and endpoints.
+API developpers can use [resource endpoints](#resource-endpoints) into there
+[configuration profile](../guides/2.Configure.md) to expose http data.
+
+Based on request npm module [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
 
 ## Resource configuration
 
-### **Config parameters**
+To configure this resource, you must add a config key under the ```resources```
+section of your configuration profile. 
+This key must be a unique string and will be considered as the resource id. The value 
+must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
 
--   `class` **string** Must be http for this resource
--   `url` **string** hostname or IP of the http server to use. If you use you host, don't forget to use the docker0 interface ```# ifconfig docker0``` and not localhost or 127.0.0.1
--   `REQUEST_OPT` **string** any request option. See [full list](https://www.npmjs.com/package/request).
+For a better understanting of the sxapi
+configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-### **Sample sxapi.json**
 
-```json
+### Resource config parameters
+
+| Param           | Mandatory | Type   | default   | Description
+|-----------------|:---------:|:------:|-----------|---------------
+| **_class**      | yes       | string |           | module name. Must be **http** for this resource
+| **url**         | no        | string | null      | default hostname or IP of the http server to use. If you use docker instance, don't forget to use the docker0 ip ```# ifconfig docker0``` and not localhost or 127.0.0.1
+| **method**      | no        | string | GET       | default http method used [see request default](https://www.npmjs.com/package/request#requestoptions-callback).
+| **headers**     | no        | object | null      | any request option. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
+
+### Example
+
+This is a sample configuration of this resource. You must add this section under 
+the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+
+```javascript
 "resources": {
     ...
-    "http-sample": {
+    "http-id": {
         "_class": "http",
         "url": "https://adobe.github.io/Spry/data/json/array-02.js",
         "headers": {
@@ -26,25 +47,76 @@ This resource allow you to interact with a HTTP server. Based on [request SDK 2.
 }
 ```
 
-## Available Methods
+## Resource methods
+
+If you want to use this resource in our own module, you can retrieve this resource 
+instance by using `$app.resources.get('http-id')` where `http-id` is the
+id of your resource as defined in the [resource configuration](#resource-configuration). 
+
+This module come with one single method.
+
+[1. Call method](#method-call)
+
 
 ### Method call
 
-Execute the HTTP call to the remote server defined in the resource.
+Call http server and return a single object describing the http response content
 
-#### **Parameters**
+#### Parameters
 
--   `url` **string** The HTTP url endpoint to contact
--   `REQUEST_OPT` **string** any request option. See [full list](https://www.npmjs.com/package/request).
--   `callback` **function** Callback function used to handle the answer. If not provided, $htcli.__callDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the http cluster or error message if `error` is true
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| **url**         | yes       | string   | null    | url to get information from. could be a relative url if you've defined a `baseUrl` parameter in your [Resource configuration](#resource-configuration).  See [npm request options](https://www.npmjs.com/package/request#requestoptions-callback) for more details.
+| **options**     | no        | object   |         | any request options. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
+| **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
+var resource = $app.resources.get('http-id');
 resource.call('http://example.com/json',{timeout: 1500}, function (error, response) {
     console.log(error, response);
 });
+```
+
+## Resource endpoints
+
+This module come with one single endpoint with can interact with any http method.
+
+[1. Call endpoint](#call-endpoint)
+
+### call endpoint
+
+The purpose of this endpoint is to make http call to another server and to return 
+the server response. it can be seen like an http proxy.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "call"
+| **url**         | no        | string | null    | default is the url defined in `resource.url` see [config profile](#resource-configuration)
+| **method**      | no        | string | GET     | http method used. default is the method defined in `resource.method` see [config profile](#resource-configuration)
+| **headers**     | no        | object | null    | any request option. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/info",
+            "resource": "http-id",
+            "endpoint": "info",
+            "url": "https://adobe.github.io/Spry/data/json/object-01.js",
+            "method": "GET",
+            "headers": {
+                "User-Agent": "request"
+            }
+        }
+    ]
+}
 ```
