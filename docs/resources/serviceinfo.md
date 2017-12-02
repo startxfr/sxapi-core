@@ -1,6 +1,7 @@
 # SXAPI Resource : serviceinfo
 
-This resource allow you to get information about the running service. This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. 
+This resource allow you to get information about the running service. 
+This resource can be used using ```javascript require('/app/core/resource').get('resource-id')``` in your own modules. 
 
 ## Resource configuration
 
