@@ -1,8 +1,10 @@
 # SXAPI Resource : serviceinfo
 
 This resource allow you to get information about the current running service.
-End user can receive relevant informations about the application, the server as
-well as the endpoint list of exposed path for your API.
+Programmers can access [resource methods](#resource-methods) and embed this module
+methods into there own method and endpoints.
+API developpers can use [resource endpoints](#resource-endpoints) into there
+[configuration profile](../guides/2.Configure.md) to expose serviceinfo data.
 
 ## Resource configuration
 
@@ -56,7 +58,7 @@ details.
 
 | Param           | Mandatory | Type     | default | Description
 |-----------------|:---------:|:--------:|---------|---------------
-| callback        | yes       | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| **callback**    | yes       | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
 
 
 #### Example

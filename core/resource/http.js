@@ -78,7 +78,7 @@ module.exports = function (id, config) {
                 }
             };
         },
-        reader: function (content, response) {
+        __reader: function (content, response) {
             var r = {length: content.length, type: "string", content: content};
             var t = (response && response.headers && response.headers["content-type"]) ? response.headers["content-type"] : "";
             if (t.indexOf('application/javascript') !== -1) {
@@ -114,7 +114,7 @@ module.exports = function (id, config) {
                                         $log.tools.endpointWarn($htcli.id, req, message_prefix + "error reading document because " + err.message);
                                     }
                                     else {
-                                        var result = rs.reader(body, response);
+                                        var result = rs.__reader(body, response);
                                         $app.ws.okResponse(res, "returned " + result.type + " with " + result.length, result.content).send();
                                         $log.tools.endpointDebug($htcli.id, req, message_prefix + " returned " + result.type + " with " + result.length, 2, $timer.timeStop(timerId));
                                     }
