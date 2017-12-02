@@ -89,4 +89,4 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage], versi
 available at [http://contributor-covenant.org/version/1/4][version]
 
 [homepage]: https://github.com/startxfr/sxapi-core
-[version]: https://github.com/startxfr/sxapi-core/tree/v0.0.35-npm
+[version]: https://github.com/startxfr/sxapi-core/tree/v0.0.36-npm

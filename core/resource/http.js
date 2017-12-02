@@ -19,32 +19,32 @@ module.exports = function (id, config) {
             if (config) {
                 $htcli.config = config;
             }
-            $log.debug("resource '" + $htcli.id + "' : initializing", 3);
+            $log.tools.resourceDebug($htcli.id, "initializing", 3);
             $htcli.config._sign = $htcli.id;
             if (typeof $httpPool === 'undefined') {
                 $httpPool = [];
             }
             if (typeof $httpPool[$htcli.config._sign] === 'undefined') {
-                $log.debug("resource '" + $htcli.id + "' : new connection to http " + $htcli.config._sign, 4);
+                $log.tools.resourceDebug($htcli.id, "resource '" + $htcli.id + "' : new connection to http " + $htcli.config._sign, 4);
                 $httpPool[$htcli.config._sign] = require("request");
             }
             else {
-                $log.debug("resource '" + $htcli.id + "' : use existing connection to http " + $htcli.config._sign, 4);
+                $log.tools.resourceDebug($htcli.id, "resource '" + $htcli.id + "' : use existing connection to http " + $htcli.config._sign, 4);
             }
-            $log.debug("resource '" + $htcli.id + "' : initialized ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($htcli.id, "initialized ", 1, $timer.timeStop(timerId));
             return $htcli;
         },
         start: function (callback) {
             var timerId = 'resource_http_start_' + $htcli.id;
-            $log.debug("resource '" + $htcli.id + "' : starting", 3);
-            $log.debug("resource '" + $htcli.id + "' : started ", 1, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($htcli.id, "starting", 3);
+                $log.tools.resourceDebug($htcli.id, "started ", 1, $timer.timeStop(timerId));
             if (typeof callback === "function") {
                 callback();
             }
             return $htcli;
         },
         stop: function (callback) {
-            $log.debug("Stopping resource '" + $htcli.id + "'", 2);
+            $log.tools.resourceDebug($htcli.id, "Stopping", 2);
             $httpPool[$htcli.config._sign] = null;
             if (typeof callback === "function") {
                 callback(null, $htcli);
@@ -54,7 +54,7 @@ module.exports = function (id, config) {
         open: function (callback) {
             var timerId = 'http_open_' + $htcli.id;
             $timer.start(timerId);
-            $log.debug("resource '" + $htcli.id + "' : opening '" + $htcli.config._sign + "'", 4, $timer.timeStop(timerId));
+            $log.tools.resourceDebug($htcli.id, "opening '" + $htcli.config._sign + "'", 4, $timer.timeStop(timerId));
             if (typeof callback === "function") {
                 callback(null, $htcli);
             }
@@ -67,7 +67,7 @@ module.exports = function (id, config) {
             if (typeof url === "string") {
                 opt.url = url;
             }
-            $log.debug("resource '" + $htcli.id + "' : call url " + opt.url, 4);
+            $log.tools.resourceInfo($htcli.id, "call url " + opt.url);
             return $httpPool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__queryDefaultCallback(timerId));
         },
         __queryDefaultCallback: function (timerId) {
@@ -99,10 +99,10 @@ module.exports = function (id, config) {
                     var path = req.url.split("?")[0];
                     var message_prefix = "Endpoint " + req.method + " '" + path + "' : ";
 //                    var docId = (req.params.id) ? req.params.id : req.body.id;
-                    $log.debug(message_prefix + "start", 1);
+                    $log.tools.endpointDebug($htcli.id, req, message_prefix + "start", 1);
                     if (!config.resource) {
                         $app.ws.nokResponse(res, message_prefix + "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.warn(message_prefix + "resource is not defined for this endpoint");
+                        $log.tools.endpointWarn($htcli.id, req, message_prefix + "resource is not defined for this endpoint");
                     }
                     else {
                         if ($app.resources.exist(config.resource)) {
@@ -111,12 +111,12 @@ module.exports = function (id, config) {
                                 return function (err, response, body) {
                                     if (err) {
                                         $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        $log.warn(message_prefix + "error reading document because " + err.message);
+                                        $log.tools.endpointWarn($htcli.id, req, message_prefix + "error reading document because " + err.message);
                                     }
                                     else {
                                         var result = rs.reader(body, response);
                                         $app.ws.okResponse(res, "returned " + result.type + " with " + result.length, result.content).send();
-                                        $log.debug(message_prefix + " returned " + result.type + " with " + result.length, 2, $timer.timeStop(timerId));
+                                        $log.tools.endpointDebug($htcli.id, req, message_prefix + " returned " + result.type + " with " + result.length, 2, $timer.timeStop(timerId));
                                     }
                                 }
                                 ;
@@ -124,7 +124,7 @@ module.exports = function (id, config) {
                         }
                         else {
                             $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.warn(message_prefix + "resource '" + config.resource + "' doesn't exist");
+                            $log.tools.endpointWarn($htcli.id, req, message_prefix + "resource '" + config.resource + "' doesn't exist");
                         }
                     }
                 };
