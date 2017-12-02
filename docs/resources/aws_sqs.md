@@ -1,7 +1,7 @@
 # SXAPI Resource : aws_sqs
 
 ## Resource configuration
-This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS SQS resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS SQS resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -72,7 +72,7 @@ read a bunch of message from the queue. This method use queue configuration as d
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.read(function (error, response) {
     console.log(error, response);
 });
@@ -94,7 +94,7 @@ sendMessage a message to the queue. Use it to broadcast a message throught all y
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.sendMessage({id:'test',key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -117,7 +117,7 @@ Remove a message from the queue according to the given messageId.  This method u
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.removeMessage({MessageId:'test',ReceiptHandle:'value'}, function (error, response) {
     console.log(error, response);
 });
