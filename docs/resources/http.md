@@ -8,6 +8,8 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 
 Based on [request SDK 2.79.0](https://github.com/request/request).
 
+[![request](https://img.shields.io/npm/v/sxapi-core.svg)](https://github.com/request/request) 
+
 
 ## Resource configuration
 
