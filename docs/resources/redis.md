@@ -1,6 +1,6 @@
 # SXAPI Resource : redis
 
-This resource allow you to interact with a redis Enterprise Server Cluster. Based on [Node_redis 2.6.3](https://github.com/NodeRedis/node_redis). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Redis resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a redis Enterprise Server Cluster. Based on [Node_redis 2.6.3](https://github.com/NodeRedis/node_redis). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Redis resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 
 ## Resource configuration
@@ -45,7 +45,7 @@ Get a document for the bucket according to the given docId.  Use KV capabilities
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.get('my-doc-id', function (error, response) {
     console.log(error, response);
 });
@@ -65,7 +65,7 @@ Send a N1QL request to the query service of the redis cluster defined in the giv
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.query('SELECT * FROM `beer-sample` LIMIT 0, 5', function (error, response) {
     console.log(error, response);
 });
@@ -86,7 +86,7 @@ Insert a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.insert('my-doc-id', {key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -107,7 +107,7 @@ Update a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.update('my-doc-id', {key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -127,7 +127,7 @@ Remove a document into the bucket according to the given docId.  Use KV capabili
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.delete('my-doc-id', function (error, response) {
     console.log(error, response);
 });

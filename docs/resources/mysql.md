@@ -1,6 +1,6 @@
 # SXAPI Resource : mysql
 
-This resource allow you to interact with a mariaDB server. Based on [mysql NodeJS SDK 2.11.1](https://github.com/mysqljs/mysql#install). This resource can be used using ```require('/app/core/resource').get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). mysql resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a mariaDB server. Based on [mysql NodeJS SDK 2.11.1](https://github.com/mysqljs/mysql#install). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). mysql resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -49,7 +49,7 @@ Execute the SQL query within the database defined in the resource.
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.query('SELECT * FROM `log` LIMIT 0, 5', function (error, response) {
     console.log(error, response);
 });
@@ -70,7 +70,7 @@ Insert a new entry into the table.
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.insert('tablename', {key:'value'}, function (error, response) {
     console.log(error, response);
 });
@@ -92,7 +92,7 @@ Update one or several entry into the given table.  If no filter found, update wo
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.update('table',{key:'value 2'}, {id:'key'}, function (error, response) {
     console.log(error, response);
 });
@@ -113,7 +113,7 @@ Remove one or several entry from the given table.  If no filter found, delete wo
 #### **Sample code**
 
 ```javascript
-var resource = require('/app/core/resource').get('resource-id');
+var resource = $app.resources.get('resource-id');
 resource.delete('table', {id:'key'}, function (error, response) {
     console.log(error, response);
 });
