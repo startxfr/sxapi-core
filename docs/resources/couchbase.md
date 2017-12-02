@@ -9,7 +9,7 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 
 ### **Config parameters**
 
--   `class` **string** Must be couchbase for this resource
+-   `_class` **string** Must be couchbase for this resource
 -   `cluster` **string** URL of the couchbase cluster to use. You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine, please use docker host IP (like 172.17.x.x). Example : http://172.17.42.1:8091
 -   `bucket` **string** Bucket to use for this resource. If you need to connect to several bucket, you'll have to create several resources
 -   `password` **string** Password used for this bucket
@@ -28,7 +28,7 @@ This resource allow you to interact with a couchbase Enterprise Server Cluster. 
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "couchbase-sample": {
@@ -171,7 +171,7 @@ Return a list resulting from a N1ql query
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer", "method": "GET",
     "resource": "couchbase-sample",
@@ -193,7 +193,7 @@ Return a document coresponding to the given docId
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "GET",
     "resource": "couchbase-sample",
@@ -214,14 +214,14 @@ Insert a new document in the bucket. You could give and id or leave the system c
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "POST",
     "resource": "couchbase-sample",
     "endpoint": "endpoints.create"
 }
 ```
-```json
+```javascript
 {
     "path": "/beer", "method": "POST",
     "resource": "couchbase-sample",
@@ -242,7 +242,7 @@ Update the document coresponding to the given docId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "PUT",
     "resource": "couchbase-sample",
@@ -263,7 +263,7 @@ Remove the document coresponding to the given docId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "DELETE",
     "resource": "couchbase-sample",
