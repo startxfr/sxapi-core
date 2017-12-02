@@ -6,7 +6,7 @@ This resource allow you to interact with a AWS S3 Storage service. Based on [AWS
 
 ### **Config parameters**
 
--   `class` **string** Must be aws_s3 for this resource
+-   `_class` **string** Must be aws_s3 for this resource
 -   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
 -   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
 -   `SESSION_TOKEN` **string** token to use for authentication
@@ -21,7 +21,7 @@ This resource allow you to interact with a AWS S3 Storage service. Based on [AWS
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "s3-sample": {
@@ -152,7 +152,7 @@ List objects stored in a bucket
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/s3",
     "method": "GET",
@@ -187,7 +187,7 @@ Get one object stored in a bucket
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/s3/:id",
     "method": "GET",
@@ -219,7 +219,7 @@ Add one object into a bucket
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/s3/:id",
     "method": "POST",
@@ -251,7 +251,7 @@ Update one object into a bucket
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/s3/:id",
     "method": "PUT",

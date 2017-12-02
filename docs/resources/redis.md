@@ -9,14 +9,14 @@ This config object will be used by node_redis package when executing `redis.Crea
 
 ### **Config parameters**
 
--   `class` **string** Must be redis for this resource
+-   `_class` **string** Must be redis for this resource
 -   `url` **string** connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties)
 -   `password` **string** Password used for this redis cluster
 -   `...` any node_redis createClient configuration parameter
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "redis-sample": {
@@ -151,7 +151,7 @@ Return a list resulting from a N1ql query
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer", "method": "GET",
     "resource": "redis-sample",
@@ -173,7 +173,7 @@ Return a document coresponding to the given docId
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "GET",
     "resource": "redis-sample",
@@ -194,14 +194,14 @@ Insert a new document in the bucket. You could give and id or leave the system c
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "POST",
     "resource": "redis-sample",
     "endpoint": "endpoints.create"
 }
 ```
-```json
+```javascript
 {
     "path": "/beer", "method": "POST",
     "resource": "redis-sample",
@@ -222,7 +222,7 @@ Update the document coresponding to the given docId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "PUT",
     "resource": "redis-sample",
@@ -243,7 +243,7 @@ Remove the document coresponding to the given docId with the new document
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/beer/:id", "method": "DELETE",
     "resource": "redis-sample",

@@ -105,9 +105,7 @@ module.exports = function (id, config) {
         },
         __readDefaultCallback: function (error, serviceinfo) {
             $log.tools.resourceDebug($svif.id, "default callback", 4);
-            if (typeof cb === "function") {
-                cb(error, serviceinfo);
-            }
+            console.log(error, serviceinfo);
             return serviceinfo;
         },
         endpoints: {

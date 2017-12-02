@@ -7,7 +7,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 
 ### **Config parameters**
 
--   `class` **string** Must be aws_sqs for this resource
+-   `_class` **string** Must be aws_sqs for this resource
 -   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
 -   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
 -   `SESSION_TOKEN` **string** token to use for authentication
@@ -22,7 +22,7 @@ This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SD
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "sqs-sample": {
@@ -139,7 +139,7 @@ Add a message to the SQS queue
 
 #### **Sample code**
 
-```json 
+```javascript 
 {
     "path": "/message",
     "method": "POST",

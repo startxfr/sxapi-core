@@ -6,13 +6,13 @@ This resource allow you to interact with a HTTP server. Based on [request SDK 2.
 
 ### **Config parameters**
 
--   `class` **string** Must be http for this resource
+-   `_class` **string** Must be http for this resource
 -   `url` **string** hostname or IP of the http server to use. If you use you host, don't forget to use the docker0 interface ```# ifconfig docker0``` and not localhost or 127.0.0.1
 -   `REQUEST_OPT` **string** any request option. See [full list](https://www.npmjs.com/package/request).
 
 ### **Sample sxapi.json**
 
-```json
+```javascript
 "resources": {
     ...
     "http-sample": {

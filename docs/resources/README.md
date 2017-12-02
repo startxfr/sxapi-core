@@ -19,7 +19,7 @@ If you wan't to see sample sxapi.json config for various resources, you can visi
 
 Resources are referenced within the ```resources``` key in sxapi.json. This object reference, with and *resource-id*, all resources available in you API. You have to read resource documentation to know required or available configuration parameters.
 
-```json
+```javascript
 {
     "resources": {
         "resource-id": {
@@ -38,7 +38,7 @@ If a resource come with endpoints, they are all available using the ```endpoints
 -   `resource` **string** REQUIRED *resource-id* of the resource to use
 -   `endpoint` **string** REQUIRED resource method to use for handling response
 
-```json
+```javascript
 "server": {
     "endpoints": [
         {

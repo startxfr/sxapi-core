@@ -1,17 +1,32 @@
 # SXAPI Resource : serviceinfo
 
-This resource allow you to get information about the running service. 
-This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. 
+This resource allow you to get information about the current running service.
+End user can receive relevant informations about the application, the server as
+well as the endpoint list of exposed path for your API.
 
 ## Resource configuration
 
-### **Config parameters**
+To configure this resource, you must add a config section under the ```resources```
+section of your configuration profile. 
 
--   `class` **string** Must be serviceinfo for this resource
+The key must be a unique string and will be considered as the resource id. The value 
+must be an object who must have the following configuration parameters.
 
-### **Sample sxapi.json**
+For a better understanting of the sxapi
+configuration profile, please refer to the [confugration guide](../guides/2.Configure.md)
 
-```json
+### Config parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **_class**      | yes       | string |         | endpoint name declared in this resource. Must be serviceinfo for this resource
+
+### Example
+
+This is a sample configuration of your resource. You must add this section under 
+the ```resources``` section of your configuration profile
+
+```javascript
 "resources": {
     ...
     "serviceinfo-sample": {
@@ -21,19 +36,25 @@ This resource can be used using ```$app.resources.get('resource-id')``` in your 
 }
 ```
 
-## Available Methods
+## Resource methods
+
+If you wan to use this resource in our own module, you can retrieve a resource 
+instance by using ```$app.resources.get('resource-id')``` where `resource-id` is the
+id of your resource as defined in the [resource configuration](#resource-configuration). 
 
 ### Method read
 
-Execute the HTTP call to the remote server defined in the resource.
+Read application information and return a single object describing the application
+details.
 
-#### **Parameters**
+#### Parameters
 
--   `callback` **function** Callback function used to handle the answer. If not provided, $htcli.__callDefaultCallback will be used. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content returned from the serviceinfo cluster or error message if `error` is true
+| Param           | Mandatory | Type     | default | Description
+|-----------------|:---------:|:--------:|---------|---------------
+| callback        | yes       | function | default | callback function to get the returned informations. <br>this function take 2 parameters, first is error (must be null, false or undefined if no error) and second one is response object (if no error)<br>If not defined, dropped to a default function who output information to the console
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
 var resource = $app.resources.get('resource-id');
@@ -42,19 +63,33 @@ resource.read(function (error, response) {
 });
 ```
 
-### Method info
+## Resource endpoints
 
-Get informations about the running service
+This module come with one single read-only endpoint.
 
-#### **Parameters**
+### info endpoint
 
-''no parameters''
+The purpose of this endpoint is to display informations about the application, 
+the server as well as the list of all exposed endpoints for your API.
 
-#### **Sample code**
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [#resource-configuration](config profile)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "info"
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.info(function (error, response) {
-    console.log(error, response);
-});
+"server": {
+    "endpoints": [
+        {
+            "path": "/info",
+            "resource": "serviceinfo-sample",
+            "endpoint": "info"
+        }
+    ]
+}
 ```
