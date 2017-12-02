@@ -204,194 +204,147 @@ module.exports = function (id, config) {
         endpoints: {
             test: function () {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":test() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
+                    $log.tools.endpointDebug($cbdb.id, req, "test()", 1);
                     $app.ws.okResponse(res, "test message ").send();
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + " return test response", 2);
+                    $log.tools.endpointDebug($cbdb.id, req, "return test response", 2);
                 };
             },
             list: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":list() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
-                    if (!config.resource) {
-                        var message = "resource is not defined for this endpoint";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + " " + message);
+                    $log.tools.endpointDebug($cbdb.id, req, "list()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var callback = function (key) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop('couchbase_query_' + key);
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "returned " + reponse.length + ' items', reponse).addTotal(reponse.length).send();
+                                    $log.tools.endpointDebug($cbdb.id, req, " return list of " + reponse.length + " items", 2, duration);
+                                }
+                            };
+                        };
+                        rs.query(config.n1ql, callback);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var callback = function (key) {
-                                return function (err, reponse) {
-                                    var duration = $timer.timeStop('couchbase_query_' + key);
-                                    if (err) {
-                                        $app.ws.nokResponse(res, message_prefix + "error because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + "error because " + err.message, duration);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, "returned " + reponse.length + ' items', reponse).addTotal(reponse.length).send();
-                                        $log.tools.endpointDebug($cbdb.id, req, message_prefix + " return list of " + reponse.length + " items", 2, duration);
-                                    }
-                                };
-                            };
-                            rs.query(config.n1ql, callback);
-                        }
-                        else {
-                            var message = "resource '" + config.resource + "' doesn't exist";
-                            $app.ws.nokResponse(res, message).httpCode(500).send();
-                            $log.tools.endpointWarn($cbdb.id, req, message_prefix + message);
-                        }
+                        var message = "resource '" + config.resource + "' doesn't exist";
+                        $app.ws.nokResponse(res, message).httpCode(500).send();
+                        $log.tools.endpointWarn($cbdb.id, req, message);
                     }
                 };
             },
             get: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":get() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
-                    if (!config.resource) {
-                        var message = "resource is not defined for this endpoint";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + " " + message);
+                    $log.tools.endpointDebug($cbdb.id, req, "get()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var callback = function (key) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop('couchbase_get_' + key);
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "return document " + docId, reponse).send();
+                                    $log.tools.endpointDebug($cbdb.id, req, " return document " + docId, 2, duration);
+                                }
+                            };
+                        };
+                        rs.get(docId, callback);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var callback = function (key) {
-                                return function (err, reponse) {
-                                    var duration = $timer.timeStop('couchbase_get_' + key);
-                                    if (err) {
-                                        $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + "error because " + err.message, duration);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, "return document " + docId, reponse).send();
-                                        $log.tools.endpointDebug($cbdb.id, req, message_prefix + " return document " + docId, 2, duration);
-                                    }
-                                };
-                            };
-                            rs.get(docId, callback);
-                        }
-                        else {
-                            var message = "resource '" + config.resource + "' doesn't exist";
-                            $app.ws.nokResponse(res, message).httpCode(500).send();
-                            $log.tools.endpointWarn($cbdb.id, req, message_prefix + message);
-                        }
+                        var message = "resource '" + config.resource + "' doesn't exist";
+                        $app.ws.nokResponse(res, message).httpCode(500).send();
+                        $log.tools.endpointWarn($cbdb.id, req, message);
                     }
                 };
             },
             create: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
                     var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":create() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
-                    if (!config.resource) {
-                        var message = "resource is not defined for this endpoint";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + " " + message);
+                    $log.tools.endpointDebug($cbdb.id, req, "create()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var callback = function (key) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop('couchbase_insert_' + key);
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "document " + docId + " recorded", reponse).send();
+                                    $log.tools.endpointDebug($cbdb.id, req, " create document " + docId, 2, duration);
+                                }
+                            };
+                        };
+                        rs.insert(docId, req.body, callback);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var callback = function (key) {
-                                return function (err, reponse) {
-                                    var duration = $timer.timeStop('couchbase_insert_' + key);
-                                    if (err) {
-                                        $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + "error because " + err.message, duration);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, "document " + docId + " recorded", reponse).send();
-                                        $log.tools.endpointDebug($cbdb.id, req, message_prefix + " create document " + docId, 2, duration);
-                                    }
-                                };
-                            };
-                            rs.insert(docId, req.body, callback);
-                        }
-                        else {
-                            var message = "resource '" + config.resource + "' doesn't exist";
-                            $app.ws.nokResponse(res, message).httpCode(500).send();
-                            $log.tools.endpointWarn($cbdb.id, req, message_prefix + message);
-                        }
+                        var message = "resource '" + config.resource + "' doesn't exist";
+                        $app.ws.nokResponse(res, message).httpCode(500).send();
+                        $log.tools.endpointWarn($cbdb.id, req, message);
                     }
                 };
             },
             update: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":update() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
-                    if (!config.resource) {
-                        var message = "resource is not defined for this endpoint";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + " " + message);
+                    $log.tools.endpointDebug($cbdb.id, req, "update()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var callback = function (key) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop('couchbase_update_' + key);
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
+                                    $log.tools.endpointDebug($cbdb.id, req, " update document " + docId, 2, duration);
+                                }
+                            };
+                        };
+                        rs.update(docId, req.body, callback);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var callback = function (key) {
-                                return function (err, reponse) {
-                                    var duration = $timer.timeStop('couchbase_update_' + key);
-                                    if (err) {
-                                        $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + "error because " + err.message, duration);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                        $log.tools.endpointDebug($cbdb.id, req, message_prefix + " update document " + docId, 2, duration);
-                                    }
-                                };
-                            };
-                            rs.update(docId, req.body, callback);
-                        }
-                        else {
-                            var message = "resource '" + config.resource + "' doesn't exist";
-                            $app.ws.nokResponse(res, message).httpCode(500).send();
-                            $log.tools.endpointWarn($cbdb.id, req, message_prefix + message);
-                        }
+                        var message = "resource '" + config.resource + "' doesn't exist";
+                        $app.ws.nokResponse(res, message).httpCode(500).send();
+                        $log.tools.endpointWarn($cbdb.id, req, message);
                     }
                 };
             },
             delete: function (config) {
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    var message_prefix = "Endpoint " + req.method + " " + path + " > " + $cbdb.id + ":delete() ";
-                    $log.tools.endpointDebug($cbdb.id, req, message_prefix + "start", 4);
-                    if (!config.resource) {
-                        var message = "resource is not defined for this endpoint";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + " " + message);
+                    $log.tools.endpointDebug($cbdb.id, req, "delete()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        var callback = function (key) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop('couchbase_delete_' + key);
+                                if (err) {
+                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                }
+                                else {
+                                    $app.ws.okResponse(res, "document " + docId + " deleted", reponse).send();
+                                    $log.info(" delete document " + docId, 2, duration);
+                                }
+                            };
+                        };
+                        rs.delete(docId, callback);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            var callback = function (key) {
-                                return function (err, reponse) {
-                                    var duration = $timer.timeStop('couchbase_delete_' + key);
-                                    if (err) {
-                                        $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                        $log.tools.endpointWarn($cbdb.id, req, message_prefix + "error because " + err.message, duration);
-                                    }
-                                    else {
-                                        $app.ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                        $log.info(message_prefix + " delete document " + docId, 2, duration);
-                                    }
-                                };
-                            };
-                            rs.delete(docId, callback);
-                        }
-                        else {
-                            var message = "resource '" + config.resource + "' doesn't exist";
-                            $app.ws.nokResponse(res, message).httpCode(500).send();
-                            $log.tools.endpointWarn($cbdb.id, req, message_prefix + message);
-                        }
+                        var message = "resource '" + config.resource + "' doesn't exist";
+                        $app.ws.nokResponse(res, message).httpCode(500).send();
+                        $log.tools.endpointWarn($cbdb.id, req, message);
                     }
                 };
             }

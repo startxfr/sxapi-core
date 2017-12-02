@@ -75,12 +75,12 @@ describe("http resource component", function () {
                 });
             });
         });
-        describe("#reader()", function () {
+        describe("#__reader()", function () {
             it("should exist", function () {
-                expect(test).to.have.any.keys('reader');
+                expect(test).to.have.any.keys('__reader');
             });
             it("should be a method", function () {
-                expect(test.reader).to.be.an('function');
+                expect(test.__reader).to.be.an('function');
             });
         });
     });
