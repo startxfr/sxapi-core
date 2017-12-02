@@ -86,7 +86,7 @@ the server as well as the list of all exposed endpoints for your API.
 | Param           | Mandatory | Type   | default | Description
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
-| **resource**    | yes       | string |         | resource id declared in the resource of your [#resource-configuration](config profile)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "info"
 
 #### Example

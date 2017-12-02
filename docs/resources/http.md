@@ -97,8 +97,11 @@ the server response. it can be seen like an http proxy.
 | Param           | Mandatory | Type   | default | Description
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
-| **resource**    | yes       | string |         | resource id declared in the resource of your [#resource-configuration](config profile)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "info"
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "call"
+| **url**         | no        | string | null    | default is the url defined in `resource.url` see [config profile](#resource-configuration)
+| **method**      | no        | string | GET     | http method used. default is the method defined in `resource.method` see [config profile](#resource-configuration)
+| **headers**     | no        | object | null    | any request option. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
 
 #### Example
 
@@ -108,7 +111,12 @@ the server response. it can be seen like an http proxy.
         {
             "path": "/info",
             "resource": "http-id",
-            "endpoint": "info"
+            "endpoint": "info",
+            "url": "https://adobe.github.io/Spry/data/json/object-01.js",
+            "method": "GET",
+            "headers": {
+                "User-Agent": "request"
+            }
         }
     ]
 }
