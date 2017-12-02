@@ -74,13 +74,13 @@ module.exports = function (id, config) {
             return function (err, results) {
                 var duration = $timer.timeStop('redis_get_' + key);
                 if (err) {
-                    $log.error("resource '" + $rddb.id + "' : get could not be executed because " + err.message, duration);
+                    $log.tools.resourceError($rddb.id, "get could not be executed because " + err.message, duration);
                 }
                 else {
                     if (JSON.isParsable(results)) {
                         results = JSON.parse(results);
                     }
-                    $log.tools.resourceDebug($rddb.id, "resource '" + $rddb.id + "' : get returned " + results.length + " results", 3, duration);
+                    $log.tools.resourceDebug($rddb.id, "get returned " + results.length + " results", 3, duration);
                 }
             };
         },

@@ -74,7 +74,7 @@ module.exports = function (id, config) {
             return function (error, response, body) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.error("resource '" + $htcli.id + "' : query could not be executed because " + error.message, duration);
+                    $log.tools.resourceError("query could not be executed because " + error.message, duration);
                 }
             };
         },

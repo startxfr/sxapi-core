@@ -102,7 +102,7 @@ module.exports = function (id, config) {
             return function (err, results) {
                 var duration = $timer.timeStop('couchbase_get_' + key);
                 if (err) {
-                    $log.error("resource '" + $cbdb.id + "' : get could not be executed because " + err.message, duration);
+                    $log.tools.resourceError("get could not be executed because " + err.message, duration);
                 }
                 else {
                     $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : get returned " + results.length + " results", 3, duration);
@@ -126,7 +126,7 @@ module.exports = function (id, config) {
             return function (err, results) {
                 var duration = $timer.timeStop('couchbase_query_' + key);
                 if (err) {
-                    $log.error("resource '" + $cbdb.id + "' : query could not be executed because " + err.message, duration);
+                    $log.tools.resourceError("query could not be executed because " + err.message, duration);
                 }
                 else {
                     $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : query returned " + results.length + " results", 3, duration);
