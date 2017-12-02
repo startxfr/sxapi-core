@@ -40,24 +40,24 @@ var $app = {
         $log.debug("service vers : " + $app.config.version, 2);
         $log.debug("service desc : " + $app.config.description, 2);
         if ($app.config.resources) {
-            require('./resource').init($app.config.resources);
+            $app.resources.init($app.config.resources);
         }
         if ($app.config.session) {
-            require("./session").init($app.config.session);
+            $app.session.init($app.config.session);
             $app.onStart(function () {
-                require("./session").start();
+                $app.session.start();
             });
             $app.onStop(function () {
-                require("./session").stop();
+                $app.session.stop();
             });
         }
         if ($app.config.server) {
-            require("./ws").init($app.config.server);
+            $app.ws.init($app.config.server);
             $app.onStart(function () {
-                require("./ws").start();
+                $app.ws.start();
             });
             $app.onStop(function () {
-                require("./ws").stop();
+                $app.ws.stop();
             });
         }
         $log.info("application " + $app.config.name + ' v' + $app.config.version + " initialized", $timer.time('app'));
@@ -145,7 +145,7 @@ var $app = {
         }
         $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
         $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
-        var logConf = JSON.cleanObject($app.config.log); 
+        var logConf = JSON.cleanObject($app.config.log);
         delete logConf['couchbase'];
         delete logConf['sqs'];
         $log.debug("sxapi-core   : " + $app.package.name + ' v' + $app.package.version, 1);
@@ -226,7 +226,7 @@ var $app = {
             }
         };
         if ($app.config.resources) {
-            require('./resource').starts(cbResources);
+            $app.resources.starts(cbResources);
         }
         else {
             cbResources();
@@ -259,7 +259,7 @@ var $app = {
                 callback();
             }
         };
-        require('./resource').stops(cb);
+        $app.resources.stops(cb);
     },
     /**
      * init and start the application
@@ -271,7 +271,10 @@ var $app = {
             $app.start(callback);
         });
         return this;
-    }
+    },
+    resources: require('./resource'),
+    session: require('./session'),
+    ws: require('./ws')
 };
 
 module.exports = $app;
