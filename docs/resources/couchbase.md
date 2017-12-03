@@ -33,48 +33,17 @@ for a complete list of the parameters that you can use in this config object.
 | **cluster**                     | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
 | **bucket**                      | yes       | string |           | the bucket name to use. If you need to connect to several bucket, you'll have to create several resources
 | **insertOptions**               | no        | object |           | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
-| **insertOptions.persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
-
-
-
-
-
-
--   `insertOptions` **object** 
-    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
-    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
-    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
--   `updateOptions` **object** options used when updating a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#replace) for more informations
-    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
-    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
-    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
--   `deleteOptions` **object** options used when deleting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#remove) for more informations
-    -   `persist_to` **int** Ensures this operation is persisted to this many nodes. Default is set to 0.
-    -   `replicate_to` **int** Ensures this operation is replicated to this many nodes. Default is set to 0.
-    -   `expiry` **int** Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| insertOptions.**persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
+| insertOptions.**replicate_to**  | no        | int    |           | Ensures this operation is replicated to this many nodes. Default is set to 0.
+| insertOptions.**expiry**        | no        | int    |           | Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
+| **updateOptions**               | no        | object |           | options used when updating a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#replace) for more informations
+| updateOptions.**persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
+| updateOptions.**replicate_to**  | no        | int    |           | Ensures this operation is replicated to this many nodes. Default is set to 0.
+| updateOptions.**expiry**        | no        | int    |           | Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
+| **deleteOptions**               | no        | object |           | options used when deleting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#remove) for more informations
+| deleteOptions.**persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
+| deleteOptions.**replicate_to**  | no        | int    |           | Ensures this operation is replicated to this many nodes. Default is set to 0.
+| deleteOptions.**expiry**        | no        | int    |           | Set the initial expiration time for the document. A value of 0 represents never expiring. Default is set to 0.
 
 ### Example
 
