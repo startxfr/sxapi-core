@@ -156,7 +156,7 @@ resource.delete('myKey', function (error, response) {
 
 ## Resource endpoints
 
-This module come with one single endpoint with can interact with any redis method.
+This module come with 4 endpoints who can interact with any redis method.
 
 [1. Get endpoint](#get-endpoint)<br>
 [2. Create endpoint](#create-endpoint)<br>

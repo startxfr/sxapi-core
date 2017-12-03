@@ -89,7 +89,7 @@ resource.call('http://example.com/json',{timeout: 1500}, function (error, respon
 
 ## Resource endpoints
 
-This module come with one single endpoint with can interact with any http method.
+This module come with one single endpoint who can interact with any http server.
 
 [1. Call endpoint](#call-endpoint)
 

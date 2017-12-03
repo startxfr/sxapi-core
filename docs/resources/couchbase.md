@@ -75,7 +75,7 @@ If you want to use this resource in our own module, you can retrieve this resour
 instance by using `$app.resources.get('couchbase-id')` where `couchbase-id` is the
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 
-This module come with several methods for manipulating couchbase dataset.
+This module come with 6 methods for manipulating couchbase dataset.
 
 [1. Get method](#method-get)<br>
 [2. Query method](#method-query)<br>
@@ -222,7 +222,7 @@ resource.delete('docID', function (error) {
 
 ## Resource endpoints
 
-This module come with one single endpoint with can interact with any couchbase method.
+This module come with 5 endpoints who can interact with any couchbase method.
 
 [1. List endpoint](#list-endpoint)<br>
 [2. Get endpoint](#get-endpoint)<br>
