@@ -91,10 +91,13 @@ get a couchbase value by it's given document ID.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **docID**       | yes       | string   | null    | document ID to find
-| **callback**    | no        | function | default | callback function to get the returned document. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **document** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **docID**                    | yes       | string   | null    | document ID to find
+| **callback**                 | no        | function | default | callback function to get the returned document.<br>If not defined, dropped to a default function who output information to the debug console
+| **callback**                 | no        | function | default | callback function to get the returned document
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be a string or an object according to the error type
+| callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 
 #### Example
