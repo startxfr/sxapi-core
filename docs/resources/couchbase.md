@@ -94,9 +94,8 @@ get a couchbase value by it's given document ID.
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **docID**                    | yes       | string   | null    | document ID to find
-| **callback**                 | no        | function | default | callback function to get the returned document.<br>If not defined, dropped to a default function who output information to the debug console
-| **callback**                 | no        | function | default | callback function to get the returned document
-| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be a string or an object according to the error type
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 
@@ -117,10 +116,12 @@ Take care of having theses services optimized for the kind of query you perform.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **n1ql**        | yes       | string   | null    | A N1QL query for selecting dataset
-| **callback**    | no        | function | default | callback function to get the returned document. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **document** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **n1ql**                     | yes       | string   | null    | A N1QL query for selecting dataset
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 
 #### Example
@@ -139,12 +140,14 @@ Use only map-reduce function into Data node and work perfectly for targeted data
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **query**       | yes       | object   |         | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
-| query.**ddoc**  | yes       | string   |         | Design Document. View group in couchbase terminology.
-| query.**name**  | yes       | string   |         | View name to query
-| **callback**    | no        | function | default | callback function to get the returned document. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **document** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **query**                    | yes       | object   |         | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
+| query.**ddoc**               | yes       | string   |         | Design Document. View group in couchbase terminology.
+| query.**name**               | yes       | string   |         | View name to query
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 #### Example
 
@@ -162,12 +165,13 @@ Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **docID**       | yes       | string   | null    | document ID to use
-| **document**    | yes       | string   | null    | document associated to this ID
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **document** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
-
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **docID**                    | yes       | string   | null    | document ID to use
+| **document**                 | yes       | string   | null    | document associated to this ID
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 #### Example
 
@@ -185,11 +189,13 @@ Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **docID**       | yes       | string   | null    | document ID to update
-| **document**    | yes       | string   | null    | the new document associated to this ID
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **document** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **docID**                    | yes       | string   | null    | document ID to update
+| **document**                 | yes       | string   | null    | the new document associated to this ID
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
 
 
 #### Example
@@ -208,10 +214,11 @@ Use KV capabilities of Couchbase and work extremely fast on well sized cluster.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **docID**       | yes       | string   | null    | document ID to delete
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 1 parameters:  <br>**error** (must be null, false or undefined if no error) <br>If not defined, dropped to a default function who output information to the debug console
+| Param               | Mandatory | Type     | default | Description
+|---------------------|:---------:|:--------:|---------|---------------
+| **docID**           | yes       | string   | null    | document ID to delete
+| **callback**        | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be an error object if an error occur.
 
 
 #### Example
