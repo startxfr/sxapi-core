@@ -65,9 +65,11 @@ details.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **callback**    | yes       | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **callback**                 | no        | function | default | callback function called when application get result.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the application. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the application object (if no error)
 
 
 #### Example

@@ -71,13 +71,16 @@ Call http server and return a single object describing the http response content
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **url**         | yes       | string   | null    | url to get information from. could be a relative url if you've defined a `baseUrl` parameter in your [Resource configuration](#resource-configuration).  See [npm request options](https://www.npmjs.com/package/request#requestoptions-callback) for more details.
-| **options**     | no        | object   |         | any request options. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
-| **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                             | Mandatory | Type     | default | Description
+|-----------------------------------|:---------:|:--------:|---------|---------------
+| **url**                           | yes       | string   | null    | url to get information from. could be a relative url if you've defined a `baseUrl` parameter in your [Resource configuration](#resource-configuration).  See [npm request options](https://www.npmjs.com/package/request#requestoptions-callback) for more details.
+| **options**                       | no        | object   |         | any request options. See [full list](https://www.npmjs.com/package/request#requestoptions-callback).
+| **callback**                      | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response,body) | N/A       | mixed    | null    | will be false or null if no error returned from the couchbase SDK. Will be a string message describing a problem if an error occur.
+| callback(error,**response**,body) | N/A       | object   |         | the http header from the returning http request
+| callback(error,response,**body**) | N/A       | string   |         | the http body response from the returning http request
 
-
+, response, body
 #### Example
 
 ```javascript

@@ -74,10 +74,12 @@ get a redis value by it's given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to find
-| **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to find
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
@@ -95,11 +97,13 @@ insert a redis value associated to the given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to use
-| **value**       | yes       | string   | null    | value associated to this key
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to use
+| **value**                    | yes       | string   | null    | value associated to this key
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this new key
 
 
 #### Example
@@ -117,11 +121,13 @@ update a redis value associated to the given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to use
-| **value**       | yes       | string   | null    | the new value associated to this key
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to use
+| **value**                    | yes       | string   | null    | the new value associated to this key
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
@@ -139,10 +145,12 @@ delete a redis key and it associated value.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to delete
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to delete
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
