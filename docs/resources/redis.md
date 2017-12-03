@@ -6,7 +6,10 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose redis data.
 
-Based on redis npm module [![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
+This resource is based on [redis npm module](https://www.npmjs.com/package/redis) 
+[![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Resource configuration
 
@@ -40,7 +43,7 @@ the ```resources``` section of your [configuration profile](../guides/2.Configur
     ...
     "redis-id": {
         "_class": "redis",
-        "url": "redis://dev:dev@localhost/bucket",
+        "url": "redis://dev:dev@172.17.42.1/bucket",
         "return_buffers" : false
     }
     ...
@@ -203,6 +206,7 @@ by the context, and document will be the HTTP body of the query.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "POST",
             "resource": "redis-id",
             "endpoint": "create"
         }
@@ -231,6 +235,7 @@ by the context, and document will be the HTTP body of the query.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "PUT",
             "resource": "redis-id",
             "endpoint": "update"
         }
@@ -240,8 +245,8 @@ by the context, and document will be the HTTP body of the query.
 
 ### Delete endpoint
 
-The purpose of this endpoint is to delete a key into a redis server. Key Id is defined
-by the context.
+The purpose of this endpoint is to delete a key into a redis server. 
+Key Id is defined by the context.
 
 #### Parameters
 
@@ -258,6 +263,7 @@ by the context.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "DELETE",
             "resource": "redis-id",
             "endpoint": "delete"
         }

@@ -1,3 +1,6 @@
+v0.0.8
+
+
 # SXAPI Resource : aws_s3
 
 This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.

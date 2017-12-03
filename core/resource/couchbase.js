@@ -202,13 +202,6 @@ module.exports = function (id, config) {
             };
         },
         endpoints: {
-            test: function () {
-                return function (req, res) {
-                    $log.tools.endpointDebug($cbdb.id, req, "test()", 1);
-                    $app.ws.okResponse(res, "test message ").send();
-                    $log.tools.endpointDebug($cbdb.id, req, "return test response", 2);
-                };
-            },
             list: function (config) {
                 return function (req, res) {
                     $log.tools.endpointDebug($cbdb.id, req, "list()", 1);

@@ -1,3 +1,5 @@
+v0.0.6
+
 # SXAPI Resource : mysql
 
 This resource allow you to interact with a mariaDB server. Based on [mysql NodeJS SDK 2.11.1](https://github.com/mysqljs/mysql#install). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). mysql resource also come with [various entrypoints](#available-endpoints) ready to use in your API.

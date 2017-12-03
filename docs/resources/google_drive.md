@@ -1,22 +1,25 @@
-# SXAPI Resource : aws_s3
+v0.0.9
 
-This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+
+# SXAPI Resource : google_drive
+
+This resource allow you to interact with a Google Drive Storage service. Based on [Google SDK 2.6](https://github.com/google/google-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Google Drive resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
 ### **Config parameters**
 
--   `_class` **string** Must be aws_s3 for this resource
--   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
--   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
+-   `_class` **string** Must be google_drive for this resource
+-   `ACCESS_ID` **string** Google acess ID with credentials to the queue
+-   `ACCESS_KEY` **string** Google acess secret to use with ACCESS_ID
 -   `SESSION_TOKEN` **string** token to use for authentication
--   `region` **string** AWS datacenter region
+-   `region` **string** Google datacenter region
 -   `Bucket` **string** Give the default Bucket name to use. Could be overwrited by xx_options or by an endpoint config
--   `read_options` **object** options used when reading an object from the AWS S3. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#receiveMessage-property) for more options
-    -   `Bucket`  **string** Give the url of the AWS S3 endpoint to use. Could be overwrited by an endpoint config
--   `delete_options` **object** options used when deleting an object from the AWS S3. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#deleteMessage-property) for more options
-    -   `Bucket`  **string** Give the url of the AWS S3 endpoint to use. Could be overwrited by an endpoint config
--   `listObjects_options` **object** options used when listing an object list from an AWS S3 Bucket. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `read_options` **object** options used when reading an object from the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#receiveMessage-property) for more options
+    -   `Bucket`  **string** Give the url of the Google Drive endpoint to use. Could be overwrited by an endpoint config
+-   `delete_options` **object** options used when deleting an object from the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#deleteMessage-property) for more options
+    -   `Bucket`  **string** Give the url of the Google Drive endpoint to use. Could be overwrited by an endpoint config
+-   `listObjects_options` **object** options used when listing an object list from an Google Drive Bucket. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
     -   `Bucket`  **string** Give the Bucket name to use. Could be overwrited by an endpoint config
 
 ### **Sample sxapi.json**
@@ -24,8 +27,8 @@ This resource allow you to interact with a AWS S3 Storage service. Based on [AWS
 ```javascript
 "resources": {
     ...
-    "s3-sample": {
-        "_class": "aws_s3",
+    "drive-sample": {
+        "_class": "google_drive",
         "read_options": {
         },
         "delete_options": {
@@ -52,10 +55,10 @@ list objects in a given bucket. This method use ```listObjects_options``` config
 #### **Parameters**
 
 -   `bucket` **string** bucket name
--   `options` **object** options used to get object list. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `options` **object** options used to get object list. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS S3 cluster
+    -   `response` **object, array** Content responded for the Google Drive cluster
 
 #### **Sample code**
 
@@ -74,10 +77,10 @@ return an object given by it ID. This method use ```getObject_options``` configu
 
 -   `id` **string** object id to get
 -   `bucket` **string** bucket name
--   `options` **object** options used when reading a message to the AWS S3. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#receiveMessage-property) for more options
+-   `options` **object** options used when reading a message to the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#receiveMessage-property) for more options
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS S3 cluster
+    -   `response` **object, array** Content responded for the Google Drive cluster
 
 #### **Sample code**
 
@@ -97,10 +100,10 @@ Add an object into a bucket. This method use ```addObject_options``` configurati
 -   `id` **string** object id to add
 -   `content` **string** content (could be a Stream or Buffer) 
 -   `bucket` **string** bucket name
--   `options` **object** options used for adding this object. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property) for more options
+-   `options` **object** options used for adding this object. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#putObject-property) for more options
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS S3 cluster
+    -   `response` **object, array** Content responded for the Google Drive cluster
 
 #### **Sample code**
 
@@ -121,10 +124,10 @@ Update an object into a bucket. This method use ```updateObject_options``` confi
 -   `id` **string** object id to update
 -   `content` **string** content (could be a Stream or Buffer) 
 -   `bucket` **string** bucket name
--   `options` **object** options used for updating this object. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property) for more options
+-   `options` **object** options used for updating this object. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#putObject-property) for more options
 -   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
     -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS S3 cluster
+    -   `response` **object, array** Content responded for the Google Drive cluster
 
 #### **Sample code**
 
@@ -145,18 +148,18 @@ List objects stored in a bucket
 
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
--   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
+-   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
 -   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 
 #### **Sample code**
 
 ```javascript 
 {
-    "path": "/s3",
+    "path": "/drive",
     "method": "GET",
-    "resource": "s3-sample",
+    "resource": "drive-sample",
     "endpoint": "endpoints.listObjects",
     "bucket" : "sxapitest",
     "config": {
@@ -168,7 +171,7 @@ List objects stored in a bucket
 #### **call this endpoint**
 
 ```bash
-curl -X GET http://127.0.0.1:8080/s3
+curl -X GET http://127.0.0.1:8080/drive
 ```
 
 ### getObject endpoint
@@ -179,9 +182,9 @@ Get one object stored in a bucket
 
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
--   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
+-   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
 -   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
 
@@ -189,9 +192,9 @@ Get one object stored in a bucket
 
 ```javascript 
 {
-    "path": "/s3/:id",
+    "path": "/drive/:id",
     "method": "GET",
-    "resource": "s3-sample",
+    "resource": "drive-sample",
     "endpoint": "endpoints.getObject",
     "bucket" : "sxapitest"
 }
@@ -200,7 +203,7 @@ Get one object stored in a bucket
 #### **call this endpoint**
 
 ```bash
-curl -X GET http://127.0.0.1:8080/s3/file.pdf
+curl -X GET http://127.0.0.1:8080/drive/file.pdf
 ```
 
 ### addObject endpoint
@@ -211,9 +214,9 @@ Add one object into a bucket
 
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
--   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
+-   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
 -   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
 
@@ -221,9 +224,9 @@ Add one object into a bucket
 
 ```javascript 
 {
-    "path": "/s3/:id",
+    "path": "/drive/:id",
     "method": "POST",
-    "resource": "s3-sample",
+    "resource": "drive-sample",
     "endpoint": "endpoints.addObject",
     "bucket" : "sxapitest"
 }
@@ -232,7 +235,7 @@ Add one object into a bucket
 #### **call this endpoint**
 
 ```bash
-curl -X POST http://127.0.0.1:8080/s3/file.pdf
+curl -X POST http://127.0.0.1:8080/drive/file.pdf
 ```
 
 ### updateObject endpoint
@@ -243,9 +246,9 @@ Update one object into a bucket
 
 -   `path` **string** Server path to bind this entrypoint to
 -   `method` **string** http method to listen to
--   `resource` **string** define the aws_s3 resource to use. Fill with a resource name as defined in the resource pool
+-   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
 -   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS S3 documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#listObjectsV2-property) for more options
+-   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
 -   `bucket` **string** bucket name
 -   `objectId` **string** ID of the object to get
 
@@ -253,9 +256,9 @@ Update one object into a bucket
 
 ```javascript 
 {
-    "path": "/s3/:id",
+    "path": "/drive/:id",
     "method": "PUT",
-    "resource": "s3-sample",
+    "resource": "drive-sample",
     "endpoint": "endpoints.updateObject",
     "bucket" : "sxapitest"
 }
@@ -264,5 +267,5 @@ Update one object into a bucket
 #### **call this endpoint**
 
 ```bash
-curl -X PUT http://127.0.0.1:8080/s3/file.pdf
+curl -X PUT http://127.0.0.1:8080/drive/file.pdf
 ```

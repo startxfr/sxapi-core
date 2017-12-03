@@ -1,3 +1,6 @@
+v0.0.6
+
+
 # SXAPI Resource : aws_sqs
 
 ## Resource configuration

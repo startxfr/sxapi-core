@@ -6,7 +6,10 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose http data.
 
-Based on request npm module [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
+Based on [request npm module](https://www.npmjs.com/package/request) 
+[![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Resource configuration
 
@@ -112,7 +115,6 @@ the server response. it can be seen like an http proxy.
             "resource": "http-id",
             "endpoint": "info",
             "url": "https://adobe.github.io/Spry/data/json/object-01.js",
-            "method": "GET",
             "headers": {
                 "User-Agent": "request"
             }

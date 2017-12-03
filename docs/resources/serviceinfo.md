@@ -6,6 +6,11 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose serviceinfo data.
 
+This resource is based on [nodejs core](https://nodejs.org/en/docs/) 
+[![node](https://img.shields.io/badge/node-v3.1.0-blue.svg)](https://nodejs.org/en/docs/) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+
 ## Resource configuration
 
 To configure this resource, you must add a config key under the ```resources```
