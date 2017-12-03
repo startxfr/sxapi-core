@@ -11,6 +11,10 @@ Based on [request npm module](https://www.npmjs.com/package/request)
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
 until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
+
 ## Resource configuration
 
 To configure this resource, you must add a config key under the ```resources```

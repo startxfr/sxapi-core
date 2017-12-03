@@ -11,6 +11,10 @@ This resource is based on [couchbase npm module](https://www.npmjs.com/package/c
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
 until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://github.com/startxfr/sxapi-core).
 
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
+
 ## Resource configuration
 
 To configure this resource, you must add a config key under the ```resources```
@@ -73,15 +77,12 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with several methods for manipulating couchbase dataset.
 
-[1. Get method](#method-get)
-[2. Query method](#method-query)
-[3. Queryfree method](#method-queryfree)
-[4. Insert method](#method-insert)
-[5. Update method](#method-update)
+[1. Get method](#method-get)<br>
+[2. Query method](#method-query)<br>
+[3. Queryfree method](#method-queryfree)<br>
+[4. Insert method](#method-insert)<br>
+[5. Update method](#method-update)<br>
 [6. Delete method](#method-delete)
-
-
-
 
 
 ### Method get
@@ -223,10 +224,10 @@ resource.delete('docID', function (error) {
 
 This module come with one single endpoint with can interact with any couchbase method.
 
-[1. List endpoint](#list-endpoint)
-[2. Get endpoint](#get-endpoint)
-[3. Create endpoint](#create-endpoint)
-[4. Update endpoint](#update-endpoint)
+[1. List endpoint](#list-endpoint)<br>
+[2. Get endpoint](#get-endpoint)<br>
+[3. Create endpoint](#create-endpoint)<br>
+[4. Update endpoint](#update-endpoint)<br>
 [5. Delete endpoint](#delete-endpoint)
 
 

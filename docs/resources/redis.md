@@ -11,6 +11,10 @@ This resource is based on [redis npm module](https://www.npmjs.com/package/redis
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
 until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
+
 ## Resource configuration
 
 To configure this resource, you must add a config key under the ```resources```
@@ -58,9 +62,9 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with several methods for manipulating redis dataset.
 
-[1. Get method](#method-get)
-[2. Insert method](#method-insert)
-[3. Update method](#method-update)
+[1. Get method](#method-get)<br>
+[2. Insert method](#method-insert)<br>
+[3. Update method](#method-update)<br>
 [4. Delete method](#method-delete)
 
 
@@ -154,9 +158,9 @@ resource.delete('myKey', function (error, response) {
 
 This module come with one single endpoint with can interact with any redis method.
 
-[1. Get endpoint](#get-endpoint)
-[2. Create endpoint](#create-endpoint)
-[3. Update endpoint](#update-endpoint)
+[1. Get endpoint](#get-endpoint)<br>
+[2. Create endpoint](#create-endpoint)<br>
+[3. Update endpoint](#update-endpoint)<br>
 [4. Delete endpoint](#delete-endpoint)
 
 ### Get endpoint
