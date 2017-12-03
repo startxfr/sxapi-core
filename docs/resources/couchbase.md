@@ -7,8 +7,8 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose couchbase data.
 
 This resource is based on [couchbase npm module](https://www.npmjs.com/package/couchbase) 
-[![npm](https://img.shields.io/npm/v/couchbase.svg)](https://www.npmjs.com/package/couchbase) 
-It is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+[![couchbase SDK](https://img.shields.io/npm/v/couchbase.svg)](https://www.npmjs.com/package/couchbase) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
 until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Resource configuration
@@ -27,13 +27,13 @@ for a complete list of the parameters that you can use in this config object.
 
 ### Resource config parameters
 
-| Param           | Mandatory | Type   | default   | Description
-|-----------------|:---------:|:------:|-----------|---------------
-| **_class**      | yes       | string |           | module name. Must be **couchbase** for this resource
-| **cluster**     | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
-| **bucket**      | yes       | string |           | the bucket name to use. If you need to connect to several bucket, you'll have to create several resources
-| **insertOptions** | no       | object |           | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
-| **.persist_to** | no       | int |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
+| Param             | sub-param         | Mandatory | Type   | default   | Description
+|-------------------|:-----------------:|:---------:|--------|-----------|--------------
+| **_class**        |                   | yes       | string |           | module name. Must be **couchbase** for this resource
+| **cluster**       |                   | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you wan to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
+| **bucket**        |                   | yes       | string |           | the bucket name to use. If you need to connect to several bucket, you'll have to create several resources
+| **insertOptions** |                   | no        | object |           | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
+|                   | **.persist_to**   | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
 
 
 
