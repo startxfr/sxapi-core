@@ -1,4 +1,4 @@
-[![sxapi](https://github.com/startxfr/sxapi-core/tree/master/docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+[![sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
 
 # sxapi-core project
 
@@ -17,33 +17,33 @@ Very light (application less than 100Ko, full container stack for less than 30Mo
 
 sxapi is shipped in 3 ways : 
 - [container image](https://hub.docker.com/r/startx/sxapi) published in dockerhub public registry
-The simplest and fastest way to get a running sxapi application is to use the public docker image. For more information on how to run your first sxapi application using sxapi docker image, please read the [Using docker image user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_docker.md)
+The simplest and fastest way to get a running sxapi application is to use the public docker image. For more information on how to run your first sxapi application using sxapi docker image, please read the [Using docker image user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_docker.md)
 - [npm module](https://www.npmjs.com/package/sxapi-core) published in npm public database
-If you plan to develop your own component or embed you api into another application, you should be more interested by the npm method. For more information on how to run your first sxapi application using sxapi npm module, please read the [Using npm module user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_npm.md)
-- [source code](https://github.com/startxfr/sxapi-core/tree/master) published in github
-If you plan to extend sxapi capabilities with your own component, change default software design, extend core functinalities or more globaly improve this application, please read the [Using source code user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_source.md)
+If you plan to develop your own component or embed you api into another application, you should be more interested by the npm method. For more information on how to run your first sxapi application using sxapi npm module, please read the [Using npm module user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_npm.md)
+- [source code](https://github.com/startxfr/sxapi-core/tree/testing) published in github
+If you plan to extend sxapi capabilities with your own component, change default software design, extend core functinalities or more globaly improve this application, please read the [Using source code user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_source.md)
 
 ## Want to try ?
 
-- [Using docker user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_docker.md)
-- [Using nodjs user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_npm.md)
-- [Using source code user guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/USE_source.md)
+- [Using docker user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_docker.md)
+- [Using nodjs user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_npm.md)
+- [Using source code user guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/USE_source.md)
 
 ## Creating your own API
 
 sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.json` config file and implement api endpoints you want to create. 
 To help you understand how you can configure your api, you can :
-1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/master/docs/README.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/master/docs/2.Configure.md)
+1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/README.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/testing/docs/2.Configure.md)
 2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and explore sample config file to help find sample code or ready-to-use config file
 
 ## Documentation
 
-If you want to have more information on how to install, develop and run this framework and use it in your project, please read the [full documentation](docs/README.md) or our [user guides](https://github.com/startxfr/sxapi-core/tree/master/https://github.com/startxfr/sxapi-core/tree/master/docs/guides/README.md) sections :
-1. [Install sxapi](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/1.Install.md)
-2. [Configure sxapi](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/2.Configure.md)
-3. [Run sxapi](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/3.Run.md)
-4. [Develop sxapi resource](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/4.Develop.md)
-5. [Contributing to sxapi project](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/5.Contribute.md)
+If you want to have more information on how to install, develop and run this framework and use it in your project, please read the [full documentation](docs/README.md) or our [user guides](https://github.com/startxfr/sxapi-core/tree/testing/https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/README.md) sections :
+1. [Install sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/1.Install.md)
+2. [Configure sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/2.Configure.md)
+3. [Run sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/3.Run.md)
+4. [Develop sxapi resource](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/4.Develop.md)
+5. [Contributing to sxapi project](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/5.Contribute.md)
 
 ## Troubleshooting
 
@@ -58,12 +58,12 @@ If you run into difficulties installing or running sxapi [issue for sxapi](https
 
 ## Contributing
 
-Please read [contributing guide](https://github.com/startxfr/sxapi-core/tree/master/docs/guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [contributing guide](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/master/docs/CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/testing/docs/CONTRIBUTORS.md).
 
 ## License
 
-This project is licensed under the GPL Version 3 - see the [LICENSE.md](https://github.com/startxfr/sxapi-core/tree/master/docs/LICENSE.md) file for details
+This project is licensed under the GPL Version 3 - see the [LICENSE.md](https://github.com/startxfr/sxapi-core/tree/testing/docs/LICENSE.md) file for details
