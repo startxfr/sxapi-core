@@ -1,4 +1,4 @@
-[![sxapi](https://github.com/startxfr/sxapi-core/tree/dev/docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
 
 # sxapi-core project
 
