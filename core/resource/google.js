@@ -120,7 +120,7 @@ module.exports = function (id, config) {
                     return;
                 }
                 else {
-            $log.tools.resourceDebug($gapi.id, "authenticated with token " + tokens.access_token, 4, $timer.timeStop(timerId));
+                    $log.tools.resourceDebug($gapi.id, "authenticated with token " + tokens.access_token, 4, $timer.timeStop(timerId));
                     if (typeof callback === "function") {
                         callback(null, this);
                     }
@@ -131,17 +131,33 @@ module.exports = function (id, config) {
         /**
          * Get 
          * @param {string} service name to get
+         * @param {function} callback to call for response
          * @returns {$gapi}
          */
-        getService: function (service) {
+        getService: function (service, callback) {
             if (!service) {
-                throw new Error('no service name found');
+                if (typeof callback === 'function') {
+                    callback('no service name found');
+                }
+                else {
+                    throw new Error('no service name found');
+                }
             }
             else if ($gapi.services[service] !== undefined) {
-                return $gapi.services[service];
+                if (typeof callback === 'function') {
+                    callback(false, $gapi.services[service]);
+                }
+                else {
+                    return $gapi.services[service];
+                }
             }
             else {
-                throw new Error('service not loaded');
+                if (typeof callback === 'function') {
+                    callback('service not loaded');
+                }
+                else {
+                    throw new Error('service not loaded');
+                }
             }
             return this;
         },

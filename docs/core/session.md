@@ -156,7 +156,7 @@ This backend type use [mysql resource](../resource/mysql.md) to persist session 
 | **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/README.md).
 | **table**        | yes       | string  |            | table name used for session storage
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
-| **fields**       | no        | obj     |            | an object with special field list
+| **fields**       | no        | object  |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
 | **fields.start** | no        | string  |            | name of the field containing the session start time
 | **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
@@ -190,7 +190,7 @@ This backend type use [couchbase resource](../resource/couchbase.md) to persist 
 | **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend type
 | **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/README.md).
 | **key_ns**       | yes       | string  |            | the key namespace for this kind of document. used as a key prefix
-| **fields**       | no        | obj     |            | an object with special field list
+| **fields**       | no        | object  |            | an object with special field list
 | **fields.token** | no        | string  |            | name of the field containing the session token
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
 | **fields.start** | no        | string  |            | name of the field containing the session start time
@@ -224,7 +224,7 @@ This backend type use application memory space to persist session context across
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | memory     | Must be `memory` for this backend type
 | **sid_field**    | no        | string  | sid        | name of the field containing the session ID
-| **fields**       | no        | obj     |            | an object with special field list
+| **fields**       | no        | object  |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
 | **fields.start** | no        | string  |            | name of the field containing the session start time
 | **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
@@ -256,7 +256,7 @@ This backend type use [redis resource](../resource/redis.md) to persist session 
 | **type**         | yes       | string  | redis      | Must be `redis` for this backend type
 | **resource**     | yes       | string  |            | ID of the redis resource [see resource for configuration](../resources/README.md).
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
-| **fields**       | no        | obj     |            | an object with special field list
+| **fields**       | no        | object  |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
 | **fields.start** | no        | string  |            | name of the field containing the session start time
 | **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)

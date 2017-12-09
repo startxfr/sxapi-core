@@ -80,7 +80,6 @@ Call http server and return a single object describing the http response content
 | callback(error,**response**,body) | N/A       | object   |         | the http header from the returning http request
 | callback(error,response,**body**) | N/A       | string   |         | the http body response from the returning http request
 
-, response, body
 #### Example
 
 ```javascript
