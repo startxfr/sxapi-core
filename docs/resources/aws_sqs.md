@@ -1,10 +1,10 @@
-# SXAPI Resource : aws_sqs
+# SXAPI Resource : AWS SQS
 
 This resource allow you to interact with the AWS SQS Webservice.
 Programmers can access [resource methods](#resource-methods) and embed this module
 methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
-[configuration profile](../guides/2.Configure.md) to expose aws_sqs data.
+[configuration profile](../guides/2.Configure.md) to expose AWS SQS data.
 
 This resource is based on [aws-sdk npm module](https://www.npmjs.com/package/aws-sdk) 
 [![npm](https://img.shields.io/npm/v/aws-sdk.svg)](https://www.npmjs.com/package/aws-sdk) 
@@ -326,43 +326,6 @@ The purpose of this endpoint is to delete a message from AWS SQS queue. Id is de
     ]
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### listQueue endpoint
 
