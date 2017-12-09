@@ -100,10 +100,7 @@ module.exports = function (id, config) {
             var timerId = 'resource_aws.sqs_read_' + $sqs.id;
             $timer.start(timerId);
             var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
-            if ($sqs.config.read_options && $sqs.config.read_options.QueueUrl) {
-                QueueUrl = $sqs.config.read_options.QueueUrl;
-            }
-            var config = $sqs.config.read_options || {};
+            var config = {};
             config.QueueUrl = QueueUrl;
             if (typeof options === 'object') {
                 require('merge').recursive(config, options);
@@ -377,7 +374,7 @@ module.exports = function (id, config) {
                  */
                 return function (req, res) {
                     $log.tools.endpointDebug($sqs.id, req, "deleteMessage()", 1);
-                    var messageId = req.params.id || req.body.id || config.config.receiptHandle || false;
+                    var messageId = req.params.id || req.body.id || false;
                     if (messageId === false) {
                         $app.ws.nokResponse(res, "no id param found in request").httpCode(500).send();
                         $log.tools.endpointWarn($sqs.id, req, "no id param found in request");
@@ -387,10 +384,10 @@ module.exports = function (id, config) {
                         messageId = messageId.replace(/[ ]/g, '+');
                         var params = config.config || {};
                         params.QueueUrl = QueueUrl;
-                        params.ReceiptHandle = messageId;
+                        params.MessageId = messageId;
                         if ($app.resources.exist(config.resource)) {
                             var rs = $app.resources.get(config.resource);
-                            rs.removeMessage(config.config || {}, function (err, reponse) {
+                            rs.removeMessage(params, function (err, reponse) {
                                 if (err) {
                                     $app.ws.nokResponse(res, "error deleting message because " + err.message).httpCode(500).send();
                                     $log.tools.endpointWarn($sqs.id, req, "error saving message because " + err.message);

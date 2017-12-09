@@ -1,153 +1,453 @@
-v0.0.6
-
-
 # SXAPI Resource : aws_sqs
 
-## Resource configuration
-This resource allow you to interact with a AWS SQS Message Bus. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS SQS resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with the AWS SQS Webservice.
+Programmers can access [resource methods](#resource-methods) and embed this module
+methods into there own method and endpoints.
+API developpers can use [resource endpoints](#resource-endpoints) into there
+[configuration profile](../guides/2.Configure.md) to expose aws_sqs data.
+
+This resource is based on [aws-sdk npm module](https://www.npmjs.com/package/aws-sdk) 
+[![npm](https://img.shields.io/npm/v/aws-sdk.svg)](https://www.npmjs.com/package/aws-sdk) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://github.com/startxfr/sxapi-core).
+
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
 
 ## Resource configuration
 
-### **Config parameters**
+To configure this resource, you must add a config key under the ```resources```
+section of your configuration profile. 
+This key must be a unique string and will be considered as the resource id. The value 
+must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
 
--   `_class` **string** Must be aws_sqs for this resource
--   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
--   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
--   `SESSION_TOKEN` **string** token to use for authentication
--   `region` **string** AWS datacenter region
--   `QueueUrl` **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by xx_options or by an endpoint config
--   `read_options` **object** options used when reading a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#receiveMessage-property) for more options
-    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
--   `delete_options` **object** options used when deleting a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property) for more options
-    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
--   `send_options` **object** options used when sending a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
-    -   `QueueUrl`  **string** Give the url of the AWS SQS endpoint to use. Could be overwrited by an endpoint config
+For a better understanting of the sxapi
+configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-### **Sample sxapi.json**
+This config object will be passed to `require('aws-sdk').SQS()` method of the nodejs aws-sdk module. 
+[Read aws-sdk SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html) 
+for a complete list of the parameters that you can use in this config object.
+
+### Resource config parameters
+
+| Param               | Mandatory | Type   | default   | Description
+|---------------------|:---------:|:------:|-----------|---------------
+| **_class**          | yes       | string |           | module name. Must be **aws_sqs** for this resource
+| **ACCESS_ID**       | yes       | string |           | your AWS access key ID.
+| **ACCESS_KEY**      | yes       | string |           | your AWS secret access key.
+| **SESSION_TOKEN**   | no        | string |           | the optional AWS session token to sign requests with.
+| **QueueUrl**        | no        | string |           | the default queue url used by this resource
+| **region**          | no        | string | us-west-1 | the region to send service requests to. See AWS.SQS.region for more information.
+| **...**             | no        | N/A    |           | any SQS option. See [see aws-sdk SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#constructor-property).
+
+### Example
+
+This is a sample configuration of this resource. You must add this section under 
+the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
     ...
-    "sqs-sample": {
+    "aws-sqs-id": {
         "_class": "aws_sqs",
-            "read_options": {
-                "MaxNumberOfMessages": 10,
-                "VisibilityTimeout": 10,
-                "WaitTimeSeconds": 0
-            },
-            "delete_options": {
-                "MaxNumberOfMessages": 10,
-                "VisibilityTimeout": 10,
-                "WaitTimeSeconds": 0
-            },
-            "send_options": {
-                "DelaySeconds": 10,
-                "MessageAttributes": {
-                    "from": {
-                        "DataType": "String",
-                        "StringValue": "startx"
-                    }
-                }
-            },
-        "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/XXXXXXX/admin",
-        "ACCESS_ID": ">>>>>>YOUR ID<<<<<<",
-        "ACCESS_KEY": ">>>>>>YOUR KEY<<<<<<",
-        "SESSION_TOKEN": "",
-        "region": "eu-west-1"
-    },
+        "ACCESS_ID": "xxxxxxxxxxx",
+        "ACCESS_KEY" : "yyyyyyyyyyyy",
+        "region" : "eu-west-1",
+        "QueueUrl" : "https://sqs.eu-west-1.amazonaws.com"
+    }
     ...
 }
 ```
 
-## Available Methods
+## Resource methods
+
+If you want to use this resource in our own module, you can retrieve this resource 
+instance by using `$app.resources.get('aws-sqs-id')` where `aws-sqs-id` is the
+id of your resource as defined in the [resource configuration](#resource-configuration). 
+
+This module come with several methods for manipulating aws SQS resources.
+
+[1. read method](#method-read)<br>
+[2. removeMessage method](#method-removemessage)<br>
+[3. sendMessage method](#method-sendmessage)<br>
+[4. listQueues method](#method-listqueues)<br>
+[5. createQueue method](#method-createqueue)<br>
+[6. deleteQueue method](#method-deletequeue)
+
 
 ### Method read
 
-read a bunch of message from the queue. This method use queue configuration as defined in the resource ```read_options``` section of ([resource configuration](#resource-configuration))
+get a list of message for a list queue.
 
-#### **Parameters**
+#### Parameters
 
--   `options` **object** options used when reading a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#receiveMessage-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS SQS cluster
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | no        | object   |         | Configuration option passed to the AWS SQS.receiveMessage method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#receiveMessage-property)
+| options.**QueueUrl**         | no        | string   |         | the queue url to read message from. If not defined will use the default resource queueUrl
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | a list of messages from the queue
 
-#### **Sample code**
 
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.read(function (error, response) {
-    console.log(error, response);
-});
-```
-
-### Method sendMessage
-
-sendMessage a message to the queue. Use it to broadcast a message throught all you applications.  This method use queue configuration as defined in the resource ```send_options``` section of ([resource configuration](#resource-configuration))
-
-#### **Parameters**
-
--   `message` **object** The message to send to the queue
--   `message.id` **string** OPTIONAL define inside the message the ID of this message
--   `options` **object** options used when sendding a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
--   `callback` **function** OPTIONAL Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS SQS cluster
-
-#### **Sample code**
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.sendMessage({id:'test',key:'value'}, function (error, response) {
-    console.log(error, response);
-});
+var resource = $app.resources.get('aws-sqs-id');
+resource.read(
+    {QueueUrl:"https://sqs.eu-west-1.amazonaws.com"}, 
+    function (error, response) {
+        console.log(error, response);
+    });
 ```
 
 ### Method removeMessage
 
-Remove a message from the queue according to the given messageId.  This method use queue configuration as defined in the resource ```delete_options``` section of ([resource configuration](#resource-configuration))
+Remove a message from a list queue.
 
-#### **Parameters**
+#### Parameters
 
--   `message` **object** The message to remove
--   `message.MessageId` **string** The messageID of this message. Used to remove from the queue
--   `message.ReceiptHandle` **string** OPTIONAL Token used to remove from the queue
--   `options` **object** options used when deleting a message to the AWS SQS. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property) for more options
--   `callback` **function** Callback function used to handle the answer.  If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS SQS cluster
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | yes       | object   |         | Configuration option passed to the AWS SQS.deleteMessage method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property)
+| options.**ReceiptHandle**    | yes       | string   |         | the message Id to remove
+| options.**QueueUrl**         | no        | string   |         | the queue url to delete message from. If not defined will use the default resource queueUrl
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | meta informations about the result of this deletion
 
-#### **Sample code**
+
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.removeMessage({MessageId:'test',ReceiptHandle:'value'}, function (error, response) {
-    console.log(error, response);
-});
+var resource = $app.resources.get('aws-sqs-id');
+resource.removeMessage(
+    {ReceiptHandle:"df654s8#9d23s43f3mgh?66se63"}, 
+    function (error, response) {
+        console.log(error, response);
+    });
 ```
 
-## Available Endpoints
+### Method sendMessage
+
+Send a message to the given queue.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **message**                  | yes       | object   |         | The message object
+| **options**                  | yes       | object   |         | Configuration option passed to the AWS SQS.sendMessage method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property)
+| options.**QueueUrl**         | no        | string   |         | the queue url where message should be inserted. If not defined will use the default resource queueUrl
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | meta informations about the result of this insertion
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('aws-sqs-id');
+resource.sendMessage(
+    { id : "msg1", "key" : "value" }, 
+    { QueueUrl:"https://sqs.eu-west-1.amazonaws.com" }, 
+    function (error, response) {
+        console.log(error, response);
+    });
+```
+
+### Method listQueues
+
+get a list of all queues availables.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | no        | object   |         | Configuration option passed to the AWS SQS.listQueues method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#listQueues-property)
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | a list of messages from the queue
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('aws-sqs-id');
+resource.listQueues({}, function (error, response) {
+        console.log(error, response);
+    });
+```
+
+### Method createQueue
+
+Create a new message queue
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | yes       | object   |         | Configuration option passed to the AWS SQS.createQueue method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#createQueue-property)
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | meta informations about the result of this insertion
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('aws-sqs-id');
+resource.createQueue({ }, function (error, response) {
+        console.log(error, response);
+    });
+```
+
+
+### Method deleteQueue
+
+Delete a message queue.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | yes       | object   |         | Configuration option passed to the AWS SQS.deleteQueue method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteQueue-property)
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the AWS SQS Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | meta informations about the result of this insertion
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('aws-sqs-id');
+resource.deleteQueue({ }, function (error, response) {
+        console.log(error, response);
+    });
+```
+
+
+## Resource endpoints
+
+This module come with 4 endpoints who can interact with any aws_sqs method.
+
+[1. listMessages endpoint](#listmessages-endpoint)<br>
+[2. addMessage endpoint](#addmessage-endpoint)<br>
+[3. deleteMessage endpoint](#deletemessage-endpoint)<br>
+[4. listQueue endpoint](#listqueue-endpoint)<br>
+[5. addQueue endpoint](#addQueue-endpoint)<br>
+[6. deleteQueue endpoint](#deletequeue-endpoint)
+
+### listMessages endpoint
+
+The purpose of this endpoint is to make call to a AWS SQS Webservice and to return 
+the a list of message from a given queue.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **config**      | no        | string |         | Configuration object to pass to the read resource method ([see options](#method-read))
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs",
+            "resource": "aws-sqs-id",
+            "endpoint": "listMessages",
+            "config": {
+                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
+            }
+        }
+    ]
+}
+```
 
 ### addMessage endpoint
 
-Add a message to the SQS queue
+The purpose of this endpoint is to insert a key into a AWS SQS Webservice. Document 
+will be the HTTP body of the query.
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Serveur path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the aws_sqs resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.addMessage***
--   `...` **string** endpoint config object will be to configure the AWS SQS sending params. [AWS SQS documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#sendMessage-property) for more options
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "create"
+| **config**      | no        | string |         | Configuration object to pass to the sendMessage resource method ([see options](#method-sendmessage))
 
-#### **Sample code**
+#### Example
 
-```javascript 
-{
-    "path": "/message",
-    "method": "POST",
-    "resource": "sqs-sample",
-    "endpoint": "endpoints.addMessage"
-    "xxx": "XXX"
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs/:id",
+            "method": "POST",
+            "resource": "aws-sqs-id",
+            "endpoint": "addMessage"
+        }
+    ]
+}
+```
+
+### deleteMessage endpoint
+
+The purpose of this endpoint is to delete a message from AWS SQS queue. Id is defined by the context.
+
+#### Parameters
+
+| Param                    | Mandatory | Type   | default | Description
+|--------------------------|:---------:|:------:|---------|---------------
+| **path**                 | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**             | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**             | yes       | string |         | endpoint name declared in the resource module. In this case must be "delete"
+| **config**               | no        | object |         | Configuration option passed to the AWS SQS.deleteMessage method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteMessage-property)
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs/:id",
+            "method": "DELETE",
+            "resource": "aws-sqs-id",
+            "endpoint": "deleteMessage"
+        }
+    ]
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### listQueue endpoint
+
+The purpose of this endpoint is to make call to a AWS SQS Webservice and to return 
+the a list of availables queues.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **config**      | no        | string |         | Configuration object to pass to the listQueues resource method ([see options](#method-listqueues))
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs",
+            "resource": "aws-sqs-id",
+            "endpoint": "listQueue",
+            "config": {
+                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
+            }
+        }
+    ]
+}
+```
+
+### addQueue endpoint
+
+The purpose of this endpoint is to insert a key into a AWS SQS Webservice. Id 
+is defined by the context.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "create"
+| **config**      | no        | string |         | Configuration object to pass to the createQueue resource method ([see options](#method-createqueue))
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs/:id",
+            "method": "POST",
+            "resource": "aws-sqs-id",
+            "endpoint": "addQueue"
+        }
+    ]
+}
+```
+
+### deleteQueue endpoint
+
+The purpose of this endpoint is to delete a complete AWS SQS queue. Id is defined by the context.
+
+#### Parameters
+
+| Param                    | Mandatory | Type   | default | Description
+|--------------------------|:---------:|:------:|---------|---------------
+| **path**                 | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**             | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**             | yes       | string |         | endpoint name declared in the resource module. In this case must be "delete"
+| **config**               | no        | object |         | Configuration option passed to the AWS SQS.deleteQueue method. Read documentation for [more options](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#deleteQueue-property)
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/aws_sqs/:id",
+            "method": "DELETE",
+            "resource": "aws-sqs-id",
+            "endpoint": "deleteQueue"
+        }
+    ]
 }
 ```
