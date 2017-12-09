@@ -1,4 +1,4 @@
-<img align="left" height="80" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
+<img align="left" height="40" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
 
 # Documentation
 
