@@ -1,14 +1,10 @@
-[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+[![sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
 
 # sxapi-core npm module
 
-**sxapi** for **s**imple and e**x**tensible **api** 
-(Application Programming Interface) is an an open-source framework for 
-quickly building simple and small API based on microservice architecture.
+**sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
-Very light (application less than 100Ko, full container stack for less than 30Mo)
-and configured with a single json file, you can build instantly small atomic
-API endpoints as well as fully featured enterprise-sized API.
+Very light (application less than 100Ko, full container stack for less than 30Mo) and configured with a single json file, you can build instantly small atomic API endpoints as well as fully featured enterprise-sized API.
 
 [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?tag=v0.0.52-npm)](https://travis-ci.org/startxfr/sxapi-core) 
 [![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core) 
