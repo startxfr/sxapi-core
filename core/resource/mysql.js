@@ -237,12 +237,6 @@ module.exports = function (id, config) {
             };
         },
         endpoints: {
-            test: function () {
-                return function (req, res) {
-                    $log.tools.endpointDebug($mqdb.id, req, "test()", 1);
-                    $mqdb.tools.responseOK(res, "test message", {}, req);
-                };
-            },
             list: function (config) {
                 return function (req, res) {
                     $log.tools.endpointDebug($mqdb.id, req, "list()", 1);

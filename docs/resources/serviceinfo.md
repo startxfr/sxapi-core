@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : serviceinfo
 
 This resource allow you to get information about the current running service.
@@ -5,6 +7,15 @@ Programmers can access [resource methods](#resource-methods) and embed this modu
 methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose serviceinfo data.
+
+This resource is based on [nodejs core](https://nodejs.org/en/docs/) 
+[![node](https://img.shields.io/badge/node-v3.1.0-blue.svg)](https://nodejs.org/en/docs/) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
 
 ## Resource configuration
 
@@ -56,9 +67,11 @@ details.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **callback**    | yes       | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **callback**                 | no        | function | default | callback function called when application get result.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the application. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the application object (if no error)
 
 
 #### Example

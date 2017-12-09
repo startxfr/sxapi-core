@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # Contributors
 
 * **Startx dev** - [startxfr homepage](https://github.com/startxfr)

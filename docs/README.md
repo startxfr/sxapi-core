@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Documentation
 
 Main documentation for the sxapi-core project. For more information you can 
@@ -66,7 +68,7 @@ Add additional notes about how to deploy this on a live system
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [5.Contribute.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
