@@ -1,14 +1,10 @@
-[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+[![sxapi](https://github.com/startxfr/sxapi-core/tree/testing/docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
 
 # sxapi docker image
 
-**sxapi** for **s**imple and e**x**tensible **api** 
-(Application Programming Interface) is an an open-source framework for 
-quickly building simple and small API based on microservice architecture.
+**sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
-Very light (application less than 100Ko, full container stack for less than 30Mo)
-and configured with a single json file, you can build instantly small atomic
-API endpoints as well as fully featured enterprise-sized API.
+Very light (application less than 100Ko, full container stack for less than 30Mo) and configured with a single json file, you can build instantly small atomic API endpoints as well as fully featured enterprise-sized API.
 
 [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?tag=v0.0.52-npm)](https://travis-ci.org/startxfr/sxapi-core) 
 [![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/) 
@@ -17,18 +13,13 @@ API endpoints as well as fully featured enterprise-sized API.
 
 ## Getting Started with docker
 
-The [container image method](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_docker.md) 
-using the [sxapi container image](https://hub.docker.com/r/startx/sxapi)
-published in [dockerhub public registry](https://hub.docker.com)
-is the simplest and fastest way to get a running sxapi application is to use the
-public docker image. For more information on how to run your first sxapi 
-application using sxapi docker image, please read the 
-[docker image user guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_docker.md)
+The [container image method](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_docker.md) using the [sxapi container image](https://hub.docker.com/r/startx/sxapi) published in [dockerhub public registry](https://hub.docker.com) is the simplest and fastest way to get a running sxapi application is to use the public docker image. 
+
+For more information on how to run your first sxapi application using sxapi docker image, please read the [docker image user guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_docker.md)
 
 ## Getting Started (others methods)
 
-If you want to use this project as a npm module in your nodejs source code you can
-read the [npm module user guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_npm.md)
+If you want to use this project as a npm module in your nodejs source code you can read the [npm module user guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_npm.md)
 
 If you plan to extend sxapi-core, please read the [source code user guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/USE_source.md)
 
@@ -37,23 +28,19 @@ If you plan to extend sxapi-core, please read the [source code user guide](https
 
 ### 1. Install and start docker
 
-Theses command are for a Red Hat Linux like
-environement (Fedora, CentOS, RHEL, Suse). Please adapt ```yum``` command to the 
-```apt-get``` equivalent if you are using a Debian like system (Ubuntu, Debian)
+Theses command are for a Red Hat Linux like environement (Fedora, CentOS, RHEL, Suse). Please adapt ```yum``` command to the ```apt-get``` equivalent if you are using a Debian like system (Ubuntu, Debian)
 
 ```bash
 sudo yum install -y docker
 sudo service docker start
 ```
-For more information on how to install and execute a docker runtime, please see
-the [official docker installation guide](https://docs.docker.com/engine/installation/)
-After installation, pay attention to your user authorisation. Your current user
-must interact with the docker daemon.
+For more information on how to install and execute a docker runtime, please see the [official docker installation guide](https://docs.docker.com/engine/installation/)
+
+After installation, pay attention to your user authorisation. Your current user must interact with the docker daemon.
 
 ### 2. Create your working directory
 
-To run you test in a sandbox, you should isolate your sxapi test from 
-your current work by creating a working directory.
+To run you test in a sandbox, you should isolate your sxapi test from your current work by creating a working directory.
 ```bash
 mkdir ~/test-sxapi
 cd ~/test-sxapi
@@ -61,8 +48,7 @@ cd ~/test-sxapi
 
 ### 3. Get the sxapi container image
 
-Use docker command to get sxapi container image from the docker hub registry. 
-This will update your local docker image cache.
+Use docker command to get sxapi container image from the docker hub registry. This will update your local docker image cache.
 
 ```bash
 docker pull startx/sxapi:latest
@@ -101,8 +87,7 @@ Edit it with the following content
 }
 ```
 
-You can change ```name```, ```description```, ```version``` and 
-```server.endpoints.body``` with personalized content
+You can change ```name```, ```description```, ```version``` and ```server.endpoints.body``` with personalized content
 
 ### 5. Run your application
 
@@ -119,22 +104,14 @@ see an html message "My Sample API".
 ## Creating your own API
 
 
-sxapi-core come with many components to help you build your own api. As soon as 
-you have an api instance working, you should focus on making change to your 
-```sxapi.json``` config file and implement api endpoints you want to create. 
+sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your ```sxapi.json``` config file and implement api endpoints you want to create. 
 To help you understand how you can configure your api, you can :
-1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/README.md) 
-and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/2.Configure.md)
-2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and
-explore sample config file to help find sample code or ready-to-use config file
+1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/README.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/2.Configure.md)
+2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and explore sample config file to help find sample code or ready-to-use config file
 
 ## Documentation
 
-If you want to have more information on how to install, develop and run this
-framework and use it in your project, please read the 
-[full documentation](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/README.md) 
-or our [user guides](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/README.md)
-sections :
+If you want to have more information on how to install, develop and run this framework and use it in your project, please read the [full documentation](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/README.md) or our [user guides](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/README.md) sections :
 1. [Install sxapi](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/1.Install.md)
 2. [Configure sxapi](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/2.Configure.md)
 3. [Run sxapi](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/3.Run.md)
@@ -143,9 +120,7 @@ sections :
 
 ## Troubleshooting
 
-If you run into difficulties installing or running sxapi, please 
-report [issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) 
-or [issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
+If you run into difficulties installing or running sxapi, please report [issue for installer](https://github.com/startxfr/sxapi-installer/issues/new) or [issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
 
 ## Built With
 
@@ -156,17 +131,13 @@ or [issue for sxapi](https://github.com/startxfr/sxapi-core/issues/new).
 
 ## Contributing
 
-Please read [contributing guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/5.Contribute.md) 
-for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [contributing guide](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team.
-You can see the complete list of contributors who participated in this project
-by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/CONTRIBUTORS.md).
 
 ## License
 
-This project is licensed under the GPL Version 3 - 
-see the [LICENSE.md](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/LICENSE.md) file for details
+This project is licensed under the GPL Version 3 - see the [LICENSE.md](https://github.com/startxfr/sxapi-core/tree/v0.0.52-npm/docs/LICENSE.md) file for details
 
