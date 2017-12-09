@@ -1,4 +1,4 @@
-[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
 
 # SXAPI Resource : google
 
