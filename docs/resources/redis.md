@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : redis
 
 This resource allow you to interact with a Redis server or cluster.

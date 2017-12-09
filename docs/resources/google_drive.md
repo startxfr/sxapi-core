@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : google_drive
 
 This resource allow you to manipulate a Google Drive Storage backend using 

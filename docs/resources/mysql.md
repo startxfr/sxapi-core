@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : mysql
 
 This resource allow you to interact with a mariaDB server or a mysql like backend. 

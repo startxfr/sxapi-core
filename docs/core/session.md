@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Core : session component
 
 The session component is a [core component](./README.md) allow you to keep persistant 

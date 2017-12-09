@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
 

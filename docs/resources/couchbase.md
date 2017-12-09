@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : couchbase
 
 This resource allow you to interact with a Couchbase Enterprise Server Cluster. 

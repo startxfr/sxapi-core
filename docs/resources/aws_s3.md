@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : AWS S3
 
 This resource allow you to interact with the AWS S3 Webservice.

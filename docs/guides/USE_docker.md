@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # USE sxapi with docker
 
 You can use sxapi within a container by using our public 

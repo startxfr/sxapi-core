@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
@@ -89,4 +91,4 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage], versi
 available at [http://contributor-covenant.org/version/1/4][version]
 
 [homepage]: https://github.com/startxfr/sxapi-core
-[version]: https://github.com/startxfr/sxapi-core/tree/v0.0.50-npm
+[version]: https://github.com/startxfr/sxapi-core/tree/v0.0.51-npm

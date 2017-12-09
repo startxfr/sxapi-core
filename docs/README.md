@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Documentation
 
 Main documentation for the sxapi-core project. For more information you can 

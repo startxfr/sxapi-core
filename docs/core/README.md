@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Core
 
 sxapi comes with several buildin core modules to help you build a fast and flexible API. 
