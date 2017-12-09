@@ -1,4 +1,4 @@
-[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
+<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core
 

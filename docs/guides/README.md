@@ -1,33 +1,32 @@
-[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
+<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
-SXAPI Core Documentation
-========================
+# SXAPI User guides
 
+This section will help you find several user guide to get hand on the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
 
-User guides
------------
+## Getting started User guides
 
-1. [Installation guide](docs/1.Install.md)
-2. [Configure your API](docs/2.Configure.md)
-3. [Run your application](docs/3.Run.md)
-4. [Extend application capacity](docs/4.Develop.md)
+sxapi could be used in 3 ways : container, npm module or from source code. You will find a user guide for each one of these usage in the following sections :
+- [Docker image user guide](USE_docker.md)
+- [NPM module user guide](USE_npm.md)
+- [Source code user guide](USE_source.md)
 
-[Using container image](docs/USE_docker.md)
-[Using npm module](docs/USE_npm.md)
+## Step by step guides
 
+1. Install you sxapi with the [installation guide](1.Install.md)
+2. Configure your own API following the [configuration guide](2.Configure.md)
+3. Execute your application using the [running application guide](3.Run.md)
+4. Extend application capacity with the [developping guide](4.Develop.md)
+5. Participate to this open-source project according to the [contributing guide](5.Contribute.md)
 
-[Resources documentation](resources/README.md)
-----------------------------------------------
+## Contributing
 
-- **aws_sqs** [read documentation](resources/aws_sqs.md)
-- **couchbase** [read documentation](resources/couchbase.md)
-- **http** [read documentation](resources/http.md)
-- **mysql** [read documentation](resources/mysql.md)
-- **redis** [read documentation](resources/redis.md)
-- **serviceinfo** [read documentation](resources/serviceinfo.md)
+Read the [contributing guide](5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
+## Authors
 
-[Core documentation](core/README.md)
-------------------------------------
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
-- **session** [read documentation](core/session.md)
+## License
+
+This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) file for details
