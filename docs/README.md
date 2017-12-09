@@ -46,7 +46,7 @@ Resource components are loaded if defined in the configuration profile. You can 
 
 ## Contributing
 
-Please read [contributing guide](guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Read the [contributing guide](guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 

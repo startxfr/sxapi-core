@@ -21,7 +21,7 @@ sxapi could be used in 3 ways : container, npm module or from source code. You w
 
 ## Contributing
 
-Please read [contributing guide](5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Read the [contributing guide](5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
