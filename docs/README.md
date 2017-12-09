@@ -2,90 +2,56 @@
 
 # SXAPI Documentation
 
-Main documentation for the sxapi-core project. For more information you can 
-visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
+This is the main documentation for the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
 
+## Getting started User guides
 
-## Getting Started
+sxapi could be used in 3 ways : container, npm module or from source code. You will find a user guide for each one of these usage in the following sections :
+- [Docker image user guide](guides/USE_docker.md)
+- [NPM module user guide](guides/USE_npm.md)
+- [Source code user guide](guides/USE_source.md)
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+## Step by step guides
 
-### Prerequisites
+1. Install you sxapi with the [installation guide](guides/1.Install.md)
+2. Configure your own API following the [configuration guide](guides/2.Configure.md)
+3. Execute your application using the [running application guide](guides/3.Run.md)
+4. Extend application capacity with the [developping guide](guides/4.Develop.md)
+5. Participate to this open-source project according to the [contributing guide](guides/5.Contribute.md)
 
-What things you need to install the software and how to install them
+## API documentation
 
-```
-Give examples
-```
+### Core components
 
-### Installing
+Core components are all loaded and available when the application start. You can find usefull informations in [core component documentation](core/README.md)
+- [tools](core/tools.md) core component
+- [timer](core/timer.md) core component
+- [log](core/log.md) core component
+- [resource](core/resource.md) core component
+- [session](core/session.md) core component
+- [web server](core/ws.md) core component
+- [application](core/app.md) core component
 
-A step by step series of examples that tell you have to get a development env running
+### Resources components
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/README.md)
+- [aws_s3](resources/aws_s3.md) resource : Interact with an Amazon WebService S3 backend
+- [aws_sqs(resources/aws_sqs.md) resource : Interact with an Amazon WebService SQS backend
+- [couchbase](resources/couchbase.md) resource : Interact with a Couchbase cluster
+- [google](resources/google.md) resource : Interact with Google API backend
+- [http](resources/http.md) resource : Interact with any http webserver
+- [mysql](resources/mysql.md) resource : Interact with a mysql or mariadb server
+- [redis](resources/redis.md) resource : Interact with a redis backend
+- [serviceinfo](resources/serviceinfo.md) resource : Access application details
 
 ## Contributing
 
-Please read [5.Contribute.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Please read [contributing guide](guides/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) file for details
