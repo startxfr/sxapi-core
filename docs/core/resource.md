@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Core : resource component
 
 !!! TO DO see [session](session.md) for example

@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # USE sxapi with npm
 
 You can use sxapi with our 
