@@ -7,7 +7,7 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose google data.
 
-Based on [request npm module](https://www.npmjs.com/package/request) 
+Based on [googleapis npm module](https://www.npmjs.com/package/googleapis) 
 [![npm](https://img.shields.io/npm/v/googleapis.svg)](https://www.npmjs.com/package/googleapis) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
 until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.9-blue.svg)](https://github.com/startxfr/sxapi-core).
@@ -85,7 +85,7 @@ coresponding if available.
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **service**                  | yes       | string   | null    | The service name to find
-| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throww exceptions or return the sub-resource
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from service discovery. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the sub-resource coresponding to the requested service
 

@@ -108,7 +108,7 @@ module.exports = function (id, config, google) {
                 var duration = $timer.time(timerId);
                 if (err) {
                     $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-                    callback('could not get file metadata');
+                    callback('could not get file');
                 }
                 else {
                     $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
@@ -134,10 +134,13 @@ module.exports = function (id, config, google) {
                                 doc.Body = content;
                             }
                             $log.tools.resourceDebug($gapid.id, "file content " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
-                            callback(null, doc);
+                            if (!response) {
+                                callback(null, doc);
+                            }
                         }
                     });
                     if (response) {
+                        $log.tools.resourceDebug($gapid.id, "Streaming file content " + config.fileId + " started in resource " + $gapid.id, 4, duration, true);
                         call.pipe(response);
                     }
                 }
@@ -204,11 +207,11 @@ module.exports = function (id, config, google) {
             $gapid.service.files.insert(config, function (err, response) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
-                    $log.tools.resourceWarn($gapid.id, 'could not create directory ' + config.title + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-                    callback('could not create directory');
+                    $log.tools.resourceWarn($gapid.id, 'could not create file ' + config.title + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+                    callback('could not create file');
                 }
                 else {
-                    $log.tools.resourceDebug($gapid.id, "directory " + config.title + " created in resource " + $gapid.id, 4, duration, true);
+                    $log.tools.resourceDebug($gapid.id, "file " + config.title + " created in resource " + $gapid.id, 4, duration, true);
                     callback(null, response);
                 }
             });
@@ -376,16 +379,16 @@ module.exports = function (id, config, google) {
                         });
                         busboy.on('finish', function () {
                             console.log('Done parsing form!');
-                            var folderId = req.params.name || name;
+                            var fileName = req.params.name || name;
                             var parentId = req.params.parent || req.body.parent || config.parent || "root";
-                            rs.getService("drive").addFile(folderId, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
+                            rs.getService("drive").addFile(fileName, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                                    $app.ws.nokResponse(res, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
+                                    $log.tools.endpointWarn($gapid.id, req, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "folder " + folderId + " created in resource " + rs.id, reponse).send();
-                                    $log.tools.endpointDebug($gapid.id, req, "created folder " + folderId + " in resource " + rs.id, 2);
+                                    $app.ws.okResponse(res, "folder " + fileName + " created in resource " + rs.id, reponse).send();
+                                    $log.tools.endpointDebug($gapid.id, req, "created folder " + fileName + " in resource " + rs.id, 2);
                                 }
                             });
                         });

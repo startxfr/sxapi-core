@@ -1,271 +1,405 @@
-v0.0.9
-
-
 # SXAPI Resource : google_drive
 
-This resource allow you to interact with a Google Drive Storage service. Based on [Google SDK 2.6](https://github.com/google/google-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). Google Drive resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to manipulate a Google Drive Storage backend using 
+google drive API. 
+This resource is part of the [sxapi google resource](google.md). 
+Programmers can access [resource methods](#resource-methods) and embed this module
+methods into there own method and endpoints.
+API developpers can use [resource endpoints](#resource-endpoints) into there
+[configuration profile](../guides/2.Configure.md) to expose google data.
+
+Based on [googleapis npm module](https://www.npmjs.com/package/googleapis) 
+[![npm](https://img.shields.io/npm/v/googleapis.svg)](https://www.npmjs.com/package/googleapis) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.9-blue.svg)](https://github.com/startxfr/sxapi-core).
+
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
+
 
 ## Resource configuration
 
-### **Config parameters**
+To configure this resource, you must add a config object under the `resources['google-id'].services`
+section of your configuration profile. 
+This key must be a `drive` and his value will be the configuration object who must 
+have the [appropriate configuration parameters](#resource-config-parameters).
 
--   `_class` **string** Must be google_drive for this resource
--   `ACCESS_ID` **string** Google acess ID with credentials to the queue
--   `ACCESS_KEY` **string** Google acess secret to use with ACCESS_ID
--   `SESSION_TOKEN` **string** token to use for authentication
--   `region` **string** Google datacenter region
--   `Bucket` **string** Give the default Bucket name to use. Could be overwrited by xx_options or by an endpoint config
--   `read_options` **object** options used when reading an object from the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#receiveMessage-property) for more options
-    -   `Bucket`  **string** Give the url of the Google Drive endpoint to use. Could be overwrited by an endpoint config
--   `delete_options` **object** options used when deleting an object from the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#deleteMessage-property) for more options
-    -   `Bucket`  **string** Give the url of the Google Drive endpoint to use. Could be overwrited by an endpoint config
--   `listObjects_options` **object** options used when listing an object list from an Google Drive Bucket. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
-    -   `Bucket`  **string** Give the Bucket name to use. Could be overwrited by an endpoint config
+For a better understanting of the sxapi
+configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-### **Sample sxapi.json**
+### Resource config parameters
+
+*none*
+
+### Example
+
+This is a sample configuration of this resource. You must add this section under 
+the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
     ...
-    "drive-sample": {
-        "_class": "google_drive",
-        "read_options": {
-        },
-        "delete_options": {
-        },
-        "send_options": {
-        },
-        "listObjects_options": {
-        },
-        "ACCESS_ID": "XXXX",
-        "ACCESS_KEY": "XXXX/YYYYYYYYY+ZZZZZ",
-        "SESSION_TOKEN": "",
-        "region": "eu-west-1"
-    },
+    "google-id": {
+        "_class": "google",
+        "auth": { ... },
+        "services": {
+            "drive": {
+            }
+        }
+    }
     ...
 }
 ```
 
-## Available Methods
+## Resource methods
 
-### Method listObjects
+If you want to use this resource in our own module, you can retrieve this resource 
+instance by using `$app.resources.get('google-id').getService('drive')` where `google-id` is the
+id of your resource as defined in the [resource configuration](#resource-configuration). 
+For more information read [the getService method documentation](google.md#method-getservice)
 
-list objects in a given bucket. This method use ```listObjects_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+This module come with 6 methods.
 
-#### **Parameters**
+[1. getFileMeta method](#method-getfilemeta)
+[2. getFile method](#method-getfile)
+[3. findFile method](#method-findfile)
+[4. addFile method](#method-addfile)
+[5. getDirectory method](#method-getdirectory)
+[6. addDirectory method](#method-adddirectory)
 
--   `bucket` **string** bucket name
--   `options` **object** options used to get object list. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the Google Drive cluster
 
-#### **Sample code**
+### Method getFileMeta
 
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.listObjects('bucketname',{}, function (error, response) {
-    console.log(error, response);
-});
-```
+Search for a google file coresponding to the id and return the document meta data
 
-### Method getObject
+#### Parameters
 
-return an object given by it ID. This method use ```getObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The document ID to find
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v2/reference/files/get).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
 
-#### **Parameters**
-
--   `id` **string** object id to get
--   `bucket` **string** bucket name
--   `options` **object** options used when reading a message to the Google Drive. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#receiveMessage-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the Google Drive cluster
-
-#### **Sample code**
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.getObject('file.pdf','bucketname',{},function (error, response) {
+var service = $app.resources.get('google-id').getService('drive');
+service.getFileMeta('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,  function (error, response) {
     console.log(error, response);
 });
+
 ```
 
-### Method addObject
+### Method getFile
 
-Add an object into a bucket. This method use ```addObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+Search for a google file coresponding to the id and return the document content
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** object id to add
--   `content` **string** content (could be a Stream or Buffer) 
--   `bucket` **string** bucket name
--   `options` **object** options used for adding this object. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#putObject-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the Google Drive cluster
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The document ID to find
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v2/reference/files/get).
+| **response**                 | no        | object   | null    | Http request response. If given will be used isted of callback to steam the document content directly to the response.
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions unless a response object was previously given
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data. Document data will be found in `doc.Body`
 
-#### **Sample code**
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.addObject('file.txt','content sample','bucketname',{},function (error, response) {
+var service = $app.resources.get('google-id').getService('drive');
+// With callback
+service.getFile('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } , false, function (error, response) {
     console.log(error, response);
 });
+// with response (where response is and http response object)
+service.getFile('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,  response);
+
 ```
-```
 
-### Method updateObject
+### Method findFile
 
-Update an object into a bucket. This method use ```updateObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+Search for a list of google files matching a google query [see google documentation](https://developers.google.com/drive/v2/web/search-parameters)
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** object id to update
--   `content` **string** content (could be a Stream or Buffer) 
--   `bucket` **string** bucket name
--   `options` **object** options used for updating this object. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#putObject-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the Google Drive cluster
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **q**                        | yes       | string   | null    | The drive query to perform [see google examples](https://developers.google.com/drive/v2/web/search-parameters#examples)
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v2/reference/files/list).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
 
-#### **Sample code**
+#### Example
 
 ```javascript
-var resource = $app.resources.get('resource-id');
-resource.updateObject('file.txt','content sample','bucketname',{},function (error, response) {
+var service = $app.resources.get('google-id').getService('drive');
+service.findFile("fullText contains 'hello'", { maxResults : 50 } ,  function (error, response) {
     console.log(error, response);
 });
+
 ```
 
-## Available Endpoints
+### Method addFile
 
-### listObjects endpoint
+Add a new file into a directory
 
-List objects stored in a bucket
+#### Parameters
 
-#### **Config parameters**
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **name**                     | yes       | string   | null    | The file name to use in drive storage
+| **parent**                   | yes       | string   | null    | The parent directory
+| **mime**                     | yes       | string   | null    | Mime type of this document
+| **body**                     | yes       | string   | null    | Document body or content
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.insert() documentation](https://developers.google.com/drive/v2/reference/files/insert).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
 
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
--   `bucket` **string** bucket name
 
-#### **Sample code**
+#### Example
 
-```javascript 
-{
-    "path": "/drive",
-    "method": "GET",
-    "resource": "drive-sample",
-    "endpoint": "endpoints.listObjects",
-    "bucket" : "sxapitest",
-    "config": {
-        "Bucket" : "sxapitest"
-    }
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.addFile(
+    "sample file from sxapi",
+    "314159265358979323846", 
+    "text/plain", 
+    "my content", 
+    { ocr : false } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+
+### Method getDirectory
+
+Search for a list of google files into a given directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The directory ID in google Drive
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [children.list() documentation](https://developers.google.com/drive/v2/reference/children/list).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.getDirectory("314159265358979323846", { maxResults : 50 } ,  function (error, response) {
+    console.log(error, response);
+});
+
+```
+
+### Method addDirectory
+
+Add a new directory into another directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **name**                     | yes       | string   | null    | The directory name to use in drive storage
+| **parent**                   | yes       | string   | null    | The parent directory
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.insert() documentation](https://developers.google.com/drive/v2/reference/files/insert).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.addDirectory(
+    "sample directory from sxapi",
+    "314159265358979323846", 
+    { ocr : false } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+## Resource endpoints
+
+This module come with one single endpoint who can interact with any google server.
+
+[1. getFile endpoint](#getfile-endpoint)
+[2. addFile endpoint](#addfile-endpoint)
+[3. findFile endpoint](#findfile-endpoint)
+[4. listDirectory endpoint](#listdirectory-endpoint)
+[5. addDirectory endpoint](#adddirectory-endpoint)
+
+### getFile endpoint
+
+The purpose of this endpoint is to return the content of the document directly
+to the http response.
+
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "getFile"
+| **fileId**      | no        | string |         | the Id of the file whe whan to expose.<br>If not given, will try to find an `id` key in the http request.
+
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/token",
+            "resource": "google-id",
+            "endpoint": "getFile",
+            "fileId" : "314159265358979323846"
+        }
+    ]
 }
 ```
 
-#### **call this endpoint**
 
-```bash
-curl -X GET http://127.0.0.1:8080/drive
-```
+### addFile endpoint
 
-### getObject endpoint
+The purpose of this endpoint is to create a new file in google Drive based on the 
+content received from the http request.
 
-Get one object stored in a bucket
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
--   `bucket` **string** bucket name
--   `objectId` **string** ID of the object to get
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "addFile"
+| **parent**      | no        | string |         | The parent directory ID<br>If not given, will try to find an `parent` key in the http request.
+| **config**      | no        | object |         | Config object to pass to the [addFile method](#method-addfile)
 
-#### **Sample code**
 
-```javascript 
-{
-    "path": "/drive/:id",
-    "method": "GET",
-    "resource": "drive-sample",
-    "endpoint": "endpoints.getObject",
-    "bucket" : "sxapitest"
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/token",
+            "resource": "google-id",
+            "endpoint": "addFile",
+            "parent" : "314159265358979323846"
+        }
+    ]
 }
 ```
 
-#### **call this endpoint**
 
-```bash
-curl -X GET http://127.0.0.1:8080/drive/file.pdf
-```
+### findFile endpoint
 
-### addObject endpoint
+The purpose of this endpoint is to find a list of file coresponding to the given query.
 
-Add one object into a bucket
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
--   `bucket` **string** bucket name
--   `objectId` **string** ID of the object to get
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "findFile"
+| **q**           | no        | string |         | The drive query to perform [see google examples](https://developers.google.com/drive/v2/web/search-parameters#examples)<br>If not given, will try to find an `q` key in the http request.
 
-#### **Sample code**
 
-```javascript 
-{
-    "path": "/drive/:id",
-    "method": "POST",
-    "resource": "drive-sample",
-    "endpoint": "endpoints.addObject",
-    "bucket" : "sxapitest"
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/token",
+            "resource": "google-id",
+            "endpoint": "findFile",
+            "q" : "fullText contains 'hello'"
+        }
+    ]
 }
 ```
 
-#### **call this endpoint**
 
-```bash
-curl -X POST http://127.0.0.1:8080/drive/file.pdf
-```
+### listDirectory endpoint
 
-### updateObject endpoint
+The purpose of this endpoint is to find a list of files within a given directory
 
-Update one object into a bucket
 
-#### **Config parameters**
+#### Parameters
 
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the google_drive resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the Google endpoint. [Google Drive documentation](http://docs.google.amazon.com/GoogleJavaScriptSDK/latest/Google/Drive.html#listObjectsV2-property) for more options
--   `bucket` **string** bucket name
--   `objectId` **string** ID of the object to get
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "listDirectory"
+| **folderId**    | no        | string |         | the Id of the folder whe whan to list.<br>If not given, will try to find an `id` key in the http request.
+| **config**      | no        | object |         | Config object to pass to the [getDirectory method](#method-getdirectory)
 
-#### **Sample code**
 
-```javascript 
-{
-    "path": "/drive/:id",
-    "method": "PUT",
-    "resource": "drive-sample",
-    "endpoint": "endpoints.updateObject",
-    "bucket" : "sxapitest"
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/token",
+            "resource": "google-id",
+            "endpoint": "listDirectory",
+            "folderId" : "314159265358979323846"
+        }
+    ]
 }
 ```
 
-#### **call this endpoint**
+### addDirectory endpoint
 
-```bash
-curl -X PUT http://127.0.0.1:8080/drive/file.pdf
+The purpose of this endpoint is to add a new directory into our google drive backend
+
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "listDirectory"
+| **name**        | no        | string |         | the name of the folder whe want to create. <br>If not given, will try to find an `name` key in the http request.
+| **parent**      | no        | string |         | The parent directory ID<br>If not given, will try to find an `parent` key in the http request.
+| **config**      | no        | object |         | Config object to pass to the [addDirectory method](#method-adddirectory)
+
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/token",
+            "resource": "google-id",
+            "endpoint": "listDirectory",
+            "parent" : "314159265358979323846",
+            "name" : "new folder from sxapi"
+        }
+    ]
+}
 ```
