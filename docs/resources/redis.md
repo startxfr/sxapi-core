@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resource : redis
 
 This resource allow you to interact with a Redis server or cluster.
@@ -6,7 +8,14 @@ methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
 [configuration profile](../guides/2.Configure.md) to expose redis data.
 
-Based on redis npm module [![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
+This resource is based on [redis npm module](https://www.npmjs.com/package/redis) 
+[![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
+and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+
+- [Resource configuration](#resource-configuration)<br>
+- [Resource methods](#resource-methods)<br>
+- [Resource endpoints](#resource-endpoints)
 
 ## Resource configuration
 
@@ -27,7 +36,7 @@ for a complete list of the parameters that you can use in this config object.
 | Param           | Mandatory | Type   | default   | Description
 |-----------------|:---------:|:------:|-----------|---------------
 | **_class**      | yes       | string |           | module name. Must be **redis** for this resource
-| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties)
+| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties). If you want to reach a redis server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : 172.17.42.1
 | **...**         | no        | N/A    |           | any request option. See [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties).
 
 ### Example
@@ -40,7 +49,7 @@ the ```resources``` section of your [configuration profile](../guides/2.Configur
     ...
     "redis-id": {
         "_class": "redis",
-        "url": "redis://dev:dev@localhost/bucket",
+        "url": "redis://dev:dev@172.17.42.1/bucket",
         "return_buffers" : false
     }
     ...
@@ -55,9 +64,9 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with several methods for manipulating redis dataset.
 
-[1. Get method](#method-get)
-[2. Insert method](#method-insert)
-[3. Update method](#method-update)
+[1. Get method](#method-get)<br>
+[2. Insert method](#method-insert)<br>
+[3. Update method](#method-update)<br>
 [4. Delete method](#method-delete)
 
 
@@ -67,10 +76,12 @@ get a redis value by it's given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to find
-| **callback**    | no        | function | default | callback function to get the returned informations. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to find
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
@@ -88,11 +99,13 @@ insert a redis value associated to the given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to use
-| **value**       | yes       | string   | null    | value associated to this key
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to use
+| **value**                    | yes       | string   | null    | value associated to this key
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this new key
 
 
 #### Example
@@ -110,11 +123,13 @@ update a redis value associated to the given key.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to use
-| **value**       | yes       | string   | null    | the new value associated to this key
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to use
+| **value**                    | yes       | string   | null    | the new value associated to this key
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
@@ -132,10 +147,12 @@ delete a redis key and it associated value.
 
 #### Parameters
 
-| Param           | Mandatory | Type     | default | Description
-|-----------------|:---------:|:--------:|---------|---------------
-| **key**         | yes       | string   | null    | key to delete
-| **callback**    | no        | function | default | callback function to call when insertion is done. this function take 2 parameters:  <br>first is **error** (must be null, false or undefined if no error) <br>second is **response** object (if no error)<br>If not defined, dropped to a default function who output information to the debug console
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **key**                      | yes       | string   | null    | key to delete
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
@@ -149,11 +166,11 @@ resource.delete('myKey', function (error, response) {
 
 ## Resource endpoints
 
-This module come with one single endpoint with can interact with any redis method.
+This module come with 4 endpoints who can interact with any redis method.
 
-[1. Get endpoint](#get-endpoint)
-[2. Create endpoint](#create-endpoint)
-[3. Update endpoint](#update-endpoint)
+[1. Get endpoint](#get-endpoint)<br>
+[2. Create endpoint](#create-endpoint)<br>
+[3. Update endpoint](#update-endpoint)<br>
 [4. Delete endpoint](#delete-endpoint)
 
 ### Get endpoint
@@ -203,6 +220,7 @@ by the context, and document will be the HTTP body of the query.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "POST",
             "resource": "redis-id",
             "endpoint": "create"
         }
@@ -231,6 +249,7 @@ by the context, and document will be the HTTP body of the query.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "PUT",
             "resource": "redis-id",
             "endpoint": "update"
         }
@@ -240,8 +259,8 @@ by the context, and document will be the HTTP body of the query.
 
 ### Delete endpoint
 
-The purpose of this endpoint is to delete a key into a redis server. Key Id is defined
-by the context.
+The purpose of this endpoint is to delete a key into a redis server. 
+Key Id is defined by the context.
 
 #### Parameters
 
@@ -258,6 +277,7 @@ by the context.
     "endpoints": [
         {
             "path": "/redis/:id",
+            "method": "DELETE",
             "resource": "redis-id",
             "endpoint": "delete"
         }

@@ -1,3 +1,5 @@
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 # SXAPI Resources Catalog
 
 Resources are one core componement of SXAPI. They expose method you can use in your module, and they also expose entrypoint ready to use for building your API.
