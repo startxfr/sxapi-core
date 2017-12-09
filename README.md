@@ -12,7 +12,7 @@ Very light (application less than 100Ko, full container stack for less than 30Mo
 and configured with a single json file, you can build instantly small atomic
 API endpoints as well as fully featured enterprise-sized API.
 
-[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=dev)](https://travis-ci.org/startxfr/sxapi-core) 
+[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=master)](https://travis-ci.org/startxfr/sxapi-core) 
 [![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/) 
 [![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core) 
 [![npm dependencies](https://david-dm.org/startxfr/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core) 
@@ -32,7 +32,7 @@ If you plan to develop your own component or embed you api into another
 application, you should be more interested by the npm method. For more 
 information on how to run your first sxapi application using sxapi npm module, 
 please read the [Using npm module user guide](docs/guides/USE_npm.md)
-- [source code](https://github.com/startxfr/sxapi-core/tree/dev) published in github
+- [source code](https://github.com/startxfr/sxapi-core/tree/master) published in github
 If you plan to extend sxapi capabilities with your own component, change 
 default software design, extend core functinalities or more globaly improve
 this application, please read the [Using source code user guide](docs/guides/USE_source.md)
