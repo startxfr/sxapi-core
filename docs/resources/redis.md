@@ -34,7 +34,7 @@ for a complete list of the parameters that you can use in this config object.
 | Param           | Mandatory | Type   | default   | Description
 |-----------------|:---------:|:------:|-----------|---------------
 | **_class**      | yes       | string |           | module name. Must be **redis** for this resource
-| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties)
+| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties). If you want to reach a redis server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : 172.17.42.1
 | **...**         | no        | N/A    |           | any request option. See [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties).
 
 ### Example
