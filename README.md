@@ -1,5 +1,7 @@
 # sxapi-core project
 
+[![sxapi](docs/assets/logo.svg)](https://github.com/startxfr/sxapi-core)
+
 **sxapi** for **s**imple and e**x**tensible **api** 
 (Application Programming Interface) is an an open-source framework for 
 quickly building simple and small API based on microservice architecture.
