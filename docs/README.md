@@ -1,6 +1,6 @@
-[<img align="right" width="100" height="100" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">](https://github.com/startxfr/sxapi-core)
+<img align="left" height="80" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
 
-# SXAPI Documentation
+# Documentation
 
 This is the main documentation for the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
 
