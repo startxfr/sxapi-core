@@ -199,18 +199,6 @@ describe("mysql resource component", function () {
         });
     });
     describe("resource endpoints", function () {
-        describe("#test()", function () {
-            it("should exist", function () {
-                expect(test.endpoints).to.have.any.keys('test');
-            });
-            it("should be a method", function () {
-                expect(test.endpoints.test).to.be.an('function');
-            });
-            var result = test.endpoints.test({});
-            it("should return a webserver callback", function () {
-                expect(result).to.be.an('function');
-            });
-        });
         describe("#list()", function () {
             it("should exist", function () {
                 expect(test.endpoints).to.have.any.keys('list');

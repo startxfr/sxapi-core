@@ -33,6 +33,9 @@
             {
                 "path": "/",
                 "desc": "Display welcome message (HTML)",
+                "header": {
+                    "Content-Type": "text/html"
+                },
                 "body": "<html><head></head><body><h1>STARTX-API v0.0.1</h1></body></html>"
             },
             {
