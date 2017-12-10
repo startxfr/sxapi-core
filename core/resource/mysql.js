@@ -435,7 +435,7 @@ module.exports = function (id, config) {
                     answser.addTotal(total);
                 }
                 answser.send();
-                $log.tools.endpointInfo($mqdb.id, req, message, duration);
+                $log.tools.endpointDebug($mqdb.id, req, message, 2, duration);
             },
             responseNOK: function (res, message, req, duration) {
                 $log.tools.endpointErrorAndAnswer(res, $mqdb.id, req, message, duration);

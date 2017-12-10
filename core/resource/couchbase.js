@@ -214,7 +214,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "returned " + reponse.length + ' items', duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "returned " + reponse.length + ' items', 2, duration);
                                 }
                             };
                         };
@@ -238,7 +238,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "return document " + docId, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "return document " + docId, 2, duration);
                                 }
                             };
                         };
@@ -262,7 +262,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " created", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " created", 2, duration);
                                 }
                             };
                         };
@@ -286,7 +286,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " updated", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " updated", 2, duration);
                                 }
                             };
                         };
@@ -310,7 +310,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " deleted", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " deleted", 2, duration);
                                 }
                             };
                         };

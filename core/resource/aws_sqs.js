@@ -309,7 +309,7 @@ module.exports = function (id, config) {
                             }
                             else {
                                 var ct = (reponse.Messages) ? reponse.Messages.length : 0;
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $sqs.id, req, "readding AWS SQS queue " + config.config.QueueUrl);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $sqs.id, req, "readding AWS SQS queue " + config.config.QueueUrl, 2);
                             }
                         });
                     }
@@ -345,7 +345,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "error saving message because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $sqs.id, req, "recorded AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $sqs.id, req, "recorded AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, 2);
                             }
                         });
                     }
@@ -385,7 +385,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "error deleting message because " + err.message);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $sqs.id, req, "deleted AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $sqs.id, req, "deleted AWS SQS message in transaction " + reponse.ResponseMetadata.MessageId, 2);
                                 }
                             });
                         }
@@ -416,7 +416,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "error getting queue list because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.QueueUrls, $sqs.id, req, "founded " + reponse.QueueUrls.length + " queue(s) available ");
+                                $log.tools.endpointDebugAndAnswer(res, reponse.QueueUrls, $sqs.id, req, "founded " + reponse.QueueUrls.length + " queue(s) available ", 2);
                             }
                         });
                     }
@@ -449,7 +449,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "error creating AWS SQS queue because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.QueueUrl, $sqs.id, req, "new AWS SQS queue " + params.QueueName);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.QueueUrl, $sqs.id, req, "new AWS SQS queue " + params.QueueName, 2);
                             }
                         });
                     }
@@ -483,7 +483,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "error deleting AWS SQS queue because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, true, $sqs.id, req, "deleted AWS SQS queue " + params.queueId);
+                                $log.tools.endpointDebugAndAnswer(res, true, $sqs.id, req, "deleted AWS SQS queue " + params.queueId, 2);
                             }
                         });
                     }

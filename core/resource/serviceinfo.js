@@ -121,7 +121,7 @@ module.exports = function (id, config) {
                             $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
                         }
                         else {
-                            $log.tools.endpointInfoAndAnswer(res, reponse, $svif.id, req, "return service informations");
+                            $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service informations", 2);
                         }
                     };
                     $log.tools.endpointDebug($svif.id, req, "info()", 1);

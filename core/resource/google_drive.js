@@ -334,7 +334,7 @@ module.exports = function (id, config, google) {
                                 $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "returned files matching " + q + " from resource " + rs.id);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $gapid.id, req, "returned files matching " + q + " from resource " + rs.id, 2);
                             }
                         });
                     }
@@ -381,7 +381,7 @@ module.exports = function (id, config, google) {
                                     $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "folder " + fileName + " created in resource ");
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $gapid.id, req, "folder " + fileName + " created in resource ", 2);
                                 }
                             });
                         });
@@ -408,7 +408,7 @@ module.exports = function (id, config, google) {
                                 $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "returned folder " + folderId + " from resource " + rs.id);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $gapid.id, req, "returned folder " + folderId + " from resource " + rs.id, 2);
                             }
                         });
                     }
@@ -434,7 +434,7 @@ module.exports = function (id, config, google) {
                                 $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "folder " + folderId + " created in resource " + rs.id);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $gapid.id, req, "folder " + folderId + " created in resource " + rs.id, 2);
                             }
                         });
                     }

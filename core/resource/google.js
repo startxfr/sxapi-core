@@ -181,7 +181,7 @@ module.exports = function (id, config) {
                     $log.tools.endpointDebug($gapi.id, req, "getToken()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
-                        $log.tools.endpointInfoAndAnswer(res, rs.gapi_auth.credentials, $gapi.id, req, "returned auth token" + rs.gapi_auth.credentials.access_token);
+                        $log.tools.endpointDebugAndAnswer(res, rs.gapi_auth.credentials, $gapi.id, req, "returned auth token" + rs.gapi_auth.credentials.access_token, 2);
                     }
                     else {
                         $log.tools.endpointWarnAndAnswerNoResource(res, $gapi.id, req, config.resource);

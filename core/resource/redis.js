@@ -77,7 +77,7 @@ module.exports = function (id, config) {
                     $log.tools.resourceError($rddb.id, "get could not be executed because " + err.message, duration);
                 }
                 else {
-                    if (JSON.isParsable(results)) {
+                    if (JSON.isDeserializable(results)) {
                         results = JSON.parse(results);
                     }
                     $log.tools.resourceDebug($rddb.id, "get returned " + results.length + " results", 3, duration);
@@ -94,7 +94,7 @@ module.exports = function (id, config) {
             $timer.start('redis_insert_' + key);
             $log.tools.resourceInfo($rddb.id, "adding new key '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
-            if (typeof doc === 'object') {
+            if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
             $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
@@ -120,6 +120,9 @@ module.exports = function (id, config) {
             $timer.start('redis_update_' + key);
             $log.tools.resourceInfo($rddb.id, "updating document '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
+            if (JSON.isSerializable(doc)) {
+                doc = JSON.stringify(doc);
+            }
             $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
         },
         __updateDefaultCallback: function (key) {
@@ -165,11 +168,14 @@ module.exports = function (id, config) {
                             if (err) {
                                 $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                             }
+                            else if (reponse === null) {
+                                $log.tools.endpointWarnAndAnswer(res, $rddb.id, req, "could not find key " + docId, duration);
+                            }
                             else {
-                                if (JSON.isParsable(reponse)) {
+                                if (JSON.isDeserializable(reponse)) {
                                     reponse = JSON.parse(reponse);
                                 }
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $rddb.id, req, "return document " + docId, duration);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "return document " + docId, 2, duration);
                             }
                         };
                     };
@@ -185,16 +191,17 @@ module.exports = function (id, config) {
             create: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
+                    var docBody = req.body;
                     $log.tools.endpointDebug($rddb.id, req, "create()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).insert(docId, req.body, function (key) {
+                        $app.resources.get(config.resource).insert(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('redis_insert_' + key);
                                 if (err) {
                                     $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " recorded", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " recorded", 2, duration);
                                 }
                             };
                         });
@@ -207,16 +214,17 @@ module.exports = function (id, config) {
             update: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var docBody = req.body;
                     $log.tools.endpointDebug($rddb.id, req, "update()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).update(docId, req.body, function (key) {
+                        $app.resources.get(config.resource).update(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('redis_update_' + key);
                                 if (err) {
                                     $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse.value, $rddb.id, req, "document " + docId + " updated", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse.value, $rddb.id, req, "document " + docId + " updated", 2, duration);
                                 }
                             };
                         });
@@ -238,7 +246,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " deleted", duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " deleted", 2, duration);
                                 }
                             };
                         });

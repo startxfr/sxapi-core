@@ -20,6 +20,10 @@
         "http-sample": {
             "_class": "http",
             "url": "https://adobe.github.io/Spry/data/json/array-02.js"
+        },
+        "redis-sample": {
+            "_class": "redis",
+            "url": "redis://db-redis"
         }
     },
     "log": {
@@ -78,6 +82,38 @@
                 "resource": "http-sample",
                 "endpoint": "call",
                 "url": "https://adobe.github.io/Spry/data/json/object-01.js"
+            },
+            {
+                "path": "/redis",
+                "method": "ROUTER",
+                "resource": "redis-sample",
+                "endpoints": [
+                    {
+                        "path": "/redis",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
             }
         ]
     }

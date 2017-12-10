@@ -107,7 +107,7 @@ module.exports = function (id, config) {
                                 else {
                                     var result = rs.__reader(body, response);
                                     var msg = "returned " + result.type + " with " + result.length;
-                                    $log.tools.endpointInfoAndAnswer(res, result.content, $htcli.id, req, msg, $timer.timeStop(timerId));
+                                    $log.tools.endpointDebugAndAnswer(res, result.content, $htcli.id, req, msg, 2, $timer.timeStop(timerId));
                                 }
                             }
                             ;

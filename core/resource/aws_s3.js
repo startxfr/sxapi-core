@@ -424,7 +424,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error listing objects because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.Contents, $s3.id, req, "readding AWS S3 objects in bucket " + config.config.Bucket);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Contents, $s3.id, req, "readding AWS S3 objects in bucket " + config.config.Bucket, 2);
                             }
                         });
                     }
@@ -490,7 +490,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.Buckets, $s3.id, req, "recorded AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "recorded AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
                             }
                         });
                     }
@@ -531,7 +531,7 @@ module.exports = function (id, config) {
                                     $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
                                 }
                                 else {
-                                    $log.tools.endpointInfoAndAnswer(res, reponse, $s3.id, req, "deleted AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "deleted AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
                                 }
                             });
                         }
@@ -562,7 +562,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting bucket list because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.Buckets, $s3.id, req, "founded " + reponse.Buckets.length + " bucket(s) available ");
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "founded " + reponse.Buckets.length + " bucket(s) available ", 2);
                             }
                         });
                     }
@@ -595,7 +595,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting info for bucket because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse, $s3.id, req, "information about AWS S3 bucket " + params.Bucket);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "information about AWS S3 bucket " + params.Bucket, 2);
                             }
                         });
                     }
@@ -628,7 +628,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error creating bucket because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, reponse.BucketUrl, $s3.id, req, "new AWS S3 bucket " + params.BucketName);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.BucketUrl, $s3.id, req, "new AWS S3 bucket " + params.BucketName, 2);
                             }
                         });
                     }
@@ -662,7 +662,7 @@ module.exports = function (id, config) {
                                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error creating bucket because " + err.message);
                             }
                             else {
-                                $log.tools.endpointInfoAndAnswer(res, true, $s3.id, req, "deleted AWS S3 bucket " + params.bucketId);
+                                $log.tools.endpointDebugAndAnswer(res, true, $s3.id, req, "deleted AWS S3 bucket " + params.bucketId, 2);
                             }
                         });
                     }
