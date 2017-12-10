@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : session component
 
@@ -13,10 +13,10 @@ to persist session context across request and micro-services instances.
 
 ## Configuration
 
-To enable this component in you API, you must add a `"session"` property
+To enable this component in you API, you must add a `session` property
 in the main section of your [configuration file](../guides/2.Configure.md), 
-The coresponding value should be an object with [configuration parameters](#config- parameters).<br>
-If `"session"` property is not defined, or set to false (`"session" : false`), no
+The coresponding value should be an object with [configuration parameters](#config-parameters).<br>
+If `session` property is not defined, or set to false (`"session" : false`), no
 session context will be defined and your API will be stateless unless your resources
 used a buildin mecanism for user context persistance.
 

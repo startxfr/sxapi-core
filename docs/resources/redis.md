@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : redis
 
@@ -19,7 +19,7 @@ until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://git
 
 ## Resource configuration
 
-To configure this resource, you must add a config key under the ```resources```
+To configure this resource, you must add a config key under the `resources`
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
@@ -36,13 +36,13 @@ for a complete list of the parameters that you can use in this config object.
 | Param           | Mandatory | Type   | default   | Description
 |-----------------|:---------:|:------:|-----------|---------------
 | **_class**      | yes       | string |           | module name. Must be **redis** for this resource
-| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties). If you want to reach a redis server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : 172.17.42.1
+| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties). If you want to reach a redis server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : 172.17.42.1
 | **...**         | no        | N/A    |           | any request option. See [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties).
 
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
