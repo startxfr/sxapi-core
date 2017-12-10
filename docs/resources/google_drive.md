@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : google_drive
 
@@ -37,7 +37,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {

@@ -1,21 +1,39 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# SXAPI Core : application component
+# SXAPI Core : application 
 
-!!! TO DO see [session](session.md) for example
+The application component is the main [core component](./README.md) creating the application object.<br> 
 
 ## Configuration
 
-xxxx
+To configure your application, you should follow the [configuration user guide](../guides/2.Configure.md), 
 
-### Config parameters
+### Loading sequence
 
-| Param           | Mandatory | Type | default | Description
-|-----------------|:---------:|:----:|---------|---------------
+1. Load [tools library](tools.md) 
+2. Load [timer component](timer.md) as global `$timer`
+3. Load [log component](log.md) as global `$log`. Configuration is empty at this step.
+4. Construct main [application](app.md) `$app` object
+   1. alias global `$timer` to `$app.timer`
+   2. alias global `$log` to `$app.log`
+5. Load [resource component](resource.md) in  `$app.resources`
+6. Load [session component](session.md) in  `$app.session`
+7. Load [web server component](ws.md) in  `$app.ws`
 
 
-### Config Sample
+### Launch sequence
 
-```javascript
-
-```
+1. Init application
+   1. init process signals for catching process signals
+   2. check environments variables 
+   3. load config profile from environement variable `SXAPI_CONF` or `sxapi.json`
+   4. init resources
+      1. load each resource declared in config profile
+      2. init each resource declared in config profile
+   5. init session
+   6. init web server
+2. Start application
+   1. start resources
+   2. start session
+   3. start web server
+3. Execute callback function 
