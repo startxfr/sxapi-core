@@ -8,7 +8,12 @@
  * @type $log
  */
 var $log = {
-    config: {},
+    config: {
+        filters: {
+            level: "0,1",
+            type: "info,error"
+        }
+    },
     isDebug: false,
     booted: false,
     /**
