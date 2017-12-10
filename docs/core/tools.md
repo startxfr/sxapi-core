@@ -1,21 +1,11 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : tools component
 
-!!! TO DO see [session](session.md) for example
+The tools component is a [core component](./README.md) adding some basic tools to the 
+sxapi core application.
 
 ## Configuration
 
-xxxx
+This component come with no configuration and is loaded previous all other components
 
-### Config parameters
-
-| Param           | Mandatory | Type | default | Description
-|-----------------|:---------:|:----:|---------|---------------
-
-
-### Config Sample
-
-```javascript
-
-```

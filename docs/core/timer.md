@@ -1,21 +1,12 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : timer component
 
-!!! TO DO see [session](session.md) for example
+The timer component is a [core component](./README.md) adding some timing functions to the 
+sxapi core application. It allow us to perfom some timing action to mesure the application 
+performance when runing.
 
 ## Configuration
 
-xxxx
+This component come with no configuration and is loaded just after the [tools core components](tools.md) in the loading sequence.
 
-### Config parameters
-
-| Param           | Mandatory | Type | default | Description
-|-----------------|:---------:|:----:|---------|---------------
-
-
-### Config Sample
-
-```javascript
-
-```

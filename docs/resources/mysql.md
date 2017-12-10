@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : mysql
 
@@ -19,7 +19,7 @@ until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://git
 
 ## Resource configuration
 
-To configure this resource, you must add a config key under the ```resources```
+To configure this resource, you must add a config key under the `resources`
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
@@ -33,7 +33,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 |------------------------|:---------:|:------:|-----------------|---------------
 | **_class**             | yes       | string |                 | Module name. Must be **mysql** for this resource
 | **server**             | yes       | object |                 | Object describing the connection to the server
-| server.**host**        | yes       | string |                 | The IP or hostname of the mysql server. If you want to reach a server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : 172.17.42.1
+| server.**host**        | yes       | string |                 | The IP or hostname of the mysql server. If you want to reach a server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : 172.17.42.1
 | server.**database**    | yes       | string |                 | Name of the database to use
 | server.**port**        | no        | int    | 3306            | The port number to connect to
 | server.**user**        | no        | string | none            | The MySQL user to authenticate as.
@@ -46,7 +46,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
@@ -113,7 +113,7 @@ Build a simple select query for one table using cumulative filters.
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **table**                    | yes       | string   | null    | Name of the table whe want to query
-| **filter**                   | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object ```{id:'key'}``` will match all lines with 'id' field set to value 'key'.
+| **filter**                   | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object `{id:'key'}` will match all lines with 'id' field set to value 'key'.
 | **callback**                 | no        | function | default | Callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the mysql SDK. Will be an error object if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
@@ -161,7 +161,7 @@ update one or many table rows matching the given filter.
 |------------------------------|:---------:|:--------:|---------|---------------
 | **table**                    | yes       | string   | null    | Table name to use for this update
 | **data**                     | yes       | string   | null    | Object with key coresponding to table fields and the coresponding value describing the new field value.
-| **filter**                   | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object ```{id:'key'}``` will match all lines with 'id' field set to value 'key'.
+| **filter**                   | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object `{id:'key'}` will match all lines with 'id' field set to value 'key'.
 | **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the mysql SDK. Will be an error object if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the document object (if no error)
@@ -185,7 +185,7 @@ Delete one or many table rows matching the given filter.
 | Param               | Mandatory | Type     | default | Description
 |---------------------|:---------:|:--------:|---------|---------------
 | **table**           | yes       | string   | null    | Table name to use for this deletion
-| **filter**          | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object ```{id:'key'}``` will match all lines with 'id' field set to value 'key'.
+| **filter**          | yes       | object   |         | Object with one or several key-value pair where key must be a table field name, and value the filtering value. For example, the filter object `{id:'key'}` will match all lines with 'id' field set to value 'key'.
 | **callback**        | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
 | callback(**error**) | N/A       | mixed    | null    | will be false or null if no error returned from the mysql SDK. Will be an error object if an error occur.
 
