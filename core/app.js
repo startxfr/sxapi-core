@@ -268,13 +268,13 @@ $app = {
      * @returns {$app}
      */
     launch: function (config, callback) {
-        if(typeof config === "function" && callback === undefined) {
+        if (typeof config === "function" && callback === undefined) {
             callback = config;
         }
-        if(typeof config === "object") {
+        if (typeof config === "object") {
             process.env.SXAPI_CONF = JSON.stringify(config);
         }
-        if(typeof config === "string") {
+        if (typeof config === "string") {
             $app.config.conf_path = config;
         }
         $app.init(function () {

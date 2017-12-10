@@ -9,7 +9,7 @@
  */
 var $log = {
     config: {
-        filters : {
+        filters: {
             level: "0,1",
             type: "info,error"
         }
