@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.57-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.58-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : AWS S3
 
@@ -19,7 +19,7 @@ until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://git
 
 ## Resource configuration
 
-To configure this resource, you must add a config key under the ```resources```
+To configure this resource, you must add a config key under the `resources`
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
@@ -46,7 +46,7 @@ for a complete list of the parameters that you can use in this config object.
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
@@ -447,7 +447,7 @@ The purpose of this endpoint is to delete a complete AWS S3 queue. Id is defined
 
 # SXAPI Resource : aws_s3
 
-This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using ```$app.resources.get('resource-id')``` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
+This resource allow you to interact with a AWS S3 Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using `$app.resources.get('resource-id')` in your own modules. You can then use one of the [availables methods](#available-methods). AWS S3 resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
 
 ## Resource configuration
 
@@ -494,7 +494,7 @@ This resource allow you to interact with a AWS S3 Storage service. Based on [AWS
 
 ### Method listObjects
 
-list objects in a given bucket. This method use ```listObjects_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+list objects in a given bucket. This method use `listObjects_options` configuration as defined in the ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -515,7 +515,7 @@ resource.listObjects('bucketname',{}, function (error, response) {
 
 ### Method getObject
 
-return an object given by it ID. This method use ```getObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+return an object given by it ID. This method use `getObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -537,7 +537,7 @@ resource.getObject('file.pdf','bucketname',{},function (error, response) {
 
 ### Method addObject
 
-Add an object into a bucket. This method use ```addObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+Add an object into a bucket. This method use `addObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 
@@ -561,7 +561,7 @@ resource.addObject('file.txt','content sample','bucketname',{},function (error, 
 
 ### Method updateObject
 
-Update an object into a bucket. This method use ```updateObject_options``` configuration as defined in the ([resource configuration](#resource-configuration))
+Update an object into a bucket. This method use `updateObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
 
 #### **Parameters**
 

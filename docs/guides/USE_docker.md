@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.57-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.58-docker/docs/assets/logo.svg?sanitize=true">
 
 # USE sxapi with docker
 
@@ -17,7 +17,7 @@ installed and running)
 ### 1. Install and start docker
 
 Theses command are for a Red Hat Linux like
-environement (Fedora, CentOS, RHEL, Suse). Please adapt ```yum``` command to the 
+environement (Fedora, CentOS, RHEL, Suse). Please adapt `yum` command to the 
 ```apt-get``` equivalent if you are using a Debian like system (Ubuntu, Debian)
 
 ```bash
@@ -80,8 +80,7 @@ Edit it with the following content
 }
 ```
 
-You can change ```name```, ```description```, ```version``` and 
-```server.endpoints.body``` with personalized content
+You can change `name`, `description`, `version` and `server.endpoints.body` with personalized content
 
 ### 5. Run your application
 
@@ -91,7 +90,7 @@ docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx
 
 ### 6. Explore your api
 
-Connect to ```http://localhost:8080/``` with your favorite navigator. You should
+Connect to `http://localhost:8080/` with your favorite navigator. You should
 see an html message "My Sample API".
 
 
@@ -154,7 +153,7 @@ docker run startx/sxapi
 docker run -d -p 81:8080 startx/sxapi
 ```
 
-3. Connect to ```http://localhost:8080``` or ```http://localhost:81``` 
+3. Connect to `http://localhost:8080` or `http://localhost:81` 
 with your favorite navigator
 
 
@@ -197,7 +196,7 @@ docker pull startx/sxapi:latest
 docker run -d -p 8080:8080 -v $(pwd)/sxapi.json:/conf/sxapi.json:ro startx/sxapi
 ```
 
-4. Connect to ```http://localhost:8080``` with your favorite navigator
+4. Connect to `http://localhost:8080` with your favorite navigator
 
 
 ### Container with your own configuration (docker-compose)
@@ -214,7 +213,7 @@ api:
   - "./sxapi-test.json:/conf/sxapi.json:ro"
 ```
 
-1. Create your ```docker-compose.yml``` file with the previous content
+1. Create your `docker-compose.yml` file with the previous content
 
 2. Create a file named sxapi.json and edit it with the following content
 ```javascript
@@ -245,4 +244,4 @@ api:
 docker-compose up
 ```
 
-4. Connect to ```http://localhost:8080``` with your favorite navigator
+4. Connect to `http://localhost:8080` with your favorite navigator

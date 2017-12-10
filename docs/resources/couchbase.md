@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.57-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.58-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : couchbase
 
@@ -19,7 +19,7 @@ until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://git
 
 ## Resource configuration
 
-To configure this resource, you must add a config key under the ```resources```
+To configure this resource, you must add a config key under the `resources`
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
@@ -36,7 +36,7 @@ for a complete list of the parameters that you can use in this config object.
 | Param                           | Mandatory | Type   | default   | Description
 |---------------------------------|:---------:|:------:|-----------|---------------
 | **_class**                      | yes       | string |           | module name. Must be **couchbase** for this resource
-| **cluster**                     | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you want to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using ```# ifconfig docker0``` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
+| **cluster**                     | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you want to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
 | **bucket**                      | yes       | string |           | the bucket name to use. If you need to connect to several bucket, you'll have to create several resources
 | **insertOptions**               | no        | object |           | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
 | insertOptions.**persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
@@ -54,7 +54,7 @@ for a complete list of the parameters that you can use in this config object.
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {

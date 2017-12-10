@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.57-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.58-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Documentation
 
@@ -36,7 +36,7 @@ Core components are all loaded and available when the application start. You can
 
 Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/README.md)
 - [aws_s3](resources/aws_s3.md) resource : Interact with an Amazon WebService S3 backend
-- [aws_sqs(resources/aws_sqs.md) resource : Interact with an Amazon WebService SQS backend
+- [aws_sqs](resources/aws_sqs.md) resource : Interact with an Amazon WebService SQS backend
 - [couchbase](resources/couchbase.md) resource : Interact with a Couchbase cluster
 - [google](resources/google.md) resource : Interact with Google API backend
 - [http](resources/http.md) resource : Interact with any http webserver

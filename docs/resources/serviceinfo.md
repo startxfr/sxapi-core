@@ -1,4 +1,4 @@
-<img align="right" height="70" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.57-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.58-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : serviceinfo
 
@@ -19,7 +19,7 @@ until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://git
 
 ## Resource configuration
 
-To configure this resource, you must add a config key under the ```resources```
+To configure this resource, you must add a config key under the `resources`
 section of your configuration profile. 
 This key must be a unique string and will be considered as the resource id. The value 
 must be an object who must have the [appropriate configuration parameters](#resource-config-parameters).
@@ -37,7 +37,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 ### Example
 
 This is a sample configuration of this resource. You must add this section under 
-the ```resources``` section of your [configuration profile](../guides/2.Configure.md)
+the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
 ```javascript
 "resources": {
