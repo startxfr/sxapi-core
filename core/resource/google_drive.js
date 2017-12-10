@@ -304,18 +304,16 @@ module.exports = function (id, config, google) {
                         var fileId = req.params.id || req.body.id || config.fileId || "fileId";
                         rs.getService("drive").getFile(fileId, config.config || {}, res, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error getting " + fileId + " file in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($gapid.id, req, "error getting " + fileId + " file in resource " + rs.id + " because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error getting " + fileId + " file in resource " + rs.id + " because " + err.message);
                             }
                             else {
                                 res.end();
-                                $log.tools.endpointDebug($gapid.id, req, "returned file " + fileId + " from resource " + rs.id, 2);
+                                $log.tools.endpointInfo($gapid.id, req, "returned file " + fileId + " from resource " + rs.id);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapid.id, req, config.resource);
                     }
                 };
             },
@@ -333,18 +331,15 @@ module.exports = function (id, config, google) {
                         var q = "fullText contains '" + qr + "'";
                         rs.getService("drive").findFile(q, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($gapid.id, req, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error finding files matching " + q + " in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "returned files matching " + q + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($gapid.id, req, "returned files matching " + q + " from resource " + rs.id, 2);
+                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "returned files matching " + q + " from resource " + rs.id);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapid.id, req, config.resource);
                     }
                 };
             },
@@ -383,20 +378,17 @@ module.exports = function (id, config, google) {
                             var parentId = req.params.parent || req.body.parent || config.parent || "root";
                             rs.getService("drive").addFile(fileName, parentId, mime, new Buffer(busboy), config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($gapid.id, req, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message);
+                                    $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error adding " + fileName + " folder in resource " + rs.id + " because " + err.message);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "folder " + fileName + " created in resource " + rs.id, reponse).send();
-                                    $log.tools.endpointDebug($gapid.id, req, "created folder " + fileName + " in resource " + rs.id, 2);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "folder " + fileName + " created in resource ");
                                 }
                             });
                         });
                         req.pipe(busboy);
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapid.id, req, config.resource);
                     }
                 };
             },
@@ -413,18 +405,15 @@ module.exports = function (id, config, google) {
                         var folderId = req.params.id || req.body.id || config.folderId || "root";
                         rs.getService("drive").getDirectory(folderId, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($gapid.id, req, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error getting " + folderId + " folder in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "returned folder " + folderId + " from resource " + rs.id, reponse).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($gapid.id, req, "returned folder " + folderId + " from resource " + rs.id, 2);
+                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "returned folder " + folderId + " from resource " + rs.id);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapid.id, req, config.resource);
                     }
                 };
             },
@@ -442,18 +431,15 @@ module.exports = function (id, config, google) {
                         var parentId = req.params.parent || req.body.parent || config.parent || "root";
                         rs.getService("drive").addDirectory(folderId, parentId, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $gapid.id, req, "error adding " + folderId + " folder in resource " + rs.id + " because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "folder " + folderId + " created in resource " + rs.id, reponse).send();
-                                $log.tools.endpointDebug($gapid.id, req, "created folder " + folderId + " in resource " + rs.id, 2);
+                                $log.tools.endpointInfoAndAnswer(res, reponse, $gapid.id, req, "folder " + folderId + " created in resource " + rs.id);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($gapid.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapid.id, req, config.resource);
                     }
                 };
             }

@@ -1,4 +1,4 @@
-/* global module, require, process */
+/* global module, require, process, res, $app */
 //'use strict';
 
 /**
@@ -310,6 +310,27 @@ var $log = {
         },
         endpointError: function (rId, req, message, timer, cancelBackend) {
             $log.error(this.endpointMessage(rId, req, message), timer, cancelBackend);
+        },
+        endpointDebugAndAnswer: function (res, reponse, rId, req, message, level, timer, cancelBackend) {
+            this.endpointDebug(rId, req, message, level, timer, cancelBackend);
+            $app.ws.okResponse(res, message, reponse).send();
+        },
+        endpointInfoAndAnswer: function (res, reponse, rId, req, message, timer, cancelBackend) {
+            this.endpointInfo(rId, req, message, timer, cancelBackend);
+            $app.ws.okResponse(res, message, reponse).send();
+        },
+        endpointWarnAndAnswer: function (res, rId, req, message, timer, cancelBackend) {
+            this.endpointWarn(rId, req, message, timer, cancelBackend);
+            $app.ws.nokResponse(res, message).httpCode(500).send();
+        },
+        endpointWarnAndAnswerNoResource: function (res, rId, req, resourceId, timer, cancelBackend) {
+            var message = "resource '" + resourceId + "' doesn't exist";
+            this.endpointWarn(rId, req, message, timer, cancelBackend);
+            $app.ws.nokResponse(res, message).httpCode(500).send();
+        },
+        endpointErrorAndAnswer: function (res, rId, req, message, timer, cancelBackend) {
+            this.endpointError(rId, req, message, timer, cancelBackend);
+            $app.ws.nokResponse(res, message).httpCode(500).send();
         },
         resourcePrefix: function (rId) {
             var res = "";

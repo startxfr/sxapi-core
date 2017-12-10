@@ -42,14 +42,6 @@ describe("mysql resource component", function () {
                     expect(test.tools.generateParams4Template).to.be.an('function');
                 });
             });
-            describe("#responseResourceNotDefined()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('responseResourceNotDefined');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.responseResourceNotDefined).to.be.an('function');
-                });
-            });
             describe("#responseResourceDoesntExist()", function () {
                 it("should exist", function () {
                     expect(test.tools).to.have.any.keys('responseResourceDoesntExist');

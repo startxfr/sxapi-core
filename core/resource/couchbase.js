@@ -211,21 +211,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_query_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "returned " + reponse.length + ' items', reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " return list of " + reponse.length + " items", 2, duration);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "returned " + reponse.length + ' items', duration);
                                 }
                             };
                         };
                         rs.query(config.n1ql, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -239,21 +235,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_get_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "return document " + docId, reponse).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " return document " + docId, 2, duration);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "return document " + docId, duration);
                                 }
                             };
                         };
                         rs.get(docId, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -267,21 +259,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_insert_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " recorded", reponse).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " create document " + docId, 2, duration);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " created", duration);
                                 }
                             };
                         };
                         rs.insert(docId, req.body, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -295,21 +283,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_update_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " update document " + docId, 2, duration);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " updated", duration);
                                 }
                             };
                         };
                         rs.update(docId, req.body, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -323,21 +307,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_delete_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                    $log.info(" delete document " + docId, 2, duration);
+                                    $log.tools.endpointInfoAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " deleted", duration);
                                 }
                             };
                         };
                         rs.delete(docId, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             }

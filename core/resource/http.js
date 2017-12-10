@@ -102,21 +102,19 @@ module.exports = function (id, config) {
                         rs.call(config.url, config, function (timerId) {
                             return function (err, response, body) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($htcli.id, req, "error reading document because " + err.message);
+                                    $log.tools.endpointErrorAndAnswer(res, $htcli.id, req, "error because " + err.message);
                                 }
                                 else {
                                     var result = rs.__reader(body, response);
-                                    $app.ws.okResponse(res, "returned " + result.type + " with " + result.length, result.content).send();
-                                    $log.tools.endpointDebug($htcli.id, req, " returned " + result.type + " with " + result.length, 2, $timer.timeStop(timerId));
+                                    var msg = "returned " + result.type + " with " + result.length;
+                                    $log.tools.endpointInfoAndAnswer(res, result.content, $htcli.id, req, msg, $timer.timeStop(timerId));
                                 }
                             }
                             ;
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($htcli.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $htcli.id, req, config.resource);
                     }
                 };
             }

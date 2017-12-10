@@ -268,7 +268,7 @@ module.exports = function (id, config) {
                                 });
                     }
                     else {
-                        $mqdb.tools.responseResourceNotDefined(req, res, config);
+                        $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
                     }
                 };
             },
@@ -304,7 +304,7 @@ module.exports = function (id, config) {
                                 });
                     }
                     else {
-                        $mqdb.tools.responseResourceNotDefined(req, res, config);
+                        $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
                     }
                 };
             },
@@ -335,7 +335,7 @@ module.exports = function (id, config) {
                                 });
                     }
                     else {
-                        $mqdb.tools.responseResourceNotDefined(req, res, config);
+                        $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
                     }
                 };
             },
@@ -371,7 +371,7 @@ module.exports = function (id, config) {
                                 });
                     }
                     else {
-                        $mqdb.tools.responseResourceNotDefined(req, res, config);
+                        $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
                     }
                 };
             },
@@ -407,7 +407,7 @@ module.exports = function (id, config) {
                                 });
                     }
                     else {
-                        $mqdb.tools.responseResourceNotDefined(req, res, config);
+                        $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
                     }
                 };
             }
@@ -426,13 +426,8 @@ module.exports = function (id, config) {
                 }
                 return params;
             },
-            responseResourceNotDefined: function (req, res) {
-                $app.ws.nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, "resource is not defined for this endpoint");
-            },
-            responseResourceDoesntExist: function (req, res, config) {
-                $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, "resource '" + config.resource + "' doesn't exist");
+            responseResourceDoesntExist: function (req, res, resourceId) {
+                $log.tools.endpointWarnAndAnswerNoResource(res, $mqdb.id, req, resourceId);
             },
             responseOK: function (res, message, response, req, duration, total) {
                 var answser = $app.ws.okResponse(res, message, response);
@@ -440,11 +435,10 @@ module.exports = function (id, config) {
                     answser.addTotal(total);
                 }
                 answser.send();
-                $log.tools.endpointDebug($mqdb.id, req, message, 2, duration);
+                $log.tools.endpointInfo($mqdb.id, req, message, duration);
             },
             responseNOK: function (res, message, req, duration) {
-                $app.ws.nokResponse(res, "responded " + message).httpCode(500).send();
-                $log.tools.endpointWarn($mqdb.id, req, "responded " + message, duration);
+                $log.tools.endpointErrorAndAnswer(res, $mqdb.id, req, message, duration);
             },
             format: $log.format
         }

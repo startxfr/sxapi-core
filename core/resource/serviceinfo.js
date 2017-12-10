@@ -116,22 +116,20 @@ module.exports = function (id, config) {
                  * @param {object} res
                  */
                 return function (req, res) {
+                    var callback = function (err, reponse) {
+                        if (err) {
+                            $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
+                        }
+                        else {
+                            $log.tools.endpointInfoAndAnswer(res, reponse, $svif.id, req, "return service informations");
+                        }
+                    };
                     $log.tools.endpointDebug($svif.id, req, "info()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).read(function (err, reponse) {
-                            if (err) {
-                                $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($svif.id, req, "error reading service info because " + err.message);
-                            }
-                            else {
-                                $app.ws.okResponse(res, "return service informations", reponse).send();
-                                $log.tools.endpointDebug($svif.id, req, "returned service info", 2);
-                            }
-                        });
+                        $app.resources.get(config.resource).read(callback);
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($svif.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
                     }
                 };
             }
