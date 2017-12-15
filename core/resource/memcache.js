@@ -10,83 +10,83 @@
  * @type resource
  */
 module.exports = function (id, config) {
-    var $rddb = {
+    var $mcdb = {
         id: id,
         config: {},
         init: function (config) {
-            var timerId = 'resource_memcache_init_' + $rddb.id;
+            var timerId = 'resource_memcache_init_' + $mcdb.id;
             $timer.start(timerId);
             if (config) {
-                $rddb.config = config;
+                $mcdb.config = config;
             }
-            $log.tools.resourceDebug($rddb.id, "initializing", 3);
-            if (!$rddb.config.host) {
-                $log.tools.resourceWarn($rddb.id, "no 'host' found in resource '" + $rddb.id + "' config. Using default : 127.0.0.1");
-                $rddb.config.host = "127.0.0.1";
+            $log.tools.resourceDebug($mcdb.id, "initializing", 3);
+            if (!$mcdb.config.host) {
+                $log.tools.resourceWarn($mcdb.id, "no 'host' found in resource '" + $mcdb.id + "' config. Using default : 127.0.0.1");
+                $mcdb.config.host = "127.0.0.1";
             }
-            if (!$rddb.config.port) {
-                $log.tools.resourceDebug($rddb.id, "no 'port' found in resource '" + $rddb.id + "' config. Using default : 11211",3);
-                $rddb.config.port = "11211";
+            if (!$mcdb.config.port) {
+                $log.tools.resourceDebug($mcdb.id, "no 'port' found in resource '" + $mcdb.id + "' config. Using default : 11211",3);
+                $mcdb.config.port = "11211";
             }
-            $rddb.rd = require("memcache");
+            $mcdb.rd = require("memcache");
             if (typeof $rdCluster === 'undefined') {
                 $rdCluster = [];
             }
-            $log.tools.resourceDebug($rddb.id, "initialized ", 1, $timer.timeStop(timerId));
-            return $rddb;
+            $log.tools.resourceDebug($mcdb.id, "initialized ", 1, $timer.timeStop(timerId));
+            return $mcdb;
         },
         start: function (callback) {
-            var timerId = 'resource_cb_start_' + $rddb.id;
-            $log.tools.resourceDebug($rddb.id, "starting", 3);
+            var timerId = 'resource_cb_start_' + $mcdb.id;
+            $log.tools.resourceDebug($mcdb.id, "starting", 3);
             var cb = function () {
-                $log.tools.resourceDebug($rddb.id, "started ", 1, $timer.timeStop(timerId));
+                $log.tools.resourceDebug($mcdb.id, "started ", 1, $timer.timeStop(timerId));
                 if (typeof callback === "function") {
                     callback();
                 }
             };
-            $rddb.open(cb);
-            return $rddb;
+            $mcdb.open(cb);
+            return $mcdb;
         },
         stop: function (callback) {
-            $log.tools.resourceDebug($rddb.id, "Stopping", 2);
+            $log.tools.resourceDebug($mcdb.id, "Stopping", 2);
             if (typeof callback === "function") {
-                callback(null, $rddb);
+                callback(null, $mcdb);
             }
-            return $rddb;
+            return $mcdb;
         },
         open: function (callback) {
-            var timerId = 'memcache_open_' + $rddb.id;
+            var timerId = 'memcache_open_' + $mcdb.id;
             $timer.start(timerId);
-            var clusID = $rddb.config.host || $rddb.config.port;
+            var clusID = $mcdb.config.host || $mcdb.config.port;
             if (typeof $rdCluster[clusID] === 'undefined') {
-                $log.tools.resourceDebug($rddb.id, "new connection to memcache '" + clusID + "'", 4);
-                $rdCluster[clusID] = $rddb.rd.Client($rddb.config.port,$rddb.config.host);
+                $log.tools.resourceDebug($mcdb.id, "new connection to memcache '" + clusID + "'", 4);
+                $rdCluster[clusID] = $mcdb.rd.Client($mcdb.config.port,$mcdb.config.host);
                 $rdCluster[clusID].connect();
                 callback(null, $rdCluster[clusID]);
             }
             else {
-                $log.tools.resourceDebug($rddb.id, "connected with existing connection to memcache '" + clusID + "'", 4);
-                callback(null, $rddb);
+                $log.tools.resourceDebug($mcdb.id, "connected with existing connection to memcache '" + clusID + "'", 4);
+                callback(null, $mcdb);
             }
-            return $rddb;
+            return $mcdb;
         },
         get: function (key, callback) {
             $timer.start('memcache_get_' + key);
-            var clusID = $rddb.config.host || $rddb.config.port;
-            $log.tools.resourceInfo($rddb.id, "get key '" + key + "'");
-            return $rdCluster[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
+            var clusID = $mcdb.config.host || $mcdb.config.port;
+            $log.tools.resourceInfo($mcdb.id, "get key '" + key + "'");
+            return $rdCluster[clusID].get(key, (callback) ? callback(key) : $mcdb.__getDefaultCallback(key));
         },
         __getDefaultCallback: function (key) {
             return function (err, results) {
                 var duration = $timer.timeStop('memcache_get_' + key);
                 if (err) {
-                    $log.tools.resourceError($rddb.id, "get could not be executed because " + err.message, duration);
+                    $log.tools.resourceError($mcdb.id, "get could not be executed because " + err.message, duration);
                 }
                 else {
                     if (JSON.isDeserializable(results)) {
                         results = JSON.parse(results);
                     }
-                    $log.tools.resourceDebug($rddb.id, "get returned " + results.length + " results", 3, duration);
+                    $log.tools.resourceDebug($mcdb.id, "get returned " + results.length + " results", 3, duration);
                 }
             };
         },
@@ -98,21 +98,21 @@ module.exports = function (id, config) {
          */
         insert: function (key, doc, callback) {
             $timer.start('memcache_insert_' + key);
-            $log.tools.resourceInfo($rddb.id, "adding new key '" + key + "'");
-            var clusID = $rddb.config.host || $rddb.config.port;
+            $log.tools.resourceInfo($mcdb.id, "adding new key '" + key + "'");
+            var clusID = $mcdb.config.host || $mcdb.config.port;
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
+            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__insertDefaultCallback(key));
         },
         __insertDefaultCallback: function (key) {
             return function (coucherr, doc) {
                 var duration = $timer.timeStop('memcache_insert_' + key);
                 if (coucherr) {
-                    $log.tools.resourceWarn($rddb.id, "resource '" + $rddb.id + "' : error adding new key '" + key + "' because " + coucherr.message, duration);
+                    $log.tools.resourceWarn($mcdb.id, "resource '" + $mcdb.id + "' : error adding new key '" + key + "' because " + coucherr.message, duration);
                 }
                 else {
-                    $log.tools.resourceDebug($rddb.id, "resource '" + $rddb.id + "' : new key '" + key + "' added ", 3, duration);
+                    $log.tools.resourceDebug($mcdb.id, "resource '" + $mcdb.id + "' : new key '" + key + "' added ", 3, duration);
                 }
             };
         },
@@ -124,21 +124,21 @@ module.exports = function (id, config) {
          */
         update: function (key, doc, callback) {
             $timer.start('memcache_update_' + key);
-            $log.tools.resourceInfo($rddb.id, "updating document '" + key + "'");
-            var clusID = $rddb.config.host || $rddb.config.port;
+            $log.tools.resourceInfo($mcdb.id, "updating document '" + key + "'");
+            var clusID = $mcdb.config.host || $mcdb.config.port;
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
+            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__updateDefaultCallback(key));
         },
         __updateDefaultCallback: function (key) {
             return function (coucherr, doc) {
                 var duration = $timer.timeStop('memcache_update_' + key);
                 if (coucherr) {
-                    $log.tools.resourceWarn($rddb.id, "resource '" + $rddb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration);
+                    $log.tools.resourceWarn($mcdb.id, "resource '" + $mcdb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration);
                 }
                 else {
-                    $log.tools.resourceDebug($rddb.id, "resource '" + $rddb.id + "' : document '" + key + "' updated", 3, duration);
+                    $log.tools.resourceDebug($mcdb.id, "resource '" + $mcdb.id + "' : document '" + key + "' updated", 3, duration);
                 }
             };
         },
@@ -149,18 +149,18 @@ module.exports = function (id, config) {
          */
         delete: function (key, callback) {
             $timer.start('memcache_delete_' + key);
-            $log.tools.resourceInfo($rddb.id, "deleting document '" + key + "'");
-            var clusID = $rddb.config.host || $rddb.config.port;
-            $rdCluster[clusID].delete(key, (callback) ? callback(key) : $rddb.__deleteDefaultCallback(key));
+            $log.tools.resourceInfo($mcdb.id, "deleting document '" + key + "'");
+            var clusID = $mcdb.config.host || $mcdb.config.port;
+            $rdCluster[clusID].delete(key, (callback) ? callback(key) : $mcdb.__deleteDefaultCallback(key));
         },
         __deleteDefaultCallback: function (key) {
             return function (coucherr) {
                 var duration = $timer.timeStop('memcache_delete_' + key);
                 if (coucherr) {
-                    $log.tools.resourceWarn($rddb.id, "resource '" + $rddb.id + "' : error deleting key '" + key + "' because " + coucherr.message, duration);
+                    $log.tools.resourceWarn($mcdb.id, "resource '" + $mcdb.id + "' : error deleting key '" + key + "' because " + coucherr.message, duration);
                 }
                 else {
-                    $log.tools.resourceDebug($rddb.id, "resource '" + $rddb.id + "' : key '" + key + "' deleted", 3, duration);
+                    $log.tools.resourceDebug($mcdb.id, "resource '" + $mcdb.id + "' : key '" + key + "' deleted", 3, duration);
                 }
             };
         },
@@ -172,25 +172,25 @@ module.exports = function (id, config) {
                         return function (err, reponse) {
                             var duration = $timer.timeStop('memcache_get_' + key);
                             if (err) {
-                                $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
+                                $log.tools.endpointErrorAndAnswer(res, $mcdb.id, req, "error because " + err.message, duration);
                             }
                             else if (reponse === null) {
-                                $log.tools.endpointWarnAndAnswer(res, $rddb.id, req, "could not find key " + docId, duration);
+                                $log.tools.endpointWarnAndAnswer(res, $mcdb.id, req, "could not find key " + docId, duration);
                             }
                             else {
                                 if (JSON.isDeserializable(reponse)) {
                                     reponse = JSON.parse(reponse);
                                 }
-                                $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "return document " + docId, 2, duration);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $mcdb.id, req, "return document " + docId, 2, duration);
                             }
                         };
                     };
-                    $log.tools.endpointDebug($rddb.id, req, "get()", 1);
+                    $log.tools.endpointDebug($mcdb.id, req, "get()", 1);
                     if ($app.resources.exist(config.resource)) {
                         $app.resources.get(config.resource).get(docId, callback);
                     }
                     else {
-                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $mcdb.id, req, config.resource);
                     }
                 };
             },
@@ -198,22 +198,22 @@ module.exports = function (id, config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
                     var docBody = req.body;
-                    $log.tools.endpointDebug($rddb.id, req, "create()", 1);
+                    $log.tools.endpointDebug($mcdb.id, req, "create()", 1);
                     if ($app.resources.exist(config.resource)) {
                         $app.resources.get(config.resource).insert(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('memcache_insert_' + key);
                                 if (err) {
-                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $mcdb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " recorded", 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $mcdb.id, req, "document " + docId + " recorded", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $mcdb.id, req, config.resource);
                     }
                 };
             },
@@ -221,49 +221,49 @@ module.exports = function (id, config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
                     var docBody = req.body;
-                    $log.tools.endpointDebug($rddb.id, req, "update()", 1);
+                    $log.tools.endpointDebug($mcdb.id, req, "update()", 1);
                     if ($app.resources.exist(config.resource)) {
                         $app.resources.get(config.resource).update(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('memcache_update_' + key);
                                 if (err) {
-                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $mcdb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointDebugAndAnswer(res, reponse.value, $rddb.id, req, "document " + docId + " updated", 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse.value, $mcdb.id, req, "document " + docId + " updated", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $mcdb.id, req, config.resource);
                     }
                 };
             },
             delete: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
-                    $log.tools.endpointDebug($rddb.id, req, "delete()", 1);
+                    $log.tools.endpointDebug($mcdb.id, req, "delete()", 1);
                     if ($app.resources.exist(config.resource)) {
                         $app.resources.get(config.resource).delete(docId, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('memcache_delete_' + key);
                                 if (err) {
-                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $mcdb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " deleted", 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $mcdb.id, req, "document " + docId + " deleted", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $mcdb.id, req, config.resource);
                     }
                 };
             }
         }
     };
-    $rddb.init(config);
-    return $rddb;
+    $mcdb.init(config);
+    return $mcdb;
 };

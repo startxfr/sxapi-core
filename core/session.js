@@ -53,6 +53,9 @@ var $sess = {
                     case "mysql" :
                         this.backends.mysql.init();
                         break;
+                    case "postgres" :
+                        this.backends.postgres.init();
+                        break;
                     case "couchbase" :
                         this.backends.couchbase.init();
                         break;
@@ -105,6 +108,9 @@ var $sess = {
                     case "mysql" :
                         this.backends.mysql.start(callback);
                         break;
+                    case "postgres" :
+                        this.backends.postgres.start(callback);
+                        break;
                     case "couchbase" :
                         this.backends.couchbase.start(callback);
                         break;
@@ -155,6 +161,9 @@ var $sess = {
                 switch (this.config.backend.type) {
                     case "mysql" :
                         this.backends.mysql.stop(callback);
+                        break;
+                    case "postgres" :
+                        this.backends.postgres.stop(callback);
                         break;
                     case "couchbase" :
                         this.backends.couchbase.stop(callback);
@@ -215,6 +224,9 @@ var $sess = {
                         case "mysql" :
                             sess.backends.mysql.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
+                        case "postgres" :
+                            sess.backends.postgres.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
                         case "couchbase" :
                             sess.backends.couchbase.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
@@ -243,6 +255,9 @@ var $sess = {
                         switch (sess.config.backend.type) {
                             case "mysql" :
                                 sess.backends.mysql.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "postgres" :
+                                sess.backends.postgres.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             case "couchbase" :
                                 sess.backends.couchbase.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
@@ -565,6 +580,117 @@ var $sess = {
                         }
                         else {
                             $log.debug("session '" + sessId + "' is created in 'mysql' backend", 2, duration);
+                            callbackOK(sessId, session);
+                        }
+                    };
+                });
+                return this;
+            }
+        },
+        postgres: {
+            init: function () {
+                $log.debug("Init 'postgres' session backend", 3);
+                if (!$sess.config.backend.resource) {
+                    throw new Error("no 'resource' key found in config 'session.backend.postgres'");
+                }
+                else if (!require('./resource').exist($sess.config.backend.resource)) {
+                    throw new Error("resource '" + $sess.config.backend.resource + "' defined in config 'session.backend.postgres' doesn't exist");
+                }
+                if (!$sess.config.backend.table) {
+                    throw new Error("no 'table' key found in config 'session.backend.postgres'");
+                }
+                if (!$sess.config.backend.sid_field) {
+                    throw new Error("no 'sid_field' key found in config 'session.backend.postgres'");
+                }
+                return this;
+            },
+            start: function (callback) {
+                $log.debug("Start 'postgres' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            stop: function (callback) {
+                $log.debug("Stop 'postgres' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            getSession: function (sessID, callbackOK, callbackNOK) {
+                if (sessID === undefined) throw "session.backends.postgres.getSession require a sessID";
+                if (typeof callbackOK !== "function") throw "session.backends.postgres.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.postgres.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var query = "SELECT * FROM `" + $sess.config.backend.table + "` WHERE `" + $sess.config.backend.sid_field + "` = '" + sessID + "'";
+                rs.query(query, function (timerId) {
+                    return function (error, results) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
+                            callbackNOK("error reading session using 'postgres' backend", 210);
+                        }
+                        else {
+                            if (results.length === 1) {
+                                var session = results[0];
+                                if ($sess.config.backend.fields && $sess.config.backend.fields.stop) {
+                                    var dateStop = session[$sess.config.backend.fields.stop];
+                                    var moment = require('moment');
+                                    if (moment(dateStop, 'YYYY-MM-DD HH:mm:ss').valueOf() - Date.now() > 0) {
+                                        $log.debug("session '" + sessID + "' exist and is active in 'postgres' backend", 2, duration);
+                                        callbackOK(session);
+                                    }
+                                    else {
+                                        $log.warn("session '" + sessID + "' exist but is obsolete", duration);
+                                        callbackNOK("session '" + sessID + "' exist but is obsolete", 230);
+                                    }
+                                }
+                                else {
+                                    $log.debug("session '" + sessID + "' exist in 'postgres' backend", 2, duration);
+                                    callbackOK(session);
+                                }
+                            }
+                            else {
+                                $log.warn("session '" + sessID + "' doesn't exist in 'postgres' backend", duration);
+                                callbackNOK("could not find an existing session for " + sessID, 220);
+                            }
+                        }
+                    };
+                });
+                return this;
+            },
+            createSession: function (req, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.backends.postgres.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.postgres.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var sessId = require('uuid').v4();
+                var session = {};
+                session[$sess.config.backend.sid_field] = sessId;
+                if ($sess.config.backend.fields) {
+                    if ($sess.config.backend.fields.ip) {
+                        session[$sess.config.backend.fields.ip] = req.headers['x-forwarded-for'] ||
+                                req.connection.remoteAddress ||
+                                req.socket.remoteAddress ||
+                                req.connection.socket.remoteAddress;
+                    }
+                    var moment = require('moment');
+                    if ($sess.config.backend.fields.start) {
+                        session[$sess.config.backend.fields.start] = moment().format('YYYY-MM-DD HH:mm:ss');
+                    }
+                    if ($sess.config.backend.fields.stop) {
+                        session[$sess.config.backend.fields.stop] = moment(Date.now() + ($sess.config.duration * 1000)).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }
+                rs.insert($sess.config.backend.table, session, function (timerId) {
+                    return function (error) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            $log.warn("could not create session '" + sessId + "' is not valid because " + error.message, duration);
+                            callbackNOK("error using 'postgres' session backend", 310);
+                        }
+                        else {
+                            $log.debug("session '" + sessId + "' is created in 'postgres' backend", 2, duration);
                             callbackOK(sessId, session);
                         }
                     };

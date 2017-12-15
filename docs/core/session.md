@@ -7,7 +7,7 @@ information between client and API server using a session mechanism.<br>
 This component comes with various transport type ([cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 
 session identifier from and to the consumer. <br> 
-You can use various storage backend ([mysql](#backend-using-mysql), 
+You can use various storage backend ([mysql](#backend-using-mysql), ([postgres](#backend-using-postgres), 
 [couchbase](#backend-using-couchbase), [memory](#backend-using-memory), 
 [memcache](#backend-using-memcache) or [redis](#backend-using-redis)) 
 to persist session context across request and micro-services instances.
@@ -143,9 +143,8 @@ the session ID.
 
 ## Backend type
 
-In you `backend` section, you must have a property named `type` and coresponding 
-to a supported backend type. Available backend types are  [mysql](#backend-using-mysql), 
-[couchbase](#backend-using-couchbase), [memory](#backend-using-memory) or [redis](#backend-using-redis)
+In you `backend` section, you must have a property named `type` and coresponding to a supported backend type. 
+Available backend types are [mysql](#backend-using-mysql), [postgres](#backend-using-postgres), [couchbase](#backend-using-couchbase), [memory](#backend-using-memory), [memcache](#backend-using-memcache) or [redis](#backend-using-redis)
 
 ### backend using `mysql`
 
@@ -171,6 +170,41 @@ This backend type use [mysql resource](../resource/mysql.md) to persist session 
     "backend": {
         "type"     : "mysql",
         "resource" : "mysql-sample",
+        "table"    : "sessions",
+        "sid_field": "token_sess",
+        "fields"   : {
+            "ip"   : "ip_sess",
+            "start": "start_sess",
+            "stop" : "stop_sess"
+        }
+    }
+}
+```
+
+### backend using `postgres`
+
+This backend type use [postgres resource](../resource/postgres.md) to persist session context across executions.
+
+#### postgres config parameters
+
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | postgres   | Must be `postgres` for this backend type
+| **resource**     | yes       | string  |            | ID of the postgres resource [see resource for configuration](../resources/README.md).
+| **table**        | yes       | string  |            | table name used for session storage
+| **sid_field**    | yes       | string  |            | name of the field containing the session ID
+| **fields**       | no        | object  |            | an object with special field list
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
+
+#### postgres config sample
+
+```javascript
+"session": {
+    "backend": {
+        "type"     : "postgres",
+        "resource" : "postgres-sample",
         "table"    : "sessions",
         "sid_field": "token_sess",
         "fields"   : {
