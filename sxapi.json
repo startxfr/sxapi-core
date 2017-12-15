@@ -1,7 +1,7 @@
 {
     "name": "sxapi-default",
     "description": "sxapi default config file",
-    "version": "0.0.62",
+    "version": "0.0.63",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -19,6 +19,9 @@
         }
     },
     "resources": {
+        "serviceinfo-sample": {
+            "_class": "serviceinfo"
+        }
     },
     "log": {
         "filters": {
@@ -35,16 +38,23 @@
             {
                 "path": "/",
                 "desc": "Display welcome message (HTML)",
-                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.62 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
+                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.63 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
+            },
+            {
+                "path": "/health",
+                "resource": "serviceinfo-sample",
+                "endpoint": "health"
+            },
+            {
+                "path": "/info",
+                "resource": "serviceinfo-sample",
+                "endpoint": "info"
             },
             {
                 "path": "/ping",
                 "desc": "Ping the application. Return a sample message in json",
                 "code": "200",
-                "header": {
-                    "Content-Type": "application/json"
-                },
-                "body": "{\"health\":\"good\"}"
+                "body": "pong"
             }
         ]
     }
