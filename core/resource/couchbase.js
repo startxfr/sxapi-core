@@ -67,12 +67,11 @@ module.exports = function (id, config) {
             }
             if (typeof $cbBuckets[$cbdb.config.bucket] === 'undefined') {
                 $log.tools.resourceDebug($cbdb.id, "new connection to bucket '" + $cbdb.config.bucket + "'", 4);
-                if (typeof $cbdb.config.password === 'undefined') {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.config.password, $cbdb.__openHandler(callback, timerId));
+                if (typeof $cbdb.config.user !== 'undefined' && typeof $cbdb.config.password !== 'undefined') {
+                    $cbCluster[$cbdb.config.cluster].authenticate($cbdb.config.user, $cbdb.config.password);
                 }
-                else {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
-                }
+                $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
+
             }
             else {
                 $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : use existing connection to bucket '" + $cbdb.config.bucket + "'", 4);

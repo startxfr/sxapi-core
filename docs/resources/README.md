@@ -30,8 +30,9 @@ if(resourceManager.exist('resource-id')) {
 | **google_drive** | googleapis v23.0.0 | [read](google_drive.md)| Resource to interact with Google Drive API backend.
 | **http**         | request v2.79.0    | [read](http.md)        | Resource to interact with an http server.
 | **mysql**        | mysql v2.11.1      | [read](mysql.md)       | Resource to interact with amysql server.
+| **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
-| **serviceinfo**  | sxapi v0.0.63      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **serviceinfo**  | sxapi v0.0.64      | [read](serviceinfo.md) | Resource to interact with a application services.
 
 ## Using a resource
 

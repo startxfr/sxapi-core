@@ -8,7 +8,8 @@ This component comes with various transport type ([cookie](#transport-using-cook
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 
 session identifier from and to the consumer. <br> 
 You can use various storage backend ([mysql](#backend-using-mysql), 
-[couchbase](#backend-using-couchbase), [memory](#backend-using-memory) or [redis](#backend-using-redis)) 
+[couchbase](#backend-using-couchbase), [memory](#backend-using-memory), 
+[memcache](#backend-using-memcache) or [redis](#backend-using-redis)) 
 to persist session context across request and micro-services instances.
 
 ## Configuration
@@ -242,6 +243,37 @@ This backend type use application memory space to persist session context across
             "ip"   : "ipAdress",
             "start": "startDate",
             "stop" : "stopDate"
+        }
+    }
+}
+```
+
+### backend using `memcache`
+
+This backend type use [memcache resource](../resource/memcache.md) to persist session context across executions.
+
+#### memcache config parameters
+
+| Param            | Mandatory | Type    | default    | Description
+|------------------|:---------:|:-------:|------------|---------------
+| **type**         | yes       | string  | memcache   | Must be `memcache` for this backend type
+| **resource**     | yes       | string  |            | ID of the memcache resource [see resource for configuration](../resources/README.md).
+| **sid_field**    | yes       | string  |            | name of the field containing the session ID
+| **fields**       | no        | object  |            | an object with special field list
+| **fields.ip**    | no        | string  |            | name of the field containing the session IP
+| **fields.start** | no        | string  |            | name of the field containing the session start time
+| **fields.stop**  | no        | string  |            | name of the field containing the session end time (defined with duration and used for expiration control)
+
+#### memcache config sample
+
+```javascript
+"session": {
+    "backend": {
+        "type"      : "memcache",
+        "resource"  : "memcache-sample",
+        "sid_field" : "token",
+        "fields"    : {
+            "stop"  : "stopDate"
         }
     }
 }

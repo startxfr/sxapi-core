@@ -214,6 +214,29 @@ describe("Session core component", function () {
                 expect(test.backends.memory.createSession).to.be.an('function');
             });
         });
+        describe("#memcache ", function () {
+            it("should exist", function () {
+                expect(test.backends).to.have.any.keys('memcache');
+            });
+            it("should be an object", function () {
+                expect(test.backends.memcache).to.be.an('object');
+            });
+            it("should have init() method", function () {
+                expect(test.backends.memcache.init).to.be.an('function');
+            });
+            it("should have start() method", function () {
+                expect(test.backends.memcache.start).to.be.an('function');
+            });
+            it("should have stop() method", function () {
+                expect(test.backends.memcache.stop).to.be.an('function');
+            });
+            it("should have getSession() method", function () {
+                expect(test.backends.memcache.getSession).to.be.an('function');
+            });
+            it("should have createSession() method", function () {
+                expect(test.backends.memcache.createSession).to.be.an('function');
+            });
+        });
         describe("#redis ", function () {
             it("should exist", function () {
                 expect(test.backends).to.have.any.keys('redis');

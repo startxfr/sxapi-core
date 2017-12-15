@@ -42,6 +42,7 @@ Resource components are loaded if defined in the configuration profile. You can 
 - [http](resources/http.md) resource : Interact with any http webserver
 - [mysql](resources/mysql.md) resource : Interact with a mysql or mariadb server
 - [redis](resources/redis.md) resource : Interact with a redis backend
+- [memcache](resources/memcache.md) resource : Interact with a memcache server
 - [serviceinfo](resources/serviceinfo.md) resource : Access application details
 
 ## Contributing

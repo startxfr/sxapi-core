@@ -10,7 +10,9 @@
             "type": "token"
         },
         "backend": {
-            "type": "memory"
+            "type": "memcache",
+            "resource": "memcache-sample",
+            "sid_field": "sid"
         }
     },
     "resources": {
@@ -24,6 +26,10 @@
         "redis-sample": {
             "_class": "redis",
             "url": "redis://db-redis"
+        },
+        "memcache-sample": {
+            "_class": "memcache",
+            "url": "memcache://db-memcache"
         }
     },
     "log": {
@@ -41,6 +47,39 @@
                     "Content-Type": "text/html"
                 },
                 "body": "<html><head></head><body><h1>STARTX-API v0.0.1</h1></body></html>"
+            },
+            
+            {
+                "path": "/memcache",
+                "method": "ROUTER",
+                "resource": "memcache-sample",
+                "endpoints": [
+                    {
+                        "path": "/memcache",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
             },
             {
                 "path": "/health",

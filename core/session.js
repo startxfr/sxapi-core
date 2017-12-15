@@ -62,6 +62,9 @@ var $sess = {
                     case "redis" :
                         this.backends.redis.init();
                         break;
+                    case "memcache" :
+                        this.backends.memcache.init();
+                        break;
                     default:
                         throw new Error("session backend of type '" + this.config.backend.type + "' doesn't exist");
                         break;
@@ -111,6 +114,9 @@ var $sess = {
                     case "redis" :
                         this.backends.redis.start(callback);
                         break;
+                    case "memcache" :
+                        this.backends.memcache.start(callback);
+                        break;
                     default:
                         if (typeof callback === "function") {
                             callback();
@@ -158,6 +164,9 @@ var $sess = {
                         break;
                     case "redis" :
                         this.backends.redis.stop(callback);
+                        break;
+                    case "memcache" :
+                        this.backends.memcache.stop(callback);
                         break;
                     default:
                         if (typeof callback === "function") {
@@ -215,6 +224,9 @@ var $sess = {
                         case "redis" :
                             sess.backends.redis.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
                             break;
+                        case "memcache" :
+                            sess.backends.memcache.getSession(sid, cbGetSessionOK, cbGetSessionNOK);
+                            break;
                         default :
                             fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 20);
                             break;
@@ -240,6 +252,9 @@ var $sess = {
                                 break;
                             case "redis" :
                                 sess.backends.redis.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
+                                break;
+                            case "memcache" :
+                                sess.backends.memcache.createSession(req, cbCreateSessionOK, cbCreateSessionNOK);
                                 break;
                             default :
                                 fnNOK("backend type '" + sess.config.backend.type + "' is not implemented in required() method", 30);
@@ -860,6 +875,117 @@ var $sess = {
                         }
                         else {
                             $log.debug("session '" + sessId + "' is created in 'redis' backend", 2, duration);
+                            callbackOK(sessId, session);
+                        }
+                    };
+                });
+                return this;
+            }
+        },
+        memcache: {
+            init: function () {
+                $log.debug("Init 'memcache' session backend", 3);
+                if (!$sess.config.backend.resource) {
+                    throw new Error("no 'resource' key found in config 'session.backend.memcache'");
+                }
+                else if (!require('./resource').exist($sess.config.backend.resource)) {
+                    throw new Error("resource '" + $sess.config.backend.resource + "' defined in config 'session.backend.memcache' doesn't exist");
+                }
+                if (!$sess.config.backend.sid_field) {
+                    throw new Error("no 'sid_field' key found in config 'session.backend.memcache'");
+                }
+                return this;
+            },
+            start: function (callback) {
+                $log.debug("Start 'memcache' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            stop: function (callback) {
+                $log.debug("Stop 'memcache' session backend", 3);
+                if (typeof callback === "function") {
+                    callback();
+                }
+                return this;
+            },
+            getSession: function (sessID, callbackOK, callbackNOK) {
+                if (sessID === undefined) throw "session.backends.memcache.getSession require a sessID";
+                if (typeof callbackOK !== "function") throw "session.backends.memcache.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.memcache.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var key = $sess.config.backend.sid_field + "::" + sessID;
+                rs.get(key, function (timerId) {
+                    return function (error, session) {
+                        var duration = $timer.timeStop(timerId);
+                        var moment = require('moment');
+                        if (JSON.isDeserializable(session)) {
+                            session = JSON.parse(session);
+                        }
+                        if (error) {
+                            $log.warn("session '" + sessID + "' is not found because " + error.message, duration);
+                            callbackNOK("session '" + sessID + "' could not be found", 220);
+                        }
+                        else {
+                            if (session !== null) {
+                                if ($sess.config.backend.fields && $sess.config.backend.fields.stop && session[$sess.config.backend.fields.stop]) {
+                                    var dateStop = session[$sess.config.backend.fields.stop];
+                                    if (moment(dateStop, 'YYYY-MM-DD HH:mm:ss').valueOf() - Date.now() > 0) {
+                                        $log.debug("session '" + sessID + "' exist and is active in 'memcache' backend", 2, duration);
+                                        callbackOK(session);
+                                    }
+                                    else {
+                                        $log.warn("session '" + sessID + "' exist but is obsolete", duration);
+                                        callbackNOK("session '" + sessID + "' exist but is obsolete", 230);
+                                    }
+                                }
+                                else {
+                                    $log.debug("session '" + sessID + "' exist in 'memcache' backend", 2, duration);
+                                    callbackOK(session);
+                                }
+                            }
+                            else {
+                                $log.warn("session '" + sessID + "' doesn't exist in 'memcache' backend", duration);
+                                callbackNOK("could not find an existing session for " + sessID, 220);
+                            }
+                        }
+                    };
+                });
+                return this;
+            },
+            createSession: function (req, callbackOK, callbackNOK) {
+                if (typeof callbackOK !== "function") throw "session.backends.memcache.getSession require a callbackOK";
+                if (typeof callbackNOK !== "function") throw "session.backends.memcache.getSession require a callbackNOK";
+                var rs = require('./resource').get($sess.config.backend.resource);
+                var sessId = require('uuid').v4();
+                var session = {};
+                session[$sess.config.backend.sid_field] = sessId;
+                if ($sess.config.backend.fields) {
+                    if ($sess.config.backend.fields.ip) {
+                        session[$sess.config.backend.fields.ip] = req.headers['x-forwarded-for'] ||
+                                req.connection.remoteAddress ||
+                                req.socket.remoteAddress ||
+                                req.connection.socket.remoteAddress;
+                    }
+                    var moment = require('moment');
+                    if ($sess.config.backend.fields.start) {
+                        session[$sess.config.backend.fields.start] = moment().format('YYYY-MM-DD HH:mm:ss');
+                    }
+                    if ($sess.config.backend.fields.stop) {
+                        session[$sess.config.backend.fields.stop] = moment(Date.now() + ($sess.config.duration * 1000)).format('YYYY-MM-DD HH:mm:ss');
+                    }
+                }
+                var key = $sess.config.backend.sid_field + "::" + sessId;
+                rs.insert(key, session, function (timerId) {
+                    return function (error) {
+                        var duration = $timer.timeStop(timerId);
+                        if (error) {
+                            $log.warn("could not create session '" + sessId + "' is not valid because " + error.message, duration);
+                            callbackNOK("error using 'memcache' session backend", 310);
+                        }
+                        else {
+                            $log.debug("session '" + sessId + "' is created in 'memcache' backend", 2, duration);
                             callbackOK(sessId, session);
                         }
                     };
