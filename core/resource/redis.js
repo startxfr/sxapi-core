@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $rdCluster, $rdCluster, $app */
+/* global module, require, process, $log, $timer, $rddb.pool, $rddb.pool, $app */
 //'use strict';
 
 /**
@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $rddb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_redis_init_' + $rddb.id;
@@ -24,9 +25,6 @@ module.exports = function (id, config) {
                 throw new Error("no 'host' or 'url' key found in resource '" + $rddb.id + "' config");
             }
             $rddb.rd = require("redis");
-            if (typeof $rdCluster === 'undefined') {
-                $rdCluster = [];
-            }
             $log.tools.resourceDebug($rddb.id, "initialized ", 1, $timer.timeStop(timerId));
             return $rddb;
         },
@@ -53,10 +51,10 @@ module.exports = function (id, config) {
             var timerId = 'redis_open_' + $rddb.id;
             $timer.start(timerId);
             var clusID = $rddb.config.host || $rddb.config.url;
-            if (typeof $rdCluster[clusID] === 'undefined') {
-                $log.tools.resourceDebug($rddb.id, "new connection to redis '" + clusID + "'", 4);
-                $rdCluster[clusID] = $rddb.rd.createClient($rddb.config);
-                callback(null, $rdCluster[clusID]);
+            if (typeof $rddb.pool[clusID] === 'undefined') {
+                $log.tools.resourceDebug($rddb.id, "openning redis connection to '" + clusID + "'", 4);
+                $rddb.pool[clusID] = $rddb.rd.createClient($rddb.config);
+                callback(null, $rddb.pool[clusID]);
             }
             else {
                 $log.tools.resourceDebug($rddb.id, "connected with existing connection to redis '" + clusID + "'", 4);
@@ -68,7 +66,7 @@ module.exports = function (id, config) {
             $timer.start('redis_get_' + key);
             var clusID = $rddb.config.host || $rddb.config.url;
             $log.tools.resourceInfo($rddb.id, "get key '" + key + "'");
-            return $rdCluster[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
+            return $rddb.pool[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
         },
         __getDefaultCallback: function (key) {
             return function (err, results) {
@@ -77,7 +75,7 @@ module.exports = function (id, config) {
                     $log.tools.resourceError($rddb.id, "get could not be executed because " + err.message, duration);
                 }
                 else {
-                    if (JSON.isParsable(results)) {
+                    if (JSON.isDeserializable(results)) {
                         results = JSON.parse(results);
                     }
                     $log.tools.resourceDebug($rddb.id, "get returned " + results.length + " results", 3, duration);
@@ -94,10 +92,10 @@ module.exports = function (id, config) {
             $timer.start('redis_insert_' + key);
             $log.tools.resourceInfo($rddb.id, "adding new key '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
-            if (typeof doc === 'object') {
+            if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
+            $rddb.pool[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
         },
         __insertDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -120,7 +118,10 @@ module.exports = function (id, config) {
             $timer.start('redis_update_' + key);
             $log.tools.resourceInfo($rddb.id, "updating document '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
+            if (JSON.isSerializable(doc)) {
+                doc = JSON.stringify(doc);
+            }
+            $rddb.pool[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
         },
         __updateDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -142,7 +143,7 @@ module.exports = function (id, config) {
             $timer.start('redis_delete_' + key);
             $log.tools.resourceInfo($rddb.id, "deleting document '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
-            $rdCluster[clusID].del(key, (callback) ? callback(key) : $rddb.__deleteDefaultCallback(key));
+            $rddb.pool[clusID].del(key, (callback) ? callback(key) : $rddb.__deleteDefaultCallback(key));
         },
         __deleteDefaultCallback: function (key) {
             return function (coucherr) {
@@ -159,81 +160,75 @@ module.exports = function (id, config) {
             get: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var callback = function (key) {
+                        return function (err, reponse) {
+                            var duration = $timer.timeStop('redis_get_' + key);
+                            if (err) {
+                                $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
+                            }
+                            else if (reponse === null) {
+                                $log.tools.endpointWarnAndAnswer(res, $rddb.id, req, "could not find key " + docId, duration);
+                            }
+                            else {
+                                if (JSON.isDeserializable(reponse)) {
+                                    reponse = JSON.parse(reponse);
+                                }
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "return document " + docId, 2, duration);
+                            }
+                        };
+                    };
                     $log.tools.endpointDebug($rddb.id, req, "get()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).get(docId, function (key) {
-                            return function (err, reponse) {
-                                var duration = $timer.timeStop('redis_get_' + key);
-                                if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($rddb.id, req, "error because " + err.message, duration);
-                                }
-                                else {
-                                    if (JSON.isParsable(reponse)) {
-                                        reponse = JSON.parse(reponse);
-                                    }
-                                    $app.ws.okResponse(res, "return document " + docId, reponse).send();
-                                    $log.tools.endpointDebug($rddb.id, req, "return document " + docId, 2, duration);
-                                }
-                            };
-                        });
+                        $app.resources.get(config.resource).get(docId, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($rddb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
                     }
                 };
             },
             create: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
+                    var docBody = req.body;
                     $log.tools.endpointDebug($rddb.id, req, "create()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).insert(docId, req.body, function (key) {
+                        $app.resources.get(config.resource).insert(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('redis_insert_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " recorded", reponse).send();
-                                    $log.tools.endpointDebug($rddb.id, req, "create document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " recorded", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($rddb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
                     }
                 };
             },
             update: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var docBody = req.body;
                     $log.tools.endpointDebug($rddb.id, req, "update()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).update(docId, req.body, function (key) {
+                        $app.resources.get(config.resource).update(docId, docBody, function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('redis_update_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                    $log.tools.endpointDebug($rddb.id, req, "update document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse.value, $rddb.id, req, "document " + docId + " updated", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($rddb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
                     }
                 };
             },
@@ -246,20 +241,16 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('redis_delete_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($rddb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $rddb.id, req, "error because " + err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                    $log.info("delete document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $rddb.id, req, "document " + docId + " deleted", 2, duration);
                                 }
                             };
                         });
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($rddb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $rddb.id, req, config.resource);
                     }
                 };
             }

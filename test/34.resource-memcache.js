@@ -4,15 +4,12 @@ var expect = require("chai").expect;
 
 var test = null;
 
-/* Test suite for mysql resource */
-describe("mysql resource component", function () {
+/* Test suite for memcache resource */
+describe("memcache resource component", function () {
     describe("app object", function () {
-        test = require("../core/resource/mysql");
-        test = test("test-mysql", {
-            server: {
-                "host": "172.17.42.1",
-                "database": "test"
-            }
+        test = require("../core/resource/memcache");
+        test = test("test-memcache", {
+            url: "memcache://localhost:6379"
         });
         it("should be an object", function () {
             expect(test).to.be.an('object');
@@ -28,52 +25,6 @@ describe("mysql resource component", function () {
         it("should have endpoints property", function () {
             expect(test).to.have.any.keys('endpoints');
             expect(test.endpoints).to.be.an('object');
-        });
-        it("should have tools property", function () {
-            expect(test).to.have.any.keys('tools');
-            expect(test.tools).to.be.an('object');
-        });
-        describe("#tools", function () {
-            describe("#generateParams4Template()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('generateParams4Template');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.generateParams4Template).to.be.an('function');
-                });
-            });
-            describe("#responseResourceDoesntExist()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('responseResourceDoesntExist');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.responseResourceDoesntExist).to.be.an('function');
-                });
-            });
-            describe("#responseOK()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('responseOK');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.responseOK).to.be.an('function');
-                });
-            });
-            describe("#responseNOK()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('responseNOK');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.responseNOK).to.be.an('function');
-                });
-            });
-            describe("#format()", function () {
-                it("should exist", function () {
-                    expect(test.tools).to.have.any.keys('format');
-                });
-                it("should be a method", function () {
-                    expect(test.tools.format).to.be.an('function');
-                });
-            });
         });
     });
     describe("#init()", function () {
@@ -109,35 +60,19 @@ describe("mysql resource component", function () {
         });
     });
     describe("resource methods", function () {
-        describe("#query()", function () {
+        describe("#get()", function () {
             it("should exist", function () {
-                expect(test).to.have.any.keys('query');
+                expect(test).to.have.any.keys('get');
             });
             it("should be a method", function () {
-                expect(test.query).to.be.an('function');
+                expect(test.get).to.be.an('function');
             });
-            describe("#__queryDefaultCallback()", function () {
+            describe("#__getDefaultCallback()", function () {
                 it("should exist", function () {
-                    expect(test).to.have.any.keys('__queryDefaultCallback');
+                    expect(test).to.have.any.keys('__getDefaultCallback');
                 });
                 it("should be a method", function () {
-                    expect(test.__queryDefaultCallback).to.be.an('function');
-                });
-            });
-        });
-        describe("#read()", function () {
-            it("should exist", function () {
-                expect(test).to.have.any.keys('read');
-            });
-            it("should be a method", function () {
-                expect(test.read).to.be.an('function');
-            });
-            describe("#__readDefaultCallback()", function () {
-                it("should exist", function () {
-                    expect(test).to.have.any.keys('__readDefaultCallback');
-                });
-                it("should be a method", function () {
-                    expect(test.__readDefaultCallback).to.be.an('function');
+                    expect(test.__getDefaultCallback).to.be.an('function');
                 });
             });
         });
@@ -191,18 +126,6 @@ describe("mysql resource component", function () {
         });
     });
     describe("resource endpoints", function () {
-        describe("#list()", function () {
-            it("should exist", function () {
-                expect(test.endpoints).to.have.any.keys('list');
-            });
-            it("should be a method", function () {
-                expect(test.endpoints.list).to.be.an('function');
-            });
-            var result = test.endpoints.list({});
-            it("should return a webserver callback", function () {
-                expect(result).to.be.an('function');
-            });
-        });
         describe("#get()", function () {
             it("should exist", function () {
                 expect(test.endpoints).to.have.any.keys('get');

@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.0.60",
+  "version": "0.0.65",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "license": "GNU GPLv3",
@@ -65,7 +65,10 @@
     "google-auth-library": "~0.12.0",
     "mustache": "~2.3.0",
     "redis": "~2.8.0",
-    "busboy": "~0.2.14"
+    "pg": "~7.4.0",
+    "busboy": "~0.2.14",
+    "memcache": "~0.3.0",
+    "couchbase": "~2.4.3"
   },
   "devDependencies": {
     "mocha": "~4.0.1",

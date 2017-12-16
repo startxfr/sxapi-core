@@ -421,19 +421,15 @@ module.exports = function (id, config) {
                         var bucketId = req.params.id || req.body.id || config.Bucket || (config.config && config.config.Bucket) ? config.config.Bucket : "bucketname";
                         rs.listObjects(bucketId, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error listing objects because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error listing objects because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error listing objects because " + err.message);
                             }
                             else {
-                                var ct = (reponse.Contents) ? reponse.Contents.length : 0;
-                                $app.ws.okResponse(res, "readding AWS S3 objects in bucket " + config.config.Bucket, reponse.Contents).addTotal(ct).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned OK from transaction " + config.config.Bucket, 2);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Contents, $s3.id, req, "readding AWS S3 objects in bucket " + config.config.Bucket, 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -457,19 +453,17 @@ module.exports = function (id, config) {
                         var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
                         rs.getObject(objectId, bucketId, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error getting " + objectId + " object in bucket " + bucketId + " because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error getting " + objectId + " object in bucket " + bucketId + " because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting " + objectId + " object in bucket " + bucketId + " because " + err.message);
                             }
                             else {
                                 res.set("Content-Type", reponse.ContentType);
                                 res.send(reponse.Body);
-                                $log.tools.endpointDebug($s3.id, req, "returned object " + objectId + " from bucket " + bucketId, 2);
+                                $log.tools.endpointInfo($s3.id, req, "returned object " + objectId + " from bucket " + bucketId);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -493,18 +487,15 @@ module.exports = function (id, config) {
                         var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
                         rs.addObject(objectId, req.body, bucketId, config.config || {}, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error saving object because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error saving object because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "recorded AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, reponse).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned OK from transaction " + reponse.ResponseMetadata.ObjectId, 2);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "recorded AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -525,8 +516,7 @@ module.exports = function (id, config) {
                     $log.tools.endpointDebug($s3.id, req, "deleteObject()", 1);
                     var objectId = req.params.id || req.body.id || config.config.receiptHandle || false;
                     if (objectId === false) {
-                        $app.ws.nokResponse(res, "no id param found in request").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "no id param found in request");
+                        $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "no id param found in request");
                     }
                     else {
                         var BucketUrl = config.config.BucketUrl || config.BucketUrl || $s3.config.BucketUrl || "https://s3.eu-west-1.amazonaws.com";
@@ -538,18 +528,15 @@ module.exports = function (id, config) {
                             var rs = $app.resources.get(config.resource);
                             rs.deleteObject(config.config || {}, function (err, reponse) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error deleting object because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($s3.id, req, "error saving object because " + err.message);
+                                    $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "deleted AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($s3.id, req, "returned OK from transaction " + reponse.ResponseMetadata.ObjectId, 2);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "deleted AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
                                 }
                             });
                         }
                         else {
-                            $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                            $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                         }
                     }
                 };
@@ -572,18 +559,15 @@ module.exports = function (id, config) {
                         var rs = $app.resources.get(config.resource);
                         rs.listBuckets(function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error getting bucket list because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error getting bucket list because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting bucket list because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "founded " + reponse.Buckets.length + " bucket(s) available ", reponse.Buckets).addTotal(reponse.Buckets.length).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned " + reponse.Buckets.length + " bucket(s) available ", 2);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "founded " + reponse.Buckets.length + " bucket(s) available ", 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -608,18 +592,15 @@ module.exports = function (id, config) {
                         var rs = $app.resources.get(config.resource);
                         rs.infoBucket(params, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error getting info for AWS S3 bucket because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error getting info for bucket because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting info for bucket because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "information about AWS S3 bucket " + params.Bucket, reponse).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned OK", 2);
+                                $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "information about AWS S3 bucket " + params.Bucket, 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -644,18 +625,15 @@ module.exports = function (id, config) {
                         var rs = $app.resources.get(config.resource);
                         rs.createBucket(params, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error creating AWS S3 bucket because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error creating bucket because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error creating bucket because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "new AWS S3 bucket " + params.BucketName, reponse.BucketUrl).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned OK", 2);
+                                $log.tools.endpointDebugAndAnswer(res, reponse.BucketUrl, $s3.id, req, "new AWS S3 bucket " + params.BucketName, 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             },
@@ -681,18 +659,15 @@ module.exports = function (id, config) {
                         var rs = $app.resources.get(config.resource);
                         rs.deleteBucket(params, function (err, reponse) {
                             if (err) {
-                                $app.ws.nokResponse(res, "error deleting AWS S3 bucket because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($s3.id, req, "error creating bucket because " + err.message);
+                                $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error creating bucket because " + err.message);
                             }
                             else {
-                                $app.ws.okResponse(res, "deleted AWS S3 bucket " + params.bucketId, true).addTotal(reponse.length).send();
-                                $log.tools.endpointDebug($s3.id, req, "returned OK", 2);
+                                $log.tools.endpointDebugAndAnswer(res, true, $s3.id, req, "deleted AWS S3 bucket " + params.bucketId, 2);
                             }
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($s3.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $s3.id, req, config.resource);
                     }
                 };
             }
