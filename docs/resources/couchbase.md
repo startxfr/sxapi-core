@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.60-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.66-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : couchbase
 
@@ -27,9 +27,9 @@ must be an object who must have the [appropriate configuration parameters](#reso
 For a better understanting of the sxapi
 configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-This config object will be passed to `couchbase.CreateClient()` method of the nodejs couchbase module. 
-[Read node_couchbase documentation](https://github.com/NodeRedis/node_couchbase#options-object-properties) 
-for a complete list of the parameters that you can use in this config object.
+This config object will be used with `couchbase.Cluster()` method of the nodejs couchbase module. 
+[Read couchbase sdk documentation](https://developer.couchbase.com/documentation/server/current/sdk/nodejs/start-using-sdk.html) 
+for more information.
 
 ### Resource config parameters
 
@@ -38,6 +38,8 @@ for a complete list of the parameters that you can use in this config object.
 | **_class**                      | yes       | string |           | module name. Must be **couchbase** for this resource
 | **cluster**                     | yes       | string |           | connection tring to the cluster. format is `couchbase://host[/bucket]` You have to give the full URL, with protocol (http or https) and port number (must be 8091) . If you want to reach a cluster on the same machine using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : http://172.17.42.1:8091. [read more on couchbase connection](https://developer.couchbase.com/documentation/server/4.1/developer-guide/connection-advanced.html)
 | **bucket**                      | yes       | string |           | the bucket name to use. If you need to connect to several bucket, you'll have to create several resources
+| **user**                        | no        | string |           | Username to use for authentication (in conjuction with `password`)
+| **password**                    | no        | string |           | Password for the previously defined `username`
 | **insertOptions**               | no        | object |           | options used when inserting a document to the bucket. See [Couchbase Docs](http://docs.couchbase.com/sdk-api/couchbase-node-client-2.1.0/Bucket.html#insert) for more informations
 | insertOptions.**persist_to**    | no        | int    |           | Ensures this operation is persisted to this many nodes. Default is set to 0.
 | insertOptions.**replicate_to**  | no        | int    |           | Ensures this operation is replicated to this many nodes. Default is set to 0.

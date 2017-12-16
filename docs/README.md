@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.60-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.66-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Documentation
 
@@ -41,7 +41,9 @@ Resource components are loaded if defined in the configuration profile. You can 
 - [google](resources/google.md) resource : Interact with Google API backend
 - [http](resources/http.md) resource : Interact with any http webserver
 - [mysql](resources/mysql.md) resource : Interact with a mysql or mariadb server
+- [postgres](resources/postgres.md) resource : Interact with a PostgresQL server
 - [redis](resources/redis.md) resource : Interact with a redis backend
+- [memcache](resources/memcache.md) resource : Interact with a memcache server
 - [serviceinfo](resources/serviceinfo.md) resource : Access application details
 
 ## Contributing

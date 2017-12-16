@@ -30,19 +30,21 @@ $app = {
      * @returns {$app}
      */
     init: function (callback) {
-        $log.debug("initializing sxapi-framework", 0, $timer.time('app'));
+        $log.debug("initializing sxapi-framework", 2, $timer.time('app'));
         this._initProcessSignals();
         this._initCheckEnv();
         this._initLoadConfigFiles();
-        $log.debug("initializing application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
+        $log.info("initializing application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
         $log.debug("container ip : " + $app.config.ip, 2);
         $log.debug("service name : " + $app.config.name, 2);
         $log.debug("service vers : " + $app.config.version, 2);
         $log.debug("service desc : " + $app.config.description, 2);
         if ($app.config.resources) {
+            $log.debug("start initializing resources as part of the init process", 5, $timer.time('app'));
             $app.resources.init($app.config.resources);
         }
         if ($app.config.session) {
+            $log.debug("start initializing session as part of the init process", 5, $timer.time('app'));
             $app.session.init($app.config.session);
             $app.onStart(function () {
                 $app.session.start();
@@ -52,6 +54,7 @@ $app = {
             });
         }
         if ($app.config.server) {
+            $log.debug("start initializing webserver as part of the init process", 5, $timer.time('app'));
             $app.ws.init($app.config.server);
             $app.onStart(function () {
                 $app.ws.start();
@@ -61,7 +64,11 @@ $app = {
             });
         }
         $log.info("application " + $app.config.name + ' v' + $app.config.version + " initialized", $timer.time('app'));
-        if (typeof callback === "function") {
+        if ($app.config.resources) {
+            $log.debug("starting resources as part of the init process", 5, $timer.time('app'));
+            $app.resources.starts(callback);
+        }
+        else if (typeof callback === "function") {
             callback();
         }
         return this;
@@ -71,6 +78,7 @@ $app = {
      * @returns {$app}⋅
      */
     _initCheckEnv: function () {
+        $log.debug("start checking env variable as part of the init process", 5, $timer.time('app'));
         if (process.env.HOSTNAME) {
             this.config.hostname = process.env.HOSTNAME;
         }
@@ -107,6 +115,7 @@ $app = {
      * @returns {$app}
      */
     _initLoadConfigFiles: function () {
+        $log.debug("start checking config files as part of the init process", 5, $timer.time('app'));
         var fs = require('fs');
         var mg = require('merge');
         var pkg_file = this.config.app_path + '/package.json';
@@ -162,6 +171,7 @@ $app = {
      * @returns {$app}
      */
     _initProcessSignals: function () {
+        $log.debug("start registering to process signals as part of the init process", 5, $timer.time('app'));
         process.stdin.resume();
         process.__exitHandler = function (code) {
             $log.info("application " + $app.config.name + ' v' + $app.config.version + " exited " + code, $timer.time('app'));
@@ -216,7 +226,7 @@ $app = {
      * @returns {$app}
      */
     start: function (callback) {
-        $log.debug("starting application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
+        $log.info("starting application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
         var cbResources = function () {
             for (var i in $app._onstartQueue) {
                 $app._onstartQueue[i]();
@@ -225,12 +235,7 @@ $app = {
                 callback();
             }
         };
-        if ($app.config.resources) {
-            $app.resources.starts(cbResources);
-        }
-        else {
-            cbResources();
-        }
+        cbResources();
         return this;
     },
     /**
@@ -250,7 +255,7 @@ $app = {
      * @returns {$app}
      */
     stop: function (callback) {
-        $log.debug("Stopping application " + $app.config.name + ' v' + $app.config.version, 0, $timer.time('app'));
+        $log.info("Stopping application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
         var cb = function () {
             for (var i in $app._onstopQueue) {
                 $app._onstopQueue[i]();
@@ -268,6 +273,7 @@ $app = {
      * @returns {$app}
      */
     launch: function (config, callback) {
+        $log.info("launching application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
         if (typeof config === "function" && callback === undefined) {
             callback = config;
         }

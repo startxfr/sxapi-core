@@ -178,22 +178,13 @@ module.exports = function (id, config) {
                  * @returns {undefined} 
                  */
                 return function (req, res) {
-                    var path = req.url.split("?")[0];
                     $log.tools.endpointDebug($gapi.id, req, "getToken()", 1);
-                    if (!config.resource) {
-                        $app.ws.nokResponse(res, "resource is not defined for this endpoint").httpCode(500).send();
-                        $log.tools.endpointWarn($gapi.id, req, "resource is not defined for this endpoint");
+                    if ($app.resources.exist(config.resource)) {
+                        var rs = $app.resources.get(config.resource);
+                        $log.tools.endpointDebugAndAnswer(res, rs.gapi_auth.credentials, $gapi.id, req, "returned auth token" + rs.gapi_auth.credentials.access_token, 2);
                     }
                     else {
-                        if ($app.resources.exist(config.resource)) {
-                            var rs = $app.resources.get(config.resource);
-                            $app.ws.okResponse(res, " returned auth token", rs.gapi_auth.credentials).send();
-                            $log.tools.endpointDebug($gapi.id, req, "returned token " + rs.gapi_auth.credentials.access_token, 2);
-                        }
-                        else {
-                            $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                            $log.tools.endpointWarn($gapi.id, req, "resource '" + config.resource + "' doesn't exist");
-                        }
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $gapi.id, req, config.resource);
                     }
                 };
             }

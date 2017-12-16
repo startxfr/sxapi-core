@@ -108,6 +108,25 @@ module.exports = function (id, config) {
             console.log(error, serviceinfo);
             return serviceinfo;
         },
+        /**
+         * Read health from process and config
+         * @param {function} callback called when informations are returned
+         * @returns {$svif.serviceinfo}
+         */
+        health: function (callback) {
+            var timerId = 'svif_health_' + $svif.id;
+            $timer.start(timerId);
+            $log.tools.resourceInfo($svif.id, "health()");
+            var cb = (typeof callback === "function") ? callback : $svif.__healthDefaultCallback;
+            var obj = {status: "ok", health: "good"};
+            cb(null, obj);
+            return this;
+        },
+        __healthDefaultCallback: function (error, health) {
+            $log.tools.resourceDebug($svif.id, "default callback", 4);
+            console.log(error, health);
+            return health;
+        },
         endpoints: {
             info: function (config) {
                 /**
@@ -116,22 +135,44 @@ module.exports = function (id, config) {
                  * @param {object} res
                  */
                 return function (req, res) {
+                    var callback = function (err, reponse) {
+                        if (err) {
+                            $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
+                        }
+                        else {
+                            $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service informations", 2);
+                        }
+                    };
                     $log.tools.endpointDebug($svif.id, req, "info()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).read(function (err, reponse) {
-                            if (err) {
-                                $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                $log.tools.endpointWarn($svif.id, req, "error reading service info because " + err.message);
-                            }
-                            else {
-                                $app.ws.okResponse(res, "return service informations", reponse).send();
-                                $log.tools.endpointDebug($svif.id, req, "returned service info", 2);
-                            }
-                        });
+                        $app.resources.get(config.resource).read(callback);
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($svif.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
+                    }
+                };
+            },
+            health: function (config) {
+                /**
+                 * Callback called when a defined endpoint is called
+                 * @param {object} req
+                 * @param {object} res
+                 */
+                return function (req, res) {
+                    var callback = function (err, reponse) {
+                        if (err) {
+                            $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
+                        }
+                        else {
+                            $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service informations", 2);
+                        }
+                    };
+                    $log.tools.endpointDebug($svif.id, req, "health()", 1);
+                    if ($app.resources.exist(config.resource)) {
+                        $app.resources.get(config.resource).health(callback);
+                    }
+                    else {
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
                     }
                 };
             }

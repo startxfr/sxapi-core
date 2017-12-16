@@ -1,17 +1,17 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.66-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true">
 
-# SXAPI Resource : redis
+# SXAPI Resource : memcache
 
-This resource allow you to interact with a Redis server or cluster.
+This resource allow you to interact with a Memcache server or cluster.
 Programmers can access [resource methods](#resource-methods) and embed this module
 methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
-[configuration profile](../guides/2.Configure.md) to expose redis data.
+[configuration profile](../guides/2.Configure.md) to expose memcache data.
 
-This resource is based on [redis npm module](https://www.npmjs.com/package/redis) 
-[![npm](https://img.shields.io/npm/v/redis.svg)](https://www.npmjs.com/package/redis) 
+This resource is based on [memcache npm module](https://www.npmjs.com/package/memcache) 
+[![npm](https://img.shields.io/npm/v/memcache.svg)](https://www.npmjs.com/package/memcache) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.66-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>
@@ -27,17 +27,17 @@ must be an object who must have the [appropriate configuration parameters](#reso
 For a better understanting of the sxapi
 configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
-This config object will be passed to `redis.CreateClient()` method of the nodejs redis module. 
-[Read node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties) 
+This config object will be passed to `memcache.Client()` method of the nodejs memcache module. 
+[Read node_memcache documentation](https://github.com/NodeMemcache/node_memcache#options-object-properties) 
 for a complete list of the parameters that you can use in this config object.
 
 ### Resource config parameters
 
 | Param           | Mandatory | Type   | default   | Description
 |-----------------|:---------:|:------:|-----------|---------------
-| **_class**      | yes       | string |           | module name. Must be **redis** for this resource
-| **url**         | no        | string | null      | connection url to the cluster. format is `redis://[[user][:password@]]host[:port][/db-number]` [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties). If you want to reach a redis server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : 172.17.42.1
-| **...**         | no        | N/A    |           | any request option. See [see node_redis documentation](https://github.com/NodeRedis/node_redis#options-object-properties).
+| **_class**      | yes       | string |           | module name. Must be **memcache** for this resource
+| **host**        | yes       | string | 127.0.0.1 | IP or domain name to a memcache server. [see node memcache documentation](https://github.com/elbart/node-memcache). If you want to reach a memcache server on the same machine, using docker, don't forget to use the docker0 interface IP (like 172.17.x.x) using `# ifconfig docker0` and not localhost or 127.0.0.1. Example : 172.17.42.1
+| **port**        | no        | int    | 11211     | memcache daemon port
 
 ### Example
 
@@ -47,10 +47,10 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 ```javascript
 "resources": {
     ...
-    "redis-id": {
-        "_class": "redis",
-        "url": "redis://dev:dev@172.17.42.1/bucket",
-        "return_buffers" : false
+    "memcache-id": {
+        "_class": "memcache",
+        "host": "172.17.42.1",
+        "port" : 11211
     }
     ...
 }
@@ -59,10 +59,10 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 ## Resource methods
 
 If you want to use this resource in our own module, you can retrieve this resource 
-instance by using `$app.resources.get('redis-id')` where `redis-id` is the
+instance by using `$app.resources.get('memcache-id')` where `memcache-id` is the
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 
-This module come with several methods for manipulating redis dataset.
+This module come with several methods for manipulating memcache dataset.
 
 [1. Get method](#method-get)<br>
 [2. Insert method](#method-insert)<br>
@@ -72,7 +72,7 @@ This module come with several methods for manipulating redis dataset.
 
 ### Method get
 
-get a redis value by it's given key.
+get a memcache value by it's given key.
 
 #### Parameters
 
@@ -80,14 +80,14 @@ get a redis value by it's given key.
 |------------------------------|:---------:|:--------:|---------|---------------
 | **key**                      | yes       | string   | null    | key to find
 | **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
-| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the memcache server. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
 
 ```javascript
-var resource = $app.resources.get('redis-id');
+var resource = $app.resources.get('memcache-id');
 resource.get('myKey', function (error, response) {
     console.log(error, response);
 });
@@ -95,7 +95,7 @@ resource.get('myKey', function (error, response) {
 
 ### Method insert
 
-insert a redis value associated to the given key.
+insert a memcache value associated to the given key.
 
 #### Parameters
 
@@ -104,14 +104,14 @@ insert a redis value associated to the given key.
 | **key**                      | yes       | string   | null    | key to use
 | **value**                    | yes       | string   | null    | value associated to this key
 | **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
-| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the memcache server. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this new key
 
 
 #### Example
 
 ```javascript
-var resource = $app.resources.get('redis-id');
+var resource = $app.resources.get('memcache-id');
 resource.insert('myKey', 'my value', function (error, response) {
     console.log(error, response);
 });
@@ -119,7 +119,7 @@ resource.insert('myKey', 'my value', function (error, response) {
 
 ### Method update
 
-update a redis value associated to the given key.
+update a memcache value associated to the given key.
 
 #### Parameters
 
@@ -128,14 +128,14 @@ update a redis value associated to the given key.
 | **key**                      | yes       | string   | null    | key to use
 | **value**                    | yes       | string   | null    | the new value associated to this key
 | **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
-| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the memcache server. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
 
 ```javascript
-var resource = $app.resources.get('redis-id');
+var resource = $app.resources.get('memcache-id');
 resource.update('myKey', 'my new value', function (error, response) {
     console.log(error, response);
 });
@@ -143,7 +143,7 @@ resource.update('myKey', 'my new value', function (error, response) {
 
 ### Method delete
 
-delete a redis key and it associated value.
+delete a memcache key and it associated value.
 
 #### Parameters
 
@@ -151,14 +151,14 @@ delete a redis key and it associated value.
 |------------------------------|:---------:|:--------:|---------|---------------
 | **key**                      | yes       | string   | null    | key to delete
 | **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
-| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the redis server. Will be a string message describing a problem if an error occur.
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the memcache server. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | mixed    |         | the value coresponding to this key
 
 
 #### Example
 
 ```javascript
-var resource = $app.resources.get('redis-id');
+var resource = $app.resources.get('memcache-id');
 resource.delete('myKey', function (error, response) {
     console.log(error, response);
 });
@@ -166,7 +166,7 @@ resource.delete('myKey', function (error, response) {
 
 ## Resource endpoints
 
-This module come with 4 endpoints who can interact with any redis method.
+This module come with 4 endpoints who can interact with any memcache method.
 
 [1. Get endpoint](#get-endpoint)<br>
 [2. Create endpoint](#create-endpoint)<br>
@@ -175,7 +175,7 @@ This module come with 4 endpoints who can interact with any redis method.
 
 ### Get endpoint
 
-The purpose of this endpoint is to make call to a redis server and to return 
+The purpose of this endpoint is to make call to a memcache server and to return 
 the value associated to the given key.
 
 #### Parameters
@@ -192,8 +192,8 @@ the value associated to the given key.
 "server": {
     "endpoints": [
         {
-            "path": "/redis",
-            "resource": "redis-id",
+            "path": "/memcache",
+            "resource": "memcache-id",
             "endpoint": "get"
         }
     ]
@@ -202,7 +202,7 @@ the value associated to the given key.
 
 ### Create endpoint
 
-The purpose of this endpoint is to insert a key into a redis server. Key Id is defined
+The purpose of this endpoint is to insert a key into a memcache server. Key Id is defined
 by the context, and document will be the HTTP body of the query.
 
 #### Parameters
@@ -219,9 +219,9 @@ by the context, and document will be the HTTP body of the query.
 "server": {
     "endpoints": [
         {
-            "path": "/redis/:id",
+            "path": "/memcache/:id",
             "method": "POST",
-            "resource": "redis-id",
+            "resource": "memcache-id",
             "endpoint": "create"
         }
     ]
@@ -231,7 +231,7 @@ by the context, and document will be the HTTP body of the query.
 
 ### Update endpoint
 
-The purpose of this endpoint is to update a key into a redis server. Key Id is defined
+The purpose of this endpoint is to update a key into a memcache server. Key Id is defined
 by the context, and document will be the HTTP body of the query.
 
 #### Parameters
@@ -248,9 +248,9 @@ by the context, and document will be the HTTP body of the query.
 "server": {
     "endpoints": [
         {
-            "path": "/redis/:id",
+            "path": "/memcache/:id",
             "method": "PUT",
-            "resource": "redis-id",
+            "resource": "memcache-id",
             "endpoint": "update"
         }
     ]
@@ -259,7 +259,7 @@ by the context, and document will be the HTTP body of the query.
 
 ### Delete endpoint
 
-The purpose of this endpoint is to delete a key into a redis server. 
+The purpose of this endpoint is to delete a key into a memcache server. 
 Key Id is defined by the context.
 
 #### Parameters
@@ -276,9 +276,9 @@ Key Id is defined by the context.
 "server": {
     "endpoints": [
         {
-            "path": "/redis/:id",
+            "path": "/memcache/:id",
             "method": "DELETE",
-            "resource": "redis-id",
+            "resource": "memcache-id",
             "endpoint": "delete"
         }
     ]
