@@ -170,7 +170,7 @@ module.exports = function (id, config) {
             }
             config.Bucket = bucket || config.Bucket;
             config.Key = id || config.Key;
-            config.Body = object;
+            config.Body = (JSON.isSerializable(object)) ? JSON.serialize(object) : object;
             $log.tools.resourceInfo($s3.id, "add S3 object " + config.Key + " in bucket " + config.Bucket);
             var defaultCallback = function (error, response) {
                 var duration = $timer.timeStop(timerId);
