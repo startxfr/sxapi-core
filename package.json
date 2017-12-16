@@ -1,88 +1,88 @@
 {
-  "name": "sxapi-core",
-  "version": "0.0.66",
-  "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
-  "author": "STARTX <dev+sxapi_core@startx.fr>",
-  "license": "GNU GPLv3",
-  "private": false,
-  "analyze": true,
-  "contributors": [
-    {
-      "name": "startx-dev",
-      "email": "dev@startx.fr"
+    "name": "sxapi-core",
+    "version": "0.0.67",
+    "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
+    "author": "STARTX <dev+sxapi_core@startx.fr>",
+    "license": "GNU GPLv3",
+    "private": false,
+    "analyze": true,
+    "contributors": [
+        {
+            "name": "startx-dev",
+            "email": "dev@startx.fr"
+        },
+        {
+            "name": "mallowtek",
+            "email": "mallowtek@gmail.com"
+        }
+    ],
+    "keywords": [
+        "sxapi",
+        "startx",
+        "microservice",
+        "nodejs",
+        "dev",
+        "simple",
+        "lightweight",
+        "extensible",
+        "CaaS"
+    ],
+    "main": "app.js",
+    "directories": {
+        "lib": "core",
+        "doc": "docs",
+        "test": "test"
     },
-    {
-      "name": "mallowtek",
-      "email": "mallowtek@gmail.com"
-    }
-  ],
-  "keywords": [
-    "sxapi",
-    "startx",
-    "microservice",
-    "nodejs",
-    "dev",
-    "simple",
-    "lightweight",
-    "extensible",
-    "CaaS"
-  ],
-  "main": "app.js",
-  "directories": {
-    "lib": "core",
-    "doc": "docs",
-    "test": "test"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha",
-    "start": "node app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/startxfr/sxapi-core.git"
-  },
-  "bugs": {
-    "url": "https://github.com/startxfr/sxapi-core/issues"
-  },
-  "dependencies": {
-    "change-case": "~3.0.1",
-    "async": "~2.6.0",
-    "merge": "~1.2.0",
-    "timer-machine": "~1.1.0",
-    "ssh2": "~0.5.5",
-    "ip": "~1.1.5",
-    "body-parser": "~1.18.2",
-    "cors": "~2.8.4",
-    "crypto": "~1.0.1",
-    "express": "~4.16.2",
-    "aws-sdk": "~2.162.0",
-    "uuid": "~3.1.0",
-    "mysql": "~2.15.0",
-    "moment": "~2.19.3",
-    "cookies": "~0.7.1",
-    "request": "~2.83.0",
-    "googleapis": "~23.0.0",
-    "google-auth-library": "~0.12.0",
-    "mustache": "~2.3.0",
-    "redis": "~2.8.0",
-    "pg": "~7.4.0",
-    "busboy": "~0.2.14",
-    "memcache": "~0.3.0",
-    "couchbase": "~2.4.3"
-  },
-  "devDependencies": {
-    "mocha": "~4.0.1",
-    "chai": "~4.1.2",
-    "chai-http": "~3.0.0",
-    "sinon": "~4.1.2"
-  },
-  "engines": {
-    "node": ">= 8.9.1",
-    "npm": ">= 5.5.1"
-  },
-  "os": [
-    "darwin",
-    "linux",
-    "win32"
-  ]
+    "scripts": {
+        "test": "./node_modules/.bin/mocha",
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/startxfr/sxapi-core.git"
+    },
+    "bugs": {
+        "url": "https://github.com/startxfr/sxapi-core/issues"
+    },
+    "dependencies": {
+        "change-case": "~3.0.1",
+        "async": "~2.6.0",
+        "merge": "~1.2.0",
+        "timer-machine": "~1.1.0",
+        "ssh2": "~0.5.5",
+        "ip": "~1.1.5",
+        "body-parser": "~1.18.2",
+        "cors": "~2.8.4",
+        "crypto": "~1.0.1",
+        "express": "~4.16.2",
+        "aws-sdk": "~2.162.0",
+        "uuid": "~3.1.0",
+        "mysql": "~2.15.0",
+        "moment": "~2.19.3",
+        "cookies": "~0.7.1",
+        "request": "~2.83.0",
+        "googleapis": "~23.0.0",
+        "google-auth-library": "~0.12.0",
+        "mustache": "~2.3.0",
+        "redis": "~2.8.0",
+        "pg": "~7.4.0",
+        "busboy": "~0.2.14",
+        "memcache": "~0.3.0",
+        "couchbase": "~2.4.3"
+    },
+    "devDependencies": {
+        "mocha": "~4.0.1",
+        "chai": "~4.1.2",
+        "chai-http": "~3.0.0",
+        "sinon": "~4.1.2"
+    },
+    "engines": {
+        "node": ">= 8.9.1",
+        "npm": ">= 5.5.1"
+    },
+    "os": [
+        "darwin",
+        "linux",
+        "win32"
+    ]
 }

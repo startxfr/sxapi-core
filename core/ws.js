@@ -46,7 +46,18 @@ var $ws = {
             }));
         }
         if ($ws.config.static === true) {
-            $ws.app.use('/static', $ws.express.static('webapp'));
+            if ($ws.config.static_path === undefined) {
+                $ws.config.static_path = '/static';
+            }
+            if ($ws.config.static_dir === undefined) {
+                $ws.config.static_dir = 'webapp';
+            }
+            $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path + " > ./" + $ws.config.static_dir, 3);
+            $ws.app.use($ws.config.static_path, $ws.express.static($ws.config.static_dir));
+            if ($ws.config.static_path2 !== undefined && $ws.config.static_dir !== undefined) {
+                $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path2 + " > ./" + $ws.config.static_dir2, 3);
+                $ws.app.use($ws.config.static_path2, $ws.express.static($ws.config.static_dir2));
+            }
         }
         return this;
     },
