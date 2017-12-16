@@ -2,6 +2,7 @@
 
 var expect = require("chai").expect;
 
+console.isEhanced = true;
 require("../core/tools");
 
 /* Test suite for tools library */

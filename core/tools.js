@@ -16,6 +16,8 @@ JSON.isDeserializable = function (str) {
         return false;
     }
 };
+JSON.serialize = JSON.stringify;
+JSON.deserialize = JSON.parse;
 
 JSON.cleanObject = function (obj) {
     return JSON.parse(JSON.stringify(obj));

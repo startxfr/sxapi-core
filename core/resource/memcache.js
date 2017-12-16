@@ -42,9 +42,9 @@ module.exports = function (id, config) {
                     callback();
                 }
             };
-            var memcache = require('memcache');
+            var mc = require('memcache');
             $log.tools.resourceDebug($mcdb.id, "starting new connection to memcache '" + clusID + "'", 4);
-            $mcdb.pool[clusID] = new memcache.Client($mcdb.config.port, $mcdb.config.host);
+            $mcdb.pool[clusID] = new mc.Client($mcdb.config.port, $mcdb.config.host);
             $mcdb.open(cb);
             return $mcdb;
         },
