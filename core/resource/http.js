@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $htcli = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_http_init_' + $htcli.id;
@@ -21,12 +22,9 @@ module.exports = function (id, config) {
             }
             $log.tools.resourceDebug($htcli.id, "initializing", 3);
             $htcli.config._sign = $htcli.id;
-            if (typeof $httpPool === 'undefined') {
-                $httpPool = [];
-            }
-            if (typeof $httpPool[$htcli.config._sign] === 'undefined') {
-                $log.tools.resourceDebug($htcli.id, "resource '" + $htcli.id + "' : new connection to http " + $htcli.config._sign, 4);
-                $httpPool[$htcli.config._sign] = require("request");
+            if (typeof $htcli.pool[$htcli.config._sign] === 'undefined') {
+                $log.tools.resourceDebug($htcli.id, "initialize http connection to " + $htcli.config._sign, 4);
+                $htcli.pool[$htcli.config._sign] = require("request");
             }
             else {
                 $log.tools.resourceDebug($htcli.id, "resource '" + $htcli.id + "' : use existing connection to http " + $htcli.config._sign, 4);
@@ -45,7 +43,7 @@ module.exports = function (id, config) {
         },
         stop: function (callback) {
             $log.tools.resourceDebug($htcli.id, "Stopping", 2);
-            $httpPool[$htcli.config._sign] = null;
+            $htcli.pool[$htcli.config._sign] = null;
             if (typeof callback === "function") {
                 callback(null, $htcli);
             }
@@ -68,7 +66,7 @@ module.exports = function (id, config) {
                 opt.url = url;
             }
             $log.tools.resourceInfo($htcli.id, "call url " + opt.url);
-            return $httpPool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__queryDefaultCallback(timerId));
+            return $htcli.pool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__queryDefaultCallback(timerId));
         },
         __queryDefaultCallback: function (timerId) {
             return function (error, response, body) {
@@ -102,21 +100,19 @@ module.exports = function (id, config) {
                         rs.call(config.url, config, function (timerId) {
                             return function (err, response, body) {
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($htcli.id, req, "error reading document because " + err.message);
+                                    $log.tools.endpointErrorAndAnswer(res, $htcli.id, req, "error because " + err.message);
                                 }
                                 else {
                                     var result = rs.__reader(body, response);
-                                    $app.ws.okResponse(res, "returned " + result.type + " with " + result.length, result.content).send();
-                                    $log.tools.endpointDebug($htcli.id, req, " returned " + result.type + " with " + result.length, 2, $timer.timeStop(timerId));
+                                    var msg = "returned " + result.type + " with " + result.length;
+                                    $log.tools.endpointDebugAndAnswer(res, result.content, $htcli.id, req, msg, 2, $timer.timeStop(timerId));
                                 }
                             }
                             ;
                         });
                     }
                     else {
-                        $app.ws.nokResponse(res, "resource '" + config.resource + "' doesn't exist").httpCode(500).send();
-                        $log.tools.endpointWarn($htcli.id, req, "resource '" + config.resource + "' doesn't exist");
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $htcli.id, req, config.resource);
                     }
                 };
             }

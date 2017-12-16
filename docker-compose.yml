@@ -1,7 +1,55 @@
-sxapi-core:
+app:
   build: .
-  container_name: "sxapi-core-v0.0.27"
+  container_name: "sxapi-core-v0.0.66"
   mem_limit: 200m
   memswap_limit: 500m
   ports:
     - "8080:8080"
+  links:
+    - "db-redis"
+#    - "db-memcache"
+#    - "db-postgres"
+#    - "db-mariadb"
+  
+db-redis:
+  image: redis:3.2.11-alpine
+  container_name: "sxapi-core-dev-redis"
+  mem_limit: 1g
+  memswap_limit: 2g
+  ports:
+    - "6379:6379"
+
+#db-memcache:
+#  image: memcache:1.5.3-alpine
+#  container_name: "sxapi-core-dev-memcache"
+#  mem_limit: 1g
+#  memswap_limit: 2g
+#  ports:
+#    - "11211:11211"
+#  
+#db-postgres:
+#  image: postgres:10.1-alpine
+#  restart: always
+#  expose:
+#    - "5432"
+#  environment:
+#    POSTGRES_PASSWORD: hguyFtgfR4r9R4r76
+#
+#db-mariadb:
+#  image: yobasystems/alpine-mariadb
+#  environment:
+#    MYSQL_ROOT_PASSWORD: hguyFtgfR4r9R4r76
+#    MYSQL_DATABASE: test-db
+#    MYSQL_USER: mariadb_user
+#    MYSQL_PASSWORD: mariadb_pwd
+#  expose:
+#    - "3306"
+#  volumes:
+#    - /data/example/mysql:/var/lib/mysql
+#  restart: always
+#
+#db-backend:
+#  image: adminer
+#  restart: always
+#  ports:
+#    - 8081:8080

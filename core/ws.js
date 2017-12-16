@@ -132,6 +132,7 @@ var $ws = {
                 $ws.app.delete(config.path, handler(config));
                 break;
             default:
+                config.method = "GET";
                 urlDescriptor.method = "GET";
                 $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
                 $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
@@ -152,19 +153,18 @@ var $ws = {
          * @returns {undefined}
          */
         return function (req, res) {
-            var path = req.url.split("?")[0];
-            $log.debug("Endpoint '" + path + "' start", 4);
+            $log.tools.endpointDebug("defaultEndpoint", req, " called", 2);
             if (config.body) {
                 var code = (config.code) ? config.code : 200;
                 var header = (config.header) ? config.header : {"Content-Type": "text/html"};
                 res.writeHead(code, header);
                 res.end(config.body);
-                $log.debug("Endpoint '" + path + "' answered static document [" + code + "]", 2);
+                $log.tools.endpointDebug("defaultEndpoint", req, " return static document [" + code + "]", 2, 1);
             }
             else {
                 res.writeHead(404, {"Content-Type": "text/html"});
                 res.end("<html><head></head><body><h1>Not Found</h1></body></html>");
-                $log.warn("Endpoint " + req.method + " '" + path + "' not found");
+                $log.tools.endpointWarn("defaultEndpoint", req, "no body found", 0);
             }
         };
     },
@@ -326,8 +326,8 @@ var $ws = {
         return function (req, res) {
             require("./session").required(req, res, function () {
                 res.writeHead(200);
-                res.end("this text was generated with require('./ws').dynamicRequestHandlerTest. Le param_sample a été défini à " + config.param_sample);
-                $log.debug("Endpoint '" + config.path + "' answered with dynamic document", 2);
+                res.end("this text was generated with $app.ws.dynamicRequestHandlerTest. Le param_sample a été défini à " + config.param_sample);
+                $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic test content", 2);
             });
             return this;
         };

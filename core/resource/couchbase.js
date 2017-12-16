@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $cbCluster, $cbBuckets, $app */
+/* global module, require, process, $log, $timer, $cbdb.pool, $cbBuckets, $app */
 //'use strict';
 
 /**
@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $cbdb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_couchbase_init_' + $cbdb.id;
@@ -27,12 +28,9 @@ module.exports = function (id, config) {
                 throw new Error("no 'bucket' key found in resource '" + $cbdb.id + "' config");
             }
             $cbdb.cb = require("couchbase");
-            if (typeof $cbCluster === 'undefined') {
-                $cbCluster = [];
-            }
-            if (typeof $cbCluster[$cbdb.config.cluster] === 'undefined') {
-                $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : new connection to cluster " + $cbdb.config.cluster, 4);
-                $cbCluster[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
+            if (typeof $cbdb.pool[$cbdb.config.cluster] === 'undefined') {
+                $log.tools.resourceDebug($cbdb.id, "open new connection to cluster " + $cbdb.config.cluster, 4);
+                $cbdb.pool[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
             }
             else {
                 $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : use existing connection to cluster " + $cbdb.config.cluster, 4);
@@ -66,13 +64,12 @@ module.exports = function (id, config) {
                 $cbBuckets = [];
             }
             if (typeof $cbBuckets[$cbdb.config.bucket] === 'undefined') {
-                $log.tools.resourceDebug($cbdb.id, "new connection to bucket '" + $cbdb.config.bucket + "'", 4);
-                if (typeof $cbdb.config.password === 'undefined') {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.config.password, $cbdb.__openHandler(callback, timerId));
+                $log.tools.resourceDebug($cbdb.id, "use bucket '" + $cbdb.config.bucket + "'", 4);
+                if (typeof $cbdb.config.user !== 'undefined' && typeof $cbdb.config.password !== 'undefined') {
+                    $cbdb.pool[$cbdb.config.cluster].authenticate($cbdb.config.user, $cbdb.config.password);
                 }
-                else {
-                    $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
-                }
+                $cbBuckets[$cbdb.config.bucket] = $cbdb.pool[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
+
             }
             else {
                 $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : use existing connection to bucket '" + $cbdb.config.bucket + "'", 4);
@@ -211,21 +208,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_query_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "returned " + reponse.length + ' items', reponse).addTotal(reponse.length).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " return list of " + reponse.length + " items", 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "returned " + reponse.length + ' items', 2, duration);
                                 }
                             };
                         };
                         rs.query(config.n1ql, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -239,21 +232,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_get_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "return document " + docId, reponse).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " return document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "return document " + docId, 2, duration);
                                 }
                             };
                         };
                         rs.get(docId, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -267,21 +256,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_insert_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " recorded", reponse).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " create document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " created", 2, duration);
                                 }
                             };
                         };
                         rs.insert(docId, req.body, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -295,21 +280,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_update_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " updated", reponse.value).send();
-                                    $log.tools.endpointDebug($cbdb.id, req, " update document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " updated", 2, duration);
                                 }
                             };
                         };
                         rs.update(docId, req.body, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             },
@@ -323,21 +304,17 @@ module.exports = function (id, config) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_delete_' + key);
                                 if (err) {
-                                    $app.ws.nokResponse(res, "error because " + err.message).httpCode(500).send();
-                                    $log.tools.endpointWarn($cbdb.id, req, "error because " + err.message, duration);
+                                    $log.tools.endpointErrorAndAnswer(res, $cbdb.id, req, err.message, duration);
                                 }
                                 else {
-                                    $app.ws.okResponse(res, "document " + docId + " deleted", reponse).send();
-                                    $log.info(" delete document " + docId, 2, duration);
+                                    $log.tools.endpointDebugAndAnswer(res, reponse, $cbdb.id, req, "document " + docId + " deleted", 2, duration);
                                 }
                             };
                         };
                         rs.delete(docId, callback);
                     }
                     else {
-                        var message = "resource '" + config.resource + "' doesn't exist";
-                        $app.ws.nokResponse(res, message).httpCode(500).send();
-                        $log.tools.endpointWarn($cbdb.id, req, message);
+                        $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
                     }
                 };
             }

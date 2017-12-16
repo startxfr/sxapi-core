@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.60-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.66-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resources Catalog
 
@@ -29,9 +29,11 @@ if(resourceManager.exist('resource-id')) {
 | **google**       | googleapis v23.0.0 | [read](google.md)      | Resource to interact with Google API backend.
 | **google_drive** | googleapis v23.0.0 | [read](google_drive.md)| Resource to interact with Google Drive API backend.
 | **http**         | request v2.79.0    | [read](http.md)        | Resource to interact with an http server.
-| **mysql**        | mysql v2.11.1      | [read](mysql.md)       | Resource to interact with amysql server.
+| **mysql**        | mysql v2.11.1      | [read](mysql.md)       | Resource to interact with a mysql server.
+| **postgres**     | pg v7.4.0          | [read](postgres.md)    | Resource to interact with a postgres server.
+| **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
-| **serviceinfo**  | sxapi v0.0.60      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **serviceinfo**  | sxapi v0.0.66      | [read](serviceinfo.md) | Resource to interact with a application services.
 
 ## Using a resource
 
