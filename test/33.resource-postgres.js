@@ -4,11 +4,11 @@ var expect = require("chai").expect;
 
 var test = null;
 
-/* Test suite for mysql resource */
-describe("mysql resource component", function () {
+/* Test suite for postgres resource */
+describe("postgres resource component", function () {
     describe("app object", function () {
-        test = require("../core/resource/mysql");
-        test = test("test-mysql", {
+        test = require("../core/resource/postgres");
+        test = test("test-postgres", {
             server: {
                 "host": "172.17.42.1",
                 "database": "test"

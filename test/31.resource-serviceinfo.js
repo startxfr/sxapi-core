@@ -75,6 +75,22 @@ describe("serviceinfo resource component", function () {
                 });
             });
         });
+        describe("#health()", function () {
+            it("should exist", function () {
+                expect(test).to.have.any.keys('health');
+            });
+            it("should be a method", function () {
+                expect(test.health).to.be.an('function');
+            });
+            describe("#__healthDefaultCallback()", function () {
+                it("should exist", function () {
+                    expect(test).to.have.any.keys('__healthDefaultCallback');
+                });
+                it("should be a method", function () {
+                    expect(test.__healthDefaultCallback).to.be.an('function');
+                });
+            });
+        });
     });
     describe("resource endpoints", function () {
         describe("#info()", function () {
@@ -85,6 +101,18 @@ describe("serviceinfo resource component", function () {
                 expect(test.endpoints.info).to.be.an('function');
             });
             var result = test.endpoints.info({});
+            it("should return a webserver callback", function () {
+                expect(result).to.be.an('function');
+            });
+        });
+        describe("#health()", function () {
+            it("should exist", function () {
+                expect(test.endpoints).to.have.any.keys('health');
+            });
+            it("should be a method", function () {
+                expect(test.endpoints.health).to.be.an('function');
+            });
+            var result = test.endpoints.health({});
             it("should return a webserver callback", function () {
                 expect(result).to.be.an('function');
             });

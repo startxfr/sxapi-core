@@ -196,6 +196,36 @@ describe("Log core component", function () {
                 expect(test.tools.endpointError).to.be.an('function');
             });
         });
+        describe("#endpointDebugAndAnswer()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointDebugAndAnswer');
+                expect(test.tools.endpointDebugAndAnswer).to.be.an('function');
+            });
+        });
+        describe("#endpointInfoAndAnswer()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointInfoAndAnswer');
+                expect(test.tools.endpointInfoAndAnswer).to.be.an('function');
+            });
+        });
+        describe("#endpointWarnAndAnswer()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointWarnAndAnswer');
+                expect(test.tools.endpointWarnAndAnswer).to.be.an('function');
+            });
+        });
+        describe("#endpointWarnAndAnswerNoResource()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointWarnAndAnswerNoResource');
+                expect(test.tools.endpointWarnAndAnswerNoResource).to.be.an('function');
+            });
+        });
+        describe("#endpointErrorAndAnswer()", function () {
+            it("should be a method", function () {
+                expect(test.tools).to.have.any.keys('endpointErrorAndAnswer');
+                expect(test.tools.endpointErrorAndAnswer).to.be.an('function');
+            });
+        });
         describe("#resourcePrefix()", function () {
             it("should be a method", function () {
                 expect(test.tools).to.have.any.keys('resourcePrefix');

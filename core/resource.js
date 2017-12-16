@@ -30,7 +30,6 @@ var $resources = {
      * @returns {$resources}
      */
     add: function (id, config) {
-        $log.debug("Adding resource " + id + " to resources pool", 2);
         if (typeof id !== "string") {
             throw new Error("resource 'id' must be a string");
         }
@@ -41,6 +40,7 @@ var $resources = {
             throw new Error("resource must have a _class param");
         }
         this.config[id] = require('./resource/' + config._class)(id, config);
+        $log.debug(id + " : added to resources pool", 2);
         return this;
     },
     /**
