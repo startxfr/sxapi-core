@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $pgdb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_postgres_init_' + $pgdb.id;
@@ -30,13 +31,10 @@ module.exports = function (id, config) {
                 throw new Error("no 'server.database' key found in resource '" + $pgdb.id + "' config");
             }
             $pgdb.config._sign = $pgdb.config.server.host + '::' + $pgdb.config.server.database;
-            $pgdb.conn = require("postgres");
-            if (typeof $postgresPool === 'undefined') {
-                $postgresPool = [];
-            }
-            if (typeof $postgresPool[$pgdb.config._sign] === 'undefined') {
-                $log.tools.resourceDebug($pgdb.id, "resource '" + $pgdb.id + "' : new connection to postgres " + $pgdb.config._sign, 4);
-                $postgresPool[$pgdb.config._sign] = $pgdb.conn.createConnection($pgdb.config.server);
+            $pgdb.conn = require("pg").Client;
+            if (typeof $pgdb.pool[$pgdb.config._sign] === 'undefined') {
+                $log.tools.resourceDebug($pgdb.id, "initialize new postgresql connection to " + $pgdb.config._sign, 4);
+                $pgdb.pool[$pgdb.config._sign] = new $pgdb.conn($pgdb.config.server);
             }
             else {
                 $log.tools.resourceDebug($pgdb.id, "resource '" + $pgdb.id + "' : use existing connection to postgres " + $pgdb.config._sign, 4);
@@ -58,7 +56,7 @@ module.exports = function (id, config) {
         },
         stop: function (callback) {
             $log.tools.resourceDebug($pgdb.id, "Stopping", 2);
-            $postgresPool[$pgdb.config._sign].destroy();
+            $pgdb.pool[$pgdb.config._sign].end();
             if (typeof callback === "function") {
                 callback(null, $pgdb);
             }
@@ -67,7 +65,7 @@ module.exports = function (id, config) {
         open: function (callback) {
             var timerId = 'postgres_open_' + $pgdb.id;
             $timer.start(timerId);
-            $postgresPool[$pgdb.config._sign].connect(function (err) {
+            $pgdb.pool[$pgdb.config._sign].connect(function (err) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                     throw new Error("error connecting resource '" + $pgdb.id + "' to " + $pgdb.config._sign + ' : ' + err.message);
@@ -85,10 +83,10 @@ module.exports = function (id, config) {
             var timerId = 'postgres_query_' + sql;
             $timer.start(timerId);
             $log.tools.resourceInfo($pgdb.id, "exec sql " + sql);
-            return $postgresPool[$pgdb.config._sign].query(sql, (callback) ? callback(timerId) : $pgdb.__queryDefaultCallback(timerId));
+            return $pgdb.pool[$pgdb.config._sign].query(sql, (callback) ? callback(timerId) : $pgdb.__queryDefaultCallback(timerId));
         },
         __queryDefaultCallback: function (timerId) {
-            return function (error, results, fields) {
+            return function (error, results) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
                     $log.tools.resourceError("query could not be executed because " + error.message, duration);
@@ -102,7 +100,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         read: function (table, filter, callback) {
-            var connection = $postgresPool[$pgdb.config._sign];
+            var connection = $pgdb.pool[$pgdb.config._sign];
             var sqlFilter = '';
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {
                 for (var i in filter) {
@@ -120,7 +118,7 @@ module.exports = function (id, config) {
             }
         },
         __readDefaultCallback: function (timerId) {
-            return function (error, results, fields) {
+            return function (error, results) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
                     $log.tools.resourceWarn($pgdb.id, "error reading entry in postgres because " + error.message, duration);
@@ -140,7 +138,7 @@ module.exports = function (id, config) {
             var timerId = 'postgres_insert_' + table;
             $timer.start(timerId);
             $log.tools.resourceInfo($pgdb.id, "add new entry in table '" + table + "'");
-            var connection = $postgresPool[$pgdb.config._sign];
+            var connection = $pgdb.pool[$pgdb.config._sign];
             var fields = '';
             var vals = '';
             for (var i in data) {
@@ -151,7 +149,7 @@ module.exports = function (id, config) {
             return connection.query(sql, (callback) ? callback(timerId) : $pgdb.__insertDefaultCallback(timerId));
         },
         __insertDefaultCallback: function (timerId) {
-            return function (error, results, fields) {
+            return function (error, results) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
                     $log.tools.resourceWarn($pgdb.id, "resource '" + $pgdb.id + "' : error adding new entry because " + error.message, duration);
@@ -169,7 +167,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         update: function (table, data, filter, callback) {
-            var connection = $postgresPool[$pgdb.config._sign];
+            var connection = $pgdb.pool[$pgdb.config._sign];
             var sqlFrag = '';
             var sqlFilter = '';
             $log.tools.resourceInfo($pgdb.id, "update entry in table '" + table + "'");
@@ -191,7 +189,7 @@ module.exports = function (id, config) {
             }
         },
         __updateDefaultCallback: function (timerId) {
-            return function (error, results, fields) {
+            return function (error, results) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
                     $log.tools.resourceWarn($pgdb.id, "error updating entry in postgres because " + error.message, duration);
@@ -208,7 +206,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         delete: function (table, filter, callback) {
-            var connection = $postgresPool[$pgdb.config._sign];
+            var connection = $pgdb.pool[$pgdb.config._sign];
             var sqlFilter = '';
             $log.tools.resourceInfo($pgdb.id, "delete entry in table '" + table + "'");
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {
@@ -226,7 +224,7 @@ module.exports = function (id, config) {
             }
         },
         __deleteDefaultCallback: function (timerId) {
-            return function (error, results, fields) {
+            return function (error, results) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
                     $log.tools.resourceWarn($pgdb.id, "error deleting entry in postgres because " + error.message, duration);

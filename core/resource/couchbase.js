@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $cbCluster, $cbBuckets, $app */
+/* global module, require, process, $log, $timer, $cbdb.pool, $cbBuckets, $app */
 //'use strict';
 
 /**
@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $cbdb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_couchbase_init_' + $cbdb.id;
@@ -27,12 +28,9 @@ module.exports = function (id, config) {
                 throw new Error("no 'bucket' key found in resource '" + $cbdb.id + "' config");
             }
             $cbdb.cb = require("couchbase");
-            if (typeof $cbCluster === 'undefined') {
-                $cbCluster = [];
-            }
-            if (typeof $cbCluster[$cbdb.config.cluster] === 'undefined') {
-                $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : new connection to cluster " + $cbdb.config.cluster, 4);
-                $cbCluster[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
+            if (typeof $cbdb.pool[$cbdb.config.cluster] === 'undefined') {
+                $log.tools.resourceDebug($cbdb.id, "open new connection to cluster " + $cbdb.config.cluster, 4);
+                $cbdb.pool[$cbdb.config.cluster] = new $cbdb.cb.Cluster($cbdb.config.cluster);
             }
             else {
                 $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : use existing connection to cluster " + $cbdb.config.cluster, 4);
@@ -66,11 +64,11 @@ module.exports = function (id, config) {
                 $cbBuckets = [];
             }
             if (typeof $cbBuckets[$cbdb.config.bucket] === 'undefined') {
-                $log.tools.resourceDebug($cbdb.id, "new connection to bucket '" + $cbdb.config.bucket + "'", 4);
+                $log.tools.resourceDebug($cbdb.id, "use bucket '" + $cbdb.config.bucket + "'", 4);
                 if (typeof $cbdb.config.user !== 'undefined' && typeof $cbdb.config.password !== 'undefined') {
-                    $cbCluster[$cbdb.config.cluster].authenticate($cbdb.config.user, $cbdb.config.password);
+                    $cbdb.pool[$cbdb.config.cluster].authenticate($cbdb.config.user, $cbdb.config.password);
                 }
-                $cbBuckets[$cbdb.config.bucket] = $cbCluster[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
+                $cbBuckets[$cbdb.config.bucket] = $cbdb.pool[$cbdb.config.cluster].openBucket($cbdb.config.bucket, $cbdb.__openHandler(callback, timerId));
 
             }
             else {

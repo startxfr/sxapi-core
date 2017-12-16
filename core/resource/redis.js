@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $rdCluster, $rdCluster, $app */
+/* global module, require, process, $log, $timer, $rddb.pool, $rddb.pool, $app */
 //'use strict';
 
 /**
@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $rddb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_redis_init_' + $rddb.id;
@@ -24,9 +25,6 @@ module.exports = function (id, config) {
                 throw new Error("no 'host' or 'url' key found in resource '" + $rddb.id + "' config");
             }
             $rddb.rd = require("redis");
-            if (typeof $rdCluster === 'undefined') {
-                $rdCluster = [];
-            }
             $log.tools.resourceDebug($rddb.id, "initialized ", 1, $timer.timeStop(timerId));
             return $rddb;
         },
@@ -53,10 +51,10 @@ module.exports = function (id, config) {
             var timerId = 'redis_open_' + $rddb.id;
             $timer.start(timerId);
             var clusID = $rddb.config.host || $rddb.config.url;
-            if (typeof $rdCluster[clusID] === 'undefined') {
-                $log.tools.resourceDebug($rddb.id, "new connection to redis '" + clusID + "'", 4);
-                $rdCluster[clusID] = $rddb.rd.createClient($rddb.config);
-                callback(null, $rdCluster[clusID]);
+            if (typeof $rddb.pool[clusID] === 'undefined') {
+                $log.tools.resourceDebug($rddb.id, "openning redis connection to '" + clusID + "'", 4);
+                $rddb.pool[clusID] = $rddb.rd.createClient($rddb.config);
+                callback(null, $rddb.pool[clusID]);
             }
             else {
                 $log.tools.resourceDebug($rddb.id, "connected with existing connection to redis '" + clusID + "'", 4);
@@ -68,7 +66,7 @@ module.exports = function (id, config) {
             $timer.start('redis_get_' + key);
             var clusID = $rddb.config.host || $rddb.config.url;
             $log.tools.resourceInfo($rddb.id, "get key '" + key + "'");
-            return $rdCluster[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
+            return $rddb.pool[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
         },
         __getDefaultCallback: function (key) {
             return function (err, results) {
@@ -97,7 +95,7 @@ module.exports = function (id, config) {
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
+            $rddb.pool[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__insertDefaultCallback(key));
         },
         __insertDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -123,7 +121,7 @@ module.exports = function (id, config) {
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
+            $rddb.pool[clusID].set(key, doc, (callback) ? callback(key) : $rddb.__updateDefaultCallback(key));
         },
         __updateDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -145,7 +143,7 @@ module.exports = function (id, config) {
             $timer.start('redis_delete_' + key);
             $log.tools.resourceInfo($rddb.id, "deleting document '" + key + "'");
             var clusID = $rddb.config.host || $rddb.config.url;
-            $rdCluster[clusID].del(key, (callback) ? callback(key) : $rddb.__deleteDefaultCallback(key));
+            $rddb.pool[clusID].del(key, (callback) ? callback(key) : $rddb.__deleteDefaultCallback(key));
         },
         __deleteDefaultCallback: function (key) {
             return function (coucherr) {

@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $mqdb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_mysql_init_' + $mqdb.id;
@@ -31,12 +32,9 @@ module.exports = function (id, config) {
             }
             $mqdb.config._sign = $mqdb.config.server.host + '::' + $mqdb.config.server.database;
             $mqdb.conn = require("mysql");
-            if (typeof $mysqlPool === 'undefined') {
-                $mysqlPool = [];
-            }
-            if (typeof $mysqlPool[$mqdb.config._sign] === 'undefined') {
-                $log.tools.resourceDebug($mqdb.id, "resource '" + $mqdb.id + "' : new connection to mysql " + $mqdb.config._sign, 4);
-                $mysqlPool[$mqdb.config._sign] = $mqdb.conn.createConnection($mqdb.config.server);
+            if (typeof $mqdb.pool[$mqdb.config._sign] === 'undefined') {
+                $log.tools.resourceDebug($mqdb.id, "initialize new mysql connection to " + $mqdb.config._sign, 4);
+                $mqdb.pool[$mqdb.config._sign] = $mqdb.conn.createConnection($mqdb.config.server);
             }
             else {
                 $log.tools.resourceDebug($mqdb.id, "resource '" + $mqdb.id + "' : use existing connection to mysql " + $mqdb.config._sign, 4);
@@ -58,7 +56,7 @@ module.exports = function (id, config) {
         },
         stop: function (callback) {
             $log.tools.resourceDebug($mqdb.id, "Stopping", 2);
-            $mysqlPool[$mqdb.config._sign].destroy();
+            $mqdb.pool[$mqdb.config._sign].destroy();
             if (typeof callback === "function") {
                 callback(null, $mqdb);
             }
@@ -67,7 +65,7 @@ module.exports = function (id, config) {
         open: function (callback) {
             var timerId = 'mysql_open_' + $mqdb.id;
             $timer.start(timerId);
-            $mysqlPool[$mqdb.config._sign].connect(function (err) {
+            $mqdb.pool[$mqdb.config._sign].connect(function (err) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                     throw new Error("error connecting resource '" + $mqdb.id + "' to " + $mqdb.config._sign + ' : ' + err.message);
@@ -85,7 +83,7 @@ module.exports = function (id, config) {
             var timerId = 'mysql_query_' + sql;
             $timer.start(timerId);
             $log.tools.resourceInfo($mqdb.id, "exec sql " + sql);
-            return $mysqlPool[$mqdb.config._sign].query(sql, (callback) ? callback(timerId) : $mqdb.__queryDefaultCallback(timerId));
+            return $mqdb.pool[$mqdb.config._sign].query(sql, (callback) ? callback(timerId) : $mqdb.__queryDefaultCallback(timerId));
         },
         __queryDefaultCallback: function (timerId) {
             return function (error, results, fields) {
@@ -102,7 +100,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         read: function (table, filter, callback) {
-            var connection = $mysqlPool[$mqdb.config._sign];
+            var connection = $mqdb.pool[$mqdb.config._sign];
             var sqlFilter = '';
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {
                 for (var i in filter) {
@@ -140,7 +138,7 @@ module.exports = function (id, config) {
             var timerId = 'mysql_insert_' + table;
             $timer.start(timerId);
             $log.tools.resourceInfo($mqdb.id, "add new entry in table '" + table + "'");
-            var connection = $mysqlPool[$mqdb.config._sign];
+            var connection = $mqdb.pool[$mqdb.config._sign];
             var fields = '';
             var vals = '';
             for (var i in data) {
@@ -169,7 +167,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         update: function (table, data, filter, callback) {
-            var connection = $mysqlPool[$mqdb.config._sign];
+            var connection = $mqdb.pool[$mqdb.config._sign];
             var sqlFrag = '';
             var sqlFilter = '';
             $log.tools.resourceInfo($mqdb.id, "update entry in table '" + table + "'");
@@ -208,7 +206,7 @@ module.exports = function (id, config) {
          * @param {function} callback
          */
         delete: function (table, filter, callback) {
-            var connection = $mysqlPool[$mqdb.config._sign];
+            var connection = $mqdb.pool[$mqdb.config._sign];
             var sqlFilter = '';
             $log.tools.resourceInfo($mqdb.id, "delete entry in table '" + table + "'");
             if (typeof filter === 'object' && Object.keys(filter).length > 0) {

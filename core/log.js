@@ -353,7 +353,7 @@ var $log = {
             $log.info(this.resourceMessage(rId, message), timer, cancelBackend);
         },
         resourceWarn: function (rId, message, timer, cancelBackend) {
-            $log.debug(this.resourceMessage(rId, message), timer, cancelBackend);
+            $log.warn(this.resourceMessage(rId, message), timer, cancelBackend);
         },
         resourceError: function (rId, message, timer, cancelBackend) {
             $log.error(this.resourceMessage(rId, message), timer, cancelBackend);

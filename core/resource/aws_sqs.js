@@ -24,7 +24,7 @@ module.exports = function (id, config) {
             if (config) {
                 $sqs.config = config;
             }
-            $log.tools.resourceDebug($sqs.id, req, "initializing", 3);
+            $log.tools.resourceDebug($sqs.id, "initializing", 3);
             if (!$sqs.config.ACCESS_ID) {
                 throw new Error("no 'ACCESS_ID' key found in resource '" + $sqs.id + "' config");
             }

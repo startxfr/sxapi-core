@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $rdCluster, $rdCluster, $app */
+/* global module, require, process, $log, $timer, $mcdb.pool, $mcdb.pool, $app */
 //'use strict';
 
 /**
@@ -12,6 +12,7 @@
 module.exports = function (id, config) {
     var $mcdb = {
         id: id,
+        pool: [],
         config: {},
         init: function (config) {
             var timerId = 'resource_memcache_init_' + $mcdb.id;
@@ -25,18 +26,15 @@ module.exports = function (id, config) {
                 $mcdb.config.host = "127.0.0.1";
             }
             if (!$mcdb.config.port) {
-                $log.tools.resourceDebug($mcdb.id, "no 'port' found in resource '" + $mcdb.id + "' config. Using default : 11211",3);
-                $mcdb.config.port = "11211";
-            }
-            $mcdb.rd = require("memcache");
-            if (typeof $rdCluster === 'undefined') {
-                $rdCluster = [];
+                $log.tools.resourceDebug($mcdb.id, "no 'port' found in resource '" + $mcdb.id + "' config. Using default : 11211", 3);
+                $mcdb.config.port = 11211;
             }
             $log.tools.resourceDebug($mcdb.id, "initialized ", 1, $timer.timeStop(timerId));
             return $mcdb;
         },
         start: function (callback) {
             var timerId = 'resource_cb_start_' + $mcdb.id;
+            var clusID = $mcdb.config.host || $mcdb.config.port;
             $log.tools.resourceDebug($mcdb.id, "starting", 3);
             var cb = function () {
                 $log.tools.resourceDebug($mcdb.id, "started ", 1, $timer.timeStop(timerId));
@@ -44,6 +42,9 @@ module.exports = function (id, config) {
                     callback();
                 }
             };
+            var memcache = require('memcache');
+            $log.tools.resourceDebug($mcdb.id, "starting new connection to memcache '" + clusID + "'", 4);
+            $mcdb.pool[clusID] = new memcache.Client($mcdb.config.port, $mcdb.config.host);
             $mcdb.open(cb);
             return $mcdb;
         },
@@ -58,11 +59,10 @@ module.exports = function (id, config) {
             var timerId = 'memcache_open_' + $mcdb.id;
             $timer.start(timerId);
             var clusID = $mcdb.config.host || $mcdb.config.port;
-            if (typeof $rdCluster[clusID] === 'undefined') {
-                $log.tools.resourceDebug($mcdb.id, "new connection to memcache '" + clusID + "'", 4);
-                $rdCluster[clusID] = $mcdb.rd.Client($mcdb.config.port,$mcdb.config.host);
-                $rdCluster[clusID].connect();
-                callback(null, $rdCluster[clusID]);
+            if (typeof $mcdb.pool[clusID] === 'undefined') {
+                $log.tools.resourceDebug($mcdb.id, "open new connection to memcache '" + clusID + "'", 4);
+                $mcdb.pool[clusID].connect();
+                callback(null, $mcdb.pool[clusID]);
             }
             else {
                 $log.tools.resourceDebug($mcdb.id, "connected with existing connection to memcache '" + clusID + "'", 4);
@@ -74,7 +74,7 @@ module.exports = function (id, config) {
             $timer.start('memcache_get_' + key);
             var clusID = $mcdb.config.host || $mcdb.config.port;
             $log.tools.resourceInfo($mcdb.id, "get key '" + key + "'");
-            return $rdCluster[clusID].get(key, (callback) ? callback(key) : $mcdb.__getDefaultCallback(key));
+            return $mcdb.pool[clusID].get(key, (callback) ? callback(key) : $mcdb.__getDefaultCallback(key));
         },
         __getDefaultCallback: function (key) {
             return function (err, results) {
@@ -103,7 +103,7 @@ module.exports = function (id, config) {
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__insertDefaultCallback(key));
+            $mcdb.pool[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__insertDefaultCallback(key));
         },
         __insertDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -129,7 +129,7 @@ module.exports = function (id, config) {
             if (JSON.isSerializable(doc)) {
                 doc = JSON.stringify(doc);
             }
-            $rdCluster[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__updateDefaultCallback(key));
+            $mcdb.pool[clusID].set(key, doc, (callback) ? callback(key) : $mcdb.__updateDefaultCallback(key));
         },
         __updateDefaultCallback: function (key) {
             return function (coucherr, doc) {
@@ -151,7 +151,7 @@ module.exports = function (id, config) {
             $timer.start('memcache_delete_' + key);
             $log.tools.resourceInfo($mcdb.id, "deleting document '" + key + "'");
             var clusID = $mcdb.config.host || $mcdb.config.port;
-            $rdCluster[clusID].delete(key, (callback) ? callback(key) : $mcdb.__deleteDefaultCallback(key));
+            $mcdb.pool[clusID].delete(key, (callback) ? callback(key) : $mcdb.__deleteDefaultCallback(key));
         },
         __deleteDefaultCallback: function (key) {
             return function (coucherr) {
