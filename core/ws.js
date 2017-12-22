@@ -92,25 +92,38 @@ var $ws = {
     },
     _initEndpointConfig: function (config) {
         var handler = config.handler;
-        var eptype = (typeof handler === "string") ? "dynamic" : "static ";
-        var ephdname = (handler) ? handler : "defaultEndpoint";
+        var urlDescriptor = {
+            path: config.path,
+            type: (typeof handler === "string") ? "dynamic" : "static ",
+            endpoint: "defaultEndpoint"
+        };
+        if (typeof config.desc !== "undefined") {
+            urlDescriptor.desc = config.desc;
+        }
         if (typeof handler === "string") {
-            eptype = "dynamic";
+            urlDescriptor.type = "dynamic";
+            urlDescriptor.endpoint = "diy::" + handler;
             handler = eval(handler);
         }
         else if (typeof handler === "undefined" && config.method !== "ROUTER") {
             if (typeof config.resource === "string" && typeof config.endpoint === "string") {
-                eptype = "dynamic";
+                urlDescriptor.type = "dynamic";
+                urlDescriptor.endpoint = config.resource + "::" + config.endpoint;
                 var rs = require('./resource').get(config.resource);
-                ephdname = config.resource + "::" + config.endpoint;
                 handler = eval('rs.endpoints.' + config.endpoint);
             }
+            else if (config.directory !== undefined) {
+                $log.debug("Add static  endpoint  [ALL]    " + config.path + " > ./" + config.directory, 3);
+                urlDescriptor.endpoint = "static::" + config.directory;
+                $ws.app.use(config.path, $ws.express.static(config.directory));
+                $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
+                return this;
+            }
             else {
-                ephdname = "defaultEndpoint";
+                urlDescriptor.endpoint = "defaultEndpoint";
                 handler = $ws.__defaultEndpointCb;
             }
         }
-        var urlDescriptor = {path: config.path, type: eptype, endpoint: ephdname, desc: config.desc};
         switch (config.method) {
             case "ROUTER":
                 var fct = null;
@@ -127,26 +140,26 @@ var $ws = {
             case "POST":
                 urlDescriptor.method = "POST";
                 $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
-                $log.debug("Add " + eptype + " endpoint  [POST]   " + config.path + " > " + ephdname, 3);
+                $log.debug("Add " + urlDescriptor.type + " endpoint  [POST]   " + config.path + " > " + urlDescriptor.endpoint, 3);
                 $ws.app.post(config.path, handler(config));
                 break;
             case "PUT":
                 urlDescriptor.method = "PUT";
                 $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
-                $log.debug("Add " + eptype + " endpoint  [PUT]    " + config.path + " > " + ephdname, 3);
+                $log.debug("Add " + urlDescriptor.type + " endpoint  [PUT]    " + config.path + " > " + urlDescriptor.endpoint, 3);
                 $ws.app.put(config.path, handler(config));
                 break;
             case "DELETE":
                 urlDescriptor.method = "DELETE";
                 $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
-                $log.debug("Add " + eptype + " endpoint  [DELETE] " + config.path + " > " + ephdname, 3);
+                $log.debug("Add " + urlDescriptor.type + " endpoint  [DELETE] " + config.path + " > " + urlDescriptor.endpoint, 3);
                 $ws.app.delete(config.path, handler(config));
                 break;
             default:
                 config.method = "GET";
                 urlDescriptor.method = "GET";
                 $ws.urlList[this._initEndpointGenerateUrlSign(urlDescriptor)] = urlDescriptor;
-                $log.debug("Add " + eptype + " endpoint  [GET]    " + config.path + " > " + ephdname, 3);
+                $log.debug("Add " + urlDescriptor.type + " endpoint  [GET]    " + config.path + " > " + urlDescriptor.endpoint, 3);
                 $ws.app.get(config.path, handler(config));
         }
         return this;

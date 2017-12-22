@@ -11,6 +11,7 @@ app:
 #    - "db-memcache"
 #    - "db-postgres"
 #    - "db-mariadb"
+    - "db-couchbase"
   environment:
   - NODE_ENV=development
   - APP_PATH=/usr/src/app
@@ -65,11 +66,11 @@ db-redis:
 #  ports:
 #    - 8081:8080
 
-#db-couchbase:
-#  image: couchbase
-#  ports:
-#    - 8091-8094:8091-8094
-#    - 11210:11210
+db-couchbase:
+  image: couchbase
+  ports:
+    - 8091-8094:8091-8094
+    - 11210:11210
 #  volumes:
 #    - /data/example/couchbase:/opt/couchbase/var
 
