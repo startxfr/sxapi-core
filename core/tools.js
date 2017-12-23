@@ -1,7 +1,7 @@
 //'use strict';
 
-JSON.isSerializable = function (str) {
-    if (typeof str === 'object' || typeof str === 'array') {
+JSON.isSerializable = function (obj) {
+    if (typeof obj === 'object' || typeof obj === 'array') {
         return true;
     }
     else {

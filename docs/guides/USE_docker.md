@@ -84,8 +84,16 @@ You can change `name`, `description`, `version` and `server.endpoints.body` with
 
 ### 5. Run your application
 
+with your own configuration file 
+
 ```bash
 docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx/sxapi
+```
+
+or using environement variable
+
+```bash
+docker run -d -p 8080:8080  --env SXAPI_CONF=$(cat ~/test-sxapi/sxapi.json) startx/sxapi
 ```
 
 ### 6. Explore your api

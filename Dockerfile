@@ -15,6 +15,7 @@ COPY run.sh /bin/sxapi
 
 RUN  cd $APP_PATH \
  &&  npm install \
+ &&  npm dedupe \
  &&  npm cache verify \
  &&  npm cache clean --force \
  &&  mkdir -p $CONF_PATH \

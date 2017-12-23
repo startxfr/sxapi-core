@@ -10,6 +10,7 @@ app:
 #    - "db-memcache"
 #    - "db-postgres"
 #    - "db-mariadb"
+#    - "db-couchbase"
   
 db-redis:
   image: redis:3.2.11-alpine
@@ -30,7 +31,7 @@ db-redis:
 #db-postgres:
 #  image: postgres:10.1-alpine
 #  restart: always
-#  expose:
+#  ports:
 #    - "5432"
 #  environment:
 #    POSTGRES_PASSWORD: hguyFtgfR4r9R4r76
@@ -42,7 +43,7 @@ db-redis:
 #    MYSQL_DATABASE: test-db
 #    MYSQL_USER: mariadb_user
 #    MYSQL_PASSWORD: mariadb_pwd
-#  expose:
+#  ports:
 #    - "3306"
 #  volumes:
 #    - /data/example/mysql:/var/lib/mysql
@@ -53,3 +54,12 @@ db-redis:
 #  restart: always
 #  ports:
 #    - 8081:8080
+#
+#db-couchbase:
+#  image: couchbase
+#  ports:
+#    - 8091-8094:8091-8094
+#    - 11210:11210
+#  volumes:
+#    - /data/example/couchbase:/opt/couchbase/var
+

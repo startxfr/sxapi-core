@@ -1,90 +1,126 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# SXAPI Core : resource component
+# SXAPI Core : resource manager
 
-!!! TO DO see [session](session.md) for example
+The resource manager is a [core component](./README.md) allow you to connect your API with
+multiple backend. API builders can connect and expose data from theses backend, and 
+developers can use then with ease to keep concentrated on business developement rather than 
+technicals issues.<br> 
+You can get a full list of [availables resources](../resources/README.md#availables_resources) 
+and learn more about how to [use a resource](../resources/README.md#using_a_resource) 
+by reading the  [resource documentation](../resources/README.md).<br> 
+API builders can discover how to [expose resource endpoints](../resources/README.md#using_a_resource_endpoint) 
+and node developpers can learn how to [use resource methods](../resources/README.md#using_a_resource_method) 
 
 ## Configuration
 
-xxxx
+To enable this component in you API, you must add a `resources` property
+in the main section of your [configuration file](../guides/2.Configure.md), 
+The coresponding value should be an object with [configuration parameters](#config-parameters).<br>
+If `resources` property is not defined, or set to false (`"resources" : false`), no
+resource context will be defined and your API could not use resource to store and 
+persist data.
 
 ### Config parameters
 
-| Param           | Mandatory | Type | default | Description
-|-----------------|:---------:|:----:|---------|---------------
+| Param                  | Mandatory | Type    | default | Description
+|------------------------|:---------:|:-------:|---------|---------------
+| **resource-id**        | yes       | obj     |         | the resource key ID. [more informations](../resources/README.md#using_a_resource) 
+| resource-id.**_class** | yes       | string  |         | the resource class name. Should be one of the [availables resources](../resources/README.md#availables_resources) 
 
 
 ### Config Sample
 
 ```javascript
-
+{
+    "resources": {
+        "resource-id": {
+            "_class": "resource_name",
+            "param": "value"
+        }
+    }
+}
 ```
 
-
-
-
+## Methods
 
 ### init method
 
 Initialize the resource component and load configured resources
 
-#### **Parameters**
+#### Parameters
 
--   `config` **object** resources object list with key for *resource-id* and value for resource config
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **config**    | yes       | obj     |         | resources object list with key for *resource-id* and value for resource config
 
 ### add method
 
 Load a resource into the resources pool
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** *resource-id* used for referencing this resource
--   `config` **object** resource config including `_class` key with resource library
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **id**        | yes       | string  |         | *resource-id* used for referencing this resource
+| **config**    | yes       | obj     |         | resource config including `_class` key with resource library
 
 ### get method
 
 Get a resource from the resources pool
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** *resource-id* of the requested resource
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **id**        | yes       | string  |         | *resource-id* of the requested resource
 
 ### exist method
 
 Return true if a *resource-id* exist in the resources pool
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** *resource-id* of the requested resource
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **id**        | yes       | string  |         | *resource-id* of the requested resource
 
 ### starts method
 
 Start all available resources in series
 
-#### **Parameters**
+#### Parameters
 
--   `callback` **function** callback called after all resources are started
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **callback**  | no        | fct     |         | callback called after all resources are started
 
 ### start method
 
 Start one resource
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** *resource-id* you wan't to start
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **id**        | yes       | string  |         | *resource-id* you wan't to start
 
 ### stops method
 
 Stop all available resources in series
 
-#### **Parameters**
+#### Parameters
 
--   `callback` **function** callback called after all resources are stopped
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **callback**  | no        | fct     |         | callback called after all resources are stopped
 
 ### stop method
 
 Stop one resource
 
-#### **Parameters**
+#### Parameters
 
--   `id` **string** *resource-id* you wan't to stop
+| Param         | Mandatory | Type    | default | Description
+|---------------|:---------:|:-------:|---------|---------------
+| **id**        | yes       | string  |         | *resource-id* you wan't to stop
