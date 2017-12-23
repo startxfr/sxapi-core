@@ -25,6 +25,7 @@ if(resourceManager.exist('resource-id')) {
 |------------------|:------------------:|:----------------------:|------------------------
 | **aws_s3**       | aws-sdk v2.6       | [read](aws_s3.md)      | Resource to interact with an AWS S3 backend.
 | **aws_sqs**      | aws-sdk v2.6       | [read](aws_sqs.md)     | Resource to interact with an AWS SQS backend.
+| **aws_dynamodb** | aws-sdk v2.6       | [read](aws_s3.md)      | Resource to interact with an AWS DynamoDB backend.
 | **couchbase**    | couchbase v2.1.8   | [read](couchbase.md)   | Resource to interact with a couchbase cluster
 | **google**       | googleapis v23.0.0 | [read](google.md)      | Resource to interact with Google API backend.
 | **google_drive** | googleapis v23.0.0 | [read](google_drive.md)| Resource to interact with Google Drive API backend.
@@ -33,7 +34,7 @@ if(resourceManager.exist('resource-id')) {
 | **postgres**     | pg v7.4.0          | [read](postgres.md)    | Resource to interact with a postgres server.
 | **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
-| **serviceinfo**  | sxapi v0.0.68      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **serviceinfo**  | sxapi v0.0.69      | [read](serviceinfo.md) | Resource to interact with a application services.
 
 ## Using a resource
 

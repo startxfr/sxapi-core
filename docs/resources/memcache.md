@@ -11,7 +11,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [memcache npm module](https://www.npmjs.com/package/memcache) 
 [![npm](https://img.shields.io/npm/v/memcache.svg)](https://www.npmjs.com/package/memcache) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.68-blue.svg)](https://github.com/startxfr/sxapi-core).
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.66-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>
