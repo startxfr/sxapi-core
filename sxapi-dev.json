@@ -58,6 +58,11 @@
             "SESSION_TOKEN": "",
             "region": "eu-west-1"
         },
+        "couchbase-sample": {
+            "_class": "serviceinfo",
+            "cluster": "http://db-couchbase:8091",
+            "bucket": "beer-sample"
+        },
         "serviceinfo-sample": {
             "_class": "serviceinfo"
         },
@@ -92,11 +97,6 @@
                 "endpoint": "health"
             },
             {
-                "path": "/info",
-                "resource": "serviceinfo-sample",
-                "endpoint": "info"
-            },
-            {
                 "path": "/ping",
                 "desc": "Ping the application. Return a sample message in json",
                 "code": "200",
@@ -105,6 +105,10 @@
             {
                 "path": "/html",
                 "body": "<html><head></head><body><h1>Static html content</h1></body></html>"
+            },
+            {
+                "path": "/dir",
+                "directory": "docs/"
             },
             {
                 "path": "/txt",

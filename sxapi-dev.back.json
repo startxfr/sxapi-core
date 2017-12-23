@@ -1,0 +1,524 @@
+{
+    "name": "startx-api-dev",
+    "description": "sxapi developing config file",
+    "version": "0.0.1-beta",
+    "debug": true,
+    "session": {
+        "duration": 3600,
+        "auto_create": true,
+        "transport": {
+            "type": "token"
+        },
+        "backend": {
+            "type": "memcache",
+            "resource": "memcache-sample",
+            "sid_field": "sid"
+        }
+    },
+    "resources": {
+        "s3-sample": {
+            "_class": "aws_s3",
+            "listObjects_options": {
+            },
+            "getObject_options": {
+            },
+            "addObject_options": {
+            },
+            "updateObject_options": {
+            },
+            "deleteObject_options": {
+            },
+            "ACCESS_ID": "AKIAJ7JDWBNTZOXZRM6A",
+            "ACCESS_KEY": "VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl",
+            "SESSION_TOKEN": "",
+            "region": "eu-west-1",
+            "Bucket": "sxapitest"
+        },
+        "sqs-sample": {
+            "_class": "aws_sqs",
+            "read_options": {
+                "MaxNumberOfMessages": 10,
+                "VisibilityTimeout": 10,
+                "WaitTimeSeconds": 0
+            },
+            "delete_options": {
+            },
+            "send_options": {
+                "DelaySeconds": 10,
+                "MessageAttributes": {
+                    "from": {
+                        "DataType": "String",
+                        "StringValue": "startx"
+                    }
+                }
+            },
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test",
+            "ACCESS_ID": "AKIAJ7JDWBNTZOXZRM6A",
+            "ACCESS_KEY": "VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl",
+            "SESSION_TOKEN": "",
+            "region": "eu-west-1"
+        },
+        "couchbase-sample": {
+            "_class": "couchbase",
+            "cluster": "http://172.17.42.1:8091",
+            "bucket": "beer-sample"
+        },
+        "serviceinfo-sample": {
+            "_class": "serviceinfo"
+        },
+        "redis-sample": {
+            "_class": "redis",
+            "url": "redis://db-redis"
+        },
+        "memcache-sample": {
+            "_class": "memcache",
+            "url": "memcache://db-memcache"
+        },
+        "http-sample": {
+            "_class": "http",
+            "url": "https://adobe.github.io/Spry/data/json/array-02.js"
+        },
+        "google-sample": {
+            "_class": "google",
+            "auth": {
+                "method": "jwt",
+                "jwt": {
+                    "type": "service_account",
+                    "project_id": "startx.fr:sxapi2",
+                    "private_key_id": "8b12fe4bcd48e8dab9bb68076790b0948dd57dc5",
+                    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDpsol+AVG37aH3\nMXNmw/aV+BPrlopqTv7zRo8xJx6vqY71ABv/qBwQKekl7O4Kgjl2U+ONptiWe/Vx\nv7KnsvfEpmZYnVuVvl6YS1DLbkLa8+Z39hk4UkTPcyz8V1Cum18aUT/6ofmk1GXi\nbvlnQdr251xp+knwhSRXPr9L0MhKyAHqEFNWnQ/Ih70GkWwDeruamKuNr6wIxTmb\nvkdwEJIW2V21cNh1hoD8FuTJIRteoPVHlHeywuH+oz8GVp9jOaB2Q7ToIOwUvyMm\nLNArbkhjllNE/oT+8zYMT6wxIOmyi+ELbgz742zu+jQOaSUW/eWMnAjk5Dj/TBM3\nqSV3vPLrAgMBAAECggEAXdNYcEaHUJkPlfc8pd23eq6HEOb324arxXBmvQ0/vLcO\ntj68/v+3hKXO/XMKfx2ZhHBZw91gx8os2OZmC/5Gi6VjIeDLjGtJ/0r9vS8fmFik\nBzW/GmWtSryrKwTDV9b5b89/KFkvqYW9AhQb/eDq0IZDDCl41iAeXwjKNN42DA9M\ni0tw5KE9jrqBHzFniVSQpwYdso1AzLb0H8KBqx/DB5cIz4e4RjYL8fnE35yr6dVh\n7+/2c2Hpc3HtL4tnbqLDdvzj0qju3k5edysPOE7UqGujkMhdip7vE21jK/r3WDUF\nrhz49n9JT6Hq9mIVY7ulLRxsVovHRVMEgRrNvWBOgQKBgQD3IaHhWX+lUjCsJyrU\nB9LMLOtBwIFgDo8bZd/V652eGZ4v1dMlVpTt4oUou+EWt1fFUiLy7BR3zYxyWn1t\nzlx/z1YlQoNUJ9t4WY3RODXPwj6GMi46iV5P/MeMZGr5xSJzAkCfIzhjW75GVbMs\nKKxbRgz/gLt6dYEoiAOdDUwfMwKBgQDyFX0JnGw93O0iNqEjW/ngXw5th/TmTjKv\nYrcfbJ4XfQQ5QFwqEr1nbyHlhkTPRebEVrgNk+3hnd6slr/UUKilbADWP3MUn+/r\nMWcgOxTaKkCRQMan1R6mhi/faqgM2ekZoclXjT5NsQN5CyrELg40LrnBDa7gJv9c\nITcEo5c9aQKBgDnowqMosrWNneQpRWrr7mRzvijpMCfPIY+c/qeFD6klfaDd7R1Z\nvYpEw0k5RVRqYAHX7mKYGW+9VcTSGYQqkBhPAHO4s0d8E3yPF6FIF6v4a2hMx/Jl\nkBkUNbpbKYofvKPQik4AFc2KiPq4SET3vvOgZZlVlBjtAff6b0ZVAFprAoGAOPK3\nJGCo0fC71BWX2JKVeKPD6B5YjSkOIVYOkBTkJ9BgAvvR8o/QAJoTFkR8wWnHPJ7N\n01veVPnnXSBlZhPHaIq8s6nfb5WkQeawRNPBNwVDhSgA05B+Elx0vJEBkWxduorl\nq3PtmScwEvR+jgHrk3j+d5y5a7+gyNKDd9LoDCkCgYEAzvyQdhvRzvkKiQRb9dK2\nAnDIR9fbgRiBwMIp+lQ90cREgv2o4hIWuVKwCZEQScbCxjSREBFMI8mgjGkOWQcX\nR1Cne+SVoocBxela7sq9cDm3TSBwB68dK11kmRLIXAwb+IiJ1snVzDkEoCCbxIAt\n04ld8ptavQAEdHpqvkW67pA=\n-----END PRIVATE KEY-----\n",
+                    "client_email": "703694493039-316if153vnpl4snnui3rje49clv1ce5k@developer.gserviceaccount.com",
+                    "client_id": "703694493039-316if153vnpl4snnui3rje49clv1ce5k.apps.googleusercontent.com",
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://accounts.google.com/o/oauth2/token",
+                    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/703694493039-316if153vnpl4snnui3rje49clv1ce5k%40developer.gserviceaccount.com"
+                },
+                "scopes": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive"
+            },
+            "services": {
+                "drive": {
+                }
+            }
+        },
+        "mysql-sample": {
+            "_class": "mysql",
+            "server": {
+                "host": "db-mariadb",
+                "port": "3306",
+                "user": "dev",
+                "password": "dev",
+                "database": "sxapi"
+            }
+        },
+        "postgres-sample": {
+            "_class": "postgres",
+            "server": {
+                "host": "db-postgres",
+                "port": "5432",
+                "user": "dev",
+                "password": "dev",
+                "database": "sxapi"
+            }
+        }
+    },
+    "log": {
+        "filters": {
+            "level": "0,1,2,3,4",
+            "type": "debug,info,error,warn"
+        }
+    },
+    "server": {
+        "endpoints": [
+            {
+                "path": "/",
+                "desc": "Display welcome message (HTML)",
+                "header": {
+                    "Content-Type": "text/html"
+                },
+                "body": "<html><head></head><body><h1>STARTX-API v0.0.1</h1></body></html>"
+            },
+            {
+                "path": "/health",
+                "resource": "serviceinfo-sample",
+                "endpoint": "health"
+            },
+            {
+                "path": "/info",
+                "resource": "serviceinfo-sample",
+                "endpoint": "info"
+            },
+            {
+                "path": "/ping",
+                "desc": "Ping the application. Return a sample message in json",
+                "code": "200",
+                "body": "pong"
+            },
+            {
+                "path": "/html",
+                "body": "<html><head></head><body><h1>Static html content</h1></body></html>"
+            },
+            {
+                "path": "/txt",
+                "code": "201",
+                "header": {
+                    "Content-Type": "text/plain"
+                },
+                "body": "text response"
+            },
+            {
+                "path": "/json",
+                "code": "200",
+                "header": {
+                    "Content-Type": "application/json"
+                },
+                "body": "{\"key\":\"value\"}"
+            },
+            {
+                "path": "/function",
+                "handler": "$ws.dynamicRequestHandlerTest",
+                "param_sample": "value de param_sample"
+            },
+            {
+                "path": "/http",
+                "resource": "http-sample",
+                "endpoint": "call",
+                "url": "https://adobe.github.io/Spry/data/json/object-01.js"
+            },
+            {
+                "path": "/memcache",
+                "method": "ROUTER",
+                "resource": "memcache-sample",
+                "endpoints": [
+                    {
+                        "path": "/memcache",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/memcache/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            },
+            {
+                "path": "/google",
+                "method": "ROUTER",
+                "resource": "google-sample",
+                "endpoints": [
+                    {
+                        "path": "/google/token",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "endpoint": "getToken"
+                    },
+                    {
+                        "path": "/google/:q",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "endpoint": "drive.findFile"
+                    },
+                    {
+                        "path": "/google/file/:id",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "endpoint": "drive.getFile"
+                    },
+                    {
+                        "path": "/google/file/:name",
+                        "method": "POST",
+                        "resource": "google-sample",
+                        "endpoint": "drive.addFile",
+                        "parent": "root"
+                    },
+                    {
+                        "path": "/google/directory",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "endpoint": "drive.listDirectory"
+                    },
+                    {
+                        "path": "/google/directory/:id",
+                        "method": "GET",
+                        "resource": "google-sample",
+                        "endpoint": "drive.listDirectory"
+                    },
+                    {
+                        "path": "/google/directory/:name",
+                        "method": "POST",
+                        "resource": "google-sample",
+                        "endpoint": "drive.addDirectory",
+                        "parent": "root"
+                    }
+                ]
+            },
+            {
+                "path": "/message",
+                "method": "ROUTER",
+                "resource": "sqs-sample",
+                "endpoints": [
+                    {
+                        "path": "/message/queue",
+                        "method": "GET",
+                        "endpoint": "listQueue",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message/queue/:id",
+                        "method": "POST",
+                        "endpoint": "addQueue",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message/queue/:id",
+                        "method": "DELETE",
+                        "endpoint": "deleteQueue",
+                        "queueUrlPrefix": "https://sqs.eu-west-1.amazonaws.com/791728029433/",
+                        "config": {}
+                    },
+                    {
+                        "path": "/message",
+                        "method": "GET",
+                        "endpoint": "listMessages",
+                        "config": {
+                            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test"
+                        }
+                    },
+                    {
+                        "path": "/message",
+                        "method": "POST",
+                        "endpoint": "addMessage"
+                    },
+                    {
+                        "path": "/message",
+                        "method": "DELETE",
+                        "endpoint": "deleteMessage",
+                        "config": {
+                            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/test"
+                        }
+                    }
+                ]
+            },
+            {
+                "path": "/s3store",
+                "method": "ROUTER",
+                "resource": "s3-sample",
+                "endpoints": [
+                    {
+                        "path": "/s3store",
+                        "method": "GET",
+                        "endpoint": "listObjects",
+                        "Bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:id",
+                        "method": "GET",
+                        "endpoint": "getObject",
+                        "bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:id",
+                        "method": "POST",
+                        "endpoint": "addObject",
+                        "bucket": "sxapitest"
+                    },
+                    {
+                        "path": "/s3store/:bid/:id",
+                        "method": "GET",
+                        "endpoint": "getObject"
+                    },
+                    {
+                        "path": "/s3store/:bid/:id",
+                        "method": "POST",
+                        "endpoint": "addObject"
+                    },
+                    {
+                        "path": "/s3store",
+                        "method": "DELETE",
+                        "endpoint": "deleteObject"
+                    },
+                    {
+                        "path": "/s3store-bucket",
+                        "method": "GET",
+                        "endpoint": "listBuckets",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "POST",
+                        "endpoint": "addBucket",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "GET",
+                        "endpoint": "infoBucket",
+                        "config": {}
+                    },
+                    {
+                        "path": "/s3store-bucket/:id",
+                        "method": "DELETE",
+                        "endpoint": "deleteBucket",
+                        "config": {}
+                    }
+                ]
+            },
+            {
+                "path": "/beer",
+                "method": "ROUTER",
+                "resource": "couchbase-sample",
+                "endpoints": [
+                    {
+                        "path": "/beer",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "n1ql": "SELECT * FROM `beer-sample` LIMIT 10"
+                    },
+                    {
+                        "path": "/beer",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/beer/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/beer/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/beer/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/beer/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            },
+            {
+                "path": "/redis",
+                "method": "ROUTER",
+                "resource": "redis-sample",
+                "endpoints": [
+                    {
+                        "path": "/redis",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/redis/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            },
+            {
+                "path": "/mysql",
+                "method": "ROUTER",
+                "resource": "mysql-sample",
+                "table": "sessions",
+                "id_field": "id_sess",
+                "endpoints": [
+                    {
+                        "path": "/mysql",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM `composantes` LIMIT 10"
+                    },
+                    {
+                        "path": "/mysql",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/mysql/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            },
+            {
+                "path": "/postgres",
+                "method": "ROUTER",
+                "resource": "postgres-sample",
+                "table": "sessions",
+                "id_field": "id_sess",
+                "endpoints": [
+                    {
+                        "path": "/postgres",
+                        "method": "GET",
+                        "endpoint": "list",
+                        "sql": "SELECT * FROM `composantes` LIMIT 10"
+                    },
+                    {
+                        "path": "/postgres",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/postgres/:id",
+                        "method": "GET",
+                        "endpoint": "get"
+                    },
+                    {
+                        "path": "/postgres/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/postgres/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            }
+        ]
+    }
+}

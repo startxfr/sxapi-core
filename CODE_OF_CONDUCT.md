@@ -1,4 +1,4 @@
-[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/dev/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
+[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
 
 # Contributor Covenant Code of Conduct
 

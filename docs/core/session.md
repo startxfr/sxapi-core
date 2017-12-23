@@ -1,8 +1,8 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/assets/logo.svg?sanitize=true">
 
-# SXAPI Core : session component
+# SXAPI Core : session manager
 
-The session component is a [core component](./README.md) allow you to keep persistant 
+The session manager is a [core component](./README.md) allow you to keep persistant 
 information between client and API server using a session mechanism.<br> 
 This component comes with various transport type ([cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 

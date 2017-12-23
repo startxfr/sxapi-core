@@ -1,7 +1,7 @@
 {
     "name": "sxapi-default",
     "description": "sxapi default config file",
-    "version": "0.0.66",
+    "version": "0.0.70",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -30,15 +30,12 @@
         }
     },
     "server": {
-        "type": "express",
         "port": "8080",
-        "bodyParserJson": true,
-        "bodyParserUrl": true,
         "endpoints": [
             {
                 "path": "/",
                 "desc": "Display welcome message (HTML)",
-                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.66 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
+                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.70 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
             },
             {
                 "path": "/health",
