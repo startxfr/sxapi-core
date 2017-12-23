@@ -32,18 +32,29 @@ var $ws = {
         $ws.app = $ws.express();
         var bodyParser = require('body-parser');
         if ($ws.config.bodyParserJson !== false) {
-            $ws.app.use(bodyParser.json());
+            var optBpj = $ws.config.bodyParserJsonOptions || {};
+            $ws.app.use(bodyParser.json(optBpj));
+        }
+        if ($ws.config.bodyParserRaw !== false) {
+            var optBpr = $ws.config.bodyParserRawOptions || {};
+            $ws.app.use(bodyParser.raw(optBpr));
         }
         if ($ws.config.bodyParserUrl !== false) {
-            $ws.app.use(bodyParser.urlencoded({extended: true}));
+            var optBpu = $ws.config.bodyParserUrlOptions || {extended: true};
+            $ws.app.use(bodyParser.urlencoded(optBpu));
+        }
+        if ($ws.config.bodyParserText === true) {
+            var optBpt = $ws.config.bodyParserTextOptions || {};
+            $ws.app.use(bodyParser.raw(optBpt));
         }
         if ($ws.config.useCors !== false) {
-            $ws.app.use(require('cors')({
+            var optCors = $ws.config.corsOptions || {
                 origin: true,
                 methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
                 exposedHeaders: "*",
                 credentials: true
-            }));
+            };
+            $ws.app.use(require('cors')(optCors));
         }
         if ($ws.config.static === true) {
             if ($ws.config.static_path === undefined) {

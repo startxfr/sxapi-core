@@ -11,14 +11,14 @@ To configure your application, you should follow the [configuration user guide](
 ### Loading sequence
 
 1. Load [tools library](tools.md) 
-2. Load [timer component](timer.md) as global `$timer`
-3. Load [log component](log.md) as global `$log`. Configuration is empty at this step.
+2. Load [timer component](timer.md) and expose it as global `$timer`
+3. Load [log component](log.md)  and expose it as global `$log`. Configuration is empty at this step.
 4. Construct main [application](app.md) `$app` object
    1. alias global `$timer` to `$app.timer`
    2. alias global `$log` to `$app.log`
-5. Load [resource component](resource.md) in  `$app.resources`
-6. Load [session component](session.md) in  `$app.session`
-7. Load [web server component](ws.md) in  `$app.ws`
+5. Load [resource manager](resource.md) in  `$app.resources`
+6. Load [session manager](session.md) in  `$app.session`
+7. Load [web server manager](ws.md) in  `$app.ws`
 
 
 ### Launch sequence
@@ -27,13 +27,13 @@ To configure your application, you should follow the [configuration user guide](
    1. init process signals for catching process signals
    2. check environments variables 
    3. load config profile from environement variable `SXAPI_CONF` or `sxapi.json`
-   4. init resources
+   4. [init resources manager](resource.md#init)
       1. load each resource declared in config profile
       2. init each resource declared in config profile
-   5. init session
-   6. init web server
+   5. [init session manager](session.md#init)
+   6. [init web server manager](ws.md#init)
 2. Start application
-   1. start resources
-   2. start session
-   3. start web server
+   1. [start resources manager](resource.md#start)
+   2. [start session manager](session.md#start)
+   3. [start web server manager](ws.md#start)
 3. Execute callback function 
