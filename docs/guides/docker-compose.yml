@@ -1,8 +1,9 @@
 app:
-  build: .
-  container_name: "sxapi-core-v0.0.71"
-  mem_limit: 200m
-  memswap_limit: 500m
+  image: node:8
+  container_name: "sxapi-core-dev"
+  mem_limit: 1g
+  memswap_limit: 2g
+  privileged: true
   ports:
     - "8080:8080"
   links:
@@ -10,7 +11,17 @@ app:
 #    - "db-memcache"
 #    - "db-postgres"
 #    - "db-mariadb"
-#    - "db-couchbase"
+    - "db-couchbase"
+  environment:
+  - NODE_ENV=development
+  - APP_PATH=/usr/src/app
+  - DATA_PATH=/data
+  - CONF_PATH=/conf
+  volumes:
+  - "./:/usr/src/app:Z"
+  - "./sxapi-dev.json:/conf/sxapi.json:Z"
+  working_dir: /usr/src/app
+  entrypoint: /usr/src/app/run.sh
   
 db-redis:
   image: redis:3.2.11-alpine
@@ -54,12 +65,12 @@ db-redis:
 #  restart: always
 #  ports:
 #    - 8081:8080
-#
-#db-couchbase:
-#  image: couchbase
-#  ports:
-#    - 8091-8094:8091-8094
-#    - 11210:11210
+
+db-couchbase:
+  image: couchbase
+  ports:
+    - 8091-8094:8091-8094
+    - 11210:11210
 #  volumes:
 #    - /data/example/couchbase:/opt/couchbase/var
 
