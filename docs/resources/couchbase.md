@@ -287,6 +287,8 @@ and work extremely fast on well sized cluster.
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **keyParam**    | no        | string | id      | param name containing the key received from the client
+| **docPrefix**   | no        | string |         | a document prefix to use in conjuction with the received key
 
 #### Example
 
@@ -314,6 +316,8 @@ Document Id is defined by the context, and document will be the HTTP body of the
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "create"
+| **keyParam**    | no        | string | id      | param name containing the key received from the client
+| **docPrefix**   | no        | string |         | a document prefix to use in conjuction with the received key
 
 #### Example
 
@@ -343,6 +347,8 @@ Document Id is defined by the context, and document will be the HTTP body of the
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "update"
+| **keyParam**    | no        | string | id      | param name containing the key received from the client
+| **docPrefix**   | no        | string |         | a document prefix to use in conjuction with the received key
 
 #### Example
 
@@ -372,6 +378,8 @@ by the context.
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "delete"
+| **keyParam**    | no        | string | id      | param name containing the key received from the client
+| **docPrefix**   | no        | string |         | a document prefix to use in conjuction with the received key
 
 #### Example
 
