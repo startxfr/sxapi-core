@@ -164,6 +164,8 @@ $app = {
         if (logConf.sqs || logConf.couchbase) {
             $log.tmpConf = logConf;
         }
+        delete logConf['sqs'];
+        delete logConf['couchbase'];
         $log.init(logConf, $app.config.debug);
         return this;
     },
