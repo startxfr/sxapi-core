@@ -40,7 +40,7 @@ connections.
 | **bodyParserText**       | no        | bool    | false   | Activate the Body parser Text option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
 | **bodyParserTextOptions**| no        | obj     |         | Options to use with the Body parser Text. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
 | **endpoints**            | yes       | array   |         | an array of endpoints configuration
-| endpoints[config]        | no        | obj     |         | endpoint configuration, see the next section for more information of the attended structure
+| endpoints[**config**]    | no        | obj     |         | endpoint configuration, see the next section for more information of the attended structure
  
 
 ### Config endpoint static

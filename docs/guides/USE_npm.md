@@ -48,7 +48,6 @@ sxapi.app.launch(function () {
 });
 ```
 
-```
 3. Create a file named sxapi.json and edit it with the following content
 ```javascript
 {
