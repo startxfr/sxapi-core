@@ -1,18 +1,12 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-configMap-template
+  name: sxapi-environement-template
   annotations:
-    description: Template for creating an SXAPI microservice with configuration stored in a configMap object
+    description: Template for creating an SXAPI microservice with configuration stored in a environement variable
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
 objects:
-- kind: ConfigMap
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-  data:
-    sxapi.conf: "${SXAPI_CONF}"
 - kind: Service
   apiVersion: v1
   metadata:
@@ -27,8 +21,8 @@ objects:
     selector:
       name: "${APPLICATION_NAME}"
       type: application
-- apiVersion: apps/v1beta1
-  kind: StatefulSet
+- kind: StatefulSet
+  apiVersion: apps/v1beta1
   metadata:
     name: "${APPLICATION_NAME}"
   spec:
@@ -38,7 +32,7 @@ objects:
       metadata:
         labels:
           name: "${APPLICATION_NAME}"
-          app: couchbase
+          app: sxapi
           type: application
         annotations:
           pod.alpha.kubernetes.io/initialized: 'true'
@@ -68,60 +62,36 @@ objects:
             name: app
           resources:
             requests:
-              memory: "${MEMORY_LIMIT_DATA}"
+              memory: "${MEMORY_LIMIT}"
               cpu: 0.1
             limits:
-              memory: "${MEMORY_LIMIT_DATA}"
-          volumeMounts:
-          - mountPath: "/conf"
-            name: conf
-    volumeClaimTemplates:
-    - metadata:
-        name: conf
-        annotations:
-          volume.beta.kubernetes.io/storage-class: "${STORAGE_CLASS_DATA}"
-      spec:
-        accessModes:
-        - ReadOnly
-        resources:
-          requests:
-            storage: "${VOLUME_CAPACITY_DATA}"
+              memory: "${MEMORY_LIMIT}"
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
   value: sxapi-demo
   required: true
-- name: SXAPI_CONF
-  displayName: Couchbase Connection Username
-  description: Username for Couchbase user that will be used for accessing the database.
-  generate: expression
-  from: user[A-Z0-9]{3}
-  required: true
 - name: IMAGE_NAME
-  value: latest
+  value: 0.0.71
   required: true
 - name: REGISTRY
-  value: "startxfr/sxapi"
+  value: "startx/sxapi"
   required: true
 - name: REPLICAS_DATA
   displayName: Desired Pod count for data nodes
   description: How many data nodes should be provisioned? This value can be changed
     later, by scaling up/down.
-  value: '3'
-- name: MEMORY_LIMIT_DATA
+  value: '2'
+  required: true
+- name: MEMORY_LIMIT
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: VOLUME_CAPACITY_DATA
-  displayName: Volume Capacity for data nodes
-  description: Volume space available for data nodes, e.g. 512Mi, 2Gi.
-  value: 10Mi
-  required: true
-- name: STORAGE_CLASS_DATA
-  displayName: Storage Class for data nodes
-  description: Storage Class of the volume space for data nodes, e.g. fast, slow
-  value: slow
+- name: SXAPI_CONF
+  displayName: Configuration object
+  description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
+  value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
 labels:
-  template: sxapi-configMap-template
+  template: sxapi-environement-template

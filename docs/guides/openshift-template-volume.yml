@@ -1,18 +1,12 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-environement-template
+  name: sxapi-volume-template
   annotations:
-    description: Template for creating an SXAPI microservice with configuration stored in a environement variable
+    description: Template for creating an SXAPI microservice with configuration stored in a volume object
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
 objects:
-- kind: ConfigMap
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-  data:
-    sxapi.conf: "${SXAPI_CONF}"
 - kind: Service
   apiVersion: v1
   metadata:
@@ -27,8 +21,8 @@ objects:
     selector:
       name: "${APPLICATION_NAME}"
       type: application
-- apiVersion: apps/v1beta1
-  kind: StatefulSet
+- kind: StatefulSet
+  apiVersion: apps/v1beta1
   metadata:
     name: "${APPLICATION_NAME}"
   spec:
@@ -38,7 +32,7 @@ objects:
       metadata:
         labels:
           name: "${APPLICATION_NAME}"
-          app: couchbase
+          app: sxapi
           type: application
         annotations:
           pod.alpha.kubernetes.io/initialized: 'true'
@@ -54,9 +48,6 @@ objects:
             tcpSocket:
               port: 8080
             timeoutSeconds: 2
-          env:
-          - name: SXAPI_CONF
-            value: "${SXAPI_CONF}"
           lifecycle:
             preStop:
               exec:
@@ -68,10 +59,10 @@ objects:
             name: app
           resources:
             requests:
-              memory: "${MEMORY_LIMIT_DATA}"
+              memory: "${MEMORY_LIMIT}"
               cpu: 0.1
             limits:
-              memory: "${MEMORY_LIMIT_DATA}"
+              memory: "${MEMORY_LIMIT}"
           volumeMounts:
           - mountPath: "/conf"
             name: conf
@@ -92,24 +83,19 @@ parameters:
   description: The name of the application.
   value: sxapi-demo
   required: true
-- name: SXAPI_CONF
-  displayName: Couchbase Connection Username
-  description: Username for Couchbase user that will be used for accessing the database.
-  generate: expression
-  from: user[A-Z0-9]{3}
-  required: true
 - name: IMAGE_NAME
-  value: latest
+  value: 0.0.71
   required: true
 - name: REGISTRY
-  value: "startxfr/sxapi"
+  value: "startx/sxapi"
   required: true
 - name: REPLICAS_DATA
   displayName: Desired Pod count for data nodes
   description: How many data nodes should be provisioned? This value can be changed
     later, by scaling up/down.
-  value: '3'
-- name: MEMORY_LIMIT_DATA
+  value: '2'
+  required: true
+- name: MEMORY_LIMIT
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
@@ -124,4 +110,4 @@ parameters:
   value: slow
   required: true
 labels:
-  template: sxapi-environement-template
+  template: sxapi-volume-template
