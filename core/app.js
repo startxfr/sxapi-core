@@ -237,7 +237,7 @@ $app = {
             if (typeof callback === "function") {
                 callback();
                 if ($log.tmpConf !== undefined) {
-                    timeout(function () {
+                    setTimeout(function () {
                         $log.init($log.tmpConf, $app.config.debug);
                         delete $log['tmpConf'];
                     }, 300);
