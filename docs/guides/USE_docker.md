@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.70-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.71-npm/docs/assets/logo.svg?sanitize=true">
 
 # USE sxapi with docker
 
@@ -102,50 +102,6 @@ Connect to `http://localhost:8080/` with your favorite navigator. You should
 see an html message "My Sample API".
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Container with default configuration
 
 1. Get the last version of sxapi container from docker hub registry
@@ -209,7 +165,7 @@ docker run -d -p 8080:8080 -v $(pwd)/sxapi.json:/conf/sxapi.json:ro startx/sxapi
 
 ### Container with your own configuration (docker-compose)
 
-If you use docker-compose, you can use the following docker-compose.yml 
+If you use docker-compose, you can use the following [docker-compose.yml](./docker-compose.yml) 
 sample file
 ```yaml
 api:
@@ -253,3 +209,14 @@ docker-compose up
 ```
 
 4. Connect to `http://localhost:8080` with your favorite navigator
+
+
+### Using Openshift
+
+If you're familiar with Openshift PaaS, you will find 3 usefull templates to use in
+your project
+- [template with configuration in environement variable](./openshift-template-env.yml)
+- [template with configuration in configMap mounted volume](./openshift-template-configMap.yml)
+- [template with configuration in mounted volume](./openshift-template-volume.yml)
+
+You can add them in a project using [openshift user guide](https://docs.openshift.org/latest/dev_guide/templates.html#uploading-a-template)

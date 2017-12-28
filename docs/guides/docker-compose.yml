@@ -1,0 +1,76 @@
+app:
+  image: node:8
+  container_name: "sxapi-core-dev"
+  mem_limit: 1g
+  memswap_limit: 2g
+  privileged: true
+  ports:
+    - "8080:8080"
+  links:
+    - "db-redis"
+#    - "db-memcache"
+#    - "db-postgres"
+#    - "db-mariadb"
+    - "db-couchbase"
+  environment:
+  - NODE_ENV=development
+  - APP_PATH=/usr/src/app
+  - DATA_PATH=/data
+  - CONF_PATH=/conf
+  volumes:
+  - "./:/usr/src/app:Z"
+  - "./sxapi-dev.json:/conf/sxapi.json:Z"
+  working_dir: /usr/src/app
+  entrypoint: /usr/src/app/run.sh
+  
+db-redis:
+  image: redis:3.2.11-alpine
+  container_name: "sxapi-core-dev-redis"
+  mem_limit: 1g
+  memswap_limit: 2g
+  ports:
+    - "6379:6379"
+
+#db-memcache:
+#  image: memcache:1.5.3-alpine
+#  container_name: "sxapi-core-dev-memcache"
+#  mem_limit: 1g
+#  memswap_limit: 2g
+#  ports:
+#    - "11211:11211"
+#  
+#db-postgres:
+#  image: postgres:10.1-alpine
+#  restart: always
+#  ports:
+#    - "5432"
+#  environment:
+#    POSTGRES_PASSWORD: hguyFtgfR4r9R4r76
+#
+#db-mariadb:
+#  image: yobasystems/alpine-mariadb
+#  environment:
+#    MYSQL_ROOT_PASSWORD: hguyFtgfR4r9R4r76
+#    MYSQL_DATABASE: test-db
+#    MYSQL_USER: mariadb_user
+#    MYSQL_PASSWORD: mariadb_pwd
+#  ports:
+#    - "3306"
+#  volumes:
+#    - /data/example/mysql:/var/lib/mysql
+#  restart: always
+#
+#db-backend:
+#  image: adminer
+#  restart: always
+#  ports:
+#    - 8081:8080
+
+db-couchbase:
+  image: couchbase
+  ports:
+    - 8091-8094:8091-8094
+    - 11210:11210
+#  volumes:
+#    - /data/example/couchbase:/opt/couchbase/var
+
