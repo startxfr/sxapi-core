@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-configMap-template
+  name: sxapi-configmap-template
   annotations:
     description: Template for creating an SXAPI microservice with configuration stored in a configMap object
     iconClass: icon-nodejs
@@ -86,7 +86,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.0.71
+  value: 0.0.72
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
