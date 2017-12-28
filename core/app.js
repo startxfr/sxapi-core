@@ -161,6 +161,11 @@ $app = {
             $log.debug("node engine  : " + process.env.npm_config_user_agent, 3);
             $log.config.npm_config_user_agent += " (" + $app.package.name + ' v' + $app.package.version + ")";
         }
+        if (logConf.sqs || logConf.couchbase) {
+            $log.tmpConf = logConf;
+        }
+        delete logConf['sqs'];
+        delete logConf['couchbase'];
         $log.init(logConf, $app.config.debug);
         return this;
     },
@@ -231,6 +236,12 @@ $app = {
             }
             if (typeof callback === "function") {
                 callback();
+                if ($log.tmpConf !== undefined) {
+                    setTimeout(function () {
+                        $log.init($log.tmpConf, $app.config.debug);
+                        delete $log['tmpConf'];
+                    }, 300);
+                }
             }
         };
         cbResources();

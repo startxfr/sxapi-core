@@ -204,6 +204,8 @@ module.exports = function (id, config) {
                     $log.tools.endpointDebug($cbdb.id, req, "list()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
+                        var params = $cbdb.tools.generateParams4Template(config, req);
+                        var n1ql = $cbdb.tools.format(config.n1ql, params);
                         var callback = function (key) {
                             return function (err, reponse) {
                                 var duration = $timer.timeStop('couchbase_query_' + key);
@@ -215,7 +217,7 @@ module.exports = function (id, config) {
                                 }
                             };
                         };
-                        rs.query(config.n1ql, callback);
+                        rs.query(n1ql, callback);
                     }
                     else {
                         $log.tools.endpointWarnAndAnswerNoResource(res, $cbdb.id, req, config.resource);
@@ -326,6 +328,22 @@ module.exports = function (id, config) {
                     }
                 };
             }
+        },
+        tools: {
+            generateParams4Template: function (config, req) {
+                var params = require('merge').recursive({}, config);
+                if (req.params) {
+                    require('merge').recursive(params, req.params);
+                }
+                if (req.body) {
+                    require('merge').recursive(params, req.body);
+                }
+                if (req.query) {
+                    require('merge').recursive(params, req.query);
+                }
+                return params;
+            },
+            format: $log.format
         }
     };
     $cbdb.init(config);
