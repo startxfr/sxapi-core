@@ -155,8 +155,6 @@ $app = {
         $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
         $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
         var logConf = JSON.cleanObject($app.config.log);
-        delete logConf['couchbase'];
-        delete logConf['sqs'];
         $log.debug("sxapi-core   : " + $app.package.name + ' v' + $app.package.version, 1);
         $log.debug("application  : " + $app.config.name + ' v' + $app.config.version, 1);
         if (process.env.npm_config_user_agent) {

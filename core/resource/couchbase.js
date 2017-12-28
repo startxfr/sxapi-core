@@ -224,7 +224,9 @@ module.exports = function (id, config) {
             },
             get: function (config) {
                 return function (req, res) {
-                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var kid = (config.keyParam) ? config.keyParam : 'id';
+                    var docId = (req.params[kid]) ? req.params[kid] : req.body[kid];
+                    docId = (config.docPrefix) ? config.docPrefix + docId : docId;
                     $log.tools.endpointDebug($cbdb.id, req, "get()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
@@ -248,7 +250,9 @@ module.exports = function (id, config) {
             },
             create: function (config) {
                 return function (req, res) {
-                    var docId = (req.params.id) ? req.params.id : ((req.body.id) ? req.body.id : require('uuid').v1());
+                    var kid = (config.keyParam) ? config.keyParam : 'id';
+                    var docId = (req.params[kid]) ? req.params[kid] : ((req.body[kid]) ? req.body[kid] : require('uuid').v1());
+                    docId = (config.docPrefix) ? config.docPrefix + docId : docId;
                     $log.tools.endpointDebug($cbdb.id, req, "create()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
@@ -272,7 +276,9 @@ module.exports = function (id, config) {
             },
             update: function (config) {
                 return function (req, res) {
-                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var kid = (config.keyParam) ? config.keyParam : 'id';
+                    var docId = (req.params[kid]) ? req.params[kid] : req.body[kid];
+                    docId = (config.docPrefix) ? config.docPrefix + docId : docId;
                     $log.tools.endpointDebug($cbdb.id, req, "update()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
@@ -296,7 +302,9 @@ module.exports = function (id, config) {
             },
             delete: function (config) {
                 return function (req, res) {
-                    var docId = (req.params.id) ? req.params.id : req.body.id;
+                    var kid = (config.keyParam) ? config.keyParam : 'id';
+                    var docId = (req.params[kid]) ? req.params[kid] : req.body[kid];
+                    docId = (config.docPrefix) ? config.docPrefix + docId : docId;
                     $log.tools.endpointDebug($cbdb.id, req, "delete()", 1);
                     if ($app.resources.exist(config.resource)) {
                         var rs = $app.resources.get(config.resource);
