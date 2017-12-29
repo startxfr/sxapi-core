@@ -1,3 +1,3 @@
 #!/bin/sh
-cd /usr/src/app
-npm test && npm $1
+cd $APP_PATH
+npm $1
