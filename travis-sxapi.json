@@ -1,6 +1,6 @@
 {
-    "name": "sxapi-default",
-    "description": "sxapi default config file",
+    "name": "sxapi-default-travis",
+    "description": "sxapi default travis config file",
     "version": "0.0.78",
     "debug": true,
     "log": {
