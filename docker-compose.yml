@@ -11,6 +11,7 @@ app:
 #    - "db-postgres"
 #    - "db-mariadb"
 #    - "db-couchbase"
+  command: ["test"]
   
 db-redis:
   image: redis:3.2.11-alpine
