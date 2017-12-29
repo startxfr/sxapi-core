@@ -1,3 +1,3 @@
 #!/bin/sh
-cd /usr/src/app
+cd $APP_PATH
 npm $1

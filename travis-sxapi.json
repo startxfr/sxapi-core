@@ -1,28 +1,8 @@
 {
-    "name": "sxapi-default",
-    "description": "sxapi default config file",
+    "name": "sxapi-default-travis",
+    "description": "sxapi default travis config file",
     "version": "0.0.79",
     "debug": true,
-    "session": {
-        "duration": 3600,
-        "auto_create": true,
-        "transport": {
-            "type": "cookie",
-            "cookie_name": "sxapi-sess"
-        },
-        "backend": {
-            "type": "memory",
-            "sid_field": "token_sess",
-            "fields": {
-                "stop": "datefin_sess"
-            }
-        }
-    },
-    "resources": {
-        "serviceinfo-sample": {
-            "_class": "serviceinfo"
-        }
-    },
     "log": {
         "filters": {
             "level": "0,1,2",
@@ -36,16 +16,6 @@
                 "path": "/",
                 "desc": "Display welcome message (HTML)",
                 "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.0.79 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
-            },
-            {
-                "path": "/health",
-                "resource": "serviceinfo-sample",
-                "endpoint": "health"
-            },
-            {
-                "path": "/info",
-                "resource": "serviceinfo-sample",
-                "endpoint": "info"
             },
             {
                 "path": "/ping",

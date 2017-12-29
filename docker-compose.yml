@@ -1,17 +1,21 @@
-app:
+app_main:
   build: .
-  container_name: "sxapi-core-v0.0.77"
+  container_name: "sxapi-core-v0.0.79"
   mem_limit: 200m
   memswap_limit: 500m
   ports:
     - "8080:8080"
+
+app:
+  extends: app_main
   links:
     - "db-redis"
 #    - "db-memcache"
 #    - "db-postgres"
 #    - "db-mariadb"
 #    - "db-couchbase"
-  
+  command: ["test"]
+
 db-redis:
   image: redis:3.2.11-alpine
   container_name: "sxapi-core-dev-redis"

@@ -1,0 +1,8 @@
+app:
+  container_name: "sxapi-core-v0.0.79-travis"
+  extends:
+    file: docker-compose.yml
+    service: app_main
+  volumes:
+    - "./travis-sxapi.json:/conf/sxapi.json:Z" 
+  command: ["test"]
