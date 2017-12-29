@@ -162,7 +162,7 @@ $app = {
             $log.config.npm_config_user_agent += " (" + $app.package.name + ' v' + $app.package.version + ")";
         }
         if (logConf.sqs || logConf.couchbase) {
-            $log.tmpConf = logConf;
+            $log.tmpConf = mg.recursive({}, logConf);
         }
         delete logConf['sqs'];
         delete logConf['couchbase'];

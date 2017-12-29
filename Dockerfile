@@ -5,8 +5,9 @@ ENV  NODE_ENV=production \
      APP_PATH=/usr/src/app \
      CONF_PATH=/conf \
      DATA_PATH=/data
-RUN  mkdir -p $APP_PATH \
- &&  mkdir -p $CONF_PATH 
+RUN  mkdir -p $APP_PATH && \
+     mkdir -p $CONF_PATH  && \
+     apk update && apk upgrade && apk add git
 COPY ./core $APP_PATH/core
 COPY ./*.j* $APP_PATH/
 COPY ./sxapi.json $CONF_PATH/sxapi.json
