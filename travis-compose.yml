@@ -1,0 +1,5 @@
+app:
+  extends:
+    file: docker-compose.yml
+    service: app
+  command: ["test"]
