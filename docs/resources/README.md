@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.77-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.79-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resources Catalog
 
@@ -34,7 +34,7 @@ if(resourceManager.exist('resource-id')) {
 | **postgres**     | pg v7.4.0          | [read](postgres.md)    | Resource to interact with a postgres server.
 | **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
-| **serviceinfo**  | sxapi v0.0.77      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **serviceinfo**  | sxapi v0.0.79      | [read](serviceinfo.md) | Resource to interact with a application services.
 
 ## Using a resource
 
