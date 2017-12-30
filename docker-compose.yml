@@ -1,70 +1,11 @@
-app_main:
+app:
   build: .
   container_name: "sxapi-core-master"
-  mem_limit: 200m
-  memswap_limit: 500m
   ports:
     - "8080:8080"
-
-app:
-  extends: app_main
-  links:
-    - "db-redis"
-#    - "db-memcache"
-#    - "db-postgres"
-#    - "db-mariadb"
-#    - "db-couchbase"
   volumes:
-    - "./sxapi.json:/conf/sxapi.json:ro" 
-
-db-redis:
-  image: redis:3.2.11-alpine
-  container_name: "sxapi-core-dev-redis"
-  mem_limit: 1g
-  memswap_limit: 2g
-  ports:
-    - "6379:6379"
-
-#db-memcache:
-#  image: memcache:1.5.3-alpine
-#  container_name: "sxapi-core-dev-memcache"
-#  mem_limit: 1g
-#  memswap_limit: 2g
-#  ports:
-#    - "11211:11211"
-#  
-#db-postgres:
-#  image: postgres:10.1-alpine
-#  restart: always
-#  ports:
-#    - "5432"
-#  environment:
-#    POSTGRES_PASSWORD: hguyFtgfR4r9R4r76
-#
-#db-mariadb:
-#  image: yobasystems/alpine-mariadb
-#  environment:
-#    MYSQL_ROOT_PASSWORD: hguyFtgfR4r9R4r76
-#    MYSQL_DATABASE: test-db
-#    MYSQL_USER: mariadb_user
-#    MYSQL_PASSWORD: mariadb_pwd
-#  ports:
-#    - "3306"
-#  volumes:
-#    - /data/example/mysql:/var/lib/mysql
-#  restart: always
-#
-#db-backend:
-#  image: adminer
-#  restart: always
-#  ports:
-#    - 8081:8080
-#
-#db-couchbase:
-#  image: couchbase
-#  ports:
-#    - 8091-8094:8091-8094
-#    - 11210:11210
-#  volumes:
-#    - /data/example/couchbase:/opt/couchbase/var
-
+  - "./:/usr/src/app:Z"
+  - "./sxapi.json:/conf/sxapi.json:Z"
+  working_dir: /usr/src/app
+  entrypoint: npm
+  command: test
