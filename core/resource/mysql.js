@@ -77,6 +77,11 @@ module.exports = function (id, config) {
                     callback(null, $mqdb);
                 }
             });
+            // permanent ping to keep connection alive
+            setInterval(function () {
+                $log.tools.resourceDebug($mqdb.id, "ping '" + $mqdb.config._sign + "' to keep connection alived", 4);
+                $mqdb.pool[$mqdb.config._sign].query('SELECT 1');
+            }, 10000);
             return $mqdb;
         },
         query: function (sql, callback) {

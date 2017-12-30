@@ -12,7 +12,6 @@ COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
 COPY ./*.j* $APP_PATH/
 COPY ./sxapi.json $CONF_PATH/sxapi.json
-COPY run.sh /bin/sxapi
 
 RUN  cd $APP_PATH \
  &&  npm install \
@@ -21,11 +20,10 @@ RUN  cd $APP_PATH \
  &&  npm cache clean --force \
  &&  mkdir -p $CONF_PATH \
  &&  mkdir -p $DATA_PATH \
- &&  chmod ugo+x /bin/sxapi \
- &&  chown -R node:node $APP_PATH /bin/sxapi $CONF_PATH $DATA_PATH
+ &&  chown -R node:node $APP_PATH $CONF_PATH $DATA_PATH
 
 USER node:node
 EXPOSE 8080
 WORKDIR $APP_PATH
-ENTRYPOINT [ "/bin/sxapi" ]
+ENTRYPOINT [ "npm" ]
 CMD [ "start" ]

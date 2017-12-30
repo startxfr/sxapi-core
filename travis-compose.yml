@@ -1,8 +1,60 @@
 app:
   container_name: "sxapi-core-testing-travis"
   extends:
-    file: docker-compose.yml
-    service: app_main
+    file: full-docker-compose.yml
+    service: app
   volumes:
-    - "./travis-sxapi.json:/conf/sxapi.json:Z" 
-  command: ["test"]
+  - "./full-sxapi.json:/conf/sxapi.json:Z"
+  command: test
+
+db-redis:
+  container_name: "sxapi-core-testing-travis-db-redis"
+  extends:
+    file: full-docker-compose.yml
+    service: db-redis
+
+#db-memcache:
+#  image: memcache:1.5.3-alpine
+#  container_name: "sxapi-core-testing-travis-db-memcache"
+#  extends:
+#    file: full-docker-compose.yml
+#    service: db-memcache
+  
+db-postgres:
+  container_name: "sxapi-core-testing-travis-db-postgres"
+  extends:
+    file: full-docker-compose.yml
+    service: db-postgres
+
+db-mariadb:
+  container_name: "sxapi-core-testing-travis-db-mariadb"
+  extends:
+    file: full-docker-compose.yml
+    service: db-mariadb
+
+#dbadminer:
+#  image: adminer
+#  container_name: "sxapi-core-testing-travis-dbadminer"
+#  extends:
+#    file: full-docker-compose.yml
+#    service: dbadminer
+
+db-couchbase:
+  container_name: "sxapi-core-testing-travis-db-couchbase"
+  extends:
+    file: full-docker-compose.yml
+    service: db-couchbase
+
+#dbpma:
+#  container_name: "sxapi-core-testing-travis-dbpma"
+#  extends:
+#    file: full-docker-compose.yml
+#    service: dbpma
+
+dbtools:
+  image: startx/db-tools:latest
+  container_name: "sxapi-core-testing-travis-dbtools"
+  extends:
+    file: full-docker-compose.yml
+    service: dbtools
+  command: ["init"] 
