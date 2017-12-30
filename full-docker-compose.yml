@@ -1,5 +1,5 @@
 app:
-  container_name: "sxapi-core-dev"
+  container_name: "sxapi-core-master"
   extends:
     file: docker-compose.yml
     service: app
@@ -15,7 +15,7 @@ app:
   
 db-redis:
   image: redis:3.2.11-alpine
-  container_name: "sxapi-core-dev-db-redis"
+  container_name: "sxapi-core-master-db-redis"
   mem_limit: 1g
   memswap_limit: 2g
   ports:
@@ -23,7 +23,7 @@ db-redis:
 
 #db-memcache:
 #  image: memcache:1.5.3-alpine
-#  container_name: "sxapi-core-dev-db-memcache"
+#  container_name: "sxapi-core-master-db-memcache"
 #  mem_limit: 1g
 #  memswap_limit: 2g
 #  ports:
@@ -31,7 +31,7 @@ db-redis:
   
 db-postgres:
   image: postgres:10.1-alpine
-  container_name: "sxapi-core-dev-db-postgres"
+  container_name: "sxapi-core-master-db-postgres"
   restart: always
   ports:
     - "5432"
@@ -40,7 +40,7 @@ db-postgres:
 
 db-mariadb:
   image: mariadb:5.5
-  container_name: "sxapi-core-dev-db-mariadb"
+  container_name: "sxapi-core-master-db-mariadb"
   mem_limit: 2g
   memswap_limit: 3g
   environment:
@@ -48,7 +48,7 @@ db-mariadb:
 
 #dbadminer:
 #  image: adminer
-#  container_name: "sxapi-core-dev-dbadminer"
+#  container_name: "sxapi-core-master-dbadminer"
 #  restart: always
 #  ports:
 #    - 8081:8080
@@ -58,7 +58,7 @@ db-mariadb:
 
 db-couchbase:
   image: couchbase
-  container_name: "sxapi-core-dev-db-couchbase"
+  container_name: "sxapi-core-master-db-couchbase"
   ports:
     - 8091-8094:8091-8094
     - 11210:11210
@@ -66,7 +66,7 @@ db-couchbase:
 
 #dbpma:
 #  image: phpmyadmin/phpmyadmin:latest
-#  container_name: "sxapi-core-dev-dbpma"
+#  container_name: "sxapi-core-master-dbpma"
 #  links:
 #    - db-mysql:db
 #  environment:
@@ -81,7 +81,7 @@ db-couchbase:
 
 dbtools:
   image: startx/db-tools:latest
-  container_name: "sxapi-core-dev-dbtools"
+  container_name: "sxapi-core-master-dbtools"
   links:
     - db-mariadb:dbm
     - db-couchbase:dbc
