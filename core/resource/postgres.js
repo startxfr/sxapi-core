@@ -270,9 +270,9 @@ module.exports = function (id, config) {
                     }
                 };
             },
-            get: function (config) {
+            read: function (config) {
                 return function (req, res) {
-                    $log.tools.endpointDebug($pgdb.id, req, "get()", 1);
+                    $log.tools.endpointDebug($pgdb.id, req, "read()", 1);
                     var docId = (req.params.id) ? req.params.id : req.body.id;
                     if ($app.resources.exist(config.resource)) {
                         var filter = {};
