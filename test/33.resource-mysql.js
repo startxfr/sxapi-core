@@ -203,14 +203,14 @@ describe("mysql resource component", function () {
                 expect(result).to.be.an('function');
             });
         });
-        describe("#get()", function () {
+        describe("#read()", function () {
             it("should exist", function () {
-                expect(test.endpoints).to.have.any.keys('get');
+                expect(test.endpoints).to.have.any.keys('read');
             });
             it("should be a method", function () {
-                expect(test.endpoints.get).to.be.an('function');
+                expect(test.endpoints.read).to.be.an('function');
             });
-            var result = test.endpoints.get({});
+            var result = test.endpoints.read({});
             it("should return a webserver callback", function () {
                 expect(result).to.be.an('function');
             });
