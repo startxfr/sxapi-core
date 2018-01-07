@@ -241,7 +241,7 @@ module.exports = function (id, config) {
                     if ($app.resources.exist(config.resource)) {
                         var params = $pgdb.tools.generateParams4Template(config, req);
                         var sql = $pgdb.tools.format(config.sql, params);
-                        $app.ressources
+                        $app.resources
                                 .get(config.resource)
                                 .query(sql, function (timerId) {
                                     return function (err, results) {

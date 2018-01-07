@@ -78,10 +78,11 @@ module.exports = function (id, config) {
                 }
             });
             // permanent ping to keep connection alive
+            var timelaps = $mqdb.config.keepAliveInterval || 20;
             setInterval(function () {
                 $log.tools.resourceDebug($mqdb.id, "ping '" + $mqdb.config._sign + "' to keep connection alived", 4);
                 $mqdb.pool[$mqdb.config._sign].query('SELECT 1');
-            }, 10000);
+            }, timelaps*1000);
             return $mqdb;
         },
         query: function (sql, callback) {
@@ -246,7 +247,7 @@ module.exports = function (id, config) {
                     if ($app.resources.exist(config.resource)) {
                         var params = $mqdb.tools.generateParams4Template(config, req);
                         var sql = $mqdb.tools.format(config.sql, params);
-                        $app.ressources
+                        $app.resources
                                 .get(config.resource)
                                 .query(sql, function (timerId) {
                                     return function (err, results) {

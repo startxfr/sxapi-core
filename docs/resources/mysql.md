@@ -41,6 +41,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 | server.**charset**     | no        | string | UTF8_GENERAL_CI | The charset for the connection also called "collation" in the SQL-level (ex: utf8_general_ci).
 | server.**timezone**    | no        | string | local           | The timezone configured on the database server. This can be 'local', 'Z', or an offset in the form +HH:MM or -HH:MM.
 | server.**...**         | no        | N/A    |                 | Any request option defined in npm module ex: localAddress, socketPath, flags, ssl, connectTimeout, stringifyObjects, insecureAuth, typeCast, queryFormat, supportBigNumbers, bigNumberStrings, dateStrings, debug, trace, multipleStatements. See [see mysql npm module documentation](https://github.com/mysqljs/mysql#connection-options).
+| **keepAliveInterval**  | no        | int    | 20              | Interval between 2 query sended for maintaining connection persistance
 
 
 ### Example
