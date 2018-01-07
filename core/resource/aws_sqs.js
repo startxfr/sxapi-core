@@ -184,12 +184,16 @@ module.exports = function (id, config) {
          * @param {string} message body of the message whe want to send
          * @param {object} options object with options to pass to the AWS sendMessage method
          * @param {function} callback to call when AWS answer
+         * @param {bool} mute is log muted
          * @returns {$queue.sqs}
          */
-        sendMessage: function (message, options, callback) {
-            var messId = message.id;
+        sendMessage: function (message, options, callback, mute) {
+            var isMuted = (mute = true) ? true : false;
+            var messId = message.id || require('uuid').v4();
             var timerId = 'resource_aws.sqs_sendMessage_' + $sqs.id + '::' + messId;
-            $log.tools.resourceInfo($sqs.id, "send message '" + messId + "'");
+            if (!isMuted) {
+                $log.tools.resourceInfo($sqs.id, "send message '" + messId + "'");
+            }
             $timer.start(timerId);
             var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
             if ($sqs.config.send_options && $sqs.config.send_options.QueueUrl) {
@@ -205,10 +209,14 @@ module.exports = function (id, config) {
             var defaultCallback = function (error, response) {
                 var duration = $timer.timeStop(timerId);
                 if (error) {
-                    $log.tools.resourceWarn($sqs.id, 'message ' + message.id + ' could not be send because ' + error.message, duration, true);
+                    if (!isMuted) {
+                        $log.tools.resourceWarn($sqs.id, 'message ' + messId + ' could not be send because ' + error.message, duration, true);
+                    }
                 }
                 else {
-                    $log.tools.resourceDebug($sqs.id, "sended AWS SQS message " + response.MessageId, 4, duration, true);
+                    if (!isMuted) {
+                        $log.tools.resourceDebug($sqs.id, "sended AWS SQS message " + response.MessageId, 4, duration, true);
+                    }
                 }
             };
             $sqs.sqsqueue.sendMessage(config, callback ? callback : defaultCallback);

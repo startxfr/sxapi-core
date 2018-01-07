@@ -219,11 +219,11 @@ var $log = {
             if (duration !== null && duration !== undefined) {
                 message.duration = parseInt(duration);
             }
-            $log.sqs.resource.sendMessage(message, function (err) {
+            $log.sqs.resource.sendMessage(message, {}, function (err) {
                 if (err) {
                     $log.warn("error saving log  because " + err.message, null, true);
                 }
-            });
+            }, true);
             return this;
         }
     },
