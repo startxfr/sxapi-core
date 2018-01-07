@@ -41,6 +41,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 | server.**charset**     | no        | string | UTF8_GENERAL_CI | The charset for the connection also called "collation" in the SQL-level (ex: utf8_general_ci).
 | server.**timezone**    | no        | string | local           | The timezone configured on the database server. This can be 'local', 'Z', or an offset in the form +HH:MM or -HH:MM.
 | server.**...**         | no        | N/A    |                 | Any request option defined in npm module ex: localAddress, socketPath, flags, ssl, connectTimeout, stringifyObjects, insecureAuth, typeCast, queryFormat, supportBigNumbers, bigNumberStrings, dateStrings, debug, trace, multipleStatements. See [see mysql npm module documentation](https://github.com/mysqljs/mysql#connection-options).
+| **keepAliveInterval**  | no        | int    | 20              | Interval between 2 query sended for maintaining connection persistance
 
 
 ### Example
@@ -204,7 +205,7 @@ resource.delete('table-name', {"fieldname_id" : "id"}, function (error) {
 This module come with 5 endpoints who can interact with any mysql method.
 
 [1. List endpoint](#list-endpoint)<br>
-[2. Get endpoint](#get-endpoint)<br>
+[2. Read endpoint](#read-endpoint)<br>
 [3. Create endpoint](#create-endpoint)<br>
 [4. Update endpoint](#update-endpoint)<br>
 [5. Delete endpoint](#delete-endpoint)
@@ -221,7 +222,7 @@ the value associated to the given document ID.
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "list"
 | **sql**         | yes       | string |         | the sql query to execute and get a result from. This query can contain variable (ex : `{{path}}`) and will be substitued with all config and request parameters. this help you build dynamic queries based on request input.
 
 #### Example
@@ -244,7 +245,7 @@ Whith the previous configuration sample, if you make the following http request 
 you will get result from the generated query `SELECT name FROM `table-sample` WHERE fieldname_id = "id" AND fieldname_sample = "test";`
 
 
-### Get endpoint
+### Read endpoint
 
 The purpose of this endpoint is to make call to a mysql server and to return 
 the value associated to the given row ID.
@@ -255,7 +256,7 @@ the value associated to the given row ID.
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "read"
 | **table**       | yes       | string |         | table name to use for getting this entry
 | **id_field**    | yes       | string |         | table field name used a unique key
 
@@ -267,7 +268,7 @@ the value associated to the given row ID.
         {
             "path": "/mysql/:id",
             "resource": "mysql-id",
-            "endpoint": "get",
+            "endpoint": "read",
             "table": "log",
             "id_field": "id"
         }
