@@ -77,6 +77,12 @@ module.exports = function (id, config) {
                     callback(null, $mqdb);
                 }
             });
+            // permanent ping to keep connection alive
+            var timelaps = $mqdb.config.keepAliveInterval || 20;
+            setInterval(function () {
+                $log.tools.resourceDebug($mqdb.id, "ping '" + $mqdb.config._sign + "' to keep connection alived", 4);
+                $mqdb.pool[$mqdb.config._sign].query('SELECT 1');
+            }, timelaps * 1000);
             return $mqdb;
         },
         query: function (sql, callback) {
@@ -241,7 +247,7 @@ module.exports = function (id, config) {
                     if ($app.resources.exist(config.resource)) {
                         var params = $mqdb.tools.generateParams4Template(config, req);
                         var sql = $mqdb.tools.format(config.sql, params);
-                        $app.ressources
+                        $app.resources
                                 .get(config.resource)
                                 .query(sql, function (timerId) {
                                     return function (err, results) {
@@ -270,36 +276,42 @@ module.exports = function (id, config) {
                     }
                 };
             },
-            get: function (config) {
+            read: function (config) {
                 return function (req, res) {
-                    $log.tools.endpointDebug($mqdb.id, req, "get()", 1);
+                    $log.tools.endpointDebug($mqdb.id, req, "read()", 1);
                     var docId = (req.params.id) ? req.params.id : req.body.id;
                     if ($app.resources.exist(config.resource)) {
                         var filter = {};
                         if (docId && config.id_field) {
-                            eval("filter." + config.id_field + "=docId;");
+                            filter[config.id_field] = docId;
                         }
-                        $app.resources
-                                .get(config.resource)
-                                .read(config.table, filter, function (timerId) {
-                                    return function (err, reponse) {
-                                        var duration = $timer.timeStop(timerId);
-                                        if (err) {
-                                            var message = "could not find " + docId + " in " + config.table + " because " + err.message;
-                                            $mqdb.tools.responseNOK(res,
-                                                    message,
-                                                    req,
-                                                    duration);
-                                        }
-                                        else {
-                                            $mqdb.tools.responseOK(res,
-                                                    "returned " + reponse.length + ' item',
-                                                    reponse,
-                                                    req,
-                                                    duration);
-                                        }
-                                    };
-                                });
+                        var cb = function (timerId) {
+                            return function (err, reponse) {
+                                var duration = $timer.timeStop(timerId);
+                                if (err) {
+                                    var message = "could not find " + docId + " in " + config.table + " because " + err.message;
+                                    $mqdb.tools.responseNOK(res,
+                                            message,
+                                            req,
+                                            duration);
+                                }
+                                else {
+                                    $mqdb.tools.responseOK(res,
+                                            "returned " + reponse.length + ' item',
+                                            reponse,
+                                            req,
+                                            duration);
+                                }
+                            };
+                        };
+                        if (config.sql) {
+                            var params = $mqdb.tools.generateParams4Template(config, req);
+                            var sql = $mqdb.tools.format(config.sql, params);
+                            $app.resources.get(config.resource).query(sql, cb);
+                        }
+                        else {
+                            $app.resources.get(config.resource).read(config.table, filter, cb);
+                        }
                     }
                     else {
                         $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);

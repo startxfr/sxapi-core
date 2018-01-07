@@ -62,23 +62,23 @@ module.exports = function (id, config) {
             }
             return $rddb;
         },
-        get: function (key, callback) {
-            $timer.start('redis_get_' + key);
+        read: function (key, callback) {
+            $timer.start('redis_read_' + key);
             var clusID = $rddb.config.host || $rddb.config.url;
-            $log.tools.resourceInfo($rddb.id, "get key '" + key + "'");
-            return $rddb.pool[clusID].get(key, (callback) ? callback(key) : $rddb.__getDefaultCallback(key));
+            $log.tools.resourceInfo($rddb.id, "read key '" + key + "'");
+            return $rddb.pool[clusID].get(key, (callback) ? callback(key) : $rddb.__readDefaultCallback(key));
         },
-        __getDefaultCallback: function (key) {
+        __readDefaultCallback: function (key) {
             return function (err, results) {
-                var duration = $timer.timeStop('redis_get_' + key);
+                var duration = $timer.timeStop('redis_read_' + key);
                 if (err) {
-                    $log.tools.resourceError($rddb.id, "get could not be executed because " + err.message, duration);
+                    $log.tools.resourceError($rddb.id, "read could not be executed because " + err.message, duration);
                 }
                 else {
                     if (JSON.isDeserializable(results)) {
                         results = JSON.parse(results);
                     }
-                    $log.tools.resourceDebug($rddb.id, "get returned " + results.length + " results", 3, duration);
+                    $log.tools.resourceDebug($rddb.id, "read returned " + results.length + " results", 3, duration);
                 }
             };
         },

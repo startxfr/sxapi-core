@@ -60,19 +60,19 @@ describe("redis resource component", function () {
         });
     });
     describe("resource methods", function () {
-        describe("#get()", function () {
+        describe("#read()", function () {
             it("should exist", function () {
-                expect(test).to.have.any.keys('get');
+                expect(test).to.have.any.keys('read');
             });
             it("should be a method", function () {
-                expect(test.get).to.be.an('function');
+                expect(test.read).to.be.an('function');
             });
-            describe("#__getDefaultCallback()", function () {
+            describe("#__readDefaultCallback()", function () {
                 it("should exist", function () {
-                    expect(test).to.have.any.keys('__getDefaultCallback');
+                    expect(test).to.have.any.keys('__readDefaultCallback');
                 });
                 it("should be a method", function () {
-                    expect(test.__getDefaultCallback).to.be.an('function');
+                    expect(test.__readDefaultCallback).to.be.an('function');
                 });
             });
         });

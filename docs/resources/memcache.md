@@ -64,15 +64,15 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with several methods for manipulating memcache dataset.
 
-[1. Get method](#method-get)<br>
+[1. Read method](#method-read)<br>
 [2. Insert method](#method-insert)<br>
 [3. Update method](#method-update)<br>
 [4. Delete method](#method-delete)
 
 
-### Method get
+### Method read
 
-get a memcache value by it's given key.
+read a memcache value by it's given key.
 
 #### Parameters
 
@@ -88,7 +88,7 @@ get a memcache value by it's given key.
 
 ```javascript
 var resource = $app.resources.get('memcache-id');
-resource.get('myKey', function (error, response) {
+resource.read('myKey', function (error, response) {
     console.log(error, response);
 });
 ```
@@ -168,12 +168,12 @@ resource.delete('myKey', function (error, response) {
 
 This module come with 4 endpoints who can interact with any memcache method.
 
-[1. Get endpoint](#get-endpoint)<br>
+[1. Read endpoint](#read-endpoint)<br>
 [2. Create endpoint](#create-endpoint)<br>
 [3. Update endpoint](#update-endpoint)<br>
 [4. Delete endpoint](#delete-endpoint)
 
-### Get endpoint
+### Read endpoint
 
 The purpose of this endpoint is to make call to a memcache server and to return 
 the value associated to the given key.
@@ -184,7 +184,7 @@ the value associated to the given key.
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "read"
 
 #### Example
 
@@ -194,7 +194,7 @@ the value associated to the given key.
         {
             "path": "/memcache",
             "resource": "memcache-id",
-            "endpoint": "get"
+            "endpoint": "read"
         }
     ]
 }

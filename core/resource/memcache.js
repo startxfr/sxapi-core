@@ -70,23 +70,23 @@ module.exports = function (id, config) {
             }
             return $mcdb;
         },
-        get: function (key, callback) {
-            $timer.start('memcache_get_' + key);
+        read: function (key, callback) {
+            $timer.start('memcache_read_' + key);
             var clusID = $mcdb.config.host || $mcdb.config.port;
-            $log.tools.resourceInfo($mcdb.id, "get key '" + key + "'");
-            return $mcdb.pool[clusID].get(key, (callback) ? callback(key) : $mcdb.__getDefaultCallback(key));
+            $log.tools.resourceInfo($mcdb.id, "read key '" + key + "'");
+            return $mcdb.pool[clusID].get(key, (callback) ? callback(key) : $mcdb.__readDefaultCallback(key));
         },
-        __getDefaultCallback: function (key) {
+        __readDefaultCallback: function (key) {
             return function (err, results) {
-                var duration = $timer.timeStop('memcache_get_' + key);
+                var duration = $timer.timeStop('memcache_read_' + key);
                 if (err) {
-                    $log.tools.resourceError($mcdb.id, "get could not be executed because " + err.message, duration);
+                    $log.tools.resourceError($mcdb.id, "read could not be executed because " + err.message, duration);
                 }
                 else {
                     if (JSON.isDeserializable(results)) {
                         results = JSON.parse(results);
                     }
-                    $log.tools.resourceDebug($mcdb.id, "get returned " + results.length + " results", 3, duration);
+                    $log.tools.resourceDebug($mcdb.id, "read returned " + results.length + " results", 3, duration);
                 }
             };
         },
@@ -165,12 +165,12 @@ module.exports = function (id, config) {
             };
         },
         endpoints: {
-            get: function (config) {
+            read: function (config) {
                 return function (req, res) {
                     var docId = (req.params.id) ? req.params.id : req.body.id;
                     var callback = function (key) {
                         return function (err, reponse) {
-                            var duration = $timer.timeStop('memcache_get_' + key);
+                            var duration = $timer.timeStop('memcache_read_' + key);
                             if (err) {
                                 $log.tools.endpointErrorAndAnswer(res, $mcdb.id, req, "error because " + err.message, duration);
                             }
@@ -185,9 +185,9 @@ module.exports = function (id, config) {
                             }
                         };
                     };
-                    $log.tools.endpointDebug($mcdb.id, req, "get()", 1);
+                    $log.tools.endpointDebug($mcdb.id, req, "read()", 1);
                     if ($app.resources.exist(config.resource)) {
-                        $app.resources.get(config.resource).get(docId, callback);
+                        $app.resources.get(config.resource).read(docId, callback);
                     }
                     else {
                         $log.tools.endpointWarnAndAnswerNoResource(res, $mcdb.id, req, config.resource);
