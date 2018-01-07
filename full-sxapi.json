@@ -61,7 +61,7 @@
         "couchbase-sample": {
             "_class": "serviceinfo",
             "cluster": "http://db-couchbase:8091",
-            "bucket": "beer-sample"
+            "bucket": "sxapicore_test"
         },
         "serviceinfo-sample": {
             "_class": "serviceinfo"
@@ -73,6 +73,16 @@
         "http-sample": {
             "_class": "http",
             "url": "https://adobe.github.io/Spry/data/json/array-02.js"
+        },
+        "mysql-sample": {
+            "_class": "mysql",
+            "server": {
+                "host": "db-mariadb",
+                "port": "3306",
+                "user": "sxapicore_test",
+                "password": "sxapicore_test",
+                "database": "sxapicore_test"
+            }
         }
     },
     "log": {

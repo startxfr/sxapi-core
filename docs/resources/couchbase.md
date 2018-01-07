@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.79-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.84-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : couchbase
 
@@ -81,7 +81,7 @@ id of your resource as defined in the [resource configuration](#resource-configu
 
 This module come with 6 methods for manipulating couchbase dataset.
 
-[1. Get method](#method-get)<br>
+[1. Read method](#method-read)<br>
 [2. Query method](#method-query)<br>
 [3. Queryfree method](#method-queryfree)<br>
 [4. Insert method](#method-insert)<br>
@@ -89,9 +89,9 @@ This module come with 6 methods for manipulating couchbase dataset.
 [6. Delete method](#method-delete)
 
 
-### Method get
+### Method read
 
-get a couchbase value by it's given document ID.
+read a couchbase value by it's given document ID.
 
 #### Parameters
 
@@ -107,7 +107,7 @@ get a couchbase value by it's given document ID.
 
 ```javascript
 var resource = $app.resources.get('couchbase-id');
-resource.get('docID', function (error, response) {
+resource.read('docID', function (error, response) {
     console.log(error, response);
 });
 ```
@@ -239,7 +239,7 @@ resource.delete('docID', function (error) {
 This module come with 5 endpoints who can interact with any couchbase method.
 
 [1. List endpoint](#list-endpoint)<br>
-[2. Get endpoint](#get-endpoint)<br>
+[2. Read endpoint](#read-endpoint)<br>
 [3. Create endpoint](#create-endpoint)<br>
 [4. Update endpoint](#update-endpoint)<br>
 [5. Delete endpoint](#delete-endpoint)
@@ -256,7 +256,7 @@ the value associated to the given document ID.
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "list"
 | **n1ql**        | yes       | string |         | the n1ql query to execute and get a result from
 
 #### Example
@@ -274,7 +274,7 @@ the value associated to the given document ID.
 }
 ```
 
-### Get endpoint
+### Read endpoint
 
 The purpose of this endpoint is to make call to a couchbase server and to return 
 the value associated to the given document ID. Use KV capabilities of Couchbase 
@@ -286,7 +286,7 @@ and work extremely fast on well sized cluster.
 |-----------------|:---------:|:------:|---------|---------------
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
-| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "get"
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "read"
 | **keyParam**    | no        | string | id      | param name containing the key received from the client
 | **docPrefix**   | no        | string |         | a document prefix to use in conjuction with the received key
 
@@ -298,7 +298,7 @@ and work extremely fast on well sized cluster.
         {
             "path": "/couchbase/:id",
             "resource": "couchbase-id",
-            "endpoint": "get"
+            "endpoint": "read"
         }
     ]
 }
