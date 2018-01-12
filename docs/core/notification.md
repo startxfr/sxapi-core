@@ -16,20 +16,39 @@ notification context will be defined and your API will be muted and no notificat
 
 ### Config parameters
 
-| Param                  | Mandatory | Type   | default | Description
-|------------------------|:---------:|:------:|---------|---------------
-| **sqs**                | no        | object |         | a object for configuring a AWS SQS backend
-| sqs.**resource**       | no        | string |         | the resource id of the sqs backend. See [aws_sqs resource documentation](../resources/aws_sqs.md)
-| **couchbase**          | no        | object |         | a object for configuring a Couchbase backend
-| couchbase.**resource** | no        | string |         | the resource id of the couchbase backend. See [couchbase resource documentation](../resources/couchbase.md)
+| Param                    | Mandatory | Type   | default | Description
+|--------------------------|:---------:|:------:|---------|---------------
+| **pipeline-id**          | yes       | object |         | a string key with the notification pipeline ID
+| pipeline-id.**type**     | yes       | string |         | the type of notification backend. could be sqs or couchbase
+| pipeline-id.**resource** | yes       | string |         | the resource identifier for this pipeline
 
 
 ### Config Sample
 
 ```javascript
 "notification": {
-    "sqs": {
-        "resource": "resource-id"
+    "pipeline-id": {
+            "type": "sqs",
+            "resource": "sqs-api"
     }
+}
+```
+
+
+### Endpoints parameters
+
+| Param                     | Mandatory | Type   | default | Description
+|---------------------------|:---------:|:------:|---------|---------------
+| **notification**          | yes       | object |         | an object with at least the 2 following properties
+| notification.**pipeline** | yes       | string |         | the notification pipeline ID
+| notification.**event**    | yes       | string |         | the event name signature
+
+
+### Config Sample
+
+```javascript
+"notification": {
+    "pipeline": "pipeline-id",
+    "event": "event:action"
 }
 ```
