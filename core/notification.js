@@ -37,8 +37,6 @@ var $notification = {
     return this;
   },
   notif: function (config, data) {
-    console.log("-------1-----")
-    console.log(config)
     if (config && config.pipeline && config.event) {
       this.notify(config.pipeline, config.event, data);
     }
