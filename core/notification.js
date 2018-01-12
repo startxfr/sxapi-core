@@ -54,11 +54,12 @@ var $notification = {
     for (var pipid in this.pipeline) {
       if (pipid === pipelineID) {
         isOK = true;
+        $log.debug("notification event " + event + " was propagated to pipeline " + pipelineID, 4);
         this.pipeline[pipid].notify(event, data);
       }
     }
     if (isOK === false) {
-      $log.debug("notification pipeline " + pipelineID + " is innactive. event " + event + " was not propagated", 4);
+      $log.debug("no active notification pipeline match event " + event, 4);
     }
     return this;
   },
