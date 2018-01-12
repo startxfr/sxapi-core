@@ -1,5 +1,5 @@
 app:
-  container_name: "sxapi-core-v0.0.84-travis"
+  container_name: "sxapi-core-v0.0.86-travis"
   extends:
     file: full-docker-compose.yml
     service: app

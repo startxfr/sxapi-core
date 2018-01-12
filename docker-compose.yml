@@ -1,6 +1,6 @@
 app:
   build: .
-  container_name: "sxapi-core-v0.0.84"
+  container_name: "sxapi-core-v0.0.86"
   ports:
     - "8080:8080"
   command: ["start"]
