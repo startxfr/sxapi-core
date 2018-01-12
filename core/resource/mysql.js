@@ -261,7 +261,6 @@ module.exports = function (id, config) {
                   duration);
                 }
                 else {
-                  console.log(config)
                   if (config.notification !== undefined) {
                     $app.notification.notif(config.notification, results);
                   }
