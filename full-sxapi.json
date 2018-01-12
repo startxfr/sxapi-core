@@ -91,6 +91,16 @@
             "type": "debug,info,error,warn"
         }
     },
+    "notifications": {
+        "default-sqs": {
+            "type": "sqs",
+            "resource": "sqs-sample"
+        },
+        "marketing-sqs": {
+            "type": "sqs",
+            "resource": "sqs-sample"
+        }
+    },
     "server": {
         "endpoints": [
             {
@@ -104,7 +114,11 @@
             {
                 "path": "/health",
                 "resource": "serviceinfo-sample",
-                "endpoint": "health"
+                "endpoint": "health",
+                "notification": {
+                    "pipeline": "default-sqs",
+                    "event": "redis:get"
+                }
             },
             {
                 "path": "/ping",
