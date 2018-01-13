@@ -30,6 +30,7 @@ Core components are all loaded and available when the application start. You can
 - [resource](core/resource.md) core component
 - [session](core/session.md) core component
 - [web server](core/ws.md) core component
+- [bot](core/bot.md) bot component
 - [application](core/app.md) core component
 
 ### Resources components

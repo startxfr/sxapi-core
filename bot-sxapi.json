@@ -21,11 +21,27 @@
     "resources": {
         "serviceinfo-sample": {
             "_class": "serviceinfo"
+        },
+        "sqs-test": {
+            "_class": "aws_sqs",
+            "send_options": {
+                "DelaySeconds": 2,
+                "MessageAttributes": {
+                    "from": {
+                        "DataType": "String",
+                        "StringValue": "startx"
+                    }
+                }
+            },
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue",
+            "ACCESS_ID": "XXXXXXXXXXXXXXXXXXXX",
+            "ACCESS_KEY": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "region": "eu-west-1"
         }
     },
     "log": {
         "filters": {
-            "level": "0,1,2",
+            "level": "0,1,2,3,4",
             "type": "debug,info,error,warn"
         }
     },
@@ -54,5 +70,35 @@
                 "body": "pong"
             }
         ]
+    },
+    "bot": {
+        "lib": "./bot-mylib",
+        "cron": [
+            {
+                "id": "test-cront-task",
+                "name": "Execute test cron task",
+                "schedule": "*/1 * * * *",
+                "task": "myCronFunction"
+            }
+        ],
+        "readers": {
+            "sqs": [
+                {
+                    "resource": "sqs-test",
+                    "frequency": 5,
+                    "config": {
+                        "MaxNumberOfMessages": 2,
+                        "VisibilityTimeout": 2
+                    },
+                    "filters": [
+                        {
+                            "id": "test-sqs-task",
+                            "event": "event:type",
+                            "task": "myReaderFunction"
+                        }
+                    ]
+                }
+            ]
+        }
     }
 }

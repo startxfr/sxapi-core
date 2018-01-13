@@ -65,6 +65,16 @@ $app = {
         $app.ws.stop();
       });
     }
+    if ($app.config.bot) {
+      $log.debug("start initializing bot behaviour as part of the init process", 5, $timer.time('app'));
+      $app.bot.init($app.config.bot);
+      $app.onStart(function () {
+        $app.bot.start();
+      });
+      $app.onStop(function () {
+        $app.bot.stop();
+      });
+    }
     $log.info("application " + $app.config.name + ' v' + $app.config.version + " initialized", $timer.time('app'));
     if ($app.config.resources) {
       $log.debug("starting resources as part of the init process", 5, $timer.time('app'));
@@ -304,7 +314,8 @@ $app = {
   },
   resources: require('./resource'),
   session: require('./session'),
-  ws: require('./ws')
+  ws: require('./ws'),
+  bot: require('./bot')
 };
 
 module.exports = $app;

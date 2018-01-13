@@ -25,58 +25,28 @@ describe("Notification core component", function () {
         });
         test2.restore();
     });
+    describe("#notif()", function () {
+        it("should be a method", function () {
+            expect(test).to.have.any.keys('notif');
+            expect(test.notif).to.be.an('function');
+        });
+    });
     describe("#notify()", function () {
         it("should be a method", function () {
             expect(test).to.have.any.keys('notify');
             expect(test.notify).to.be.an('function');
         });
     });
-    describe("SQS backend", function () {
-        it("should be an object", function () {
-            expect(test.sqs).to.be.an('object');
-        });
-        it("should have isActive property", function () {
-            expect(test.sqs).to.have.any.keys('isActive');
-            expect(test.sqs.isActive).to.be.an('boolean');
-        });
-        it("should be inactive", function () {
-            expect(test.sqs.isActive).to.be.false;
-        });
-        describe("#init()", function () {
-            it("should be a method", function () {
-                expect(test.sqs).to.have.any.keys('init');
-                expect(test.sqs.init).to.be.an('function');
-            });
-        });
-        describe("#notify()", function () {
-            it("should be a method", function () {
-                expect(test.sqs).to.have.any.keys('notify');
-                expect(test.sqs.notify).to.be.an('function');
-            });
+    describe("#sqsInit()", function () {
+        it("should be a method", function () {
+            expect(test).to.have.any.keys('sqsInit');
+            expect(test.sqsInit).to.be.an('function');
         });
     });
-    describe("Couchbase backend", function () {
-        it("should be an object", function () {
-            expect(test.couchbase).to.be.an('object');
-        });
-        it("should have isActive property", function () {
-            expect(test.couchbase).to.have.any.keys('isActive');
-            expect(test.couchbase.isActive).to.be.an('boolean');
-        });
-        it("should be inactive", function () {
-            expect(test.couchbase.isActive).to.be.false;
-        });
-        describe("#init()", function () {
-            it("should be a method", function () {
-                expect(test.couchbase).to.have.any.keys('init');
-                expect(test.couchbase.init).to.be.an('function');
-            });
-        });
-        describe("#notify()", function () {
-            it("should be a method", function () {
-                expect(test.couchbase).to.have.any.keys('notify');
-                expect(test.couchbase.notify).to.be.an('function');
-            });
+    describe("#couchbaseInit()", function () {
+        it("should be a method", function () {
+            expect(test).to.have.any.keys('couchbaseInit');
+            expect(test.couchbaseInit).to.be.an('function');
         });
     });
 });

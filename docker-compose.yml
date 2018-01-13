@@ -3,4 +3,4 @@ app:
   container_name: "sxapi-core-testing"
   ports:
     - "8080:8080"
-  command: ["test"]
+  command: ["start"]
