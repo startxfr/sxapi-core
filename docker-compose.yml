@@ -13,4 +13,4 @@ app:
   - "./sxapi.json:/conf/sxapi.json:Z"
   working_dir: /usr/src/app
   entrypoint: npm
-  command: test
+  command: start

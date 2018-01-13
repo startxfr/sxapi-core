@@ -1,0 +1,9 @@
+app:
+  container_name: "sxapi-core-dev"
+  extends:
+    file: docker-compose.yml
+    service: app
+  volumes:
+  - "./:/usr/src/app:Z"
+  - "./bot-sxapi.json:/conf/sxapi.json:Z"
+  - "./bot-mylib.js:/usr/src/app/bot-mylib.js:Z"
