@@ -30,12 +30,10 @@ describe("Bot core component", function () {
         });
     });
     describe("#init()", function () {
-        var test2 = sinon.spy(test, 'init');
-        test.init({});
-        it('should call init once', function () {
-            sinon.assert.calledOnce(test2);
+        it("should be a method", function () {
+            expect(test).to.have.any.keys('init');
+            expect(test.init).to.be.an('function');
         });
-        test2.restore();
     });
     describe("#_initCron()", function () {
         it("should be a method", function () {
