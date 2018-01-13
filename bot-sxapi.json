@@ -22,7 +22,7 @@
         "serviceinfo-sample": {
             "_class": "serviceinfo"
         },
-        "sqs-api": {
+        "sqs-test": {
             "_class": "aws_sqs",
             "send_options": {
                 "DelaySeconds": 2,
@@ -33,41 +33,9 @@
                     }
                 }
             },
-            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/sx4-dev-api",
-            "ACCESS_ID": "AKIAJZ4MBN5QRMYIKKSQ",
-            "ACCESS_KEY": "W5yq64uGyPAdlnqDMJdecQXuT7do9tBb0Yxu95e2",
-            "region": "eu-west-1"
-        },
-        "sqs-marketing": {
-            "_class": "aws_sqs",
-            "send_options": {
-                "DelaySeconds": 2,
-                "MessageAttributes": {
-                    "from": {
-                        "DataType": "String",
-                        "StringValue": "startx"
-                    }
-                }
-            },
-            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/sx4-dev-marketing",
-            "ACCESS_ID": "AKIAJZ4MBN5QRMYIKKSQ",
-            "ACCESS_KEY": "W5yq64uGyPAdlnqDMJdecQXuT7do9tBb0Yxu95e2",
-            "region": "eu-west-1"
-        },
-        "sqs-formation": {
-            "_class": "aws_sqs",
-            "send_options": {
-                "DelaySeconds": 2,
-                "MessageAttributes": {
-                    "from": {
-                        "DataType": "String",
-                        "StringValue": "startx"
-                    }
-                }
-            },
-            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/791728029433/sx4-dev-formation",
-            "ACCESS_ID": "AKIAJZ4MBN5QRMYIKKSQ",
-            "ACCESS_KEY": "W5yq64uGyPAdlnqDMJdecQXuT7do9tBb0Yxu95e2",
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue",
+            "ACCESS_ID": "XXXXXXXXXXXXXXXXXXXX",
+            "ACCESS_KEY": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
             "region": "eu-west-1"
         }
     },
@@ -107,49 +75,16 @@
         "lib": "./bot-mylib",
         "cron": [
             {
-                "id": "test-task",
-                "name": "Execute test task",
+                "id": "test-cront-task",
+                "name": "Execute test cron task",
                 "schedule": "*/1 * * * *",
-                "task": "crontLog"
-            },
-            {
-                "name": "Execute test task"
+                "task": "myCronFunction"
             }
         ],
         "readers": {
             "sqs": [
                 {
-                    "resource": "sqs-formation",
-                    "frequency": 15,
-                    "config": {
-                        "MaxNumberOfMessages": 10,
-                        "VisibilityTimeout": 10
-                    },
-                    "filters": [
-                        {
-                            "id": "test-task",
-                            "event": "api:lieu:create",
-                            "task": "myFunction"
-                        },
-                        {
-                            "id": "test-task2",
-                            "event": "api:etudiant:delete",
-                            "task": "myFunction"
-                        },
-                        {
-                            "id": "test-task3",
-                            "event": "api:etudiant:create",
-                            "task": "myFunction"
-                        },
-                        {
-                            "id": "test-task4",
-                            "event": "api:etudiant:update",
-                            "task": "myFunction"
-                        }
-                    ]
-                },
-                {
-                    "resource": "sqs-api",
+                    "resource": "sqs-test",
                     "frequency": 5,
                     "config": {
                         "MaxNumberOfMessages": 2,
@@ -157,14 +92,9 @@
                     },
                     "filters": [
                         {
-                            "id": "test-task",
+                            "id": "test-sqs-task",
                             "event": "event:type",
-                            "task": "myFunction"
-                        },
-                        {
-                            "id": "test-task2",
-                            "event": "api:lieu:create",
-                            "task": "myFunction"
+                            "task": "myReaderFunction"
                         }
                     ]
                 }
