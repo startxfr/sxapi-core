@@ -139,7 +139,7 @@ var $bot = {
     $log.debug("Start bot behaviour ", 2);
     $bot.config.cron.forEach(function (crontask) {
       $log.debug("bot : cron : " + crontask.id + " start executing every " + crontask.schedule, 3);
-      $bot.cronlib.schedule(crontask.schedule, function() {
+      $bot.cronlib.schedule(crontask.schedule, function () {
         $bot.lib[crontask.task](crontask);
       });
     });
