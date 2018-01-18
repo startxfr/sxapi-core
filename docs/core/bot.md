@@ -6,7 +6,7 @@ The bot component is a [core component](./README.md) used for executing cron tas
 This component comes with 2 kind of tasks : cron for time based actions or reader for message driven actions.
 
 This resource is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.86-blue.svg)](https://github.com/startxfr/sxapi-core).
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.91-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Configuration
 
