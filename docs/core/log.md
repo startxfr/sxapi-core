@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.86-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.0.91-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : log component
 
@@ -23,6 +23,7 @@ log context will be defined and your API will be muted and no log will be persis
 | filters.**type**       | no        | string |         | a list (comma separated) of log type to keep (ex: debug,info,error,warn)
 | **sqs**                | no        | object |         | a object for configuring a AWS SQS backend
 | sqs.**resource**       | no        | string |         | the resource id of the sqs backend. See [aws_sqs resource documentation](../resources/aws_sqs.md)
+| sqs.**eventName**      | no        | string |         | the event name sended to the message bus
 | **couchbase**          | no        | object |         | a object for configuring a Couchbase backend
 | couchbase.**resource** | no        | string |         | the resource id of the couchbase backend. See [couchbase resource documentation](../resources/couchbase.md)
 
