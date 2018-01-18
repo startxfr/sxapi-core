@@ -75,7 +75,9 @@ var $notification = {
     obj.resource = require('./resource').get(conf.resource);
     obj.notify = function (event, data) {
       var message = {
+        apptype: $log.config.apptype,
         event: event,
+        type: 'notification',
         data: data,
         time: Date.now(),
         server: $log.config.appsign
