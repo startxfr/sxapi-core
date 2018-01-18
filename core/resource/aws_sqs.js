@@ -152,11 +152,16 @@ module.exports = function (id, config) {
      * Remove a message from the SQS queue
      * @param {object} options object with options to pass to the AWS deleteMessage method
      * @param {function} callback to call when AWS answer
+     * @param {bool} mute is log muted
      * @returns {$queue.sqs}
      */
-    removeMessage: function (options, callback) {
-      var timerId = 'resource_aws.sqs_removeMessage_' + $sqs.id + '::' + options.ReceiptHandle;
-      $log.tools.resourceInfo($sqs.id, "remove message '" + options.ReceiptHandle + "'");
+    removeMessage: function (options, callback, mute) {
+      var isMuted = (mute = true) ? true : false;
+      var displayId = options.MessageId || options.ReceiptHandle;
+      var timerId = 'resource_aws.sqs_removeMessage_' + $sqs.id + '::' + displayId;
+      if (!isMuted) {
+        $log.tools.resourceInfo($sqs.id, "remove message '" + displayId + "'");
+      }
       $timer.start(timerId);
       var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
       if ($sqs.config.delete_options && $sqs.config.delete_options.QueueUrl) {
@@ -170,10 +175,14 @@ module.exports = function (id, config) {
       var defaultCallback = function (error, response) {
         var duration = $timer.timeStop(timerId);
         if (error) {
-          $log.tools.resourceWarn($sqs.id, 'message ' + config.ReceiptHandle + ' could not be removed because ' + error.message, duration, true);
+          if (!isMuted) {
+            $log.tools.resourceWarn($sqs.id, 'message ' + config.ReceiptHandle + ' could not be removed because ' + error.message, duration, true);
+          }
         }
         else {
-          $log.tools.resourceDebug($sqs.id, "removed AWS SQS message " + config.ReceiptHandle, 4, duration, true);
+          if (!isMuted) {
+            $log.tools.resourceDebug($sqs.id, "removed AWS SQS message " + config.ReceiptHandle, 4, duration, true);
+          }
         }
       };
       $sqs.sqsqueue.deleteMessage(config, (callback) ? callback : defaultCallback);

@@ -196,6 +196,10 @@ var $log = {
             if (!require('./resource').exist(conf.resource)) {
                 throw new Error("resource '" + conf.resource + "' in log config 'sqs' doesn't exist");
             }
+            this.eventName = false;
+            if (conf.eventName) {
+            this.eventName = conf.eventName;
+            }
             this.resource = require('./resource').get(conf.resource);
             this.isActive = true;
             return this;
@@ -218,6 +222,9 @@ var $log = {
             };
             if (duration !== null && duration !== undefined) {
                 message.duration = parseInt(duration);
+            }
+            if ($log.sqs.eventName !== false) {
+                message.event = $log.sqs.eventName;
             }
             $log.sqs.resource.sendMessage(message, {}, function (err) {
                 if (err) {
