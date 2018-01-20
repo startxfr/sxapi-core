@@ -324,6 +324,51 @@ module.exports = function (id, config) {
           }
         };
       },
+      readOne: function (config) {
+        return function (req, res) {
+          $log.tools.endpointDebug($mqdb.id, req, "readOne()", 1);
+          var docId = (req.params.id) ? req.params.id : req.body.id;
+          if ($app.resources.exist(config.resource)) {
+            var filter = {};
+            if (docId && config.id_field) {
+              filter[config.id_field] = docId;
+            }
+            var cb = function (timerId) {
+              return function (err, reponse) {
+                var duration = $timer.timeStop(timerId);
+                if (err) {
+                  var message = "could not find " + docId + " in " + config.table + " because " + err.message;
+                  $mqdb.tools.responseNOK(res,
+                  message,
+                  req,
+                  duration);
+                }
+                else {
+                  if (config.notification !== undefined) {
+                    $app.notification.notif(config.notification, reponse);
+                  }
+                  $mqdb.tools.responseOK(res,
+                  "returned 1 item",
+                  reponse[0],
+                  req,
+                  duration);
+                }
+              };
+            };
+            if (config.sql) {
+              var params = $mqdb.tools.generateParams4Template(config, req);
+              var sql = $mqdb.tools.format(config.sql, params);
+              $app.resources.get(config.resource).query(sql, cb);
+            }
+            else {
+              $app.resources.get(config.resource).read(config.table, filter, cb);
+            }
+          }
+          else {
+            $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
+          }
+        };
+      },
       create: function (config) {
         return function (req, res) {
           $log.tools.endpointDebug($mqdb.id, req, "create()", 1);
