@@ -61,36 +61,37 @@ instance by using `$app.resources.get('google-id').getService('drive')` where `g
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 For more information read [the getService method documentation](google.md#method-getservice)
 
-This module come with 16 methods.
+This module come with 17 methods.
 
-[1. getFileMeta method](#method-getfilemeta)
+[1. findFile method](#method-findfile)
 [2. getFile method](#method-getfile)
-[3. findFile method](#method-findfile)
-[4. addFile method](#method-addfile)
-[5. updateFile method](#method-updatefile)
-[6. deleteFile method](#method-deletefile)
-[7. exportFile method](#method-exportfile)
-[8. getDirectory method](#method-getdirectory)
-[9. copyDirectory method](#method-copydirectory)
-[10. addDirectory method](#method-adddirectory)
-[11. updateDirectory method](#method-updatedirectory)
-[12. deleteDirectory method](#method-deletedirectory)
-[13. getPermissions method](#method-getpermissions)
-[14. addPermission method](#method-addpermission)
-[15. updatePermission method](#method-updatepermission)
-[16. deletePermission method](#method-deletepermission)
+[3. getFileMeta method](#method-getfilemeta)
+[4. copyFile method](#method-addfile)
+[5. addFile method](#method-addfile)
+[6. updateFile method](#method-updatefile)
+[7. deleteFile method](#method-deletefile)
+[8. exportFile method](#method-exportfile)
+[9. getDirectory method](#method-getdirectory)
+[10. copyDirectory method](#method-copydirectory)
+[11. addDirectory method](#method-adddirectory)
+[12. updateDirectory method](#method-updatedirectory)
+[13. deleteDirectory method](#method-deletedirectory)
+[14. getPermissions method](#method-getpermissions)
+[15. addPermission method](#method-addpermission)
+[16. updatePermission method](#method-updatepermission)
+[17. deletePermission method](#method-deletepermission)
 
 
-### Method getFileMeta
+### Method findFile
 
-Search for a google file coresponding to the id and return the document meta data
+Search for a list of google files matching a google query [see google documentation](https://developers.google.com/drive/v3/web/search-parameters)
 
 #### Parameters
 
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
-| **id**                       | yes       | string   | null    | The document ID to find
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v3/reference/files/get).
+| **q**                        | yes       | string   | null    | The drive query to perform [see google examples](https://developers.google.com/drive/v3/web/search-parameters#examples)
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v3/reference/files/list).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -99,10 +100,9 @@ Search for a google file coresponding to the id and return the document meta dat
 
 ```javascript
 var service = $app.resources.get('google-id').getService('drive');
-service.getFileMeta('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,  function (error, response) {
+service.findFile("fullText contains 'hello'", { maxResults : 50 } ,  function (error, response) {
     console.log(error, response);
 });
-
 ```
 
 ### Method getFile
@@ -130,19 +130,18 @@ service.getFile('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,
 });
 // with response (where response is and http response object)
 service.getFile('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,  response);
-
 ```
 
-### Method findFile
+### Method getFileMeta
 
-Search for a list of google files matching a google query [see google documentation](https://developers.google.com/drive/v3/web/search-parameters)
+Search for a google file coresponding to the id and return the document meta data
 
 #### Parameters
 
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
-| **q**                        | yes       | string   | null    | The drive query to perform [see google examples](https://developers.google.com/drive/v3/web/search-parameters#examples)
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v3/reference/files/list).
+| **id**                       | yes       | string   | null    | The document ID to find
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v3/reference/files/get).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -151,10 +150,35 @@ Search for a list of google files matching a google query [see google documentat
 
 ```javascript
 var service = $app.resources.get('google-id').getService('drive');
-service.findFile("fullText contains 'hello'", { maxResults : 50 } ,  function (error, response) {
+service.getFileMeta('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,  function (error, response) {
     console.log(error, response);
 });
+```
 
+### Method copyFile
+
+Copy a file into a new one located into another directory 
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **source**                   | yes       | string   | null    | The file ID of the resource to copy
+| **destination**              | yes       | string   | null    | The directory ID of the destination
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.create() documentation](https://developers.google.com/drive/v3/reference/files/create).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.copyFile( "314159265358979323846", "483514654687643543578", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
 ```
 
 ### Method addFile
@@ -188,7 +212,6 @@ service.addFile(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method updateFile
@@ -218,7 +241,6 @@ service.updateFile(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method deleteFile
@@ -246,7 +268,6 @@ service.deleteFile(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method exportFile
@@ -276,9 +297,7 @@ service.exportFile(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
-
 
 ### Method getDirectory
 
@@ -301,7 +320,32 @@ var service = $app.resources.get('google-id').getService('drive');
 service.getDirectory("314159265358979323846", { maxResults : 50 } ,  function (error, response) {
     console.log(error, response);
 });
+```
 
+### Method copyDirectory
+
+Copy a directory into a new one located into another directory 
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **source**                   | yes       | string   | null    | The directory ID of the resource to copy
+| **destination**              | yes       | string   | null    | The directory ID of the destination
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.create() documentation](https://developers.google.com/drive/v3/reference/files/create).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.copyDirectory( "314159265358979323846", "483514654687643543578", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
 ```
 
 ### Method addDirectory
@@ -331,7 +375,6 @@ service.addDirectory(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method updateDirectory
@@ -361,7 +404,6 @@ service.updateDirectory(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method deleteDirectory
@@ -389,9 +431,7 @@ service.deleteDirectory(
     function (error, response) {
         console.log(error, response);
     });
-
 ```
-
 
 ### Method getPermissions
 
@@ -414,7 +454,6 @@ var service = $app.resources.get('google-id').getService('drive');
 service.getPermissions("314159265358979323846", { } ,  function (error, response) {
     console.log(error, response);
 });
-
 ```
 
 ### Method addPermission
@@ -442,7 +481,6 @@ service.addPermission("314159265358979323846", "user@domain.org", "writer", { } 
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method updatePermission
@@ -470,7 +508,6 @@ service.updatePermission("314159265358979323846", "2658534548766546588", "reader
     function (error, response) {
         console.log(error, response);
     });
-
 ```
 
 ### Method deletePermission
@@ -497,9 +534,7 @@ service.deletePermission("314159265358979323846", "2658534548766546588", { } ,
     function (error, response) {
         console.log(error, response);
     });
-
 ```
-
 
 ## Resource endpoints
 
