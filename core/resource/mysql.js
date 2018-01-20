@@ -387,7 +387,20 @@ module.exports = function (id, config) {
                 }
                 else {
                   if (config.notification !== undefined) {
-                    $app.notification.notif(config.notification, reponse);
+                    var filter = {};
+                    filter[config.id_field] = reponse.insertId;
+                    $app.resources
+                    .get(config.resource)
+                    .read(config.table, filter, function () {
+                      return function (err, rep) {
+                        if (err || !rep.body || !rep.body.data) {
+                          $app.notification.notif(config.notification, reponse);
+                        }
+                        else {
+                          $app.notification.notif(config.notification, rep.body.data);
+                        }
+                      };
+                    });
                   }
                   $mqdb.tools.responseOK(res,
                   "document recorded in" + config.table,
@@ -426,7 +439,20 @@ module.exports = function (id, config) {
                 }
                 else {
                   if (config.notification !== undefined) {
-                    $app.notification.notif(config.notification, reponse);
+                    var filter = {};
+                    filter[config.id_field] = docId;
+                    $app.resources
+                    .get(config.resource)
+                    .read(config.table, filter, function () {
+                      return function (err, rep) {
+                        if (err || !rep.body || !rep.body.data) {
+                          $app.notification.notif(config.notification, reponse);
+                        }
+                        else {
+                          $app.notification.notif(config.notification, rep.body.data);
+                        }
+                      };
+                    });
                   }
                   $mqdb.tools.responseOK(res,
                   "document " + docId + " updated",
@@ -448,33 +474,44 @@ module.exports = function (id, config) {
           var docId = (req.params.id) ? req.params.id : req.body.id;
           if ($app.resources.exist(config.resource)) {
             var filter = {};
-            if (docId && config.id_field) {
-              eval("filter." + config.id_field + "=docId;");
+            filter[config.id_field] = docId;
+            if (config.notification !== undefined) {
+              $app.resources
+              .get(config.resource)
+              .read(config.table, filter, function () {
+                return function (err, rep) {
+                  $app.resources
+                  .get(config.resource)
+                  .delete(config.table, filter, function (timerId) {
+                    return function (err, reponse) {
+                      var duration = $timer.timeStop(timerId);
+                      if (err) {
+                        var message = "could not delete " + docId + " because " + err.message;
+                        $mqdb.tools.responseNOK(res,
+                        message,
+                        req,
+                        duration);
+                      }
+                      else {
+                        if (config.notification !== undefined) {
+                          if (err || !rep.body || !rep.body.data) {
+                            $app.notification.notif(config.notification, reponse);
+                          }
+                          else {
+                            $app.notification.notif(config.notification, rep.body.data);
+                          }
+                        }
+                        $mqdb.tools.responseOK(res,
+                        "document " + docId + " deleted",
+                        reponse,
+                        req,
+                        duration);
+                      }
+                    };
+                  });
+                };
+              });
             }
-            $app.resources
-            .get(config.resource)
-            .delete(config.table, filter, function (timerId) {
-              return function (err, reponse) {
-                var duration = $timer.timeStop(timerId);
-                if (err) {
-                  var message = "could not delete " + docId + " because " + err.message;
-                  $mqdb.tools.responseNOK(res,
-                  message,
-                  req,
-                  duration);
-                }
-                else {
-                  if (config.notification !== undefined) {
-                    $app.notification.notif(config.notification, reponse);
-                  }
-                  $mqdb.tools.responseOK(res,
-                  "document " + docId + " deleted",
-                  reponse,
-                  req,
-                  duration);
-                }
-              };
-            });
           }
           else {
             $mqdb.tools.responseResourceDoesntExist(req, res, config.resource);
