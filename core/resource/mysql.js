@@ -393,11 +393,11 @@ module.exports = function (id, config) {
                     .get(config.resource)
                     .read(config.table, filter, function () {
                       return function (err, rep) {
-                        if (err || !rep.body || !rep.body.data) {
+                        if (err) {
                           $app.notification.notif(config.notification, reponse);
                         }
                         else {
-                          $app.notification.notif(config.notification, rep.body.data);
+                          $app.notification.notif(config.notification, rep[0]);
                         }
                       };
                     });
@@ -445,12 +445,12 @@ module.exports = function (id, config) {
                     .get(config.resource)
                     .read(config.table, filter, function () {
                       return function (err, rep) {
-                        console.log(err, rep);
-                        if (err || !rep.body || !rep.body.data) {
+                        console.log([0]);
+                        if (err) {
                           $app.notification.notif(config.notification, reponse);
                         }
                         else {
-                          $app.notification.notif(config.notification, rep.body.data);
+                          $app.notification.notif(config.notification, rep[0]);
                         }
                       };
                     });
@@ -480,7 +480,7 @@ module.exports = function (id, config) {
               $app.resources
               .get(config.resource)
               .read(config.table, filter, function () {
-                return function (err, rep) {
+                return function (errr, rep) {
                   $app.resources
                   .get(config.resource)
                   .delete(config.table, filter, function (timerId) {
@@ -495,11 +495,11 @@ module.exports = function (id, config) {
                       }
                       else {
                         if (config.notification !== undefined) {
-                          if (err || !rep.body || !rep.body.data) {
+                          if (errr) {
                             $app.notification.notif(config.notification, reponse);
                           }
                           else {
-                            $app.notification.notif(config.notification, rep.body.data);
+                            $app.notification.notif(config.notification, rep[0]);
                           }
                         }
                         $mqdb.tools.responseOK(res,
