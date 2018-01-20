@@ -445,7 +445,6 @@ module.exports = function (id, config) {
                     .get(config.resource)
                     .read(config.table, filter, function () {
                       return function (err, rep) {
-                        console.log([0]);
                         if (err) {
                           $app.notification.notif(config.notification, reponse);
                         }

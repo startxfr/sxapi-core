@@ -209,6 +209,38 @@ module.exports = function (id, config, google) {
       return this;
     },
     /**
+     * Move the given file from one directory to another
+     * @param {string} id directory ID
+     * @param {string} from the directory where is located the directory to move
+     * @param {string} to the directory where directory have to be moved
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    moveFile: function (id, from, to, options, callback) {
+      var timerId = 'resource_google_drive_moveFile_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "move file '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: id,
+        addParents:to,
+        removeParents:from,
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not move file ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not update directory');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + id + " moved in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
      * Add a file into a given directory
      * @param {string} name folder name
      * @param {string} body file content (should be a Buffer for binary)
@@ -464,6 +496,38 @@ module.exports = function (id, config, google) {
         }
         else {
           $log.tools.resourceDebug($gapid.id, "directory " + id + " updated in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Move the given directory from one directory to another
+     * @param {string} id directory ID
+     * @param {string} from the directory where is located the directory to move
+     * @param {string} to the directory where directory have to be moved
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    moveDirectory: function (id, from, to, options, callback) {
+      var timerId = 'resource_google_drive_moveDirectory_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "move directory '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: id,
+        addParents:to,
+        removeParents:from,
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not move directory ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not update directory');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "directory " + id + " moved in resource " + $gapid.id, 4, duration, true);
           callback(null, response);
         }
       });
