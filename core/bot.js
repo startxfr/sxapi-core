@@ -137,49 +137,53 @@ var $bot = {
    */
   start: function (callback) {
     $log.debug("Start bot behaviour ", 2);
-    $bot.config.cron.forEach(function (crontask) {
-      $log.debug("bot : cron : " + crontask.id + " start executing every " + crontask.schedule, 3);
-      $bot.cronlib.schedule(crontask.schedule, function () {
-        $bot.lib[crontask.task](crontask);
+    if ($bot.config.cron) {
+      $bot.config.cron.forEach(function (crontask) {
+        $log.debug("bot : cron : " + crontask.id + " start executing every " + crontask.schedule, 3);
+        $bot.cronlib.schedule(crontask.schedule, function () {
+          $bot.lib[crontask.task](crontask);
+        });
       });
-    });
-    $bot.config.sqs.forEach(function (resource) {
-      $log.debug("bot : sqs : " + resource.resource + " : start reading every " + resource.frequency, 3);
-      var rs = $app.resources.get(resource.resource);
-      var intervalFn = function () {
-        rs.read(resource.config || {}, function (err, reponse) {
-          if (err) {
-            $log.warn("Bot reader SQS " + resource.resource + " received error message " + err.message);
-          }
-          else {
-            var ct = (reponse.Messages) ? reponse.Messages.length : 0;
-            if (ct > 0) {
-              reponse.Messages.forEach(function (message) {
-                if (JSON.isDeserializable(message.Body)) {
-                  message.Body = JSON.parse(message.Body);
-                }
-                var messageMatch = false;
-                resource.filters.forEach(function (filter) {
-                  var eventKey = filter.eventKey || 'event';
-                  if (message.Body && filter.event === message.Body[eventKey]) {
-                    messageMatch = true;
-                    $log.debug("bot : sqs : " + resource.resource + " : " + filter.id + " match message " + message.MessageId, 3);
-                    $bot.lib[filter.task](message.Body, message, filter);
-                  }
-                });
-                if (messageMatch === false) {
-                  $log.debug("bot : sqs : " + resource.resource + " : message " + message.MessageId + " not filtered", 4);
-                }
-              });
+    }
+    if ($bot.config.sqs) {
+      $bot.config.sqs.forEach(function (resource) {
+        $log.debug("bot : sqs : " + resource.resource + " : start reading every " + resource.frequency, 3);
+        var rs = $app.resources.get(resource.resource);
+        var intervalFn = function () {
+          rs.read(resource.config || {}, function (err, reponse) {
+            if (err) {
+              $log.warn("Bot reader SQS " + resource.resource + " received error message " + err.message);
             }
             else {
-              $log.debug("bot : sqs : " + resource.resource + " received no message", 3);
+              var ct = (reponse.Messages) ? reponse.Messages.length : 0;
+              if (ct > 0) {
+                reponse.Messages.forEach(function (message) {
+                  if (JSON.isDeserializable(message.Body)) {
+                    message.Body = JSON.parse(message.Body);
+                  }
+                  var messageMatch = false;
+                  resource.filters.forEach(function (filter) {
+                    var eventKey = filter.eventKey || 'event';
+                    if (message.Body && filter.event === message.Body[eventKey]) {
+                      messageMatch = true;
+                      $log.debug("bot : sqs : " + resource.resource + " : " + filter.id + " match message " + message.MessageId, 3);
+                      $bot.lib[filter.task](message.Body, message, filter);
+                    }
+                  });
+                  if (messageMatch === false) {
+                    $log.debug("bot : sqs : " + resource.resource + " : message " + message.MessageId + " not filtered", 4);
+                  }
+                });
+              }
+              else {
+                $log.debug("bot : sqs : " + resource.resource + " received no message", 3);
+              }
             }
-          }
-        });
-      };
-      $bot.timers.push(setInterval(intervalFn, resource.frequency * 1000));
-    });
+          });
+        };
+        $bot.timers.push(setInterval(intervalFn, resource.frequency * 1000));
+      });
+    }
     if (typeof callback === "function") {
       callback();
     }
