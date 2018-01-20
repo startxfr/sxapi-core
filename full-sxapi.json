@@ -1,6 +1,6 @@
 {
-    "name": "startx-api-dev",
-    "description": "sxapi developing config file",
+    "name": "sxapi-dev-server",
+    "description": "sxapi developing config file (server dev)",
     "version": "0.0.1-beta",
     "debug": true,
     "session": {
