@@ -41,7 +41,7 @@ module.exports = function (id, config, google) {
       var timerId = 'resource_google_drive_start_' + $gapid.id;
       $log.tools.resourceDebug($gapid.id, "starting", 3);
       $gapid.service = $gapid.google.gapi.drive({
-        version: 'v2',
+        version: 'v3',
         auth: $gapid.google.gapi_auth
       });
       $log.tools.resourceDebug($gapid.id, "started ", 1, $timer.timeStop(timerId));
@@ -65,26 +65,164 @@ module.exports = function (id, config, google) {
     },
     /**
      * Get file metadata
-     * @param {string} id file ID
+     * @param {string} q the search query 
      * @param {object} options to use when retriving file
      * @param {function} callback to call for returning service
      * @returns {$gapid}
      */
-    getFileMeta: function (id, options, callback) {
-      var timerId = 'resource_google_drive_getFileMeta_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "get file '" + id + "' metadata");
+    findFile: function (q, options, callback) {
+      var timerId = 'resource_google_drive_findFile_' + $gapid.id + '_' + q;
+      $log.tools.resourceInfo($gapid.id, "find file '" + q + "' metadata");
       $timer.start(timerId);
       var config = options || {};
-      config.fileId = id;
-      $gapid.service.files.get(config, function (err, doc) {
+      var config = require('merge').recursive({}, {
+        q: q,
+        fields: 'nextPageToken, files(id,name,mimeType,trashed)'
+      }, options || {});
+      $gapid.service.files.list(config, function (err, doc) {
         var duration = $timer.time(timerId);
         if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback('could not get file metadata');
+          $log.tools.resourceWarn($gapid.id, 'could not execute search ' + q + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback(new Error('could not execute search ' + q));
         }
         else {
-          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
-          callback(null, doc);
+          $log.tools.resourceDebug($gapid.id, "file found for search " + q + " found in resource " + $gapid.id, 4, duration, true);
+          callback(null, doc.items);
+        }
+      });
+      return this;
+    },
+    /**
+     * Add a file into a given directory
+     * @param {string} name folder name
+     * @param {string} body file content (should be a Buffer for binary)
+     * @param {string} mime the mimeTYpe of the document
+     * @param {string} parent folder ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    addFile: function (name, body, mime, parent, options, callback) {
+      var timerId = 'resource_google_drive_addFile_' + $gapid.id + '_' + name;
+      $log.tools.resourceInfo($gapid.id, "add file '" + name + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive(config, {
+        resource: {
+          name: name,
+          mimeType: 'text/plain',
+          parents: [parent]
+        },
+        media: {
+          mimeType: mime,
+          body: body
+        },
+        fields: 'id,name,mimeType',
+        uploadType: 'multipart'
+      }, options || {});
+      $gapid.service.files.create(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not create file ' + config.resource.name + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not create file ' + config.resource.name);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.resource.name + " created in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Update a file content
+     * @param {string} fileId fthe file ID
+     * @param {string} body file content (should be a Buffer for binary)
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    updateFile: function (fileId, body, options, callback) {
+      var timerId = 'resource_google_drive_updateFile_' + $gapid.id + '_' + fileId;
+      $log.tools.resourceInfo($gapid.id, "update file '" + fileId + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive(config, {
+        media: {
+          body: body
+        },
+        fields: 'id,name,mimeType',
+        uploadType: 'multipart',
+        fileId: fileId
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not update file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not update file ' + config.fileId);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " updated in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Export a file into another output and record it
+     * @param {string} fileId fthe file ID
+     * @param {string} mime imetype of the exported document
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    exportFile: function (fileId, mime, options, callback) {
+      var timerId = 'resource_google_drive_exportFile_' + $gapid.id + '_' + fileId;
+      $log.tools.resourceInfo($gapid.id, "export file '" + fileId + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive(config, {
+        fields: 'id,name,mimeType',
+        fileId: fileId,
+        mimeType: mime
+      }, options || {});
+      $gapid.service.files.export(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not export file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not export file ' + config.fileId);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " exported in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Export a file into another output and record it
+     * @param {string} fileId fthe file ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    deleteFile: function (fileId, options, callback) {
+      var timerId = 'resource_google_drive_deleteFile_' + $gapid.id + '_' + fileId;
+      $log.tools.resourceInfo($gapid.id, "delete file '" + fileId + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: fileId,
+        trashed: true,
+        resource: {
+          trashed: true
+        },
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not delete file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not delete file ' + config.fileId);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " deleted in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
         }
       });
       return this;
@@ -103,7 +241,7 @@ module.exports = function (id, config, google) {
       $timer.start(timerId);
       var config = options || {};
       config.fileId = id;
-      config.fields = 'id,name,title,mimeType';
+      config.fields = 'id,name,name,mimeType';
       $gapid.service.files.get(config, function (err, doc) {
         var duration = $timer.time(timerId);
         if (err) {
@@ -149,70 +287,26 @@ module.exports = function (id, config, google) {
     },
     /**
      * Get file metadata
-     * @param {string} q the search query 
+     * @param {string} id file ID
      * @param {object} options to use when retriving file
      * @param {function} callback to call for returning service
      * @returns {$gapid}
      */
-    findFile: function (q, options, callback) {
-      var timerId = 'resource_google_drive_findFile_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "find file '" + id + "' metadata");
+    getFileMeta: function (id, options, callback) {
+      var timerId = 'resource_google_drive_getFileMeta_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "get file '" + id + "' metadata");
       $timer.start(timerId);
       var config = options || {};
-      config.q = q;
-//            config.fields='id,title,mimeType';
-      $gapid.service.files.list(config, function (err, doc) {
+      config.fileId = id;
+      $gapid.service.files.get(config, function (err, doc) {
         var duration = $timer.time(timerId);
         if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not execute search ' + q + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback(new Error('could not execute search ' + q));
+          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not get file metadata');
         }
         else {
-          $log.tools.resourceDebug($gapid.id, "file found for search " + q + " found in resource " + $gapid.id, 4, duration, true);
-          callback(null, doc.items);
-        }
-      });
-      return this;
-    },
-    /**
-     * Add a file into a given directory
-     * @param {string} name folder name
-     * @param {string} parent folder ID
-     * @param {string} mime the mimeTYpe of the document
-     * @param {string} body file content (should be a Buffer for binary)
-     * @param {object} options to use when retriving file
-     * @param {function} callback to call for returning service
-     * @returns {$gapid}
-     */
-    addFile: function (name, parent, mime, body, options, callback) {
-      var timerId = 'resource_google_drive_addFile_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "add file '" + id + "'");
-      $timer.start(timerId);
-      var config = options || {};
-      config.uploadType = 'multipart';
-      config.parents = [{id: parent}];
-      var opt = {
-        resource: {
-          title: name,
-          mimeType: 'text/plain'
-        },
-        media: {
-          mimeType: mime,
-          body: body
-        },
-        fields: 'id'
-      };
-      require('merge').recursive(config, opt);
-
-      $gapid.service.files.insert(config, function (err, response) {
-        var duration = $timer.timeStop(timerId);
-        if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not create file ' + config.title + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback('could not create file');
-        }
-        else {
-          $log.tools.resourceDebug($gapid.id, "file " + config.title + " created in resource " + $gapid.id, 4, duration, true);
-          callback(null, response);
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
+          callback(null, doc);
         }
       });
       return this;
@@ -229,37 +323,57 @@ module.exports = function (id, config, google) {
       $log.tools.resourceInfo($gapid.id, "get directory '" + id + "'");
       $timer.start(timerId);
       var config = options || {};
-      config.folderId = id;
-      config.fields = 'id,title,name,mimeType';
-      $gapid.service.children.list(config, function (err, list) {
+      var config = require('merge').recursive({}, {
+        q: " '" + id + "' in parents",
+        fields: 'nextPageToken, files(id, name,mimeType)'
+      }, options || {});
+      $gapid.service.files.list(config, function (err, list) {
         var duration = $timer.timeStop(timerId);
         if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not get directory ' + config.folderId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback('could not get file metadata');
+          $log.tools.resourceWarn($gapid.id, 'could not get directory ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not get directory content');
         }
         else {
-          $log.tools.resourceDebug($gapid.id, "folder " + config.folderId + " found in resource " + $gapid.id, 4, duration, true);
-          var result = [];
-          require('async').each(list.items, function (file, cb) {
-            $gapid.service.files.get({fileId: file.id, fields: 'id,title,mimeType'}, function (err, fileinfo) {
-              if (err) {
-                result.push(file);
-                cb(null, file);
-              }
-              else {
-                result.push(fileinfo);
-                cb(null, fileinfo);
-              }
-            });
-          }, function () {
-            callback(null, result);
-          });
+          $log.tools.resourceDebug($gapid.id, "folder " + id + " found in resource " + $gapid.id, 4, duration, true);
+          callback(null, list);
         }
       });
       return this;
     },
     /**
-     * Get file list of a given directory
+     * Copy a given directory into another directory
+     * @param {string} source folder ID
+     * @param {string} destination parent destination folder ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    copyDirectory: function (source, destination, options, callback) {
+      var timerId = 'resource_google_drive_copyDirectory_' + $gapid.id + '_' + source;
+      $log.tools.resourceInfo($gapid.id, "copy directory '" + destination + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        resource: {
+          parents: [destination]
+        },
+        fields: 'id,name,mimeType',
+        fileId: source
+      }, options || {});
+      $gapid.service.files.create(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not copy directory ' + source + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not copy directory ' + source);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "directory " + response.id + " copied from " + source + " in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Add a directory into a parent
      * @param {string} name folder name
      * @param {string} parent folder ID
      * @param {object} options to use when retriving file
@@ -267,21 +381,213 @@ module.exports = function (id, config, google) {
      * @returns {$gapid}
      */
     addDirectory: function (name, parent, options, callback) {
-      var timerId = 'resource_google_drive_addDirectory_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "add directory '" + id + "'");
+      var timerId = 'resource_google_drive_addDirectory_' + $gapid.id + '_' + name;
+      $log.tools.resourceInfo($gapid.id, "add directory '" + name + "'");
       $timer.start(timerId);
-      var config = options || {};
-      config.title = name;
-      config.parents = [{id: parent}];
-      config.mimeType = "application/vnd.google-apps.folder";
-      $gapid.service.files.insert(config, function (err, response) {
+      var config = require('merge').recursive({}, {
+        resource: {
+          name: name,
+          mimeType: 'application/vnd.google-apps.folder',
+          parents: [parent]
+        },
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.create(config, function (err, response) {
         var duration = $timer.timeStop(timerId);
         if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not create directory ' + config.title + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          $log.tools.resourceWarn($gapid.id, 'could not create directory ' + name + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
           callback('could not create directory');
         }
         else {
-          $log.tools.resourceDebug($gapid.id, "directory " + config.title + " created in resource " + $gapid.id, 4, duration, true);
+          $log.tools.resourceDebug($gapid.id, "directory " + response.id + " created in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Update the given directory
+     * @param {string} id directory ID
+     * @param {string} name new name
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    updateDirectory: function (id, name, options, callback) {
+      var timerId = 'resource_google_drive_updateDirectory_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "update directory '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: id,
+        resource: {
+          name: name
+        },
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not update directory ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not update directory');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "directory " + id + " updated in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Delete the given directory
+     * @param {string} id directory ID
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    deleteDirectory: function (id, options, callback) {
+      var timerId = 'resource_google_drive_deleteDirectory_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "delete directory '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: id,
+        trashed: true,
+        resource: {
+          trashed: true
+        },
+        fields: 'id,name,mimeType'
+      }, options || {});
+      $gapid.service.files.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not delete directory ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not delete directory');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "directory " + id + " deleted in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Get permissions of a given file
+     * @param {string} fileId file ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    getPermissions: function (fileId, options, callback) {
+      var timerId = 'resource_google_drive_getPermissions_' + $gapid.id + '_' + fileId;
+      $log.tools.resourceInfo($gapid.id, "get permission for '" + fileId + "'");
+      $timer.start(timerId);
+      var config = options || {};
+      var config = require('merge').recursive({}, {
+        fileId: fileId
+      }, options || {});
+      $gapid.service.permissions.list(config, function (err, list) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not get permissions ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not get permission content');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "folder " + id + " found in resource " + $gapid.id, 4, duration, true);
+          callback(null, list);
+        }
+      });
+      return this;
+    },
+    /**
+     * Add a permission into a parent
+     * @param {string} fileId the file concernad by this permission
+     * @param {string} user the user this permission is granted
+     * @param {string} role permission level for this user
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    addPermission: function (fileId, user, role, options, callback) {
+      var timerId = 'resource_google_drive_addPermission_' + $gapid.id + '_' + fileId;
+      $log.tools.resourceInfo($gapid.id, "add permission to '" + fileId + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        resource: {
+          role: role,
+          type: 'user',
+          emailAddress: user
+        },
+        fileId: fileId
+      }, options || {});
+      $gapid.service.permissions.create(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not create permission on file ' + fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not create permission');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "permission for " + user + " on " + fileId + " created in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Update the given permission
+     * @param {string} fileId file ID
+     * @param {string} permId permission ID
+     * @param {string} role new role name
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    updatePermission: function (fileId, permId, role, options, callback) {
+      var timerId = 'resource_google_drive_updatePermission_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "update permission '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        resource: {
+          role: role
+        },
+        fileId: fileId,
+        permissionId: permId
+      }, options || {});
+      $gapid.service.permissions.update(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not update permission ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not update permission');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "permission " + id + " updated in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
+     * Delete the given permission
+     * @param {string} fileId file ID
+     * @param {string} permId permission ID
+     * @param {object} options to use when deleting the file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    deletePermission: function (fileId, permId, options, callback) {
+      var timerId = 'resource_google_drive_deletePermission_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "delete permission '" + id + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        fileId: fileId,
+        permissionId: permId
+      }, options || {});
+      $gapid.service.permissions.delete(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not delete permission ' + id + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not delete permission');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "permission " + id + " deleted in resource " + $gapid.id, 4, duration, true);
           callback(null, response);
         }
       });

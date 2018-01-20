@@ -28,6 +28,7 @@ must be an object who must have the [appropriate configuration parameters](#reso
 For a better understanting of the sxapi
 configuration profile, please refer to the [configuration guide](../guides/2.Configure.md)
 
+please refer to [Google OAuth GApp Domain-wide tutorial](https://developers.google.com/identity/protocols/OAuth2ServiceAccount#delegatingauthority) for more informations on how to fill this section with approriate data.
 
 ### Resource config parameters
 

@@ -61,14 +61,24 @@ instance by using `$app.resources.get('google-id').getService('drive')` where `g
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 For more information read [the getService method documentation](google.md#method-getservice)
 
-This module come with 6 methods.
+This module come with 16 methods.
 
 [1. getFileMeta method](#method-getfilemeta)
 [2. getFile method](#method-getfile)
 [3. findFile method](#method-findfile)
 [4. addFile method](#method-addfile)
-[5. getDirectory method](#method-getdirectory)
-[6. addDirectory method](#method-adddirectory)
+[5. updateFile method](#method-updatefile)
+[6. deleteFile method](#method-deletefile)
+[7. exportFile method](#method-exportfile)
+[8. getDirectory method](#method-getdirectory)
+[9. copyDirectory method](#method-copydirectory)
+[10. addDirectory method](#method-adddirectory)
+[11. updateDirectory method](#method-updatedirectory)
+[12. deleteDirectory method](#method-deletedirectory)
+[13. getPermissions method](#method-getpermissions)
+[14. addPermission method](#method-addpermission)
+[15. updatePermission method](#method-updatepermission)
+[16. deletePermission method](#method-deletepermission)
 
 
 ### Method getFileMeta
@@ -80,7 +90,7 @@ Search for a google file coresponding to the id and return the document meta dat
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **id**                       | yes       | string   | null    | The document ID to find
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v2/reference/files/get).
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v3/reference/files/get).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -104,7 +114,7 @@ Search for a google file coresponding to the id and return the document content
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **id**                       | yes       | string   | null    | The document ID to find
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v2/reference/files/get).
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.get() documentation](https://developers.google.com/drive/v3/reference/files/get).
 | **response**                 | no        | object   | null    | Http request response. If given will be used isted of callback to steam the document content directly to the response.
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions unless a response object was previously given
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
@@ -125,14 +135,14 @@ service.getFile('a4z8f5z6e85e6rt578rer5zer6z64t', { acknowledgeAbuse : false } ,
 
 ### Method findFile
 
-Search for a list of google files matching a google query [see google documentation](https://developers.google.com/drive/v2/web/search-parameters)
+Search for a list of google files matching a google query [see google documentation](https://developers.google.com/drive/v3/web/search-parameters)
 
 #### Parameters
 
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
-| **q**                        | yes       | string   | null    | The drive query to perform [see google examples](https://developers.google.com/drive/v2/web/search-parameters#examples)
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v2/reference/files/list).
+| **q**                        | yes       | string   | null    | The drive query to perform [see google examples](https://developers.google.com/drive/v3/web/search-parameters#examples)
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v3/reference/files/list).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -156,10 +166,10 @@ Add a new file into a directory
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **name**                     | yes       | string   | null    | The file name to use in drive storage
-| **parent**                   | yes       | string   | null    | The parent directory
-| **mime**                     | yes       | string   | null    | Mime type of this document
 | **body**                     | yes       | string   | null    | Document body or content
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.insert() documentation](https://developers.google.com/drive/v2/reference/files/insert).
+| **mime**                     | yes       | string   | null    | Mime type of this document
+| **parent**                   | yes       | string   | null    | The parent directory
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.create() documentation](https://developers.google.com/drive/v3/reference/files/create).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -171,10 +181,98 @@ Add a new file into a directory
 var service = $app.resources.get('google-id').getService('drive');
 service.addFile(
     "sample file from sxapi",
-    "314159265358979323846", 
-    "text/plain", 
     "my content", 
+    "text/plain", 
+    "314159265358979323846", 
     { ocr : false } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method updateFile
+
+Update the content of a file
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **fileId**                   | yes       | string   | null    | The file ID of the resource
+| **body**                     | yes       | string   | null    | Document body or content
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.update() documentation](https://developers.google.com/drive/v3/reference/files/update).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.updateFile(
+    "314159265358979323846",
+    "my content",  
+    { ocr : false } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method deleteFile
+
+Flag file as trashed
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **fileId**                   | yes       | string   | null    | The file ID of the resource
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.delete() documentation](https://developers.google.com/drive/v3/reference/files/delete).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.deleteFile(
+    "314159265358979323846"
+    { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method exportFile
+
+Export a GoogleDocs file into various mimeType
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **fileId**                   | yes       | string   | null    | The file ID of the template document
+| **mime**                     | yes       | string   | null    | Mime type of the converted document
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.export() documentation](https://developers.google.com/drive/v3/reference/files/export).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.exportFile(
+    "314159265358979323846", 
+    "application/pdf", 
+    { } ,  
     function (error, response) {
         console.log(error, response);
     });
@@ -191,7 +289,7 @@ Search for a list of google files into a given directory
 | Param                        | Mandatory | Type     | default | Description
 |------------------------------|:---------:|:--------:|---------|---------------
 | **id**                       | yes       | string   | null    | The directory ID in google Drive
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [children.list() documentation](https://developers.google.com/drive/v2/reference/children/list).
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.list() documentation](https://developers.google.com/drive/v3/reference/files/list).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -216,7 +314,7 @@ Add a new directory into another directory
 |------------------------------|:---------:|:--------:|---------|---------------
 | **name**                     | yes       | string   | null    | The directory name to use in drive storage
 | **parent**                   | yes       | string   | null    | The parent directory
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.insert() documentation](https://developers.google.com/drive/v2/reference/files/insert).
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.create() documentation](https://developers.google.com/drive/v3/reference/files/create).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -235,6 +333,173 @@ service.addDirectory(
     });
 
 ```
+
+### Method updateDirectory
+
+Update the name of a directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **directoryId**              | yes       | string   | null    | The directory ID of the resource
+| **name**                     | yes       | string   | null    | New directory name
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.update() documentation](https://developers.google.com/drive/v3/reference/files/update).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.updateDirectory(
+    "314159265358979323846",
+    "my new name",  
+    { ocr : false } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method deleteDirectory
+
+Flag directory as trashed
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **directoryId**              | yes       | string   | null    | The directory ID of the resource
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.delete() documentation](https://developers.google.com/drive/v3/reference/files/delete).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.deleteDirectory(
+    "314159265358979323846"
+    { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+
+### Method getPermissions
+
+Get list of google permissions associated to a given file or directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The file or directory ID in google Drive
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [permissions.list() documentation](https://developers.google.com/drive/v3/reference/permissions/list).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.getPermissions("314159265358979323846", { } ,  function (error, response) {
+    console.log(error, response);
+});
+
+```
+
+### Method addPermission
+
+Add a new permission to a given file or directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The file or directory ID in google Drive
+| **user**                     | yes       | string   | null    | The user name to add permission
+| **role**                     | yes       | string   | null    | The user role
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [permissions.create() documentation](https://developers.google.com/drive/v3/reference/permissions/create).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.addPermission("314159265358979323846", "user@domain.org", "writer", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method updatePermission
+
+Update one permission rule associated to a given file or directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The file or directory ID in google Drive
+| **permId**                   | yes       | string   | null    | The permission ID to update
+| **role**                     | yes       | string   | null    | The user new role
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [permissions.update() documentation](https://developers.google.com/drive/v3/reference/permissions/update).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.updatePermission("314159265358979323846", "2658534548766546588", "reader", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
+### Method deletePermission
+
+Delete one permission rule associated to a given file or directory
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **id**                       | yes       | string   | null    | The file or directory ID in google Drive
+| **permId**                   | yes       | string   | null    | The permission ID to update
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [permissions.delete() documentation](https://developers.google.com/drive/v3/reference/permissions/delete).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.deletePermission("314159265358979323846", "2658534548766546588", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+
+```
+
 
 ## Resource endpoints
 
@@ -323,7 +588,7 @@ The purpose of this endpoint is to find a list of file coresponding to the given
 | **path**        | yes       | string |         | path used as client endpoint (must start with /)
 | **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
 | **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "findFile"
-| **q**           | no        | string |         | The drive query to perform [see google examples](https://developers.google.com/drive/v2/web/search-parameters#examples)<br>If not given, will try to find an `q` key in the http request.
+| **q**           | no        | string |         | The drive query to perform [see google examples](https://developers.google.com/drive/v3/web/search-parameters#examples)<br>If not given, will try to find an `q` key in the http request.
 
 
 #### Example
