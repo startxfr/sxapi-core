@@ -93,6 +93,122 @@ module.exports = function (id, config, google) {
       return this;
     },
     /**
+     * Get file content
+     * @param {string} id file ID
+     * @param {object} options to use when retriving file
+     * @param {object} response the response object to use when streaming back file to browser
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    getFile: function (id, options, response, callback) {
+      var timerId = 'resource_google_drive_getFile_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "get file '" + id + "'");
+      $timer.start(timerId);
+      var config = options || {};
+      config.fileId = id;
+      config.fields = 'id,name,name,mimeType';
+      $gapid.service.files.get(config, function (err, doc) {
+        var duration = $timer.time(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not get file');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
+          config.alt = "media";
+          if (response) {
+            var outh = {
+              "Content-Type": 'application/octet-stream',
+              "Content-Disposition": 'attachment; filename=' + (doc.name || doc.title)
+            };
+            if (doc.mimeType) {
+              outh["Content-Type"] = doc.mimeType;
+            }
+            response.writeHead(200, outh);
+          }
+          var call = $gapid.service.files.get(config, function (err, content) {
+            var duration = $timer.timeStop(timerId);
+            if (err) {
+              $log.tools.resourceWarn($gapid.id, 'could not get file content ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+              callback('could not get file content');
+            }
+            else {
+              if (!response) {
+                doc.Body = content;
+              }
+              $log.tools.resourceDebug($gapid.id, "file content " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
+              if (!response) {
+                callback(null, doc);
+              }
+            }
+          });
+          if (response) {
+            $log.tools.resourceDebug($gapid.id, "Streaming file content " + config.fileId + " started in resource " + $gapid.id, 4, duration, true);
+            call.pipe(response);
+          }
+        }
+      });
+      return this;
+    },
+    /**
+     * Get file metadata
+     * @param {string} id file ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    getFileMeta: function (id, options, callback) {
+      var timerId = 'resource_google_drive_getFileMeta_' + $gapid.id + '_' + id;
+      $log.tools.resourceInfo($gapid.id, "get file '" + id + "' metadata");
+      $timer.start(timerId);
+      var config = options || {};
+      config.fileId = id;
+      $gapid.service.files.get(config, function (err, doc) {
+        var duration = $timer.time(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not get file metadata');
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
+          callback(null, doc);
+        }
+      });
+      return this;
+    },
+    /**
+     * Copy a given file into another directory
+     * @param {string} source file ID
+     * @param {string} destination parent destination folder ID
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    copyFile: function (source, destination, options, callback) {
+      var timerId = 'resource_google_drive_copyFile_' + $gapid.id + '_' + source;
+      $log.tools.resourceInfo($gapid.id, "copy file '" + source + "' into '" + destination + "'");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, {
+        resource: {
+          parents: [destination]
+        },
+        fields: 'id,name,mimeType',
+        fileId: source
+      }, options || {});
+      $gapid.service.files.copy(config, function (err, response) {
+        var duration = $timer.timeStop(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not copy file ' + source + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback('could not copy file ' + source);
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "file " + response.id + " copied from " + source + " in resource " + $gapid.id, 4, duration, true);
+          callback(null, response);
+        }
+      });
+      return this;
+    },
+    /**
      * Add a file into a given directory
      * @param {string} name folder name
      * @param {string} body file content (should be a Buffer for binary)
@@ -228,90 +344,6 @@ module.exports = function (id, config, google) {
       return this;
     },
     /**
-     * Get file content
-     * @param {string} id file ID
-     * @param {object} options to use when retriving file
-     * @param {object} response the response object to use when streaming back file to browser
-     * @param {function} callback to call for returning service
-     * @returns {$gapid}
-     */
-    getFile: function (id, options, response, callback) {
-      var timerId = 'resource_google_drive_getFile_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "get file '" + id + "'");
-      $timer.start(timerId);
-      var config = options || {};
-      config.fileId = id;
-      config.fields = 'id,name,name,mimeType';
-      $gapid.service.files.get(config, function (err, doc) {
-        var duration = $timer.time(timerId);
-        if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback('could not get file');
-        }
-        else {
-          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
-          config.alt = "media";
-          if (response) {
-            var outh = {
-              "Content-Type": 'application/octet-stream',
-              "Content-Disposition": 'attachment; filename=' + (doc.name || doc.title)
-            };
-            if (doc.mimeType) {
-              outh["Content-Type"] = doc.mimeType;
-            }
-            response.writeHead(200, outh);
-          }
-          var call = $gapid.service.files.get(config, function (err, content) {
-            var duration = $timer.timeStop(timerId);
-            if (err) {
-              $log.tools.resourceWarn($gapid.id, 'could not get file content ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-              callback('could not get file content');
-            }
-            else {
-              if (!response) {
-                doc.Body = content;
-              }
-              $log.tools.resourceDebug($gapid.id, "file content " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
-              if (!response) {
-                callback(null, doc);
-              }
-            }
-          });
-          if (response) {
-            $log.tools.resourceDebug($gapid.id, "Streaming file content " + config.fileId + " started in resource " + $gapid.id, 4, duration, true);
-            call.pipe(response);
-          }
-        }
-      });
-      return this;
-    },
-    /**
-     * Get file metadata
-     * @param {string} id file ID
-     * @param {object} options to use when retriving file
-     * @param {function} callback to call for returning service
-     * @returns {$gapid}
-     */
-    getFileMeta: function (id, options, callback) {
-      var timerId = 'resource_google_drive_getFileMeta_' + $gapid.id + '_' + id;
-      $log.tools.resourceInfo($gapid.id, "get file '" + id + "' metadata");
-      $timer.start(timerId);
-      var config = options || {};
-      config.fileId = id;
-      $gapid.service.files.get(config, function (err, doc) {
-        var duration = $timer.time(timerId);
-        if (err) {
-          $log.tools.resourceWarn($gapid.id, 'could not get file ' + config.fileId + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);
-          callback('could not get file metadata');
-        }
-        else {
-          $log.tools.resourceDebug($gapid.id, "file " + config.fileId + " found in resource " + $gapid.id, 4, duration, true);
-          callback(null, doc);
-        }
-      });
-      return this;
-    },
-    /**
      * Get file list of a given directory
      * @param {string} id file ID
      * @param {object} options to use when retriving file
@@ -359,7 +391,7 @@ module.exports = function (id, config, google) {
         fields: 'id,name,mimeType',
         fileId: source
       }, options || {});
-      $gapid.service.files.create(config, function (err, response) {
+      $gapid.service.files.copy(config, function (err, response) {
         var duration = $timer.timeStop(timerId);
         if (err) {
           $log.tools.resourceWarn($gapid.id, 'could not copy directory ' + source + ' in resource ' + $gapid.id + ' because ' + err.message, duration, true);

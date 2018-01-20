@@ -206,9 +206,10 @@ This module come with 5 endpoints who can interact with any mysql method.
 
 [1. List endpoint](#list-endpoint)<br>
 [2. Read endpoint](#read-endpoint)<br>
-[3. Create endpoint](#create-endpoint)<br>
-[4. Update endpoint](#update-endpoint)<br>
-[5. Delete endpoint](#delete-endpoint)
+[3. ReadOne endpoint](#readone-endpoint)<br>
+[4. Create endpoint](#create-endpoint)<br>
+[5. Update endpoint](#update-endpoint)<br>
+[6. Delete endpoint](#delete-endpoint)
 
 
 ### List endpoint
@@ -269,6 +270,36 @@ the value associated to the given row ID.
             "path": "/mysql/:id",
             "resource": "mysql-id",
             "endpoint": "read",
+            "table": "log",
+            "id_field": "id"
+        }
+    ]
+}
+```
+### ReadOne endpoint
+
+The purpose of this endpoint is to make call to a mysql server and to return 
+the value associated to the given row ID. only the first result is returned, no array
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "read"
+| **table**       | yes       | string |         | table name to use for getting this entry
+| **id_field**    | yes       | string |         | table field name used a unique key
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/mysql/:id",
+            "resource": "mysql-id",
+            "endpoint": "readOne",
             "table": "log",
             "id_field": "id"
         }
