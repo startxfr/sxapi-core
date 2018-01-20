@@ -63,7 +63,13 @@ module.exports = function (id, config) {
       $timer.start(timerId);
       var opt = (typeof options === 'object') ? require('merge').recursive(true, $htcli.config, options) : $htcli.config;
       if (typeof url === "string") {
-        opt.url = url;
+        var pat = /^https?:\/\//i;
+        if (pat.test(url)) {
+          opt.url = url;
+        }
+        else {
+          opt.url = (($htcli.config.url) ? $htcli.config.url : 'http://localhost/') + url;
+        }
       }
       $log.tools.resourceInfo($htcli.id, "call url " + opt.url);
       return $htcli.pool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__queryDefaultCallback(timerId));
