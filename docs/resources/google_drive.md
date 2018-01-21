@@ -61,7 +61,7 @@ instance by using `$app.resources.get('google-id').getService('drive')` where `g
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 For more information read [the getService method documentation](google.md#method-getservice)
 
-This module come with 19 methods.
+This module come with 20 methods.
 
 [1. findFile method](#method-findfile)
 [2. getFile method](#method-getfile)
@@ -82,6 +82,7 @@ This module come with 19 methods.
 [17. addPermission method](#method-addpermission)
 [18. updatePermission method](#method-updatepermission)
 [19. deletePermission method](#method-deletepermission)
+[20. emptyTrash method](#method-emptytrash)
 
 
 ### Method findFile
@@ -590,6 +591,28 @@ service.deletePermission("314159265358979323846", "2658534548766546588", { } ,
     function (error, response) {
         console.log(error, response);
     });
+```
+
+### Method emptyTrash
+
+Empty the trash bin instantly
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.emptyTrash() documentation](https://developers.google.com/drive/v3/reference/files/emptyTrash).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.emptyTrash( { } ,  function (error, response) {
+    console.log(error, response);
+});
 ```
 
 ## Resource endpoints

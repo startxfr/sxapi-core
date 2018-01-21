@@ -2,7 +2,7 @@
 --
 -- Host: db-mysql    Database: startx-db-tools
 -- ------------------------------------------------------
--- Server version	10.1.22-MariaDB-1~jessie
+-- Server version	10.1.32-MariaDB-1~jessie
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

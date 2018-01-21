@@ -82,7 +82,7 @@ module.exports = function (id, config, google) {
         }
         else {
           $log.tools.resourceDebug($gapid.id, "empty trash done in resource " + $gapid.id, 4, duration, true);
-          callback(null, doc.items);
+          callback(null, doc);
         }
       });
       return this;
