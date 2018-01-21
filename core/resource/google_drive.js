@@ -64,6 +64,30 @@ module.exports = function (id, config, google) {
       return this;
     },
     /**
+     * Empty the trash bin directory
+     * @param {object} options to use when retriving file
+     * @param {function} callback to call for returning service
+     * @returns {$gapid}
+     */
+    emptyTrash: function (options, callback) {
+      var timerId = 'resource_google_drive_emptyTrash_' + $gapid.id + '_' + q;
+      $log.tools.resourceInfo($gapid.id, "empty trash bin directory");
+      $timer.start(timerId);
+      var config = require('merge').recursive({}, options || {});
+      $gapid.service.files.emptyTrash(config, function (err, doc) {
+        var duration = $timer.time(timerId);
+        if (err) {
+          $log.tools.resourceWarn($gapid.id, 'could not execute empty trash in resource ' + $gapid.id + ' because ' + err.message, duration, true);
+          callback(new Error('could not execute search ' + q));
+        }
+        else {
+          $log.tools.resourceDebug($gapid.id, "empty trash done in resource " + $gapid.id, 4, duration, true);
+          callback(null, doc.items);
+        }
+      });
+      return this;
+    },
+    /**
      * Get file metadata
      * @param {string} q the search query 
      * @param {object} options to use when retriving file
