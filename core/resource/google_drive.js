@@ -70,7 +70,7 @@ module.exports = function (id, config, google) {
      * @returns {$gapid}
      */
     emptyTrash: function (options, callback) {
-      var timerId = 'resource_google_drive_emptyTrash_' + $gapid.id + '_' + q;
+      var timerId = 'resource_google_drive_emptyTrash_' + $gapid.id;
       $log.tools.resourceInfo($gapid.id, "empty trash bin directory");
       $timer.start(timerId);
       var config = require('merge').recursive({}, options || {});
