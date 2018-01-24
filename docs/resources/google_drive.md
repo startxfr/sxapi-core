@@ -61,25 +61,28 @@ instance by using `$app.resources.get('google-id').getService('drive')` where `g
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 For more information read [the getService method documentation](google.md#method-getservice)
 
-This module come with 17 methods.
+This module come with 20 methods.
 
 [1. findFile method](#method-findfile)
 [2. getFile method](#method-getfile)
 [3. getFileMeta method](#method-getfilemeta)
-[4. copyFile method](#method-addfile)
-[5. addFile method](#method-addfile)
-[6. updateFile method](#method-updatefile)
-[7. deleteFile method](#method-deletefile)
-[8. exportFile method](#method-exportfile)
-[9. getDirectory method](#method-getdirectory)
-[10. copyDirectory method](#method-copydirectory)
-[11. addDirectory method](#method-adddirectory)
-[12. updateDirectory method](#method-updatedirectory)
-[13. deleteDirectory method](#method-deletedirectory)
-[14. getPermissions method](#method-getpermissions)
-[15. addPermission method](#method-addpermission)
-[16. updatePermission method](#method-updatepermission)
-[17. deletePermission method](#method-deletepermission)
+[4. copyFile method](#method-copyfile)
+[5. moveFile method](#method-movefile)
+[6. addFile method](#method-addfile)
+[7. updateFile method](#method-updatefile)
+[8. deleteFile method](#method-deletefile)
+[9. exportFile method](#method-exportfile)
+[10. getDirectory method](#method-getdirectory)
+[11. copyDirectory method](#method-copydirectory)
+[12. moveDirectory method](#method-movedirectory)
+[13. addDirectory method](#method-adddirectory)
+[14. updateDirectory method](#method-updatedirectory)
+[15. deleteDirectory method](#method-deletedirectory)
+[16. getPermissions method](#method-getpermissions)
+[17. addPermission method](#method-addpermission)
+[18. updatePermission method](#method-updatepermission)
+[19. deletePermission method](#method-deletepermission)
+[20. emptyTrash method](#method-emptytrash)
 
 
 ### Method findFile
@@ -165,7 +168,7 @@ Copy a file into a new one located into another directory
 |------------------------------|:---------:|:--------:|---------|---------------
 | **source**                   | yes       | string   | null    | The file ID of the resource to copy
 | **destination**              | yes       | string   | null    | The directory ID of the destination
-| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.create() documentation](https://developers.google.com/drive/v3/reference/files/create).
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.copy() documentation](https://developers.google.com/drive/v3/reference/files/copy).
 | **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
 | callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
 | callback(error,**response**) | N/A       | object   |         | the document meta-data
@@ -176,6 +179,33 @@ Copy a file into a new one located into another directory
 ```javascript
 var service = $app.resources.get('google-id').getService('drive');
 service.copyFile( "314159265358979323846", "483514654687643543578", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+```
+
+### Method moveFile
+
+Move a file from one directory into another directory 
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **fileId**                   | yes       | string   | null    | The file ID of the resource to move
+| **source**                   | yes       | string   | null    | The file ID of the source directory
+| **destination**              | yes       | string   | null    | The file ID of the destination directory
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.update() documentation](https://developers.google.com/drive/v3/reference/files/update).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.moveFile( "35335965465867654654",  "314159265358979323846", "483514654687643543578", { } ,  
     function (error, response) {
         console.log(error, response);
     });
@@ -343,6 +373,33 @@ Copy a directory into a new one located into another directory
 ```javascript
 var service = $app.resources.get('google-id').getService('drive');
 service.copyDirectory( "314159265358979323846", "483514654687643543578", { } ,  
+    function (error, response) {
+        console.log(error, response);
+    });
+```
+
+### Method moveDirectory
+
+Move a directory from one directory into another directory 
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **directoryId**              | yes       | string   | null    | The file ID of the directory to move
+| **source**                   | yes       | string   | null    | The file ID of the source directory
+| **destination**              | yes       | string   | null    | The file ID of the destination directory
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.update() documentation](https://developers.google.com/drive/v3/reference/files/update).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.moveDirectory( "35335965465867654654",  "314159265358979323846", "483514654687643543578", { } ,  
     function (error, response) {
         console.log(error, response);
     });
@@ -534,6 +591,28 @@ service.deletePermission("314159265358979323846", "2658534548766546588", { } ,
     function (error, response) {
         console.log(error, response);
     });
+```
+
+### Method emptyTrash
+
+Empty the trash bin instantly
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **options**                  | no        | object   | null    | Optional configuration for the API request.<br>See google Drive API [files.emptyTrash() documentation](https://developers.google.com/drive/v3/reference/files/emptyTrash).
+| **callback**                 | no        | function | none    | callback function called when server answer the request.<br>If not defined, will throw exceptions or return the sub-resource
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from google drive API. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | object   |         | the document meta-data
+
+#### Example
+
+```javascript
+var service = $app.resources.get('google-id').getService('drive');
+service.emptyTrash( { } ,  function (error, response) {
+    console.log(error, response);
+});
 ```
 
 ## Resource endpoints
