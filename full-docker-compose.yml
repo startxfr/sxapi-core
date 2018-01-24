@@ -44,7 +44,7 @@ db-mariadb:
   mem_limit: 2g
   memswap_limit: 3g
   environment:
-   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_ROOT_PASSWORD=hguyFtgfR4r9R4r76
 
 #dbadminer:
 #  image: adminer
@@ -86,13 +86,11 @@ dbtools:
     - db-mariadb:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_PASSWORD=root
+   - MYSQL_ADMIN=root:hguyFtgfR4r9R4r76
    - MYSQL_DATABASE=sxapicore_test
-   - MYSQL_DATABASE_USER=sxapicore_test
-   - MYSQL_DATABASE_PASSWORD=sxapicore_test
+   - MYSQL_USERS=sxapicore_test:sxapicore_test
    - MYSQL_DUMP_DIR=/data/mysql
-   - COUCHBASE_USER=sxapicore_test
-   - COUCHBASE_PASSWORD=sxapicore_test
+   - COUCHBASE_ADMIN=sxapicore_test:sxapicore_test
    - COUCHBASE_BUCKET=sxapicore_test
   volumes:
     - "./test/mock_data/couchbase:/data/couchbase:z"
