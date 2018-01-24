@@ -4,7 +4,7 @@ app:
   ports:
     - "8080:8080"
   volumes:
-  - "./sxapi.json:/conf/sxapi.json:Z"
+  - "./sxapi.json:/conf/sxapi.json:z"
   working_dir: /usr/src/app
   entrypoint: npm
   command: start
