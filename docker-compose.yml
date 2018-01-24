@@ -9,8 +9,8 @@ app:
   ports:
     - "8080:8080"
   volumes:
-  - "./:/usr/src/app:Z"
-  - "./sxapi.json:/conf/sxapi.json:Z"
+  - "./:/usr/src/app:z"
+  - "./sxapi.json:/conf/sxapi.json:z"
   working_dir: /usr/src/app
   entrypoint: npm
   command: start
