@@ -10,7 +10,7 @@ app:
     - "db-mariadb"
     - "db-couchbase"
   volumes:
-  - "./full-sxapi.json:/conf/sxapi.json:Z"
+  - "./full-sxapi.json:/conf/sxapi.json:z"
   command: test
 
 db-redis:
@@ -95,6 +95,6 @@ dbtools:
    - COUCHBASE_PASSWORD=sxapicore_test
    - COUCHBASE_BUCKET=sxapicore_test
   volumes:
-    - "./test/mock_data/couchbase:/data/couchbase:Z"
-    - "./test/mock_data/mysql:/data/mysql:Z"
+    - "./test/mock_data/couchbase:/data/couchbase:z"
+    - "./test/mock_data/mysql:/data/mysql:z"
   command: ["init"] 
