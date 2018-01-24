@@ -3,7 +3,7 @@ SET names 'utf8';
 --
 -- Host: db-mysql    Database: startx-db-tools
 -- ------------------------------------------------------
--- Server version	10.1.22-MariaDB-1~jessie
+-- Server version	10.1.32-MariaDB-1~jessie
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
