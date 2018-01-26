@@ -66,6 +66,12 @@
         "serviceinfo-sample": {
             "_class": "serviceinfo"
         },
+        "insee-sample": {
+            "_class": "insee",
+            "siren2tva": {
+                "longCode": true
+            }
+        },
         "redis-sample": {
             "_class": "redis",
             "url": "redis://db-redis"
