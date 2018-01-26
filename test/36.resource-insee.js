@@ -4,12 +4,11 @@ var expect = require("chai").expect;
 
 var test = null;
 
-/* Test suite for memcache resource */
-describe("memcache resource component", function () {
+/* Test suite for insee resource */
+describe("insee resource component", function () {
   describe("app object", function () {
-    test = require("../core/resource/memcache");
-    test = test("test-memcache", {
-      url: "memcache://localhost:6379"
+    test = require("../core/resource/insee");
+    test = test("test-insee", {
     });
     it("should be an object", function () {
       expect(test).to.be.an('object');
@@ -21,6 +20,10 @@ describe("memcache resource component", function () {
     it("should have id property", function () {
       expect(test).to.have.any.keys('id');
       expect(test.id).to.be.an('string');
+    });
+    it("should have sirenapi property", function () {
+      expect(test).to.have.any.keys('sirenapi');
+      expect(test.sirenapi).to.be.null;
     });
     it("should have endpoints property", function () {
       expect(test).to.have.any.keys('endpoints');
@@ -76,52 +79,52 @@ describe("memcache resource component", function () {
         });
       });
     });
-    describe("#insert()", function () {
+    describe("#convertSiret2Tva()", function () {
       it("should exist", function () {
-        expect(test).to.have.any.keys('insert');
+        expect(test).to.have.any.keys('convertSiret2Tva');
       });
       it("should be a method", function () {
-        expect(test.insert).to.be.an('function');
-      });
-      describe("#__insertDefaultCallback()", function () {
-        it("should exist", function () {
-          expect(test).to.have.any.keys('__insertDefaultCallback');
-        });
-        it("should be a method", function () {
-          expect(test.__insertDefaultCallback).to.be.an('function');
-        });
+        expect(test.convertSiret2Tva).to.be.an('function');
       });
     });
-    describe("#update()", function () {
+    describe("#convertSiren2Tva()", function () {
       it("should exist", function () {
-        expect(test).to.have.any.keys('update');
+        expect(test).to.have.any.keys('convertSiren2Tva');
       });
       it("should be a method", function () {
-        expect(test.update).to.be.an('function');
-      });
-      describe("#__updateDefaultCallback()", function () {
-        it("should exist", function () {
-          expect(test).to.have.any.keys('__updateDefaultCallback');
-        });
-        it("should be a method", function () {
-          expect(test.__updateDefaultCallback).to.be.an('function');
-        });
+        expect(test.convertSiren2Tva).to.be.an('function');
       });
     });
-    describe("#delete()", function () {
+    describe("#convertTva2Siren()", function () {
       it("should exist", function () {
-        expect(test).to.have.any.keys('delete');
+        expect(test).to.have.any.keys('convertTva2Siren');
       });
       it("should be a method", function () {
-        expect(test.delete).to.be.an('function');
+        expect(test.convertTva2Siren).to.be.an('function');
       });
-      describe("#__deleteDefaultCallback()", function () {
-        it("should exist", function () {
-          expect(test).to.have.any.keys('__deleteDefaultCallback');
-        });
-        it("should be a method", function () {
-          expect(test.__deleteDefaultCallback).to.be.an('function');
-        });
+    });
+    describe("#isSIRET()", function () {
+      it("should exist", function () {
+        expect(test).to.have.any.keys('isSIRET');
+      });
+      it("should be a method", function () {
+        expect(test.isSIRET).to.be.an('function');
+      });
+    });
+    describe("#isSIREN()", function () {
+      it("should exist", function () {
+        expect(test).to.have.any.keys('isSIREN');
+      });
+      it("should be a method", function () {
+        expect(test.isSIREN).to.be.an('function');
+      });
+    });
+    describe("#isTVA()", function () {
+      it("should exist", function () {
+        expect(test).to.have.any.keys('isTVA');
+      });
+      it("should be a method", function () {
+        expect(test.isTVA).to.be.an('function');
       });
     });
   });
@@ -138,38 +141,38 @@ describe("memcache resource component", function () {
         expect(result).to.be.an('function');
       });
     });
-    describe("#create()", function () {
+    describe("#siret2Tva()", function () {
       it("should exist", function () {
-        expect(test.endpoints).to.have.any.keys('create');
+        expect(test.endpoints).to.have.any.keys('siret2Tva');
       });
       it("should be a method", function () {
-        expect(test.endpoints.create).to.be.an('function');
+        expect(test.endpoints.siret2Tva).to.be.an('function');
       });
-      var result = test.endpoints.create({});
+      var result = test.endpoints.siret2Tva({});
       it("should return a webserver callback", function () {
         expect(result).to.be.an('function');
       });
     });
-    describe("#update()", function () {
+    describe("#siren2Tva()", function () {
       it("should exist", function () {
-        expect(test.endpoints).to.have.any.keys('update');
+        expect(test.endpoints).to.have.any.keys('siren2Tva');
       });
       it("should be a method", function () {
-        expect(test.endpoints.update).to.be.an('function');
+        expect(test.endpoints.siren2Tva).to.be.an('function');
       });
-      var result = test.endpoints.update({});
+      var result = test.endpoints.siren2Tva({});
       it("should return a webserver callback", function () {
         expect(result).to.be.an('function');
       });
     });
-    describe("#delete()", function () {
+    describe("#tva2Siren()", function () {
       it("should exist", function () {
-        expect(test.endpoints).to.have.any.keys('delete');
+        expect(test.endpoints).to.have.any.keys('tva2Siren');
       });
       it("should be a method", function () {
-        expect(test.endpoints.delete).to.be.an('function');
+        expect(test.endpoints.tva2Siren).to.be.an('function');
       });
-      var result = test.endpoints.delete({});
+      var result = test.endpoints.tva2Siren({});
       it("should return a webserver callback", function () {
         expect(result).to.be.an('function');
       });
