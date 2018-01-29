@@ -203,7 +203,7 @@ resource.isTVA(tva);
 
 This module come with one single read-only endpoint.
 
-[1. Read endpoint](#read-endpoint)
+[1. read endpoint](#read-endpoint)
 [2. siret2Tva endpoint](#siret2tva-endpoint)
 [3. siren2Tva endpoint](#siren2tva-endpoint)
 [4. tva2Siren endpoint](#tva2siren-endpoint)
