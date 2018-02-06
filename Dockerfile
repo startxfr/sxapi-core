@@ -1,7 +1,7 @@
 FROM node:8-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV  SXAPI_VERSION=0.1.6 \
+ENV  SXAPI_VERSION=0.1.7 \
      NODE_ENV=development \
      APP_PATH=/usr/src/app \
      CONF_PATH=/conf \
