@@ -206,4 +206,4 @@ var $bot = {
   }
 };
 
-module.exports = $bot;
+exports = $bot;

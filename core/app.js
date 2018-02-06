@@ -318,4 +318,4 @@ $app = {
   bot: require('./bot')
 };
 
-module.exports = $app;
+exports = $app;
