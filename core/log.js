@@ -368,4 +368,4 @@ var $log = {
     }
 };
 
-module.exports = $log;
+exports = $log;

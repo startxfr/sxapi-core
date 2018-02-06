@@ -34,4 +34,4 @@ var $timer = {
     }
 };
 
-module.exports = $timer.init();
+exports = $timer.init();
