@@ -9,7 +9,7 @@
  * @param {object} config
  * @type resource
  */
-module.exports = function (id, config) {
+exports = function (id, config) {
   var $ddb = {
     id: id,
     config: {},

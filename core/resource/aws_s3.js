@@ -9,7 +9,7 @@
  * @param {object} config
  * @type resource
  */
-module.exports = function (id, config) {
+exports = function (id, config) {
   var $s3 = {
     id: id,
     config: {},

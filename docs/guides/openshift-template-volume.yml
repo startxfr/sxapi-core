@@ -84,7 +84,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.1.6
+  value: 0.1.7
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
