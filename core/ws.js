@@ -374,4 +374,4 @@ var $ws = {
   }
 };
 
-module.exports = $ws;
+exports = $ws;

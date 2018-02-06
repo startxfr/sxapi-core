@@ -297,7 +297,7 @@ $app = {
    * @returns {$app}
    */
   launch: function (config, callback) {
-    $log.info("launching application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
+    $log.info("launching application", $timer.time('app'));
     if (typeof config === "function" && callback === undefined) {
       callback = config;
     }
@@ -318,4 +318,4 @@ $app = {
   bot: require('./bot')
 };
 
-module.exports = $app;
+exports = $app;
