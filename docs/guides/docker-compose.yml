@@ -9,8 +9,8 @@ app:
   - DATA_PATH=/data
   - CONF_PATH=/conf
   volumes:
-  - "./:/usr/src/app:Z"
-  - "./sxapi.json:/conf/sxapi.json:Z"
+  - "./:/usr/src/app:z"
+  - "./sxapi.json:/conf/sxapi.json:z"
   working_dir: /usr/src/app
   entrypoint: npm
   command: start

@@ -1,0 +1,75 @@
+{
+  "kind": "ImageStreamList",
+  "apiVersion": "v1",
+  "metadata": {},
+  "items": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "sxapi",
+        "creationTimestamp": null
+      },
+      "spec": {
+        "tags": [
+          {
+            "name": "latest",
+            "annotations": {
+              "description": "Simple and extensible API framework",
+              "iconClass": "icon-nodejs",
+              "tags": "nodejs,sxapi-latest",
+              "supports":"sxapi:latest,nodejs",
+              "sampleRepo": "https://github.com/startxfr/sxapi-sample.git"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "startx/sxapi:latest"
+            }
+          },
+          {
+            "name": "testing",
+            "annotations": {
+              "description": "Simple and extensible API framework",
+              "iconClass": "icon-nodejs",
+              "tags": "nodejs,sxapi-testing",
+              "supports":"sxapi:testing,nodejs",
+              "sampleRepo": "https://github.com/startxfr/sxapi-sample.git"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "startx/sxapi:testing"
+            }
+          },
+          {
+            "name": "0.1.7",
+            "annotations": {
+              "description": "Simple and extensible API framework",
+              "iconClass": "icon-nodejs",
+              "tags": "nodejs,sxapi-v0.1.7",
+              "supports":"sxapi:0.1.7,nodejs",
+              "sampleRepo": "https://github.com/startxfr/sxapi-sample.git"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "startx/sxapi:0.1.7"
+            }
+          },
+          {
+            "name": "0.1.0",
+            "annotations": {
+              "description": "Simple and extensible API framework",
+              "iconClass": "icon-nodejs",
+              "tags": "nodejs,sxapi-v0.1.0",
+              "supports":"sxapi:0.1.0,nodejs",
+              "sampleRepo": "https://github.com/startxfr/sxapi-sample.git"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "startx/sxapi:0.1.0"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

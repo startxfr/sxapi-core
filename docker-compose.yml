@@ -3,4 +3,3 @@ app:
   container_name: "sxapi-core-v0.1.4"
   ports:
     - "8080:8080"
-  command: ["start"]
