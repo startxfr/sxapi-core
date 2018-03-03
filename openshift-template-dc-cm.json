@@ -56,6 +56,26 @@
             }
         },
         {
+            "kind": "ConfigMap",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}-config",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "data": {
+                "sxapi.json": "{\n    \"name\": \"sxapi-example\",\n    \"description\": \"sxapi example\",\n    \"version\": \"0.0.1\",\n    \"debug\": true,\n    \"resources\": {\n        \"serviceinfo-sample\": {\n            \"_class\": \"serviceinfo\"\n        }\n    },\n    \"log\": {\n        \"filters\": {\n            \"level\": \"0,1,2,3,4\",\n            \"type\": \"debug,info,error,warn\"\n        }\n    },\n    \"server\": {\n        \"port\": \"8080\",\n        \"endpoints\": [\n            {\n                \"path\": \"/\",\n                \"desc\": \"Display welcome message (HTML)\",\n                \"body\": \"\u003chtml\u003e\u003chead\u003e\u003ctitle\u003eAPI Example\u003c/title\u003e\u003c/head\u003e\u003cbody\u003e\u003ch1\u003eThis is your API\u003c/h1\u003e\u003cp\u003eThis API is based on sxapi-core v0.1.10\u003c/p\u003e\u003c/body\u003e\u003c/html\u003e\"\n            },\n            {\n                \"path\": \"/health\",\n                \"resource\": \"serviceinfo-sample\",\n                \"endpoint\": \"health\"\n            },\n            {\n                \"path\": \"/info\",\n                \"resource\": \"serviceinfo-sample\",\n                \"endpoint\": \"info\"\n            },\n            {\n                \"path\": \"/ping\",\n                \"desc\": \"Ping the application. Return a sample message in json\",\n                \"code\": \"200\",\n                \"body\": \"pong\"\n            }\n        ]\n    }\n}\n"
+            }
+        },
+        {
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -123,15 +143,41 @@
                         }
                     },
                     "spec": {
+                        "volumes": [
+                            {
+                                "name": "volume-${APP_NAME}-conf",
+                                "configMap": {
+                                    "name": "${APP_NAME}-config",
+                                    "items": [
+                                        {
+                                            "key": "sxapi.json",
+                                            "path": "sxapi.json"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
                         "containers": [
                             {
-                                "name": "${APP_NAME}",
+                                "name": "sxapi",
                                 "image": "startx/sxapi@sha256:ea6d24ac940397d417ac3767340f1ef7b97751e0b0593d13e0fcee16ddae68b8",
                                 "command": [
                                     "npm",
                                     "start"
                                 ],
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
                                 "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "volume-${APP_NAME}-conf",
+                                        "mountPath": "/conf"
+                                    }
+                                ],
                                 "livenessProbe": {
                                     "httpGet": {
                                         "path": "/health",
@@ -159,7 +205,11 @@
                                 "terminationMessagePath": "/dev/termination-log",
                                 "imagePullPolicy": "Always"
                             }
-                        ]
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
                     }
                 }
             },
@@ -168,6 +218,42 @@
                 "replicas": 1,
                 "updatedReplicas": 1,
                 "availableReplicas": 1
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-template"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "8080-tcp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "${APP_NAME}",
+                    "deploymentconfig": "${APP_NAME}"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
             }
         },
         {
@@ -191,6 +277,9 @@
                     "kind": "Service",
                     "name": "${APP_NAME}",
                     "weight": 100
+                },
+                "port": {
+                    "targetPort": "8080-tcp"
                 }
             },
             "status": {
@@ -205,41 +294,6 @@
                         ]
                     }
                 ]
-            }
-        },
-        {
-            "kind": "Service",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "${APP_NAME}",
-                "creationTimestamp": null,
-                "labels": {
-                    "app": "${APP_NAME}",
-                    "type": "${APP_TYPE}",
-                    "provider": "startx",
-                    "template": "sxapi-template"
-                },
-                "annotations": {
-                    "openshift.io/generated-by": "STARTX"
-                }
-            },
-            "spec": {
-                "ports": [
-                    {
-                        "protocol": "TCP",
-                        "port": 8080,
-                        "targetPort": 8080
-                    }
-                ],
-                "selector": {
-                    "app": "${APP_NAME}",
-                    "deploymentconfig": "${APP_NAME}"
-                },
-                "type": "ClusterIP",
-                "sessionAffinity": "None"
-            },
-            "status": {
-                "loadBalancer": {}
             }
         }
     ],
