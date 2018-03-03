@@ -6,5 +6,4 @@ app:
   volumes:
   - "./sxapi.json:/conf/sxapi.json:z"
   working_dir: /usr/src/app
-  entrypoint: npm
-  command: start
+  command: ["npm" , "start"]
