@@ -138,7 +138,7 @@
                         "containers": [
                             {
                                 "name": "${APP_NAME}",
-                                "image": "startx/sxapi@sha256:a553b19f6858737f1b2cef8946aa260a9ba34a995ffca12fc25f380e58703544",
+                                "image": "startx/sxapi@sha256:ea6d24ac940397d417ac3767340f1ef7b97751e0b0593d13e0fcee16ddae68b8",
                                 "command": [
                                     "npm",
                                     "start"
