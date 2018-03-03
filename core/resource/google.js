@@ -9,7 +9,7 @@
  * @param {object} config
  * @type resource
  */
-exports = function (id, config) {
+module.exports = function (id, config) {
   var $gapi = {
     id: id,
     config: {},
