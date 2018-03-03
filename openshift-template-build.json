@@ -4,10 +4,10 @@
     "metadata": {
         "name": "sxapi-template",
         "annotations": {
-            "openshift.io/display-name": "Startx SXAPI micro-service framework (latest)",
+            "openshift.io/display-name": "Builder Startx SXAPI micro-service framework (latest)",
             "description": "SXAPI micro-service framework for building micro-service application running in a nodejs environement",
             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
+            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
             "openshift.io/long-description": "This template provides a startx sxapi micro-service framework container. Ready to use in openshift with a simple deployement config, or as a s2i builder for building web applications container. For more information about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.",
             "openshift.io/provider-display-name": "STARTX",
             "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-core/blob/master/README.md",
