@@ -14,7 +14,7 @@
             "openshift.io/support-url": "https://github.com/startxfr/sxapi-core/issues/new"
         }
     },
-    "message": "The following container have been created in your project: ${APP_NAME} and you can use openshift console to log into.",
+    "message": "Your application ${APP_NAME} have been created in your project. You can use openshift console to log into.",
     "labels": {
         "template": "sxapi-template"
     },
@@ -23,12 +23,13 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "sxapi",
                 "annotations": {
-                    "openshift.io/display-name": "SXAPI ${APP_NAME}",
+                    "openshift.io/display-name": "Startx SXAPI framework (S2I)",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
+                    "base-image": "sxapi",
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
@@ -40,12 +41,13 @@
                     {
                         "name": "latest",
                         "annotations": {
-                            "openshift.io/display-name": "SXAPI ${APP_TYPE} ${APP_NAME}",
-                            "description": "${APP_TYPE} ${APP_NAME} powered with sxapi microservice framework based on alpine (latest)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (latest)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (latest)",
                             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-latest,${APP_NAME}",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
                             "supports": "sxapi:latest,nodejs,http",
-                            "version": "latest"
+                            "version": "latest",
+                            "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
@@ -94,7 +96,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "${APP_NAME}:latest"
+                                "name": "sxapi:latest"
                             }
                         }
                     },
