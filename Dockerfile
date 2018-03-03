@@ -30,7 +30,7 @@ LABEL name="startx/sxapi-$SXAPI_VERSION" \
       io.openshift.s2i.scripts-url="image:///s2i" \
       fr.startx.component="$SX_ID:$SXAPI_VERSION"
 
-COPY .s2i /s2i
+COPY ./s2i /s2i
 COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
 COPY ./app.js $APP_PATH/app.js
