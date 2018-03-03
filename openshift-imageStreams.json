@@ -41,17 +41,17 @@
             }
           },
           {
-            "name": "0.1.8",
+            "name": "0.1.9",
             "annotations": {
               "description": "Simple and extensible API framework",
               "iconClass": "icon-nodejs",
-              "tags": "nodejs,sxapi-v0.1.8",
-              "supports":"sxapi:0.1.8,nodejs",
+              "tags": "nodejs,sxapi-v0.1.9",
+              "supports":"sxapi:0.1.9,nodejs",
               "sampleRepo": "https://github.com/startxfr/sxapi-sample.git"
             },
             "from": {
               "kind": "DockerImage",
-              "name": "startx/sxapi:0.1.8"
+              "name": "startx/sxapi:0.1.9"
             }
           },
           {
