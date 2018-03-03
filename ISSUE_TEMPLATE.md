@@ -20,7 +20,7 @@ If the current behavior is a bug, please provide the steps to reproduce and if p
 
 * **Please tell us about your environment:**
 
-- version: 0.1.7 (npm, docker)
+- version: 0.1.8 (npm, docker)
 - Browser: "Firefox 21.0.2"
 - Nodejs: "NodeJS 2.1.2"
 
