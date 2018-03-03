@@ -1,5 +1,5 @@
 {
-    "kind": "Template",
+    "kind": "Template", 
     "apiVersion": "v1",
     "metadata": {
         "name": "sxapi-template",
