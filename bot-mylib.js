@@ -14,4 +14,4 @@ var mylib = {
   }
 };
 
-exports = mylib;
+module.exports = mylib;

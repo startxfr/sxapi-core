@@ -123,4 +123,4 @@ var $notification = {
   }
 };
 
-exports = $notification;
+module.exports = $notification;

@@ -124,4 +124,4 @@ var $resources = {
     }
 };
 
-exports = $resources;
+module.exports = $resources;
