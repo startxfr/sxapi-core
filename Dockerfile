@@ -47,7 +47,8 @@ RUN  apk update && apk upgrade && apk add git python make gcc g++ \
  &&  apk del make gcc g++ \
  &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config \
  &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config \
- &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config
+ &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config \
+ &&  chmod -R ugo+x /s2i
 
 USER 1001
 EXPOSE 8080

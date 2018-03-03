@@ -1,5 +1,5 @@
 {
-    "kind": "Template", 
+    "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
         "name": "sxapi-template",
@@ -140,6 +140,7 @@
                                 "name": "${APP_NAME}",
                                 "image": "startx/sxapi@sha256:a553b19f6858737f1b2cef8946aa260a9ba34a995ffca12fc25f380e58703544",
                                 "command": [
+                                    "npm",
                                     "start"
                                 ],
                                 "resources": {},
