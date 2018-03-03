@@ -30,22 +30,22 @@ LABEL name="startx/sxapi-$SXAPI_VERSION" \
       io.openshift.s2i.scripts-url="image:///s2i" \
       fr.startx.component="$SX_ID:$SX_VERSION"
 
-RUN  mkdir -p $APP_PATH && \
-     mkdir -p $CONF_PATH  && \
-     apk update && apk upgrade && apk add git
 COPY .s2i /s2i
 COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
 COPY ./*.j* $APP_PATH/
 COPY ./sxapi.json $CONF_PATH/sxapi.json
 
-RUN  cd $APP_PATH \
+RUN  apk update && apk upgrade && apk add git python make gcc g++ \
+ &&  mkdir -p $APP_PATH \
+ &&  mkdir -p $CONF_PATH \
+ &&  mkdir -p $DATA_PATH \
+ &&  cd $APP_PATH \
  &&  npm install \
  &&  npm dedupe \
  &&  npm cache verify \
  &&  npm cache clean --force \
- &&  mkdir -p $CONF_PATH \
- &&  mkdir -p $DATA_PATH \
+ &&  apk del make gcc g++ \
  &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
  &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
  &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i
