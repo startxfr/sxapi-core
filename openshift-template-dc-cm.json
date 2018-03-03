@@ -162,7 +162,7 @@
                         "containers": [
                             {
                                 "name": "sxapi",
-                                "image": "startx/sxapi@sha256:ea6d24ac940397d417ac3767340f1ef7b97751e0b0593d13e0fcee16ddae68b8",
+                                "image": "startx/sxapi@sha256:5f84957207f29ba96432563f405a004099e0615f20ae64352645b44fed9c71d9",
                                 "command": [
                                     "npm",
                                     "start"
