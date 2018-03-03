@@ -33,6 +33,7 @@ LABEL name="startx/sxapi-$SXAPI_VERSION" \
 RUN  mkdir -p $APP_PATH && \
      mkdir -p $CONF_PATH  && \
      apk update && apk upgrade && apk add git
+COPY .s2i /s2i
 COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
 COPY ./*.j* $APP_PATH/
@@ -45,9 +46,9 @@ RUN  cd $APP_PATH \
  &&  npm cache clean --force \
  &&  mkdir -p $CONF_PATH \
  &&  mkdir -p $DATA_PATH \
- &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH \
- &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH \
- &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH
+ &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
+ &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
+ &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i
 
 USER 1001
 EXPOSE 8080
