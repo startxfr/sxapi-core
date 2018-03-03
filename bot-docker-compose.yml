@@ -7,3 +7,4 @@ app:
   - "./:/usr/src/app:z"
   - "./bot-sxapi.json:/conf/sxapi.json:z"
   - "./bot-mylib.js:/usr/src/app/bot-mylib.js:z"
+  command: ["npm" , "start"]
