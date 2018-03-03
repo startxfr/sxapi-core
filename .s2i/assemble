@@ -10,6 +10,9 @@
 cd $APP_PATH
 if[[ -d /tmp/src ]]; then
     cp -R /tmp/src/* $APP_PATH/
+    if[[ -f /tmp/src/sxapi.json ]]; then
+        cp -f /tmp/src/sxapi.json $CONF_PATH/sxapi.json
+    fi;
 #    rm -rf /tmp/src
 fi;
 npm install -production

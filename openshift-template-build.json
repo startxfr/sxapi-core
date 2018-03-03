@@ -23,43 +23,6 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "sxapi",
-                "annotations": {
-                    "openshift.io/display-name": "Startx SXAPI framework (S2I)",
-                    "openshift.io/generated-by": "STARTX"
-                },
-                "labels": {
-                    "base-image": "sxapi",
-                    "app": "${APP_NAME}",
-                    "type": "${APP_TYPE}",
-                    "provider": "startx"
-                }
-            },
-            "spec": {
-                "tags": [
-                    {
-                        "name": "latest",
-                        "annotations": {
-                            "openshift.io/display-name": "S2I Startx SXAPI framework (latest)",
-                            "description": "Builder for Simple and eXtensible API framework based on alpine (latest)",
-                            "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
-                            "supports": "sxapi:latest,nodejs,http",
-                            "version": "latest",
-                            "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
-                        },
-                        "from": {
-                            "kind": "DockerImage",
-                            "name": "startx/sxapi:latest"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
                 "name": "${APP_NAME}",
                 "annotations": {
                     "openshift.io/display-name": "Application ${APP_NAME}",
@@ -83,6 +46,22 @@
                             "tags": "startx,alpine,nodejs,sxapi-latest,application,${APP_NAME}",
                             "supports": "sxapi:latest,nodejs,http",
                             "version": "latest"
+                        }
+                    },
+                    {
+                        "name": "sxapi",
+                        "annotations": {
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (latest)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (latest)",
+                            "iconClass": "icon-nodejs",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
+                            "supports": "sxapi:latest,nodejs,http",
+                            "version": "latest",
+                            "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "startx/sxapi:latest"
                         }
                     }
                 ]
@@ -159,7 +138,7 @@
                         "containers": [
                             {
                                 "name": "${APP_NAME}",
-                                "image": "startx/sxapi@sha256:d39be654d7336f665e8901c543ebf363baff093c5d21d6d24e4a3405629eeb40",
+                                "image": "startx/sxapi@sha256:a553b19f6858737f1b2cef8946aa260a9ba34a995ffca12fc25f380e58703544",
                                 "command": [
                                     "start"
                                 ],
@@ -329,7 +308,7 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "sxapi:latest"
+                            "name": "${APP_NAME}:sxapi"
                         },
                         "env": [
                             {
@@ -357,7 +336,7 @@
             "name": "APP_NAME",
             "displayName": "Application name",
             "description": "The name of the created application",
-            "value": "sxapi",
+            "value": "app",
             "required": true
         },
         {
