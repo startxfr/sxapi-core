@@ -1121,4 +1121,4 @@ var $sess = {
         }
     }
 };
-exports = $sess;
+module.exports = $sess;
