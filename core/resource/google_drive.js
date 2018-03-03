@@ -10,7 +10,7 @@
  * @param {object} google the google resource with auth
  * @type resource
  */
-exports = function (id, config, google) {
+module.exports = function (id, config, google) {
   var $gapid = {
     id: id + ':drive',
     google: google,

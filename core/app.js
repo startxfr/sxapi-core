@@ -186,7 +186,7 @@ $app = {
    * @returns {$app}
    */
   _initProcessSignals: function () {
-    $log.debug("start registering to process signals as part of the init process", 5, $timer.time('app'));
+    $log.debug("start registering system signals as part of the init process", 5, $timer.time('app'));
     process.stdin.resume();
     process.__exitHandler = function (code) {
       $log.info("application " + $app.config.name + ' v' + $app.config.version + " exited " + code, $timer.time('app'));
@@ -318,4 +318,4 @@ $app = {
   bot: require('./bot')
 };
 
-exports = $app;
+module.exports = $app;
