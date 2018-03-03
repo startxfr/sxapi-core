@@ -25,7 +25,7 @@
             "metadata": {
                 "name": "sxapi",
                 "annotations": {
-                    "openshift.io/display-name": "Startx SXAPI framework",
+                    "openshift.io/display-name": "Startx SXAPI framework (S2I)",
                     "openshift.io/generated-by": "STARTX"
                 },
                 "labels": {
@@ -40,8 +40,8 @@
                     {
                         "name": "latest",
                         "annotations": {
-                            "openshift.io/display-name": "Startx SXAPI framework (latest)",
-                            "description": "Simple and extensible API framework based on alpine (latest)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (latest)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (latest)",
                             "iconClass": "icon-nodejs",
                             "tags": "builder,startx,alpine,nodejs,sxapi-latest",
                             "supports": "sxapi:latest,nodejs,http",
@@ -159,7 +159,7 @@
                         "containers": [
                             {
                                 "name": "${APP_NAME}",
-                                "image": "startx/sxapi@sha256:fdeea7651d752e09fd9d6e760e85ef7667f7e443c9712d0e5f051c105e66bf05",
+                                "image": "startx/sxapi@sha256:d39be654d7336f665e8901c543ebf363baff093c5d21d6d24e4a3405629eeb40",
                                 "command": [
                                     "start"
                                 ],

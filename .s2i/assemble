@@ -8,7 +8,10 @@
 #
 
 cd $APP_PATH
-cp -R /tmp/src/* $APP_PATH/
+if[[ -d /tmp/src ]]; then
+    cp -R /tmp/src/* $APP_PATH/
+#    rm -rf /tmp/src
+fi;
 npm install -production
 npm dedupe
 npm cache verify
