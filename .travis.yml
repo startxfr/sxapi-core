@@ -18,7 +18,7 @@ before_install:
 - docker images
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 
-script: ./travis.sh
+script:
 - "docker build --squash -t $REPO ."
 - "docker run -d --name sxapi $REPO"
 
