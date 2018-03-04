@@ -112,11 +112,19 @@ $app = {
     if (process.env.LOG_PATH) {
       $log.config.log_path = process.env.LOG_PATH;
     }
+    try {
+      var pathToFile = require.resolve('sxapi-core');
+      this.config.lib_path = require('path').dirname(pathToFile);
+    }
+    catch (e) {
+      this.config.lib_path = process.env.APP_PATH;
+    }
     $log.debug("Hostname     : " + this.config.hostname, 1);
     if (process.env.NODE_VERSION) {
       $log.debug("Engine       : NodeJS v" + process.env.NODE_VERSION, 1);
     }
     $log.debug("App path     : " + this.config.app_path, 2);
+    $log.debug("Lib path     : " + this.config.lib_path, 2);
     $log.debug("Conf path    : " + this.config.conf_path, 2);
     $log.debug("Data path    : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 2);
     $log.debug("Log path     : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 2);
