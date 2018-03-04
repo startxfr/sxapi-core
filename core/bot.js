@@ -21,10 +21,20 @@ var $bot = {
     else {
       try {
         require.resolve("../" + $bot.config.lib);
+        $bot.lib = require("../" + $bot.config.lib);
       } catch (e) {
-        throw new Error("bot lib " + $bot.config.lib + " could not be found");
+        try {
+          require.resolve($bot.config.lib);
+          $bot.lib = require($bot.config.lib);
+        } catch (e) {
+          try {
+            require.resolve($app.config.app_path + "/" + $bot.config.lib);
+            $bot.lib = require($app.config.app_path + "/" + $bot.config.lib);
+          } catch (e) {
+            throw new Error("bot lib " + $bot.config.lib + " could not be found");
+          }
+        }
       }
-      $bot.lib = require("../" + $bot.config.lib);
     }
     if (!$bot.config.cron && !$bot.config.readers) {
       throw new Error("no 'readers' or 'cron' key found in config 'bot' section");

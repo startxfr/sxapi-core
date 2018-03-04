@@ -1,7 +1,7 @@
 FROM node:8-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV SXAPI_VERSION=0.1.10 \
+ENV SXAPI_VERSION=0.1.11 \
     SX_ID="startx/sxapi" \
     SX_NAME="Startx SXAPI (alpine)" \
     SX_SUMMARY="Small an eXtensible API framework to build small and flexible microservices using a single configuration file" \
@@ -28,27 +28,26 @@ LABEL name="startx/sxapi-$SXAPI_VERSION" \
       io.openshift.expose-services="8080:http" \
       io.openshift.s2i.destination="/tmp" \
       io.openshift.s2i.scripts-url="image:///s2i" \
-      fr.startx.component="$SX_ID:$SX_VERSION"
+      fr.startx.component="$SX_ID:$SXAPI_VERSION"
 
-COPY .s2i /s2i
+COPY ./s2i /s2i
 COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
-COPY ./*.j* $APP_PATH/
+COPY ./app.js $APP_PATH/app.js
+COPY ./package.json $APP_PATH/package.json
 COPY ./sxapi.json $CONF_PATH/sxapi.json
 
 RUN  apk update && apk upgrade && apk add git python make gcc g++ \
- &&  mkdir -p $APP_PATH \
- &&  mkdir -p $CONF_PATH \
- &&  mkdir -p $DATA_PATH \
+ &&  mkdir -p $APP_PATH $CONF_PATH $DATA_PATH /.npm /.config \
  &&  cd $APP_PATH \
  &&  npm install \
  &&  npm dedupe \
  &&  npm cache verify \
  &&  npm cache clean --force \
  &&  apk del make gcc g++ \
- &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
- &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH /s2i \
- &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i
+ &&  chgrp -R 0 $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config \
+ &&  chown -R 1001:0 $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config \
+ &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config
 
 USER 1001
 EXPOSE 8080
