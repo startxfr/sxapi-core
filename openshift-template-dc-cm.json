@@ -2,13 +2,13 @@
     "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
-        "name": "sxapi-template",
+        "name": "sxapi-template-config",
         "annotations": {
-            "openshift.io/display-name": "Startx SXAPI micro-service framework (0.1.11)",
-            "description": "SXAPI micro-service framework for running micro-service application running in a nodejs environement",
+            "openshift.io/display-name": "SXAPI micro-service application (ConfigMap)",
+            "description": "SXAPI micro-service application with configuration embeded into a configMap",
             "iconClass": "icon-nodejs",
-            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.11",
-            "openshift.io/long-description": "This template provides a startx sxapi micro-service framework container. Ready to use in openshift with a simple deployement config, or as a s2i builder for building web applications container. For more information about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.",
+            "tags": "startx,alpine,nodejs,sxapi-latest",
+            "openshift.io/long-description": "This template provides a startx sxapi micro-service application. Ready to use in openshift with a simple deployement config, or as a s2i builder for building web applications container. For more information about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.",
             "openshift.io/provider-display-name": "STARTX",
             "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-core/blob/master/README.md",
             "openshift.io/support-url": "https://github.com/startxfr/sxapi-core/issues/new"
@@ -16,7 +16,7 @@
     },
     "message": "Your application ${APP_NAME} have been created in your project. You can use openshift console to log into.",
     "labels": {
-        "template": "sxapi-template"
+        "template": "sxapi-template-config"
     },
     "objects": [
         {
@@ -33,28 +33,48 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template"
+                    "template": "sxapi-template-config"
                 }
             },
             "spec": {
                 "tags": [
                     {
-                        "name": "0.1.11",
+                        "name": "latest",
                         "annotations": {
-                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.1.11)",
-                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.1.11)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (latest)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (latest)",
                             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.11",
-                            "supports": "sxapi:0.1.11,nodejs,http",
-                            "version": "0.1.11",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-latest",
+                            "supports": "sxapi:latest,nodejs,http",
+                            "version": "latest",
                             "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sxapi:0.1.11"
+                            "name": "startx/sxapi:latest"
                         }
                     }
                 ]
+            }
+        },
+        {
+            "kind": "ConfigMap",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}-config",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-template-config"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "data": {
+                "sxapi.json": "{\n    \"name\": \"sxapi-example\",\n    \"description\": \"sxapi example\",\n    \"version\": \"0.0.1\",\n    \"debug\": true,\n    \"resources\": {\n        \"serviceinfo-sample\": {\n            \"_class\": \"serviceinfo\"\n        }\n    },\n    \"log\": {\n        \"filters\": {\n            \"level\": \"0,1,2,3,4\",\n            \"type\": \"debug,info,error,warn\"\n        }\n    },\n    \"server\": {\n        \"port\": \"8080\",\n        \"endpoints\": [\n            {\n                \"path\": \"/\",\n                \"desc\": \"Display welcome message (HTML)\",\n                \"body\": \"\u003chtml\u003e\u003chead\u003e\u003ctitle\u003eAPI Example\u003c/title\u003e\u003c/head\u003e\u003cbody\u003e\u003ch1\u003eThis is your API\u003c/h1\u003e\u003cp\u003eThis API is based on sxapi-core v0.1.10\u003c/p\u003e\u003c/body\u003e\u003c/html\u003e\"\n            },\n            {\n                \"path\": \"/health\",\n                \"resource\": \"serviceinfo-sample\",\n                \"endpoint\": \"health\"\n            },\n            {\n                \"path\": \"/info\",\n                \"resource\": \"serviceinfo-sample\",\n                \"endpoint\": \"info\"\n            },\n            {\n                \"path\": \"/ping\",\n                \"desc\": \"Ping the application. Return a sample message in json\",\n                \"code\": \"200\",\n                \"body\": \"pong\"\n            }\n        ]\n    }\n}\n"
             }
         },
         {
@@ -68,7 +88,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template"
+                    "template": "sxapi-template-config"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -96,7 +116,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "sxapi:0.1.11"
+                                "name": "sxapi:latest"
                             }
                         }
                     },
@@ -117,7 +137,7 @@
                             "app": "${APP_NAME}",
                             "type": "${APP_TYPE}",
                             "provider": "startx",
-                            "template": "sxapi-template",
+                            "template": "sxapi-template-config",
                             "deploymentconfig": "${APP_NAME}"
                         },
                         "annotations": {
@@ -125,15 +145,41 @@
                         }
                     },
                     "spec": {
+                        "volumes": [
+                            {
+                                "name": "volume-${APP_NAME}-conf",
+                                "configMap": {
+                                    "name": "${APP_NAME}-config",
+                                    "items": [
+                                        {
+                                            "key": "sxapi.json",
+                                            "path": "sxapi.json"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
                         "containers": [
                             {
-                                "name": "${APP_NAME}",
+                                "name": "sxapi",
                                 "image": "startx/sxapi@sha256:5f84957207f29ba96432563f405a004099e0615f20ae64352645b44fed9c71d9",
                                 "command": [
                                     "npm",
                                     "start"
                                 ],
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
                                 "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "volume-${APP_NAME}-conf",
+                                        "mountPath": "/conf"
+                                    }
+                                ],
                                 "livenessProbe": {
                                     "httpGet": {
                                         "path": "/health",
@@ -161,7 +207,11 @@
                                 "terminationMessagePath": "/dev/termination-log",
                                 "imagePullPolicy": "Always"
                             }
-                        ]
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
                     }
                 }
             },
@@ -182,7 +232,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template"
+                    "template": "sxapi-template-config"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -191,6 +241,7 @@
             "spec": {
                 "ports": [
                     {
+                        "name": "8080-tcp",
                         "protocol": "TCP",
                         "port": 8080,
                         "targetPort": 8080
@@ -217,7 +268,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template"
+                    "template": "sxapi-template-config"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -228,6 +279,9 @@
                     "kind": "Service",
                     "name": "${APP_NAME}",
                     "weight": 100
+                },
+                "port": {
+                    "targetPort": "8080-tcp"
                 }
             },
             "status": {
