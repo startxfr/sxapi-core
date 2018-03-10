@@ -155,6 +155,15 @@ $app = {
       try {
         mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
         $log.debug("Cfg source   : " + this.config.conf_path + '/sxapi.json', 2);
+        if($app.config && $app.config.name) {
+          $app.config.name = $log.format($app.config.name, process.env);
+        }
+        if($app.config && $app.config.description) {
+          $app.config.description = $log.format($app.config.description, process.env);
+        }
+        if($app.config && $app.config.version) {
+          $app.config.version = $log.format($app.config.version, process.env);
+        }
       }
       catch (e) {
         $log.error("Cfg source   : is missing", 2);
