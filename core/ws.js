@@ -16,6 +16,9 @@ var $ws = {
     if (!$ws.config.port) {
       $ws.config.port = 8080;
     }
+    if ($ws.config.port) {
+      $ws.config.port = $log.format($ws.config.port, process.env);
+    }
     if (!$ws.config.endpoints) {
       throw new Error("no 'endpoints' key found in config 'server' section");
     }

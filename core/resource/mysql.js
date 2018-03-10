@@ -30,6 +30,17 @@ module.exports = function (id, config) {
       if (!$mqdb.config.server.database) {
         throw new Error("no 'server.database' key found in resource '" + $mqdb.id + "' config");
       }
+      $mqdb.config.server.host = $log.format($mqdb.config.server.host, process.env);
+      $mqdb.config.server.database = $log.format($mqdb.config.server.database, process.env);
+      if ($mqdb.config.server.port) {
+        $mqdb.config.server.port = $log.format($mqdb.config.server.port, process.env);
+      }
+      if ($mqdb.config.server.user) {
+        $mqdb.config.server.user = $log.format($mqdb.config.server.user, process.env);
+      }
+      if ($mqdb.config.server.password) {
+        $mqdb.config.server.password = $log.format($mqdb.config.server.password, process.env);
+      }
       $mqdb.config._sign = $mqdb.config.server.host + '::' + $mqdb.config.server.database;
       $mqdb.conn = require("mysql");
       if (typeof $mqdb.pool[$mqdb.config._sign] === 'undefined') {
