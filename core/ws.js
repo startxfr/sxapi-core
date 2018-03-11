@@ -355,7 +355,7 @@ var $ws = {
     var endpoints = configs.endpoints;
     delete configs.endpoints;
     $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
-    if (!endpoints) {
+    if (endpoints) {
       for (var i = 0; i < endpoints.length; i++) {
         var config = require('merge').recursive(true, configs, endpoints[i]);
         $ws._initEndpointConfig(config);
