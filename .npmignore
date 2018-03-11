@@ -2,3 +2,7 @@ nbproject
 node_modules
 npm-publish.sh
 docs
+test
+bot-*
+full-*
+.travis.yml
