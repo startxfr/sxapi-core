@@ -127,6 +127,24 @@ module.exports = function (id, config) {
       console.log(error, health);
       return health;
     },
+    /**
+     * Read the environements from process
+     * @param {function} callback called when informations are returned
+     * @returns {$svif.serviceinfo}
+     */
+    getEnv: function (callback) {
+      var timerId = 'svif_getEnv_' + $svif.id;
+      $timer.start(timerId);
+      $log.tools.resourceInfo($svif.id, "getEnv()");
+      var cb = (typeof callback === "function") ? callback : $svif.__getEnvDefaultCallback;
+      cb(null, process.env);
+      return this;
+    },
+    __getEnvDefaultCallback: function (error, vars) {
+      $log.tools.resourceDebug($svif.id, "default callback", 4);
+      console.log(error, vars);
+      return vars;
+    },
     endpoints: {
       info: function (config) {
         /**
@@ -176,6 +194,33 @@ module.exports = function (id, config) {
           $log.tools.endpointDebug($svif.id, req, "health()", 1);
           if ($app.resources.exist(config.resource)) {
             $app.resources.get(config.resource).health(callback);
+          }
+          else {
+            $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
+          }
+        };
+      },
+      getEnv: function (config) {
+        /**
+         * Callback called when a defined endpoint is called
+         * @param {object} req
+         * @param {object} res
+         */
+        return function (req, res) {
+          var callback = function (err, reponse) {
+            if (err) {
+              $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
+            }
+            else {
+              if (config.notification !== undefined) {
+                $app.notification.notif(config.notification, reponse);
+              }
+              $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service environements variables", 2);
+            }
+          };
+          $log.tools.endpointDebug($svif.id, req, "getEnv()", 1);
+          if ($app.resources.exist(config.resource)) {
+            $app.resources.get(config.resource).getEnv(callback);
           }
           else {
             $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
