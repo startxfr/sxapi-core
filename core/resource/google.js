@@ -53,9 +53,10 @@ module.exports = function (id, config) {
       if ($gapi.config.services) {
         Object.keys($gapi.config.services).forEach(function (service) {
           var confmod = $gapi.config.services[service];
-          var modPath = 'google_' + service;
-          if (fs.existsSync('core/resource/' + modPath + '.js')) {
-            $gapi.services[service] = require('./' + modPath)($gapi.id, confmod, $gapi);
+          var modName = 'google_' + service;
+          var modPath = $app.config.lib_path+'/core/resource/';
+          if (fs.existsSync(modPath + modName + '.js')) {
+            $gapi.services[service] = require(modPath + modName)($gapi.id, confmod, $gapi);
             $gapi.endpoints[service] = $gapi.services[service].endpoints;
           }
           else {

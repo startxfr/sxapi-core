@@ -1,4 +1,4 @@
-/* global module, require, process, $log */
+/* global module, require, process, $log, $app */
 
 //'use strict';
 
@@ -15,6 +15,9 @@ var $ws = {
     }
     if (!$ws.config.port) {
       $ws.config.port = 8080;
+    }
+    if ($ws.config.port) {
+      $ws.config.port = $log.format($ws.config.port, process.env);
     }
     if (!$ws.config.endpoints) {
       throw new Error("no 'endpoints' key found in config 'server' section");
@@ -63,8 +66,14 @@ var $ws = {
       if ($ws.config.static_dir === undefined) {
         $ws.config.static_dir = 'webapp';
       }
-      $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path + " > " + $ws.config.static_dir, 3);
-      $ws.app.use($ws.config.static_path, $ws.express.static($ws.config.static_dir));
+      if ($ws.config.static_path === "/") {
+        $log.debug("Add static endpoint  [ALL]    [root] > " + $ws.config.static_dir, 3);
+        $ws.app.use($ws.express.static($app.config.app_path + $ws.config.static_dir));
+      }
+      else {
+        $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path + " > " + $ws.config.static_dir, 3);
+        $ws.app.use($ws.config.static_path, $ws.express.static($app.config.app_path + $ws.config.static_dir));
+      }
       if ($ws.config.static_path2 !== undefined && $ws.config.static_dir !== undefined) {
         $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path2 + " > " + $ws.config.static_dir2, 3);
         $ws.app.use($ws.config.static_path2, $ws.express.static($ws.config.static_dir2));
@@ -346,7 +355,7 @@ var $ws = {
     var endpoints = configs.endpoints;
     delete configs.endpoints;
     $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
-    if (!endpoints) {
+    if (endpoints) {
       for (var i = 0; i < endpoints.length; i++) {
         var config = require('merge').recursive(true, configs, endpoints[i]);
         $ws._initEndpointConfig(config);
