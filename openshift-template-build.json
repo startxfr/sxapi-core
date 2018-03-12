@@ -7,7 +7,7 @@
             "openshift.io/display-name": "SXAPI micro-service application (Builder)",
             "description": "SXAPI micro-service application builder based on alpine linux",
             "iconClass": "icon-nodejs",
-            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.16",
+            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.17",
             "openshift.io/long-description": "This template provides a startx sxapi micro-service framework builder. Ready to use in openshift with a simple deployement config, or as a s2i builder for building web applications container. For more information about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.",
             "openshift.io/provider-display-name": "STARTX",
             "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-core/blob/master/README.md",
@@ -39,19 +39,19 @@
             "spec": {
                 "tags": [
                     {
-                        "name": "0.1.16",
+                        "name": "0.1.17",
                         "annotations": {
-                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.1.16)",
-                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.1.16)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.1.17)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.1.17)",
                             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.16",
-                            "supports": "sxapi:0.1.16,nodejs,http",
-                            "version": "0.1.16",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-0.1.17",
+                            "supports": "sxapi:0.1.17,nodejs,http",
+                            "version": "0.1.17",
                             "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sxapi:0.1.16"
+                            "name": "startx/sxapi:0.1.17"
                         }
                     }
                 ]
@@ -81,8 +81,8 @@
                             "openshift.io/display-name": "Application ${APP_NAME}",
                             "description": "Base image for the application ${APP_NAME}",
                             "iconClass": "icon-nodejs",
-                            "tags": "startx,alpine,nodejs,sxapi-0.1.16,application,${APP_NAME}",
-                            "supports": "sxapi:0.1.16,nodejs,http",
+                            "tags": "startx,alpine,nodejs,sxapi-0.1.17,application,${APP_NAME}",
+                            "supports": "sxapi:0.1.17,nodejs,http",
                             "version": "latest"
                         }
                     }
@@ -140,7 +140,7 @@
                     "sourceStrategy": {
                         "from": {
                             "kind": "ImageStreamTag",
-                            "name": "sxapi:0.1.16"
+                            "name": "sxapi:0.1.17"
                         },
                         "env": [
                             {
@@ -201,7 +201,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "${APP_NAME}:0.1.16"
+                                "name": "${APP_NAME}:0.1.17"
                             }
                         }
                     },
