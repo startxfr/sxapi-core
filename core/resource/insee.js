@@ -136,7 +136,7 @@ module.exports = function (id, config) {
         return function (req, res) {
           var callback = function (err, reponse) {
             if (err) {
-              $log.tools.endpointErrorAndAnswer(res, $insee.id, req, "error because " + err.message);
+              $log.tools.endpointErrorAndAnswer(res, $insee.id, req, "error because " + (err.message || err));
             }
             else {
               if (config.notification !== undefined) {
