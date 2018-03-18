@@ -34,7 +34,7 @@ module.exports = function (id, config) {
     },
     start: function (callback) {
       var timerId = 'resource_http_start_' + $htcli.id;
-      $log.tools.resourceDebug($htcli.id, "starting", 3);
+      $log.tools.resourceDebug($htcli.id, "Starting resource", 3);
       $log.tools.resourceDebug($htcli.id, "started ", 1, $timer.timeStop(timerId));
       if (typeof callback === "function") {
         callback();
@@ -42,7 +42,7 @@ module.exports = function (id, config) {
       return $htcli;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($htcli.id, "Stopping", 2);
+      $log.tools.resourceDebug($htcli.id, "Stopping resource", 2);
       $htcli.pool[$htcli.config._sign] = null;
       if (typeof callback === "function") {
         callback(null, $htcli);

@@ -75,7 +75,7 @@ module.exports = function (id, config) {
      */
     start: function (callback) {
       var timerId = 'resource_google_start_' + $gapi.id;
-      $log.tools.resourceDebug($gapi.id, "starting", 3);
+      $log.tools.resourceDebug($gapi.id, "Starting resource", 3);
       var cb = function () {
         Object.keys($gapi.services).forEach(function (service) {
           $gapi.services[service].start();
@@ -94,7 +94,7 @@ module.exports = function (id, config) {
      * @returns {$gapi}
      */
     stop: function (callback) {
-      $log.tools.resourceDebug($gapi.id, "Stopping", 2);
+      $log.tools.resourceDebug($gapi.id, "Stopping resource", 2);
       Object.keys($gapi.services).forEach(function (service) {
         $gapi.services[service].stop();
       });

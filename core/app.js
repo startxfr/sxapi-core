@@ -17,7 +17,7 @@ $app = {
   log: $log,
   notification: null,
   package: {
-    network_port: 8080
+    network_port: "8080"
   },
   config: {
     ip: require("ip").address(),
@@ -155,13 +155,13 @@ $app = {
       try {
         mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
         $log.debug("Cfg source   : " + this.config.conf_path + '/sxapi.json', 2);
-        if($app.config && $app.config.name) {
+        if ($app.config && $app.config.name) {
           $app.config.name = $log.format($app.config.name, process.env);
         }
-        if($app.config && $app.config.description) {
+        if ($app.config && $app.config.description) {
           $app.config.description = $log.format($app.config.description, process.env);
         }
-        if($app.config && $app.config.version) {
+        if ($app.config && $app.config.version) {
           $app.config.version = $log.format($app.config.version, process.env);
         }
       }
@@ -263,9 +263,6 @@ $app = {
       for (var i in $app._onstartQueue) {
         $app._onstartQueue[i]();
       }
-      if (typeof callback === "function") {
-        callback();
-      }
       setTimeout(function () {
         if ($log.tmpConf !== undefined) {
           $log.init($log.tmpConf, $app.config.debug);
@@ -275,6 +272,12 @@ $app = {
           $app.notification.init($app.config.notifications);
         }
       }, 200);
+      setTimeout(function () {
+        $log.debug("End application warmup", 0, $timer.time('app'));
+        if (typeof callback === "function") {
+          callback();
+        }
+      }, 50);
     };
     cbResources();
     return this;
@@ -324,6 +327,7 @@ $app = {
     if (typeof config === "string") {
       $app.config.conf_path = config;
     }
+    $log.debug("Start application warmup", 0, $timer.time('app'));
     $app.init(function () {
       $app.start(callback);
     });
