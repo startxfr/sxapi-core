@@ -39,7 +39,7 @@ module.exports = function (id, config, google) {
      */
     start: function (callback) {
       var timerId = 'resource_google_drive_start_' + $gapid.id;
-      $log.tools.resourceDebug($gapid.id, "starting", 3);
+      $log.tools.resourceDebug($gapid.id, "Starting resource", 3);
       $gapid.service = $gapid.google.gapi.drive({
         version: 'v3',
         auth: $gapid.google.gapi_auth
@@ -56,7 +56,7 @@ module.exports = function (id, config, google) {
      * @returns {$gapid}
      */
     stop: function (callback) {
-      $log.tools.resourceDebug($gapid.id, "Stopping", 2);
+      $log.tools.resourceDebug($gapid.id, "Stopping resource", 2);
       $gapid.service = null;
       if (typeof callback === "function") {
         callback(null, this);

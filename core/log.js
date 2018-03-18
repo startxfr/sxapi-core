@@ -25,7 +25,7 @@ var $log = {
     init: function (config, isDebug) {
         this.isDebug = (isDebug) ? true : false;
         if (config) {
-            this.config = config;
+            require('merge').recursive(this.config, config);
         }
         if (this.config.filters) {
             if (typeof this.config.filters.type === "string") {

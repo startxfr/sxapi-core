@@ -37,7 +37,7 @@ module.exports = function (id, config) {
     start: function (callback) {
       var timerId = 'resource_cb_start_' + $mcdb.id;
       var clusID = $mcdb.config.host || $mcdb.config.port;
-      $log.tools.resourceDebug($mcdb.id, "starting", 3);
+      $log.tools.resourceDebug($mcdb.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($mcdb.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -51,7 +51,7 @@ module.exports = function (id, config) {
       return $mcdb;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($mcdb.id, "Stopping", 2);
+      $log.tools.resourceDebug($mcdb.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, $mcdb);
       }
