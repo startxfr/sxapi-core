@@ -47,6 +47,7 @@ Resource components are loaded if defined in the configuration profile. You can 
 - [redis](resources/redis.md) resource : Interact with a redis backend
 - [memcache](resources/memcache.md) resource : Interact with a memcache server
 - [serviceinfo](resources/serviceinfo.md) resource : Access application details
+- [localfs](resources/localfs.md) resource : Interact with a the application host (or container) local file-system
 
 ## Contributing
 
