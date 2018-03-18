@@ -31,16 +31,25 @@ $app = {
    * @returns {$app}
    */
   init: function (callback) {
-    $log.debug("initializing sxapi-framework", 2, $timer.time('app'));
+    $log.debug("Start initializing sxapi framework", 2, $timer.time('app'));
     $app.notification = require('./notification');
     this._initProcessSignals();
     this._initCheckEnv();
     this._initLoadConfigFiles();
-    $log.info("initializing application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
+    $log.debug("App path     : " + this.config.app_path, 0);
+    $log.debug("Lib path     : " + this.config.lib_path, 0);
+    $log.debug("Data path    : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 1);
+    $log.debug("Log path     : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 3);
+    $log.debug("node engine  : node v" + process.env.NODE_VERSION, 3);
+    $log.debug("npm engine   : " + process.env.NPM_VERSION, 2);
+    $log.debug("sxapi-core   : " + $app.package.name + ' v' + $app.package.version, 0);
+    $log.debug("application  : " + $app.config.name + ' v' + $app.config.version, 0);
+    $log.debug("Hostname     : " + this.config.hostname, 0);
     $log.debug("container ip : " + $app.config.ip, 2);
-    $log.debug("service name : " + $app.config.name, 2);
-    $log.debug("service vers : " + $app.config.version, 2);
-    $log.debug("service desc : " + $app.config.description, 2);
+    $log.debug("service name : " + $app.config.name, 3);
+    $log.debug("service vers : " + $app.config.version, 3);
+    $log.debug("service desc : " + $app.config.description, 4);
+    $log.info("Start initializing application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
     if ($app.config.resources) {
       $log.debug("start initializing resources as part of the init process", 5, $timer.time('app'));
       $app.resources.init($app.config.resources);
@@ -112,6 +121,15 @@ $app = {
     if (process.env.LOG_PATH) {
       $log.config.log_path = process.env.LOG_PATH;
     }
+    if (!process.env.NODE_VERSION) {
+      process.env.NODE_VERSION = 'unknown';
+    }
+    if (process.env.npm_config_user_agent) {
+      process.env.NPM_VERSION = process.env.npm_config_user_agent;
+    }
+    else if (!process.env.NPM_VERSION) {
+      process.env.NPM_VERSION = 'unknown';
+    }
     try {
       var pathToFile = require.resolve('sxapi-core');
       this.config.lib_path = require('path').dirname(pathToFile);
@@ -119,15 +137,6 @@ $app = {
     catch (e) {
       this.config.lib_path = process.env.APP_PATH;
     }
-    $log.debug("Hostname     : " + this.config.hostname, 1);
-    if (process.env.NODE_VERSION) {
-      $log.debug("Engine       : NodeJS v" + process.env.NODE_VERSION, 1);
-    }
-    $log.debug("App path     : " + this.config.app_path, 2);
-    $log.debug("Lib path     : " + this.config.lib_path, 2);
-    $log.debug("Conf path    : " + this.config.conf_path, 2);
-    $log.debug("Data path    : " + ((this.config.data_path) ? this.config.data_path : "NONE"), 2);
-    $log.debug("Log path     : " + ((this.config.log_path) ? $log.config.log_path : "NONE"), 2);
     return this;
   },
   /**
@@ -184,18 +193,13 @@ $app = {
     $app.config.appsign = $app.config.log.appsign = $app.config.name + '::' + $app.config.version + '::' + $app.config.ip;
     $app.config.log.apptype = $app.config.name + '-v' + $app.config.version;
     var logConf = JSON.cleanObject($app.config.log);
-    $log.debug("sxapi-core   : " + $app.package.name + ' v' + $app.package.version, 1);
-    $log.debug("application  : " + $app.config.name + ' v' + $app.config.version, 1);
-    if (process.env.npm_config_user_agent) {
-      $log.debug("node engine  : " + process.env.npm_config_user_agent, 3);
-      $log.config.npm_config_user_agent += " (" + $app.package.name + ' v' + $app.package.version + ")";
-    }
     if (logConf.sqs || logConf.couchbase) {
       $log.tmpConf = mg.recursive({}, logConf);
     }
     delete logConf['sqs'];
     delete logConf['couchbase'];
-    $log.init(logConf, $app.config.debug);
+    $log.init(logConf, $app.config.debug, true);
+    process.env.npm_config_user_agent += " (" + $app.package.name + ' v' + $app.package.version + ")";
     return this;
   },
   /**

@@ -89,11 +89,15 @@
                 "password": "sxapicore_test",
                 "database": "sxapicore_test"
             }
+        },
+        "files-sample": {
+            "_class": "localfs",
+            "directory": "/usr/src/app/"
         }
     },
     "log": {
         "filters": {
-            "level": "0,1,2,3,4",
+            "level": "0,1,2,3,4,5",
             "type": "debug,info,error,warn"
         }
     },
@@ -305,6 +309,38 @@
                     },
                     {
                         "path": "/redis/:id",
+                        "method": "DELETE",
+                        "endpoint": "delete"
+                    }
+                ]
+            },
+            {
+                "path": "/file",
+                "method": "ROUTER",
+                "resource": "files-sample",
+                "endpoints": [
+                    {
+                        "path": "/file",
+                        "method": "GET",
+                        "endpoint": "list"
+                    },
+                    {
+                        "path": "/file/:id",
+                        "method": "POST",
+                        "endpoint": "create"
+                    },
+                    {
+                        "path": "/file/:id",
+                        "method": "GET",
+                        "endpoint": "read"
+                    },
+                    {
+                        "path": "/file/:id",
+                        "method": "PUT",
+                        "endpoint": "update"
+                    },
+                    {
+                        "path": "/file/:id",
                         "method": "DELETE",
                         "endpoint": "delete"
                     }

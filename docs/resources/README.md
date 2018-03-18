@@ -35,6 +35,8 @@ if(resourceManager.exist('resource-id')) {
 | **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
 | **serviceinfo**  | sxapi v0.0.65      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **insee**        | siren2tva v1.0     | [read](insee.md)       | Resource to interact with a French INSEE company code
+| **localfs**      | (none)             | [read](localfs.md)     | Resource to interact with the application host (or container) local file-system
 
 ## Using a resource
 

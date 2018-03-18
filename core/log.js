@@ -10,8 +10,8 @@
 var $log = {
     config: {
         filters: {
-            level: "0,1",
-            type: "info,error"
+            level: "0,1,2,3,4,5",
+            type: "debug,info,error,warn"
         }
     },
     isDebug: false,
@@ -22,8 +22,9 @@ var $log = {
      * @param {type} isDebug
      * @returns {log}
      */
-    init: function (config, isDebug) {
+    init: function (config, isDebug,disableLog) {
         this.isDebug = (isDebug) ? true : false;
+        var dislog = (disableLog === true) ? true : false;
         if (config) {
             require('merge').recursive(this.config, config);
         }
@@ -38,7 +39,7 @@ var $log = {
         if (this.booted === false) {
             this.booted = true;
         }
-        else {
+        else if(dislog===false) {
             this.debug("Init core module : sxapi-core-log", 4);
         }
         if (this.config.sqs) {
