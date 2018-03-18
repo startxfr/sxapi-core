@@ -24,14 +24,19 @@ module.exports = function (id, config) {
       if (!$rddb.config.host && !$rddb.config.url) {
         throw new Error("no 'host' or 'url' key found in resource '" + $rddb.id + "' config");
       }
-      $rddb.config.host = $log.format($rddb.config.host, process.env);
+      if ($rddb.config.host) {
+        $rddb.config.host = $log.format($rddb.config.host, process.env);
+      }
+      if ($rddb.config.url) {
+        $rddb.config.url = $log.format($rddb.config.url, process.env);
+      }
       $rddb.rd = require("redis");
       $log.tools.resourceDebug($rddb.id, "initialized ", 1, $timer.timeStop(timerId));
       return $rddb;
     },
     start: function (callback) {
       var timerId = 'resource_cb_start_' + $rddb.id;
-      $log.tools.resourceDebug($rddb.id, "starting", 3);
+      $log.tools.resourceDebug($rddb.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($rddb.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -42,7 +47,7 @@ module.exports = function (id, config) {
       return $rddb;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($rddb.id, "Stopping", 2);
+      $log.tools.resourceDebug($rddb.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, $rddb);
       }

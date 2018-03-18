@@ -42,7 +42,7 @@ module.exports = function (id, config) {
      */
     start: function (callback) {
       var timerId = 'resource_aws.s3_start_' + $s3.id;
-      $log.tools.resourceDebug($s3.id, "starting", 3);
+      $log.tools.resourceDebug($s3.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($s3.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -58,7 +58,7 @@ module.exports = function (id, config) {
      * @returns {$bucket.s3}
      */
     stop: function (callback) {
-      $log.tools.resourceDebug($s3.id, "Stopping", 2);
+      $log.tools.resourceDebug($s3.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }

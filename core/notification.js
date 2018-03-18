@@ -24,7 +24,7 @@ var $notification = {
       var pconf = this.config[pipid];
       if (pconf.type === 'sqs') {
         $log.debug("adding sqs notification backend " + pipid, 3);
-        this.pipeline[pipid] = this.sqsInit(pconf);
+        this.pipeline[pipid] = this.sqsInit(pconf, pipid);
       }
       else if (pconf.type === 'couchbase') {
         $log.debug("adding couchbase notification backend " + pipid, 3);
@@ -54,7 +54,7 @@ var $notification = {
     for (var pipid in this.pipeline) {
       if (pipid === pipelineID) {
         isOK = true;
-        $log.debug("notification event " + event + " was propagated to pipeline " + pipelineID, 4);
+        $log.debug("propagating notification event " + event + " to pipeline " + pipelineID, 4);
         this.pipeline[pipid].notify(event, data);
       }
     }
@@ -63,7 +63,7 @@ var $notification = {
     }
     return this;
   },
-  sqsInit: function (conf) {
+  sqsInit: function (conf, pipelineID) {
     if (!conf.resource) {
       throw new Error("no 'resource' key found in notification config 'sqs'");
     }
@@ -82,9 +82,12 @@ var $notification = {
         time: Date.now(),
         server: $log.config.appsign
       };
-      obj.resource.sendMessage(message, {}, function (err) {
+      obj.resource.sendMessage(message, {}, function (err, response) {
         if (err) {
           $log.warn("error saving notification because " + err.message, null, true);
+        }
+        else {
+          $log.debug("notification event " + event + " is propagated to pipeline " + pipelineID + " (message " + response.MessageId + ")", 4);
         }
       }, true);
       return obj;

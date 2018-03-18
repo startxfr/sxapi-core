@@ -58,6 +58,8 @@ id of your resource as defined in the [resource configuration](#resource-configu
 This module come with one single method.
 
 [1. Read method](#method-read)
+[2. Health method](#method-health)
+[3. GetEnv method](#method-getenv)
 
 
 ### Method read
@@ -83,11 +85,57 @@ resource.read(function (error, response) {
 });
 ```
 
+### Method health
+
+Return a simple json message with OK response.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **callback**                 | no        | function | default | callback function called when application get result.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the application. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the application object (if no error)
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('serviceinfo-id');
+resource.health(function (error, response) {
+    console.log(error, response);
+});
+```
+
+### Method getEnv
+
+Return the complete list of system environement variable.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **callback**                 | no        | function | default | callback function called when application get result.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the application. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | the application object (if no error)
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('serviceinfo-id');
+resource.getEnv(function (error, response) {
+    console.log(error, response);
+});
+```
+
 ## Resource endpoints
 
 This module come with one single read-only endpoint.
 
 [1. Info endpoint](#info-endpoint)
+[2. Health endpoint](#health-endpoint)
+[3. GetEnv endpoint](#getenv-endpoint)
 
 ### info endpoint
 
@@ -111,6 +159,58 @@ the server as well as the list of all exposed endpoints for your API.
             "path": "/info",
             "resource": "serviceinfo-id",
             "endpoint": "info"
+        }
+    ]
+}
+```
+
+### health endpoint
+
+The purpose of this endpoint is to display informations about application health.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "health"
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/info",
+            "resource": "serviceinfo-id",
+            "endpoint": "health"
+        }
+    ]
+}
+```
+
+### getEnv endpoint
+
+The purpose of this endpoint is to display information about the system environements variables.
+
+#### Parameters
+
+| Param           | Mandatory | Type   | default | Description
+|-----------------|:---------:|:------:|---------|---------------
+| **path**        | yes       | string |         | path used as client endpoint (must start with /)
+| **resource**    | yes       | string |         | resource id declared in the resource of your [config profile](#resource-configuration)
+| **endpoint**    | yes       | string |         | endpoint name declared in the resource module. In this case must be "getEnv"
+
+#### Example
+
+```javascript
+"server": {
+    "endpoints": [
+        {
+            "path": "/info",
+            "resource": "serviceinfo-id",
+            "endpoint": "getEnv"
         }
     ]
 }

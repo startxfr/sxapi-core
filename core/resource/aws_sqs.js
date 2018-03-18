@@ -42,7 +42,7 @@ module.exports = function (id, config) {
      */
     start: function (callback) {
       var timerId = 'resource_aws.sqs_start_' + $sqs.id;
-      $log.tools.resourceDebug($sqs.id, "starting", 3);
+      $log.tools.resourceDebug($sqs.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($sqs.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -58,7 +58,7 @@ module.exports = function (id, config) {
      * @returns {$queue.sqs}
      */
     stop: function (callback) {
-      $log.tools.resourceDebug($sqs.id, "Stopping", 2);
+      $log.tools.resourceDebug($sqs.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }
@@ -208,7 +208,7 @@ module.exports = function (id, config) {
       if ($sqs.config.send_options && $sqs.config.send_options.QueueUrl) {
         QueueUrl = $sqs.config.send_options.QueueUrl;
       }
-      var config = $sqs.config.send_options || {};
+      var config = require('merge').recursive({}, $sqs.config.send_options || {});
       config.QueueUrl = QueueUrl;
       if (typeof options === 'object') {
         require('merge').recursive(config, options);

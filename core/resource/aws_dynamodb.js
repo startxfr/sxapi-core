@@ -48,7 +48,7 @@ module.exports = function (id, config) {
      */
     start: function (callback) {
       var timerId = 'resource_aws.dynamodb_start_' + $ddb.id;
-      $log.tools.resourceDebug($ddb.id, "starting", 3);
+      $log.tools.resourceDebug($ddb.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($ddb.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -64,7 +64,7 @@ module.exports = function (id, config) {
      * @returns {$table.dynamodb}
      */
     stop: function (callback) {
-      $log.tools.resourceDebug($ddb.id, "Stopping", 2);
+      $log.tools.resourceDebug($ddb.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }

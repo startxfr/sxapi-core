@@ -41,7 +41,7 @@ module.exports = function (id, config) {
       return this;
     },
     start: function (callback) {
-      $log.tools.resourceDebug($sdml.id, "starting", 3);
+      $log.tools.resourceDebug($sdml.id, "Starting resource", 3);
       $sdml.transporter = $sdml.mailer.createTransport($sdml.config.transport);
       $sdml.transporter.verify(function (error) {
         if (error) {
@@ -56,7 +56,7 @@ module.exports = function (id, config) {
       return this;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($sdml.id, "Stopping", 2);
+      $log.tools.resourceDebug($sdml.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }
