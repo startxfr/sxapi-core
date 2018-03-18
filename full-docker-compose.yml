@@ -10,6 +10,7 @@ app:
     - "db-mariadb"
     - "db-couchbase"
   volumes:
+  - "./:/usr/src/app:z"
   - "./full-sxapi.json:/conf/sxapi.json:z"
   command: ["npm" , "start"]
   
@@ -95,4 +96,4 @@ dbtools:
   volumes:
     - "./test/mock_data/couchbase:/data/couchbase:z"
     - "./test/mock_data/mysql:/data/mysql:z"
-  command: ["init"] 
+  command: ["recreate"] 

@@ -25,7 +25,7 @@ module.exports = function (id, config) {
       return this;
     },
     start: function (callback) {
-      $log.tools.resourceDebug($insee.id, "starting", 3);
+      $log.tools.resourceDebug($insee.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($insee.id, "started ", 1);
         if (typeof callback === "function") {
@@ -36,7 +36,7 @@ module.exports = function (id, config) {
       return this;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($insee.id, "Stopping", 2);
+      $log.tools.resourceDebug($insee.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }

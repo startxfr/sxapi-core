@@ -14,7 +14,7 @@ var $ws = {
       throw new Error("no 'server' section in config");
     }
     if (!$ws.config.port) {
-      $ws.config.port = 8080;
+      $ws.config.port = "8080";
     }
     if ($ws.config.port) {
       $ws.config.port = $log.format($ws.config.port, process.env);

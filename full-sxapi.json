@@ -48,7 +48,7 @@
                 "MessageAttributes": {
                     "from": {
                         "DataType": "String",
-                        "StringValue": "startx"
+                        "StringValue": "sxapi-core-dev"
                     }
                 }
             },
@@ -115,7 +115,7 @@
                 "header": {
                     "Content-Type": "text/html"
                 },
-                "body": "<html><head></head><body><h1>STARTX-API v0.0.1</h1></body></html>"
+                "body": "<html><head></head><body><h1>SXAPI - Full dev - v0.0.1</h1></body></html>"
             },
             {
                 "path": "/health",
@@ -123,7 +123,7 @@
                 "endpoint": "health",
                 "notification": {
                     "pipeline": "default-sqs",
-                    "event": "redis:get"
+                    "event": "health:get"
                 }
             },
             {

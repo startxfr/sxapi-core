@@ -55,7 +55,7 @@ module.exports = function (id, config) {
     },
     start: function (callback) {
       var timerId = 'resource_postgres_start_' + $pgdb.id;
-      $log.tools.resourceDebug($pgdb.id, "starting", 3);
+      $log.tools.resourceDebug($pgdb.id, "Starting resource", 3);
       var cb = function () {
         $log.tools.resourceDebug($pgdb.id, "started ", 1, $timer.timeStop(timerId));
         if (typeof callback === "function") {
@@ -66,7 +66,7 @@ module.exports = function (id, config) {
       return $pgdb;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($pgdb.id, "Stopping", 2);
+      $log.tools.resourceDebug($pgdb.id, "Stopping resource", 2);
       $pgdb.pool[$pgdb.config._sign].end();
       if (typeof callback === "function") {
         callback(null, $pgdb);
