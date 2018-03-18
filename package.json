@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
@@ -71,7 +71,8 @@
     "couchbase": "~2.4.3",
     "node-cron": "~1.2.1",
     "nodemailer": "~4.4.1",
-    "siren2tva": "~1.0.0"
+    "siren2tva": "~1.0.0",
+    "glob": "~7.1.2"
   },
   "devDependencies": {
     "mocha": "~4.0.1",

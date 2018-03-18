@@ -265,22 +265,13 @@ module.exports = function (id, config) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                   var message = "could not execute " + sql + " because " + err.message;
-                  $mqdb.tools.responseNOK(
-                  res,
-                  message,
-                  req,
-                  duration);
+                  $mqdb.tools.responseNOK(res, message, req, duration);
                 }
                 else {
                   if (config.notification !== undefined) {
                     $app.notification.notif(config.notification, results);
                   }
-                  $mqdb.tools.responseOK(res,
-                  results.length + ' items returned',
-                  results,
-                  req,
-                  duration,
-                  results.length);
+                  $mqdb.tools.responseOK(res, results.length + ' items returned', results, req, duration, results.length);
                 }
               };
             });
@@ -304,20 +295,13 @@ module.exports = function (id, config) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                   var message = "could not find " + docId + " in " + config.table + " because " + err.message;
-                  $mqdb.tools.responseNOK(res,
-                  message,
-                  req,
-                  duration);
+                  $mqdb.tools.responseNOK(res, message, req, duration);
                 }
                 else {
                   if (config.notification !== undefined) {
                     $app.notification.notif(config.notification, reponse);
                   }
-                  $mqdb.tools.responseOK(res,
-                  "returned " + reponse.length + ' item',
-                  reponse,
-                  req,
-                  duration);
+                  $mqdb.tools.responseOK(res, "returned " + reponse.length + ' item', reponse, req, duration);
                 }
               };
             };
@@ -349,20 +333,13 @@ module.exports = function (id, config) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                   var message = "could not find " + docId + " in " + config.table + " because " + err.message;
-                  $mqdb.tools.responseNOK(res,
-                  message,
-                  req,
-                  duration);
+                  $mqdb.tools.responseNOK(res, message, req, duration);
                 }
                 else {
                   if (config.notification !== undefined) {
                     $app.notification.notif(config.notification, reponse);
                   }
-                  $mqdb.tools.responseOK(res,
-                  "returned 1 item",
-                  reponse[0],
-                  req,
-                  duration);
+                  $mqdb.tools.responseOK(res, "returned 1 item", reponse[0], req, duration);
                 }
               };
             };
@@ -391,10 +368,7 @@ module.exports = function (id, config) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                   var message = "could not create record because " + err.message;
-                  $mqdb.tools.responseNOK(res,
-                  message,
-                  req,
-                  duration);
+                  $mqdb.tools.responseNOK(res, message, req, duration);
                 }
                 else {
                   if (config.notification !== undefined) {
@@ -413,11 +387,7 @@ module.exports = function (id, config) {
                       };
                     });
                   }
-                  $mqdb.tools.responseOK(res,
-                  "document recorded in" + config.table,
-                  reponse,
-                  req,
-                  duration);
+                  $mqdb.tools.responseOK(res, "document recorded in" + config.table, reponse, req, duration);
                 }
               };
             });
@@ -431,45 +401,32 @@ module.exports = function (id, config) {
         return function (req, res) {
           $log.tools.endpointDebug($mqdb.id, req, "update()", 1);
           var docId = (req.params.id) ? req.params.id : req.body.id;
+          var ress = $app.resources.get(config.resource);
           if ($app.resources.exist(config.resource)) {
             var filter = {};
             if (docId && config.id_field) {
               eval("filter." + config.id_field + "=docId;");
             }
-            $app.resources
-            .get(config.resource)
-            .update(config.table, req.body, filter, function (timerId) {
+            ress.update(config.table, req.body, filter, function (timerId) {
               return function (err, reponse) {
                 var duration = $timer.timeStop(timerId);
                 if (err) {
                   var message = "could not update " + docId + " because " + err.message;
-                  $mqdb.tools.responseNOK(res,
-                  message,
-                  req,
-                  duration);
+                  $mqdb.tools.responseNOK(res, message, req, duration);
                 }
                 else {
                   if (config.notification !== undefined) {
                     var filter = {};
                     filter[config.id_field] = docId;
-                    $app.resources
-                    .get(config.resource)
-                    .read(config.table, filter, function () {
+                    ress.read(config.table, filter, function () {
                       return function (err, rep) {
-                        if (err) {
-                          $app.notification.notif(config.notification, reponse);
-                        }
-                        else {
-                          $app.notification.notif(config.notification, rep[0]);
+                        if (!err) {
+                          $app.notification.notif(config.notification, rep[0] || reponse);
                         }
                       };
                     });
                   }
-                  $mqdb.tools.responseOK(res,
-                  "document " + docId + " updated",
-                  reponse.value,
-                  req,
-                  duration);
+                  $mqdb.tools.responseOK(res, "document " + docId + " updated", reponse.value, req, duration);
                 }
               };
             });
@@ -483,13 +440,12 @@ module.exports = function (id, config) {
         return function (req, res) {
           $log.tools.endpointDebug($mqdb.id, req, "delete()", 1);
           var docId = (req.params.id) ? req.params.id : req.body.id;
+          var ress = $app.resources.get(config.resource);
           if ($app.resources.exist(config.resource)) {
             var filter = {};
             filter[config.id_field] = docId;
             if (config.notification !== undefined) {
-              $app.resources
-              .get(config.resource)
-              .read(config.table, filter, function () {
+              ress.read(config.table, filter, function () {
                 return function (errr, rep) {
                   $app.resources
                   .get(config.resource)
@@ -498,28 +454,30 @@ module.exports = function (id, config) {
                       var duration = $timer.timeStop(timerId);
                       if (err) {
                         var message = "could not delete " + docId + " because " + err.message;
-                        $mqdb.tools.responseNOK(res,
-                        message,
-                        req,
-                        duration);
+                        $mqdb.tools.responseNOK(res, message, req, duration);
                       }
                       else {
                         if (config.notification !== undefined) {
-                          if (errr) {
-                            $app.notification.notif(config.notification, reponse);
-                          }
-                          else {
-                            $app.notification.notif(config.notification, rep[0]);
-                          }
+                          $app.notification.notif(config.notification, rep[0]);
                         }
-                        $mqdb.tools.responseOK(res,
-                        "document " + docId + " deleted",
-                        reponse,
-                        req,
-                        duration);
+                        $mqdb.tools.responseOK(res, "document " + docId + " deleted", reponse, req, duration);
                       }
                     };
                   });
+                };
+              });
+            }
+            else {
+              ress.delete(config.table, filter, function (timerId) {
+                return function (err, reponse) {
+                  var duration = $timer.timeStop(timerId);
+                  if (err) {
+                    var message = "could not delete " + docId + " because " + err.message;
+                    $mqdb.tools.responseNOK(res, message, req, duration);
+                  }
+                  else {
+                    $mqdb.tools.responseOK(res, "document " + docId + " deleted", reponse, req, duration);
+                  }
                 };
               });
             }
