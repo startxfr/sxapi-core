@@ -37,6 +37,7 @@ if(resourceManager.exist('resource-id')) {
 | **serviceinfo**  | sxapi v0.0.65      | [read](serviceinfo.md) | Resource to interact with a application services.
 | **insee**        | siren2tva v1.0     | [read](insee.md)       | Resource to interact with a French INSEE company code
 | **localfs**      | (none)             | [read](localfs.md)     | Resource to interact with the application host (or container) local file-system
+| **twitter**      | twitter API v1.7.1 | [read](twitter.md)     | Resource to interact with twitter API and tweet streams
 
 ## Using a resource
 

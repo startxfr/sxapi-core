@@ -47,11 +47,11 @@ var $bot = {
       this._initCron();
     }
     if ($bot.config.readers) {
-      if (!$bot.config.readers.sqs) {
-        throw new Error("'readers' key in config 'bot' should have a sqs connector");
-      }
-      if (!$bot.config.readers.sqs instanceof Array) {
+      if ($bot.config.readers.sqs && !$bot.config.readers.sqs instanceof Array) {
         throw new Error("'readers.sqs' key in config 'bot' section should be an array");
+      }
+      if ($bot.config.readers.twitter && !$bot.config.readers.twitter instanceof Array) {
+        throw new Error("'readers.twitter' key in config 'bot' section should be an array");
       }
       this._initReaders();
     }
@@ -135,6 +135,54 @@ var $bot = {
       });
       $bot.config.sqs = configOut;
     }
+    if ($bot.config.readers.twitter) {
+      var configOut = [];
+      $log.debug("bot : init twitter readers ", 2);
+      $bot.config.readers.twitter.forEach(function (resConf) {
+        if (resConf.resource) {
+          if ($app.resources.exist(resConf.resource)) {
+            $log.debug("bot : twitter : " + resConf.resource + " init ", 3);
+            if (resConf.filters) {
+              var configFiltersOut = [];
+              resConf.filters.forEach(function (filter) {
+                if (filter.id && filter.match && filter.task) {
+                  if ($bot.taskExist(filter.task)) {
+                    $log.debug("bot : twitter : " + resConf.resource + " : " + filter.id + " init match " + filter.match, 3);
+                    configFiltersOut.push(filter);
+                  }
+                  else {
+                    $log.warn("Bot reader twitter " + filter.id + " for resource " + resConf.resource + " rejected because task " + filter.task + " is not defined in lib");
+                  }
+                }
+                else {
+                  if (!filter.id) {
+                    $log.warn("Bot reader twitter for resource " + resConf.resource + " rejected because id is missing");
+                  }
+                  else if (!filter.match) {
+                    $log.warn("Bot reader twitter " + filter.id + " for resource " + resConf.resource + " rejected because match is missing");
+                  }
+                  else if (!filter.task) {
+                    $log.warn("Bot reader twitter " + filter.id + " for resource " + resConf.resource + " rejected because task is missing");
+                  }
+                }
+              });
+              resConf.filters = configFiltersOut;
+              configOut.push(resConf);
+            }
+            else {
+              $log.warn("Bot reader twitter for resource " + resConf.resource + " rejected because no filter found");
+            }
+          }
+          else {
+            $log.warn("Bot reader twitter for resource " + resConf.resource + " rejected because resource doesn't exist");
+          }
+        }
+        else if (!resConf.resource) {
+          $log.warn("Bot reader twitter rejected because resource is missing");
+        }
+      });
+      $bot.config.twitter = configOut;
+    }
     return this;
   },
   taskExist: function (taskname) {
@@ -192,6 +240,34 @@ var $bot = {
           });
         };
         $bot.timers.push(setInterval(intervalFn, resource.frequency * 1000));
+      });
+    }
+    if ($bot.config.twitter) {
+      $bot.config.twitter.forEach(function (resource) {
+        var rs = $app.resources.get(resource.resource);
+        var intervalID = null;
+        resource.filters.forEach(function (filter) {
+          var opt = {match: filter.match};
+          $log.debug("bot : twitter : " + resource.resource + " : start reading stream for " + filter.match, 3);
+          var streamer = function (opt) {
+            rs.readStream(opt, function (err, reponse) {
+              if (err) {
+                opt.interval = opt.interval*2;
+                $log.warn("Bot reader twitter " + resource.resource + " received error message " + err.message+" and comme back in "+opt.interval);
+                clearInterval(intervalID);
+                intervalID = setInterval(function () {
+                  streamer(opt);
+                }, opt.interval);
+              }
+              else {
+                $log.debug("bot : twitter : " + resource.resource + " : " + filter.id + " match tweet " + reponse.id_str, 3);
+                $bot.lib[filter.task](reponse, "tweet " + reponse.id_str + " match " + filter.match, filter);
+              }
+            });
+          };
+          opt.interval = 1000;
+          streamer(opt);
+        });
       });
     }
     if (typeof callback === "function") {
