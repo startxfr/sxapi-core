@@ -146,7 +146,7 @@ module.exports = function (id, config) {
      */
     insert: function (key, doc, callback) {
       $timer.start('couchbase_insert_' + key);
-      $log.tools.resourceInfo($cbdb.id, "adding new document '" + key + "'");
+      $log.tools.resourceInfo($cbdb.id, "adding new document '" + key + "'", 0, true);
       var options = ($cbdb.config.insertOptions) ? $cbdb.config.insertOptions : {};
       $cbBuckets[$cbdb.config.bucket].insert(key, doc, options, (callback) ? callback(key) : $cbdb.__insertDefaultCallback(key));
     },
@@ -154,10 +154,10 @@ module.exports = function (id, config) {
       return function (coucherr, doc) {
         var duration = $timer.timeStop('couchbase_insert_' + key);
         if (coucherr) {
-          $log.tools.resourceWarn($cbdb.id, "resource '" + $cbdb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration);
+          $log.tools.resourceWarn($cbdb.id, "resource '" + $cbdb.id + "' : error adding new document '" + key + "' because " + coucherr.message, duration, true);
         }
         else {
-          $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : new document '" + key + "' added ", 3, duration);
+          $log.tools.resourceDebug($cbdb.id, "resource '" + $cbdb.id + "' : new document '" + key + "' added ", 3, duration, true);
         }
       };
     },
