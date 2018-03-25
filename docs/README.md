@@ -48,6 +48,7 @@ Resource components are loaded if defined in the configuration profile. You can 
 - [memcache](resources/memcache.md) resource : Interact with a memcache server
 - [serviceinfo](resources/serviceinfo.md) resource : Access application details
 - [localfs](resources/localfs.md) resource : Interact with a the application host (or container) local file-system
+- [twitter](resources/twitter.md) resource : Interact with the twitter API and receive tweet streams
 
 ## Contributing
 

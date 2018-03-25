@@ -250,6 +250,10 @@ var $log = {
             if (!require('./resource').exist(conf.resource)) {
                 throw new Error("resource '" + conf.resource + "' in log config 'couchbase' doesn't exist");
             }
+            this.eventName = false;
+            if (conf.eventName) {
+            this.eventName = conf.eventName;
+            }
             $log.couchbase.resource = require('./resource').get(conf.resource);
             $log.couchbase.isActive = true;
             return this;
@@ -274,6 +278,9 @@ var $log = {
                 doc.duration = parseInt(duration);
             }
             var key = require('uuid').v4();
+            if ($log.sqs.eventName !== false) {
+                doc.event = $log.sqs.eventName;
+            }
             $log.couchbase.resource.insert(key, doc, function (key) {
                 return function (coucherr, b) {
                     if (coucherr) {

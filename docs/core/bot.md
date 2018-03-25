@@ -27,13 +27,19 @@ bot context will be defined.
 | cron.**task**                    | yes       | string |         | Function (method in library) to call when task is executed
 | cron.**name**                    | no        | string |         | Name of the cron task
 | **readers**                      | no        | object |         | a object for configuring readers
-| readers.**sqs**                  | yes       | array  |         | The only supported message backend is sqs. See [aws_sqs resource documentation](../resources/aws_sqs.md)
+| readers.**sqs**                  | yes       | array  |         | Supported message backend with sqs. See [aws_sqs resource documentation](../resources/aws_sqs.md)
 | readers.sqs.**resource**         | yes       | string |         | Resource id of the sqs message bus
 | readers.sqs.**filters**          | yes       | array  |         | A list of message filter and the coresponding action
 | readers.sqs.filters.**id**       | yes       | string |         | ID of the sqs reader filter
 | readers.sqs.filters.**event**    | yes       | string |         | The event type signature to search for
 | readers.sqs.filters.**task**     | yes       | string |         | Function (method in library) to call when message match the event
 | readers.sqs.filters.**eventKey** | no        | string | event   | name of the message property that hold the event type signature
+| readers.**twitter**              | yes       | array  |         | Supported message backend from tweet streams. See [aws_sqs resource documentation](../resources/aws_sqs.md)
+| readers.sqs.**resource**         | yes       | string |         | Resource id of the twitter account
+| readers.sqs.**filters**          | yes       | array  |         | A list of tweet filter and the coresponding action
+| readers.sqs.filters.**id**       | yes       | string |         | ID of the twitter reader filter
+| readers.sqs.filters.**match**    | yes       | string |         | The tweet type signature to search for
+| readers.sqs.filters.**task**     | yes       | string |         | Function (method in library) to call when tweet match the tweet type signature
 
 
 ### Config Sample
@@ -51,12 +57,22 @@ bot context will be defined.
     ],
     "readers": {
         "sqs": [ {
-            "resource": "sqs-formation",
+            "resource": "sqs-demo",
             "filters": [
                 {
                     "id": "test-task",
-                    "event": "api:lieu:create",
-                    "task": "myFunction"
+                    "event": "api:objectname:create",
+                    "task": "mySqsFunction"
+                }
+            ]
+        } ],
+        "twitter": [ {
+            "resource": "twitter-demo",
+            "filters": [
+                {
+                    "id": "test-task",
+                    "match": "#paris",
+                    "task": "myTwitterFunction"
                 }
             ]
         } ]
