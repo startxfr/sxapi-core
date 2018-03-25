@@ -93,6 +93,12 @@
         "files-sample": {
             "_class": "localfs",
             "directory": "/usr/src/app/"
+        },
+        "twitter-sample": {
+            "_class": "twitter",
+            "QueueUrl": "https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue",
+            "ACCESS_ID": "XXXXXXXXXXXXXXXXXXXX",
+            "ACCESS_KEY": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         }
     },
     "log": {

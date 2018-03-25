@@ -11,6 +11,11 @@ var mylib = {
     var moment = require('moment');
     $log.info("sqs reader " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
     console.log(data);
+  },
+  myTwitterFunction: function (data, message, config) {
+    var moment = require('moment');
+    $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
+//    console.log(data);
   }
 };
 
