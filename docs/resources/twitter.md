@@ -33,15 +33,14 @@ for a complete list of the parameters that you can use in this config object.
 
 ### Resource config parameters
 
-| Param               | Mandatory | Type   | default   | Description
-|---------------------|:---------:|:------:|-----------|---------------
-| **_class**          | yes       | string |           | module name. Must be **twitter** for this resource
-| **ACCESS_ID**       | yes       | string |           | your Twitter access key ID.
-| **ACCESS_KEY**      | yes       | string |           | your Twitter secret access key.
-| **SESSION_TOKEN**   | no        | string |           | the optional Twitter session token to sign requests with.
-| **QueueUrl**        | no        | string |           | the default queue url used by this resource
-| **region**          | no        | string | us-west-1 | the region to send service requests to. See Twitter.Twitter.region for more information.
-| **...**             | no        | N/A    |           | any Twitter option. See [see twitter Twitter documentation](http://docs.aws.amazon.com/TwitterJavaScriptSDK/latest/Twitter/Twitter.html#constructor-property).
+| Param                   | Mandatory | Type   | default   | Description
+|-------------------------|:---------:|:------:|-----------|---------------
+| **_class**              | yes       | string |           | module name. Must be **twitter** for this resource
+| **consumer_key**        | yes       | string |           | your Twitter consumer key.
+| **consumer_secret**     | yes       | string |           | your Twitter consumer secret.
+| **access_token_key**    | no        | string |           | your Twitter token key.
+| **access_token_secret** | no        | string | us-west-1 | your Twitter token secret.
+| **...**                 | no        | N/A    |           | any Twitter option. See [see twitter Twitter documentation](http://docs.aws.amazon.com/TwitterJavaScriptSDK/latest/Twitter/Twitter.html#constructor-property).
 
 ### Example
 
@@ -51,12 +50,12 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 ```javascript
 "resources": {
     ...
-    "aws-sqs-id": {
+    "twitter-id": {
         "_class": "twitter",
-        "ACCESS_ID": "xxxxxxxxxxx",
-        "ACCESS_KEY" : "yyyyyyyyyyyy",
-        "region" : "eu-west-1",
-        "QueueUrl" : "https://sqs.eu-west-1.amazonaws.com"
+        "consumer_key": "xxxxxxxxxxx",
+        "consumer_secret" : "yyyyyyyyyyyy",
+        "access_token_key": "xxxxxxxxxxx",
+        "access_token_secret" : "yyyyyyyyyyyy"
     }
     ...
 }
@@ -65,11 +64,12 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 ## Resource methods
 
 If you want to use this resource in our own module, you can retrieve this resource 
-instance by using `$app.resources.get('aws-sqs-id')` where `aws-sqs-id` is the
+instance by using `$app.resources.get('twitter-id')` where `twitter-id` is the
 id of your resource as defined in the [resource configuration](#resource-configuration). 
 
 This module come with several methods for manipulating aws Twitter resources.
 
+[0. readStream method](#method-readstream)<br>
 [1. read method](#method-read)<br>
 [2. removeMessage method](#method-removemessage)<br>
 [3. sendMessage method](#method-sendmessage)<br>
@@ -77,6 +77,31 @@ This module come with several methods for manipulating aws Twitter resources.
 [5. createQueue method](#method-createqueue)<br>
 [6. deleteQueue method](#method-deletequeue)
 
+
+### Method readStream
+
+get a stream of tweet for a matching expression.
+
+#### Parameters
+
+| Param                        | Mandatory | Type     | default | Description
+|------------------------------|:---------:|:--------:|---------|---------------
+| **match**                    | yes       | object   |         | the matching expression looking for
+| **callback**                 | no        | function | default | callback function called when server answer the request.<br>If not defined, dropped to a default function who output information to the debug console
+| callback(**error**,response) | N/A       | mixed    | null    | will be false or null if no error returned from the Twitter API Webservice. Will be a string message describing a problem if an error occur.
+| callback(error,**response**) | N/A       | mixed    |         | a list of messages from the queue
+
+
+#### Example
+
+```javascript
+var resource = $app.resources.get('twitter-id');
+resource.readStream(
+    {match:"#paris"}, 
+    function (error, response) {
+        console.log(error, response);
+    });
+```
 
 ### Method read
 
@@ -96,7 +121,7 @@ get a list of message for a list queue.
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.read(
     {QueueUrl:"https://sqs.eu-west-1.amazonaws.com"}, 
     function (error, response) {
@@ -123,7 +148,7 @@ Remove a message from a list queue.
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.removeMessage(
     {ReceiptHandle:"df654s8#9d23s43f3mgh?66se63"}, 
     function (error, response) {
@@ -150,7 +175,7 @@ Send a message to the given queue.
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.sendMessage(
     { id : "msg1", "key" : "value" }, 
     { QueueUrl:"https://sqs.eu-west-1.amazonaws.com" }, 
@@ -176,7 +201,7 @@ get a list of all queues availables.
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.listQueues({}, function (error, response) {
         console.log(error, response);
     });
@@ -199,7 +224,7 @@ Create a new message queue
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.createQueue({ }, function (error, response) {
         console.log(error, response);
     });
@@ -223,7 +248,7 @@ Delete a message queue.
 #### Example
 
 ```javascript
-var resource = $app.resources.get('aws-sqs-id');
+var resource = $app.resources.get('twitter-id');
 resource.deleteQueue({ }, function (error, response) {
         console.log(error, response);
     });
@@ -262,7 +287,7 @@ the a list of message from a given queue.
     "endpoints": [
         {
             "path": "/twitter",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "listMessages",
             "config": {
                 QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
@@ -294,7 +319,7 @@ will be the HTTP body of the query.
         {
             "path": "/twitter/:id",
             "method": "POST",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "addMessage"
         }
     ]
@@ -322,7 +347,7 @@ The purpose of this endpoint is to delete a message from Twitter API queue. Id i
         {
             "path": "/twitter/:id",
             "method": "DELETE",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "deleteMessage"
         }
     ]
@@ -350,7 +375,7 @@ the a list of availables queues.
     "endpoints": [
         {
             "path": "/twitter",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "listQueue",
             "config": {
                 QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
@@ -382,7 +407,7 @@ is defined by the context.
         {
             "path": "/twitter/:id",
             "method": "POST",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "addQueue"
         }
     ]
@@ -410,7 +435,7 @@ The purpose of this endpoint is to delete a complete Twitter API queue. Id is de
         {
             "path": "/twitter/:id",
             "method": "DELETE",
-            "resource": "aws-sqs-id",
+            "resource": "twitter-id",
             "endpoint": "deleteQueue"
         }
     ]
