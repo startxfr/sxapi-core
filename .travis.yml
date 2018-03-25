@@ -1,9 +1,5 @@
 env:
   global:
-    - secure: "Psm+UjXvPeDY3fcNKZO603fKm923EImXSzioVff/cWLqURd94QcJA1iB2R9pqIqZ6fIUpHr87gpCsES9O5h13TYtnfJYWASswDT5cX49gq+MXnxbhA10cEevR6t0qq/735CBk7Vr4V1H8TE9nZ+PZDNz95d4HRVothgYf2JEtBl6O/nXO/0wbuVGqviqPBTFstmQjS5DkENLVce+hzAh2sLJ40p0KfQ6zEQhSWGOkbNNwFuAmU/F+qqMwfRQAyCUCoSRlYqSDrm/qWsyquTj4pHCBZPPP4jscqtoAIQW0erNs4rPx+9MVAa6gNEbRiyjadNxjkzbkmk0n1MIkDxYqeqjA7us2HJNmmg58OulQcOO9JvEQ3uN771VfnPe1mRN/NE87ZpzlXgugIALqVDVJ6MqvegkC0DCnLz939OFAC/PJWkHSdegeXR4ghYGTxcr9pBny8/uiqKDxNOgeBR0P3lZd+zh1cE/9qFX3vcTW5YyurPhIvw6E4xGe7WcqkenODVBKix1gMTr+zNRHj557oEvjzuPVutMrNw8bpBNpSSNyyUaVQArFnvQs0AsgVk0SusSMSgfMSRIMqdV9hYY1qFQlPtHU57XbvS0hPQ3ecDSvrFqjz+3Ffx9hBaJHySDEgg0z1OfTQDwmjlgL1OxUDz42Er9BoeFzkbQLKKcqk4=" # DOCKER_USER
-    - secure: "GJeuDtHqYz70+p0t5MmAA/k50ncT3ao+IxChjfceyAZ3EV5Ij00eanz3Z5cLnWzeoqwOOzDK+lYaRYhySxVtYaRyw0qIqypiPnuTjRykEJ4+bOUZrwYEa9c9TvQgWMvlVDRBiVATRYQ692+WTbIqEifMSQ/tkELws6H9gCE93PEyaAUv8X8ugawdTack+zKxAJgse9WCQ28SM16NqFAL3Rnd/6lHVRefgvcH7XrWnX4xD60HTULWon8MV8pjyp3cSTfQ27SgIiYMaIg8QadsJXJgZpl5h7EWV5p2Qat6sua8ZWCAcpTtwxwvQwAcwkXWxCE9V0HXk05bbNxg4UQlWxMiqo/KZYD9SQDOde7pFLmbFdHNexKnMAhSro87T1ZUw7cUmYlpR8O4LUQtreDc6K1RYApwkZQUtd8Vz197SWXXI+JHzPWgZ+QwkxcBVHofqxQ5hGPulBEsQYcWGNf9Jss9+Af50p8CAPYWH4EHjw6rLivJt0r2xRLdD5tDqOmSrGc8Y/+HSdTMIvQ+8e/7V7hZ6PmA2+0bRM1I3V4OdKTXP/fjxLj/2yyJ0gTvmT1pii9lD7q1hEuFgyuWzBtZRFBPAZt9HidkmkBhhnEBuTrsTKNcebZtXPgFDyV5PLNw1L1bBHvIRvWc2Jn9IrzODOdiz2VT5qzn7FAyulExEak=" # DOCKER_PASS
-    - COMMIT=${TRAVIS_COMMIT::8}
-    - REPO=startx/sxapi
     - RELEASE=0.2.2
 
 sudo: required
@@ -12,16 +8,10 @@ services:
   - docker
 
 before_install:
-- 'echo "{ \"experimental\": true, \"storage-driver\": \"overlay2\", \"max-concurrent-downloads\": 50, \"max-concurrent-uploads\": 50 }" | sudo tee /etc/docker/daemon.json'
-- sudo service docker restart
-- docker pull node:8-alpine
-- docker images
-- docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - "echo 'test before'"
 
 script:
-- "docker build --squash -t $REPO ."
-- "docker run -d --name sxapi $REPO"
+  - "echo 'test script'"
 
 after_success:
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; elif [ "$TRAVIS_BRANCH" == "testing" ]; then echo "testing"; else echo $RELEASE ; fi`
-  - docker push $REPO
+  - "echo 'test after'"
