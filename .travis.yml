@@ -20,7 +20,7 @@ before_install:
 
 script:
 - "docker build --squash -t $REPO ."
-- "#docker run -d --name sxapi $REPO"
+- "docker run -d --name sxapi $REPO"
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; elif [ "$TRAVIS_BRANCH" == "testing" ]; then echo "testing"; else echo $RELEASE ; fi`
