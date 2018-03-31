@@ -1,7 +1,7 @@
 {
     "name": "sxapi-default",
-    "description": "sxapi default config file",
-    "version": "0.2.5",
+    "description": "sxapi default microservice API",
+    "version": "0.0.1",
     "debug": true,
     "session": {
         "duration": 3600,
@@ -35,7 +35,21 @@
             {
                 "path": "/",
                 "desc": "Display welcome message (HTML)",
-                "body": "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live !</h1><p>This API is based on sxapi-core v0.2.5 and use default config file. You can now start to configure your sxapi.json config file in order to build your own API </p></body></html>"
+                "body": [
+                    "<html>",
+                    "<head><title>Application {{name}}</title></head>",
+                    "<link rel=\"stylesheet\" href=\"https://goo.gl/4kFNLH\">",
+                    "<body><div class=\"container\">",
+                    "<h1><span class=\"glyphicon glyphicon-eye-open\"></span> Your API {{name}} is live !</h1>",
+                    "<div class=\"alert alert-success\" role=\"alert\"><p>This API is {{description}} running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>",
+                    "<div class=\"alert alert-info\" role=\"alert\"><p>The application signature is <b>{{appsign}}</b> and corespond to a blank project.</p></div>",
+                    "<p>Default config file must be changed and replaced your <b>own sxapi.json</b> config file.",
+                    "You will then be able to build your own API resources and endpoints.<br>",
+                    "For more informations please visit <a href=\"https://github.com/startxfr/sxapi-core\" target=\"\">sxapi project documentation</a>.</p>",
+                    "<nav class=\"navbar navbar-default navbar-fixed-bottom\"><div class=\"container\"> Microservice engine is <b>{{package.name}} v{{package.version}}</b>. {{package.description}}</div></nav>",
+                    "</div></body>",
+                    "</html>"
+                ]
             },
             {
                 "path": "/health",
