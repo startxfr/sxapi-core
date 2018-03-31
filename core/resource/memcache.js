@@ -29,8 +29,8 @@ module.exports = function (id, config) {
         $log.tools.resourceDebug($mcdb.id, "no 'port' found in resource '" + $mcdb.id + "' config. Using default : 11211", 3);
         $mcdb.config.port = 11211;
       }
-      $mcdb.config.host = $log.format($mcdb.config.host, process.env);
-      $mcdb.config.port = $log.format($mcdb.config.port, process.env);
+      $mcdb.config.host = $log.format("" + $mcdb.config.host, process.env);
+      $mcdb.config.port = $log.format("" + $mcdb.config.port, process.env);
       $log.tools.resourceDebug($mcdb.id, "initialized ", 1, $timer.timeStop(timerId));
       return $mcdb;
     },

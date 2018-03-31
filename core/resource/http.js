@@ -72,9 +72,9 @@ module.exports = function (id, config) {
         }
       }
       $log.tools.resourceInfo($htcli.id, "call url " + opt.url);
-      return $htcli.pool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli._callDefaultCallback(timerId));
+      return $htcli.pool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__callDefaultCallback(timerId));
     },
-    _callDefaultCallback: function (timerId) {
+    __callDefaultCallback: function (timerId) {
       return function (error, response, body) {
         var duration = $timer.timeStop(timerId);
         if (error) {
