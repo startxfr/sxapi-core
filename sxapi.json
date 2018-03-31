@@ -2,7 +2,7 @@
     "name": "sxapi-default-run",
     "description": "sxapi default microservice API (run)",
     "version": "0.0.1",
-    "debug": true,
+    "debug": false,
     "session": {
         "duration": 3600,
         "auto_create": true,
@@ -26,7 +26,7 @@
     "log": {
         "filters": {
             "level": "0,1,2",
-            "type": "debug,info,error,warn"
+            "type": "info,error,warn"
         }
     },
     "server": {
