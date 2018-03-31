@@ -210,18 +210,6 @@ describe("localfs resource component", function () {
                 expect(result).to.be.an('function');
             });
         });
-        describe("#readOne()", function () {
-            it("should exist", function () {
-                expect(test.endpoints).to.have.any.keys('readOne');
-            });
-            it("should be a method", function () {
-                expect(test.endpoints.readOne).to.be.an('function');
-            });
-            var result = test.endpoints.readOne({});
-            it("should return a webserver callback", function () {
-                expect(result).to.be.an('function');
-            });
-        });
         describe("#create()", function () {
             it("should exist", function () {
                 expect(test.endpoints).to.have.any.keys('create');
