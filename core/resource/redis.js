@@ -25,10 +25,10 @@ module.exports = function (id, config) {
         throw new Error("no 'host' or 'url' key found in resource '" + $rddb.id + "' config");
       }
       if ($rddb.config.host) {
-        $rddb.config.host = $log.format($rddb.config.host, process.env);
+        $rddb.config.host = $log.format("" + $rddb.config.host, process.env);
       }
       if ($rddb.config.url) {
-        $rddb.config.url = $log.format($rddb.config.url, process.env);
+        $rddb.config.url = $log.format("" + $rddb.config.url, process.env);
       }
       $rddb.rd = require("redis");
       $log.tools.resourceDebug($rddb.id, "initialized ", 1, $timer.timeStop(timerId));
