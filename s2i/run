@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # S2I run script
 # The 'run' script is the entrypoint of your application

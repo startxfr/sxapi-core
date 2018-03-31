@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 #
 # S2I usage script
 # The 'usage' script explay how to use the builder
