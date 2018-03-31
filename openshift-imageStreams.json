@@ -52,19 +52,19 @@
                         }
                     },
                     {
-                        "name": "0.2.4",
+                        "name": "0.2.5",
                         "annotations": {
-                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.2.4)",
-                            "description": "Simple and extensible API framework based on alpine (v0.2.4)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.2.5)",
+                            "description": "Simple and extensible API framework based on alpine (v0.2.5)",
                             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.4",
-                            "supports": "sxapi:0.2.4,nodejs,http",
-                            "version": "0.2.4",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.5",
+                            "supports": "sxapi:0.2.5,nodejs,http",
+                            "version": "0.2.5",
                             "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sxapi:0.2.4"
+                            "name": "startx/sxapi:0.2.5"
                         }
                     },
                     {
