@@ -246,6 +246,30 @@ $app = {
     process.exit(5);
   },
   /**
+   * Return a simple and filtered view of the config object
+   * @param {boolean} full set to true if you whant the full nativ config object
+   * @returns {$app.config}
+   */
+  getConfig: function (full) {
+    if (full === true) {
+      return $app.config;
+    }
+    return {
+      name: $app.config.name,
+      description: $app.config.description,
+      version: $app.config.version,
+      appsign: $app.config.appsign,
+      ip: $app.config.ip,
+      hostname: $app.config.hostname,
+      package: {
+        name: $app.package.name,
+        version: $app.package.version,
+        description: $app.package.description,
+        author: $app.package.author
+      }
+    };
+  },
+  /**
    * Register an action to execute before starting the application
    * @param {function} callback
    * @returns {$app}

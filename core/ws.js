@@ -200,9 +200,15 @@ var $ws = {
       $log.tools.endpointDebug("defaultEndpoint", req, " called", 2);
       if (config.body) {
         var code = (config.code) ? config.code : 200;
+        var data = require('merge')($app.getConfig(), process.env);
+        var content = config.body;
+        if (Array.isArray(config.body)) {
+          content = config.body.join("\n");
+        }
+        content = $log.format(content, data);
         var header = (config.header) ? config.header : {"Content-Type": "text/html"};
         res.writeHead(code, header);
-        res.end(config.body);
+        res.end(content);
         $log.tools.endpointDebug("defaultEndpoint", req, " return static document [" + code + "]", 2, 1);
       }
       else {
