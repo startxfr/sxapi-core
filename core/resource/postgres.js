@@ -30,16 +30,16 @@ module.exports = function (id, config) {
       if (!$pgdb.config.server.database) {
         throw new Error("no 'server.database' key found in resource '" + $pgdb.id + "' config");
       }
-      $pgdb.config.server.host = $log.format($pgdb.config.server.host, process.env);
-      $pgdb.config.server.database = $log.format($pgdb.config.server.database, process.env);
+      $pgdb.config.server.host = $log.format("" + $pgdb.config.server.host, process.env);
+      $pgdb.config.server.database = $log.format("" + $pgdb.config.server.database, process.env);
       if ($pgdb.config.server.port) {
-        $pgdb.config.server.port = $log.format($pgdb.config.server.port, process.env);
+        $pgdb.config.server.port = $log.format("" + $pgdb.config.server.port, process.env);
       }
       if ($pgdb.config.server.user) {
-        $pgdb.config.server.user = $log.format($pgdb.config.server.user, process.env);
+        $pgdb.config.server.user = $log.format("" + $pgdb.config.server.user, process.env);
       }
       if ($pgdb.config.server.password) {
-        $pgdb.config.server.password = $log.format($pgdb.config.server.password, process.env);
+        $pgdb.config.server.password = $log.format("" + $pgdb.config.server.password, process.env);
       }
       $pgdb.config._sign = $pgdb.config.server.host + '::' + $pgdb.config.server.database;
       $pgdb.conn = require("pg").Client;

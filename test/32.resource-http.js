@@ -66,12 +66,12 @@ describe("http resource component", function () {
             it("should be a method", function () {
                 expect(test.call).to.be.an('function');
             });
-            describe("#__queryDefaultCallback()", function () {
+            describe("#__callDefaultCallback()", function () {
                 it("should exist", function () {
-                    expect(test).to.have.any.keys('__queryDefaultCallback');
+                    expect(test).to.have.any.keys('__callDefaultCallback');
                 });
                 it("should be a method", function () {
-                    expect(test.__queryDefaultCallback).to.be.an('function');
+                    expect(test.__callDefaultCallback).to.be.an('function');
                 });
             });
         });

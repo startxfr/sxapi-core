@@ -27,13 +27,13 @@ module.exports = function (id, config) {
       if (!$cbdb.config.bucket) {
         throw new Error("no 'bucket' key found in resource '" + $cbdb.id + "' config");
       }
-      $cbdb.config.cluster = $log.format($cbdb.config.cluster, process.env);
-      $cbdb.config.bucket = $log.format($cbdb.config.bucket, process.env);
+      $cbdb.config.cluster = $log.format("" + $cbdb.config.cluster, process.env);
+      $cbdb.config.bucket = $log.format("" + $cbdb.config.bucket, process.env);
       if ($cbdb.config.user) {
-        $cbdb.config.user = $log.format($cbdb.config.user, process.env);
+        $cbdb.config.user = $log.format("" + $cbdb.config.user, process.env);
       }
       if ($cbdb.config.password) {
-        $cbdb.config.password = $log.format($cbdb.config.password, process.env);
+        $cbdb.config.password = $log.format("" + $cbdb.config.password, process.env);
       }
       $cbdb.cb = require("couchbase");
       if (typeof $cbdb.pool[$cbdb.config.cluster] === 'undefined') {
