@@ -2,7 +2,7 @@
     "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
-        "name": "sxapi-template-build",
+        "name": "sxapi-template-pipeline",
         "annotations": {
             "openshift.io/display-name": "SXAPI micro-service application (Builder)",
             "description": "SXAPI micro-service application builder based on alpine linux",
@@ -16,7 +16,7 @@
     },
     "message": "Your application ${APP_NAME} have been created in your project. You can use openshift console to monitor it building and deployement status.",
     "labels": {
-        "template": "sxapi-template-build"
+        "template": "sxapi-template-pipeline"
     },
     "objects": [
         {
@@ -30,7 +30,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
@@ -41,7 +41,7 @@
                 "strategy": {
                     "type": "JenkinsPipeline",
                     "jenkinsPipelineStrategy": {
-                        "jenkinsfile": "try { timeout(time: 5, unit: 'MINUTES') { node('nodejs') { stage('build') { openshiftBuild(buildConfig: '${NAME}', showBuildLogs: 'true') } stage('deploy') { openshiftDeploy(deploymentConfig: '${NAME}') } } } } catch (err) { echo \"in catch block\"; echo \"Caught: ${err}\"; currentBuild.result = 'FAILURE'; throw err }   "
+                        "jenkinsfile": "try { timeout(time: 10, unit: 'MINUTES') { node('nodejs') { stage('build') { openshiftBuild(buildConfig: 'sxapi', showBuildLogs: 'true') }; stage('deploy') { openshiftDeploy(deploymentConfig: 'sxapi') } } } } catch (err) { echo \"in catch block\"; echo \"Caught: ${err}\"; currentBuild.result = 'FAILURE'; throw err }   "
                     }
                 },                
                 "triggers": [
@@ -84,7 +84,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 }
             },
             "spec": {
@@ -144,13 +144,13 @@
             "kind": "BuildConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "sxapi",
                 "creationTimestamp": null,
                 "labels": {
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -169,13 +169,6 @@
                         "generic": {
                             "secret": "${WEBHOOK_TOKEN}_${APP_NAME}"
                         }
-                    },
-                    {
-                        "type": "ImageChange",
-                        "imageChange": {}
-                    },
-                    {
-                        "type": "ConfigChange"
                     }
                 ],
                 "runPolicy": "SerialLatestOnly",
@@ -217,14 +210,14 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "sxapi",
                 "generation": 2,
                 "creationTimestamp": null,
                 "labels": {
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
@@ -264,7 +257,7 @@
                 "test": false,
                 "selector": {
                     "app": "${APP_NAME}",
-                    "deploymentconfig": "${APP_NAME}"
+                    "deploymentconfig": "sxapi"
                 },
                 "template": {
                     "metadata": {
@@ -273,8 +266,8 @@
                             "app": "${APP_NAME}",
                             "type": "${APP_TYPE}",
                             "provider": "startx",
-                            "template": "sxapi-template-build",
-                            "deploymentconfig": "${APP_NAME}"
+                            "template": "sxapi-template-pipeline",
+                            "deploymentconfig": "sxapi"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -342,9 +335,10 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 },
                 "annotations": {
+                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"${NAME}\", \"namespace\": \"\", \"kind\": \"Service\"}]",
                     "openshift.io/generated-by": "STARTX"
                 }
             },
@@ -358,7 +352,7 @@
                 ],
                 "selector": {
                     "app": "${APP_NAME}",
-                    "deploymentconfig": "${APP_NAME}"
+                    "deploymentconfig": "sxapi"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -377,7 +371,7 @@
                     "app": "${APP_NAME}",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
-                    "template": "sxapi-template-build"
+                    "template": "sxapi-template-pipeline"
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX"
