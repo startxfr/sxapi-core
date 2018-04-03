@@ -31,6 +31,14 @@ module.exports = function (id, config) {
       if (!$twt.config.consumer_secret) {
         throw new Error("no 'consumer_secret' key found in resource '" + $twt.id + "' config");
       }
+      $twt.config.consumer_key = $log.format("" + $twt.config.consumer_key, process.env);
+      $twt.config.consumer_secret = $log.format("" + $twt.config.consumer_secret, process.env);
+      if ($twt.config.access_token_key) {
+        $twt.config.access_token_key = $log.format("" + $twt.config.access_token_key, process.env);
+      }
+      if ($twt.config.access_token_secret) {
+        $twt.config.access_token_secret = $log.format("" + $twt.config.access_token_secret, process.env);
+      }
       $twt.api = require('twitter');
       $log.tools.resourceDebug($twt.id, "initialized ", 1, $timer.timeStop(timerId));
       return this;
