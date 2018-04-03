@@ -4,10 +4,10 @@
     "metadata": {
         "name": "sxapi-template",
         "annotations": {
-            "openshift.io/display-name": "Startx SXAPI micro-service framework (0.2.6)",
+            "openshift.io/display-name": "Startx SXAPI micro-service framework (0.2.7)",
             "description": "SXAPI micro-service framework for running micro-service application running in a nodejs environement",
             "iconClass": "icon-nodejs",
-            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.6",
+            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.7",
             "openshift.io/long-description": "This template provides a startx sxapi micro-service framework container. Ready to use in openshift with a simple deployement config, or as a s2i builder for building web applications container. For more information about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.",
             "openshift.io/provider-display-name": "STARTX",
             "openshift.io/documentation-url": "https://github.com/startxfr/sxapi-core/blob/master/README.md",
@@ -39,19 +39,19 @@
             "spec": {
                 "tags": [
                     {
-                        "name": "0.2.6",
+                        "name": "0.2.7",
                         "annotations": {
-                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.2.6)",
-                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.2.6)",
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.2.7)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.2.7)",
                             "iconClass": "icon-nodejs",
-                            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.6",
-                            "supports": "sxapi:0.2.6,nodejs,http",
-                            "version": "0.2.6",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.7",
+                            "supports": "sxapi:0.2.7,nodejs,http",
+                            "version": "0.2.7",
                             "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sxapi:0.2.6"
+                            "name": "startx/sxapi:0.2.7"
                         }
                     }
                 ]
@@ -96,7 +96,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "sxapi:0.2.6"
+                                "name": "sxapi:0.2.7"
                             }
                         }
                     },
