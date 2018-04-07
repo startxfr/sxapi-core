@@ -443,7 +443,7 @@ var $ws = {
           }
           else {
             $log.debug("Add websockets connection client endpoint " + config.event + " for client " + client.id, 4);
-            client.on("" + config.event, connectionHandler(client));
+            client.on("" + config.event, connectionHandler(client, config));
           }
         }
       }
@@ -454,10 +454,9 @@ var $ws = {
         $ws.websockets._initClientEventCallback($ws.config.websockets.events[i], i, client);
       }
     },
-    onMessageDefaultCallback: function (client) {
+    onMessageDefaultCallback: function (client, config) {
       return function (data) {
-        console.log("------onMessageDefaultCallback");
-        console.log(client.id,data);
+        console.log(client.id, config, data);
       };
     }
   }
