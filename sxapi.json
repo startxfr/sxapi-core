@@ -1,6 +1,6 @@
 {
     "name": "sxapi-default-run",
-    "description": "sxapi default microservice API (run)",
+    "description": "sxapi default microservice API ({{{NODE_ENV}}})",
     "version": "0.0.1",
     "debug": false,
     "session": {

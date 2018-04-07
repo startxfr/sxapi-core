@@ -5,6 +5,7 @@ app:
     - "8080:8080"
   volumes:
   - "./sxapi.json:/conf/sxapi.json:z"
+  - "./test:/test:z"
   working_dir: /usr/src/app
 ## build application 
 #  command: ["npm" , "run" , "build"]
@@ -12,6 +13,8 @@ app:
 #  command: ["npm" , "start"]
 ## build and start application for dev environement
 #  command: ["npm" , "run", "dev"]
+## install application for dev environement
+#  command: ["npm",  "run", "dev:install"]
 ## update application depndencies
 #  command: ["npm" , "run" , "dev:update"]
 ## build application for dev environement
