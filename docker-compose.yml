@@ -12,6 +12,7 @@ app:
   volumes:
   - "./:/usr/src/app:z"
   - "./sxapi.json:/conf/sxapi.json:z"
+  - "./test:/test:z"
   working_dir: /usr/src/app
 ## build application 
 #  command: ["npm" , "run" , "build"]

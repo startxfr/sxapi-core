@@ -24,7 +24,15 @@ var mylib = {
       $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic test content", 2);
       return this;
     };
-  }
+  },
+  mySocketEndpointFunction: function (client) {
+      return function (data) {
+        console.log("------mySocketEndpointFunction");
+        console.log(client.id,data);
+        client.broadcast.emit("test",data);
+        client.emit("test",data);
+      };
+    }
 };
 
 module.exports = mylib;

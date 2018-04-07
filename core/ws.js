@@ -20,14 +20,14 @@ var $ws = {
     if ($ws.config.port) {
       $ws.config.port = $log.format($ws.config.port, process.env);
     }
-    if (!$ws.config.endpoints) {
-      throw new Error("no 'endpoints' key found in config 'server' section");
+    if (!$ws.config.events) {
+      throw new Error("no 'events' key found in config 'server' section");
     }
-    if (!$ws.config.endpoints instanceof Array) {
-      throw new Error("'endpoints' key in config 'server' section should be an array");
+    if (!$ws.config.events instanceof Array) {
+      throw new Error("'events' key in config 'server' section should be an array");
     }
     this._initApp();
-    this._initEndpoints($ws.config.endpoints, true);
+    this._initEndpoints($ws.config.events, true);
     return this;
   },
   _initApp: function () {
@@ -77,7 +77,7 @@ var $ws = {
             $ws.lib = require($app.config.app_path + "/" + $ws.config.lib);
             $log.debug("use custom library " + $app.config.app_path + "/" + $ws.config.lib, 5);
           } catch (e) {
-            throw new Error("bot lib " + $ws.config.lib + " could not be found");
+            throw new Error("webserver lib " + $ws.config.lib + " could not be found");
           }
         }
       }
@@ -103,12 +103,12 @@ var $ws = {
     }
     return this;
   },
-  _initEndpoints: function (endpoints, withRouting) {
+  _initEndpoints: function (events, withRouting) {
     if (withRouting === true) {
       $ws.routing = {};
     }
-    for (var i = 0; i < endpoints.length; i++) {
-      this._initEndpoint(endpoints[i], withRouting);
+    for (var i = 0; i < events.length; i++) {
+      this._initEndpoint(events[i], withRouting);
     }
     return this;
   },
@@ -152,7 +152,7 @@ var $ws = {
         urlDescriptor.type = "dynamic";
         urlDescriptor.endpoint = config.resource + "::" + config.endpoint;
         var rs = require('./resource').get(config.resource);
-        handler = eval('rs.endpoints.' + config.endpoint);
+        handler = eval('rs.events.' + config.endpoint);
       }
       else if (config.directory !== undefined) {
         $log.debug("Add static  endpoint  [ALL]    " + config.path + " > ./" + config.directory, 3);
@@ -249,14 +249,13 @@ var $ws = {
     $log.debug("Start web server on port " + $ws.config.port, 2);
     try {
       $ws.server = $ws.http.createServer($ws.app);
-      if ($ws.config.websockets === true) {
-        $log.debug("Enable websockets on port " + $ws.config.port, 2);
-        $ws.io = require('socket.io').listen($ws.server);
+      if ($ws.config.enableWebsockets === true) {
+        this.websockets.start();
       }
       $ws.server.listen($ws.config.port || 8080);
     }
-    catch (error) {
-      $log.error('web server can\'t start because ' + error.message);
+    catch (err) {
+      $log.error('web server can\'t start because ' + err.message);
     }
     if (typeof callback === "function") {
       callback();
@@ -381,17 +380,17 @@ var $ws = {
     return obj;
   },
   defaultRouter: function (configs) {
-    var endpoints = configs.endpoints;
-    delete configs.endpoints;
+    var events = configs.events;
+    delete configs.events;
     $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
-    if (endpoints) {
-      for (var i = 0; i < endpoints.length; i++) {
-        var config = require('merge').recursive(true, configs, endpoints[i]);
+    if (events) {
+      for (var i = 0; i < events.length; i++) {
+        var config = require('merge').recursive(true, configs, events[i]);
         $ws._initEndpointConfig(config);
       }
     }
     else {
-      $log.warn("Router 'defaultRouter' for '" + configs.path + "' could not find endpoints in configuration");
+      $log.warn("Router 'defaultRouter' for '" + configs.path + "' could not find events in configuration");
     }
   },
   dynamicRequestHandlerTest: function (config) {
@@ -409,6 +408,58 @@ var $ws = {
       });
       return this;
     };
+  },
+  websockets: {
+    start: function () {
+      if ($ws.config.enableWebsockets === true) {
+        $log.debug("Enable websockets on port " + $ws.config.port, 2);
+        $ws.io = require('socket.io').listen($ws.server);
+        $ws.config.websockets = require('merge').recursive(true, {
+          onConnection: "$ws.websockets.onConnectionDefaultCallback",
+          events: []
+        }, $ws.config.websockets || {});
+        var connectionHandler = eval($ws.config.websockets.onConnection);
+        if (typeof connectionHandler !== "function") {
+          throw new Error("websockets connection callback " + $ws.config.websockets.onConnection + " could not be loaded");
+        }
+        else {
+          $log.debug("enable websockets connection callback " + $ws.config.websockets.onConnection, 4);
+          $ws.io.on('connection', connectionHandler);
+        }
+      }
+    },
+    _initClientEventCallback: function (config, position, client) {
+      if (!config.event || "" + config.event === "") {
+        $log.warn("Disable websockets client endpoint n°" + position + " because 'event' is not valid");
+      }
+      else {
+        if (!config.handler) {
+          $log.warn("Disable websockets client endpoint " + config.event + " because 'handler' is not valid");
+        }
+        else {
+          var connectionHandler = eval(config.handler);
+          if (typeof connectionHandler !== "function") {
+            $log.warn("Disable websockets client endpoint " + config.event + " because 'handler' could not be loaded");
+          }
+          else {
+            $log.debug("Add websockets connection client endpoint " + config.event + " for client " + client.id, 4);
+            client.on("" + config.event, connectionHandler(client));
+          }
+        }
+      }
+    },
+    onConnectionDefaultCallback: function (client) {
+      $log.debug("new websocket client for " + client.id, 3);
+      for (var i = 0; i < $ws.config.websockets.events.length; i++) {
+        $ws.websockets._initClientEventCallback($ws.config.websockets.events[i], i, client);
+      }
+    },
+    onMessageDefaultCallback: function (client) {
+      return function (data) {
+        console.log("------onMessageDefaultCallback");
+        console.log(client.id,data);
+      };
+    }
   }
 };
 

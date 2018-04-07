@@ -33,8 +33,29 @@
         "port": "8080",
         "lib": "./bot-mylib",
         "static": [
-            {"path": "/static", "dir": "test/"}
+            {
+                "path": "/test",
+                "dir": "/test"
+            }
         ],
+        "enableWebsockets": true,
+        "websockets": {
+            "xxx-onConnection": "$ws.websockets.onConnectionCallback",
+            "events": [
+                {
+                    "event": "test",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                },
+                {
+                    "event": "testGlobal",
+                    "handler": "$ws.lib.mySocketEndpointFunction"
+                },
+                {
+                    "event": "disconnect",
+                    "handler": "$ws.websockets.onMessageDefaultCallback"
+                }
+            ]
+        },
         "endpoints": [
             {
                 "path": "/",
