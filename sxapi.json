@@ -21,6 +21,10 @@
     "resources": {
         "serviceinfo-sample": {
             "_class": "serviceinfo"
+        },
+        "websocket-sample": {
+            "_class": "websocket-client",
+            "host": "http://localhost:8080"
         }
     },
     "log": {
