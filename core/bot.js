@@ -19,6 +19,7 @@ var $bot = {
       throw new Error("no 'lib' key found in config 'bot' section");
     }
     else {
+      $log.debug("use bot custom library ", 4);
       try {
         require.resolve("../" + $bot.config.lib);
         $bot.lib = require("../" + $bot.config.lib);
