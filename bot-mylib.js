@@ -25,14 +25,14 @@ var mylib = {
       return this;
     };
   },
-  mySocketEndpointFunction: function (client) {
-      return function (data) {
-        console.log("------mySocketEndpointFunction");
-        console.log(client.id,data);
-        client.broadcast.emit("test",data);
-        client.emit("test",data);
-      };
-    }
+  mySocketEndpointFunction: function (client, config) {
+    return function (data) {
+      console.log("------mySocketEndpointFunction");
+      console.log(client.id, config, data);
+      client.broadcast.emit("test", data);
+      client.emit("test", data);
+    };
+  }
 };
 
 module.exports = mylib;
