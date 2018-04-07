@@ -16,6 +16,14 @@ var mylib = {
     var moment = require('moment');
     $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
 //    console.log(data);
+  },
+  myEndpointFunction: function (config) {
+    return function (req, res) {
+      res.writeHead(200);
+      res.end("this text is a test à " + config.param_sample);
+      $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic test content", 2);
+      return this;
+    };
   }
 };
 

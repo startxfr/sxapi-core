@@ -31,6 +31,7 @@
     },
     "server": {
         "port": "8080",
+        "lib": "./bot-mylib",
         "static": [
             {"path": "/static", "dir": "test/"}
         ],
@@ -69,6 +70,17 @@
                 "desc": "Ping the application. Return a sample message in json",
                 "code": "200",
                 "body": "pong"
+            },
+            {
+                "path": "/function",
+                "desc": "Ping the application. Return a sample message in json",
+                "handler": "$ws.dynamicRequestHandlerTest"
+            },
+            {
+                "path": "/function2",
+                "desc": "Test fonction to get e rturn and accès to low level resources",
+                "handler": "$ws.lib.myEndpointFunction",
+                "param_sample": "dev-config"
             }
         ]
     }

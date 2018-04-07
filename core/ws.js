@@ -5,6 +5,7 @@
 var $ws = {
   config: {},
   urlList: {},
+  lib: null,
   init: function (config) {
     if (config) {
       $ws.config = config;
@@ -59,7 +60,30 @@ var $ws = {
       };
       $ws.app.use(require('cors')(optCors));
     }
+    if ($ws.config.lib) {
+      $log.debug("use webserver custom library ", 4);
+      try {
+        require.resolve("../" + $ws.config.lib);
+        $ws.lib = require("../" + $ws.config.lib);
+        $log.debug("use custom library ../" + $ws.config.lib, 5);
+      } catch (e) {
+        try {
+          require.resolve($ws.config.lib);
+          $ws.lib = require($ws.config.lib);
+          $log.debug("use custom library " + $ws.config.lib, 5);
+        } catch (e) {
+          try {
+            require.resolve($app.config.app_path + "/" + $ws.config.lib);
+            $ws.lib = require($app.config.app_path + "/" + $ws.config.lib);
+            $log.debug("use custom library " + $app.config.app_path + "/" + $ws.config.lib, 5);
+          } catch (e) {
+            throw new Error("bot lib " + $ws.config.lib + " could not be found");
+          }
+        }
+      }
+    }
     if (typeof $ws.config.static === "object") {
+      $log.debug("use static route description ", 5);
       for (var i = 0; i < $ws.config.static.length; i++) {
         this._initStatic($ws.config.static[i]);
       }
