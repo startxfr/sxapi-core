@@ -40,7 +40,6 @@
         ],
         "enableWebsockets": true,
         "websockets": {
-            "xxx-onConnection": "$ws.websockets.onConnectionCallback",
             "events": [
                 {
                     "event": "test",

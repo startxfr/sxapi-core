@@ -427,6 +427,9 @@ var $ws = {
           $ws.io.on('connection', connectionHandler);
         }
       }
+      else {
+        $log.debug("websockets is disabled ", 5);
+      }
     },
     _initClientEventCallback: function (config, position, client) {
       if (!config.event || "" + config.event === "") {
