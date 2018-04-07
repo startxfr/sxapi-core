@@ -6,6 +6,7 @@ ENV SXAPI_VERSION=0.2.7 \
     SX_NAME="Startx SXAPI (alpine)" \
     SX_SUMMARY="Small an eXtensible API framework to build small and flexible microservices using a single configuration file" \
     DESCRIPTION="SXAPI $SXAPI_VERSION available as docker container is a base platform for building and running your API projects" \
+    SX_DEBUG=true \
     NODE_ENV=development \
     APP_PATH=/usr/src/app \
     CONF_PATH=/conf \

@@ -50,6 +50,9 @@ $app = {
     $log.debug("service vers : " + $app.config.version, 3);
     $log.debug("service desc : " + $app.config.description, 4);
     $log.info("Start initializing application " + $app.config.name + ' v' + $app.config.version, $timer.time('app'));
+    if ($app.config.disableSmartConf !== true) {
+      $log.debug("smart conf enabled (auto substitute env var in config)", 5);
+    }
     if ($app.config.resources) {
       $log.debug("start initializing resources as part of the init process", 5, $timer.time('app'));
       $app.resources.init($app.config.resources);
@@ -164,15 +167,6 @@ $app = {
       try {
         mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
         $log.debug("Cfg source   : " + this.config.conf_path + '/sxapi.json', 2);
-        if ($app.config && $app.config.name) {
-          $app.config.name = $log.format($app.config.name, process.env);
-        }
-        if ($app.config && $app.config.description) {
-          $app.config.description = $log.format($app.config.description, process.env);
-        }
-        if ($app.config && $app.config.version) {
-          $app.config.version = $log.format($app.config.version, process.env);
-        }
       }
       catch (e) {
         $log.error("Cfg source   : is missing", 2);
@@ -180,6 +174,20 @@ $app = {
         $log.debug("add environment variable SXAPI_CONF or create /conf/sxapi.json config file", 3);
         this.fatalError('configuration file or variable is missing');
       }
+    }
+    if ($app.config && $app.config.disableSmartConf === true) {
+      if ($app.config && $app.config.name) {
+        $app.config.name = $log.format($app.config.name, process.env);
+      }
+      if ($app.config && $app.config.description) {
+        $app.config.description = $log.format($app.config.description, process.env);
+      }
+      if ($app.config && $app.config.version) {
+        $app.config.version = $log.format($app.config.version, process.env);
+      }
+    }
+    else {
+      $log.formatRecursive($app.config, process.env, {bot: null, server: null});
     }
     if (!$app.config.name) {
       this.fatalError('sxapi configuration must have a "name" property');
