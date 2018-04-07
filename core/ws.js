@@ -462,6 +462,7 @@ var $ws = {
       for (var i = 0; i < $ws.config.websockets.events.length; i++) {
         $ws.websockets._initClientEventCallback($ws.config.websockets.events[i], i, client);
       }
+      client.emit("connected", {id: client.id});
     },
     onMessageDefaultCallback: function (client, config) {
       return function (data) {
