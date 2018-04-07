@@ -59,25 +59,23 @@ var $ws = {
       };
       $ws.app.use(require('cors')(optCors));
     }
-    if ($ws.config.static === true) {
-      if ($ws.config.static_path === undefined) {
-        $ws.config.static_path = '/static';
+    if (typeof $ws.config.static === "object") {
+      for (var i = 0; i < $ws.config.static.length; i++) {
+        this._initStatic($ws.config.static[i]);
       }
-      if ($ws.config.static_dir === undefined) {
-        $ws.config.static_dir = 'webapp';
-      }
-      if ($ws.config.static_path === "/") {
-        $log.debug("Add static endpoint  [ALL]    [root] > " + $ws.config.static_dir, 3);
-        $ws.app.use($ws.express.static($app.config.app_path + $ws.config.static_dir));
-      }
-      else {
-        $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path + " > " + $ws.config.static_dir, 3);
-        $ws.app.use($ws.config.static_path, $ws.express.static($app.config.app_path + $ws.config.static_dir));
-      }
-      if ($ws.config.static_path2 !== undefined && $ws.config.static_dir !== undefined) {
-        $log.debug("Add static endpoint  [ALL]    " + $ws.config.static_path2 + " > " + $ws.config.static_dir2, 3);
-        $ws.app.use($ws.config.static_path2, $ws.express.static($ws.config.static_dir2));
-      }
+    }
+    return this;
+  },
+  _initStatic: function (config) {
+    var path = config.path || '/static';
+    var dir = config.dir || config.directory || '/webapp';
+    if (path === "/") {
+      $log.debug("Add static endpoint  [ALL]    [root] > " + dir, 3);
+      $ws.app.use($ws.express.static($app.config.app_path + dir));
+    }
+    else {
+      $log.debug("Add static endpoint  [ALL]    " + path + " > " + dir, 3);
+      $ws.app.use(path, $ws.express.static($app.config.app_path + dir));
     }
     return this;
   },
@@ -228,6 +226,7 @@ var $ws = {
     try {
       $ws.server = $ws.http.createServer($ws.app);
       if ($ws.config.websockets === true) {
+        $log.debug("Enable websockets on port " + $ws.config.port, 2);
         $ws.io = require('socket.io').listen($ws.server);
       }
       $ws.server.listen($ws.config.port || 8080);
