@@ -1,10 +1,10 @@
 {
   "name": "sxapi-core",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-3.0",
   "private": false,
   "analyze": true,
   "contributors": [
@@ -38,8 +38,8 @@
     "dev": "npm-run-all --parallel \"dev:live-reload -s\" \"dev:start\" \"dev:open\"",
     "dev:env": "env",
     "dev:clean": "rimraf package-lock.json",
-    "dev:update": "npm update --only=dev --save",
-    "dev:install": "npm install --only=dev && npm dedupe",
+    "dev:update": "npm update --only=dev --save && npm update --save",
+    "dev:install": "npm install --only=dev && npm install && npm dedupe",
     "dev:build": "npm run dev:env -s && npm run dev:clean -s && npm run dev:update -s && npm run dev:install -s ",
     "dev:start": "npm test && npm start",
     "dev:open": "wait-on http://localhost:8080 && echo \"Application is running, open your browser to http://localhost:8080\"",
@@ -47,7 +47,7 @@
     "dev:live-reload": "live-reload --port=8081 --delay=2000 ./",
     "test": "./node_modules/.bin/mocha --exit",
     "test:clean": "rimraf package-lock.json *.md docs",
-    "test:install": "npm install --only=dev && npm dedupe",
+    "test:install": "npm install --only=dev npm install && npm dedupe",
     "test:build": "npm run test:clean -s && npm run test:install -s ",
     "test:start": "npm test && npm start",
     "test:open": "wait-on http://localhost:8080 && echo \"Application is running, open your browser to http://localhost:8080\"",
@@ -94,7 +94,8 @@
     "couchbase": "~2.4.3",
     "nodemailer": "~4.4.2",
     "siren2tva": "~1.0.0",
-    "twitter": "~1.7.1"
+    "twitter": "~1.7.1",
+    "object-recursive-iterator": "~1.0.2"
   },
   "devDependencies": {
     "mocha": "~4.0.1",

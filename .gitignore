@@ -2,3 +2,4 @@ nbproject
 node_modules
 sxapi-test.json
 s2i
+travis.yml

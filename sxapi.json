@@ -1,8 +1,8 @@
 {
     "name": "sxapi-default",
-    "description": "sxapi default microservice API",
+    "description": "sxapi default microservice API ({{{NODE_ENV}}})",
     "version": "0.0.1",
-    "debug": true,
+    "debug": "{{{SX_DEBUG}}}",
     "session": {
         "duration": 3600,
         "auto_create": true,
@@ -25,8 +25,8 @@
     },
     "log": {
         "filters": {
-            "level": "0,1,2",
-            "type": "debug,info,error,warn"
+            "level": "0,1,2,3,4,5",
+            "type": "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
         }
     },
     "server": {

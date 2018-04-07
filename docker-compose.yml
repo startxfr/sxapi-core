@@ -2,6 +2,7 @@ app:
   container_name: "sxapi-core-dev"
   image: node:8
   environment:
+  - SX_DEBUG=true
   - NODE_ENV=development
   - APP_PATH=/usr/src/app
   - DATA_PATH=/data
@@ -17,13 +18,15 @@ app:
 ## run application 
 #  command: ["npm" , "start"]
 ## build and start application for dev environement
-  command: ["npm" , "run", "dev"]
+#  command: ["npm" , "run", "dev"]
+## install application for dev environement
+#  command: ["npm",  "run", "dev:install"]
 ## update application depndencies
 #  command: ["npm" , "run" , "dev:update"]
 ## build application for dev environement
 #  command: ["npm" , "run" , "dev:build"]
 ## start application for dev environement
-#  command: ["npm" , "run" , "dev:start"]
+  command: ["npm" , "run" , "dev:start"]
 ## run application test
 #  command: ["npm" , "test"]
 ## build application for testing
