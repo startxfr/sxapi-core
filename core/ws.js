@@ -20,14 +20,14 @@ var $ws = {
     if ($ws.config.port) {
       $ws.config.port = $log.format($ws.config.port, process.env);
     }
-    if (!$ws.config.events) {
-      throw new Error("no 'events' key found in config 'server' section");
+    if (!$ws.config.endpoints) {
+      throw new Error("no 'endpoints' key found in config 'server' section");
     }
-    if (!$ws.config.events instanceof Array) {
-      throw new Error("'events' key in config 'server' section should be an array");
+    if (!$ws.config.endpoints instanceof Array) {
+      throw new Error("'endpoints' key in config 'server' section should be an array");
     }
     this._initApp();
-    this._initEndpoints($ws.config.events, true);
+    this._initEndpoints($ws.config.endpoints, true);
     return this;
   },
   _initApp: function () {
@@ -103,12 +103,12 @@ var $ws = {
     }
     return this;
   },
-  _initEndpoints: function (events, withRouting) {
+  _initEndpoints: function (endpoints, withRouting) {
     if (withRouting === true) {
       $ws.routing = {};
     }
-    for (var i = 0; i < events.length; i++) {
-      this._initEndpoint(events[i], withRouting);
+    for (var i = 0; i < endpoints.length; i++) {
+      this._initEndpoint(endpoints[i], withRouting);
     }
     return this;
   },
@@ -152,7 +152,7 @@ var $ws = {
         urlDescriptor.type = "dynamic";
         urlDescriptor.endpoint = config.resource + "::" + config.endpoint;
         var rs = require('./resource').get(config.resource);
-        handler = eval('rs.events.' + config.endpoint);
+        handler = eval('rs.endpoints.' + config.endpoint);
       }
       else if (config.directory !== undefined) {
         $log.debug("Add static  endpoint  [ALL]    " + config.path + " > ./" + config.directory, 3);
@@ -380,17 +380,17 @@ var $ws = {
     return obj;
   },
   defaultRouter: function (configs) {
-    var events = configs.events;
-    delete configs.events;
+    var endpoints = configs.endpoints;
+    delete configs.endpoints;
     $log.debug("Use router 'defaultRouter' for '" + configs.path + "'", 2);
-    if (events) {
-      for (var i = 0; i < events.length; i++) {
-        var config = require('merge').recursive(true, configs, events[i]);
+    if (endpoints) {
+      for (var i = 0; i < endpoints.length; i++) {
+        var config = require('merge').recursive(true, configs, endpoints[i]);
         $ws._initEndpointConfig(config);
       }
     }
     else {
-      $log.warn("Router 'defaultRouter' for '" + configs.path + "' could not find events in configuration");
+      $log.warn("Router 'defaultRouter' for '" + configs.path + "' could not find endpoints in configuration");
     }
   },
   dynamicRequestHandlerTest: function (config) {
@@ -419,6 +419,12 @@ var $ws = {
           events: []
         }, $ws.config.websockets || {});
         var connectionHandler = eval($ws.config.websockets.onConnection);
+        if (!$ws.config.websockets.events) {
+          throw new Error("no 'events' key found in config 'websockets' section");
+        }
+        if (!$ws.config.endpoints instanceof Array) {
+          throw new Error("'events' key in config 'websockets' section should be an array");
+        }
         if (typeof connectionHandler !== "function") {
           throw new Error("websockets connection callback " + $ws.config.websockets.onConnection + " could not be loaded");
         }
