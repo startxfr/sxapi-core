@@ -20,27 +20,30 @@ connections.
 
 ### Config parameters
 
-| Param                    | Mandatory | Type    | default | Description
-|--------------------------|:---------:|:-------:|---------|---------------
-| **port**                 | no        | int     | 8080    | Webserver port
-| **websockets**           | no        | bool    | false   | Enable socket.io connection
-| **static**               | no        | bool    | false   | Enable delivery of static content without using endpoint
-| **static_path**          | no        | string  | /static | path used to get the static content from the server
-| **static_dir**           | no        | string  | webapp  | local directory to get the static content from
-| **static_path2**         | no        | string  |         | if set, second path used to get the static content from the server
-| **static_dir2**          | no        | string  |         | if set, local directory to get the second static content from
-| **useCors**              | no        | bool    | true    | Activate the Express Cors option. See [express cors project](https://github.com/expressjs/cors)
-| **optCors**              | no        | obj     | obj     | Options to use with the Express Cors. See [express cors configuration options](https://github.com/expressjs/cors#configuration-options)
-| **bodyParserJson**       | no        | bool    | true    | Activate the Body parser Json option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
-| **bodyParserJsonOptions**| no        | obj     |         | Options to use with the Body parser Json. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
-| **bodyParserRaw**        | no        | bool    | true    | Activate the Body parser Raw option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserrawoptions)
-| **bodyParserRawOptions** | no        | obj     |         | Options to use with the Body parser Raw. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserrawoptions)
-| **bodyParserUrl**        | no        | bool    | true    | Activate the Body parser Urlencoded option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserurlencodedoptions)
-| **bodyParserUrlOptions** | no        | obj     |         | Options to use with the Body parser Urlencoded. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserurlencodedoptions)
-| **bodyParserText**       | no        | bool    | false   | Activate the Body parser Text option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
-| **bodyParserTextOptions**| no        | obj     |         | Options to use with the Body parser Text. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
-| **endpoints**            | yes       | array   |         | an array of endpoints configuration
-| endpoints[**config**]    | no        | obj     |         | endpoint configuration, see the next section for more information of the attended structure
+| Param                           | Mandatory | Type    | default | Description
+|---------------------------------|:---------:|:-------:|---------|---------------
+| **port**                        | no        | int     | 8080    | Webserver port
+| **enableWebsockets**            | no        | bool    | false   | Enable socket.io connection
+| **websockets**                  | no        | obj     |         | socket.io configuration
+| websockets.**onConnection**     | no        | string  |         | Function to use when a new client connect (leave blank for autoLoading events)
+| websockets.**events**           | no        | array   |         | List of events to listen to
+| websockets.events[].**event**   | yes       | string  |         | The event name
+| websockets.events[].**handler** | yes       | string  |         | Function to use when a event is received
+| **static**                      | no        | array   |         | List of static path to expose
+| static[].**path**               | yes       | string  |         | The URL path to use
+| static[].**dir**                | yes       | string  |         | The local directory to use and expose
+| **useCors**                     | no        | bool    | true    | Activate the Express Cors option. See [express cors project](https://github.com/expressjs/cors)
+| **optCors**                     | no        | obj     | obj     | Options to use with the Express Cors. See [express cors configuration options](https://github.com/expressjs/cors#configuration-options)
+| **bodyParserJson**              | no        | bool    | true    | Activate the Body parser Json option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
+| **bodyParserJsonOptions**       | no        | obj     |         | Options to use with the Body parser Json. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserjsonoptions)
+| **bodyParserRaw**               | no        | bool    | true    | Activate the Body parser Raw option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserrawoptions)
+| **bodyParserRawOptions**        | no        | obj     |         | Options to use with the Body parser Raw. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserrawoptions)
+| **bodyParserUrl**               | no        | bool    | true    | Activate the Body parser Urlencoded option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserurlencodedoptions)
+| **bodyParserUrlOptions**        | no        | obj     |         | Options to use with the Body parser Urlencoded. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparserurlencodedoptions)
+| **bodyParserText**              | no        | bool    | false   | Activate the Body parser Text option. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
+| **bodyParserTextOptions**       | no        | obj     |         | Options to use with the Body parser Text. See [body-parser documentation](https://github.com/expressjs/body-parser#bodyparsertextoptions)
+| **endpoints**                   | yes       | array   |         | an array of endpoints configuration
+| endpoints[**config**]           | no        | obj     |         | endpoint configuration, see the next section for more information of the attended structure
  
 
 ### Config endpoint static
