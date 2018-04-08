@@ -41,7 +41,11 @@ module.exports = function (id, config) {
       if (typeof $skio.pool[$skio.config._sign] !== 'undefined') {
         $log.tools.resourceDebug($skio.id, "Starting resource " + $skio.config._sign, 3);
         $skio.pool[$skio.config._sign]($skio.config.host);
-        $log.tools.resourceDebug($skio.id, "Connected to "+$skio.config.host, 1, $timer.timeStop(timerId));
+        $log.tools.resourceDebug($skio.id, "Connected to " + $skio.config.host, 1, $timer.timeStop(timerId));
+        if ($skio.config.onStart && typeof $skio.config.onStart === "string") {
+          $log.tools.resourceDebug($skio.id, "Execute websocket onStart callback " + $skio.config.onStart, 3);
+          eval($skio.config.onStart + "($skio.config)");
+        }
       }
       else {
         $log.tools.resourceWarn($skio.id, "resource '" + $skio.id + "' is not initialized and could not be started", 4);
