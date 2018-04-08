@@ -282,8 +282,8 @@ var $log = {
       if ($log.couchbase.eventName !== false) {
         doc.event = $log.couchbase.eventName;
       }
-      if (typeof $log.couchbase.keyPrefix === "string") {
-        key = $log.couchbase.keyPrefix + key;
+      if (typeof $log.config.couchbase.keyPrefix === "string") {
+        key = $log.config.couchbase.keyPrefix + key;
       }
       $log.couchbase.resource.insert(key, doc, function (key) {
         return function (coucherr, b) {

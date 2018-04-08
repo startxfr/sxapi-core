@@ -34,6 +34,7 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 |-----------------|:---------:|:------:|-----------|---------------
 | **_class**      | yes       | string |           | module name. Must be **websocket-client** for this resource
 | **host**        | yes       | string |           | default hostname or IP of the websocket server to use. If you use docker instance, don't forget to use the docker0 ip `# ifconfig docker0` and not localhost or 127.0.0.1
+| **onStart**     | no        | string |           | function name to execute just after starting a websocket connection
 
 ### Example
 
