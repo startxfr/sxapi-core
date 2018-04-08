@@ -65,19 +65,19 @@ var $ws = {
       try {
         require.resolve("../" + $ws.config.lib);
         $ws.lib = require("../" + $ws.config.lib);
-        $log.debug("use custom library ../" + $ws.config.lib, 5);
+        $log.debug("loaded webserver custom library ../" + $ws.config.lib, 4);
       } catch (e) {
         try {
           require.resolve($ws.config.lib);
           $ws.lib = require($ws.config.lib);
-          $log.debug("use custom library " + $ws.config.lib, 5);
+          $log.debug("loaded webserver custom library " + $ws.config.lib, 4);
         } catch (e) {
           try {
             require.resolve($app.config.app_path + "/" + $ws.config.lib);
             $ws.lib = require($app.config.app_path + "/" + $ws.config.lib);
-            $log.debug("use custom library " + $app.config.app_path + "/" + $ws.config.lib, 5);
+            $log.debug("loaded webserver custom library " + $app.config.app_path + "/" + $ws.config.lib, 4);
           } catch (e) {
-            throw new Error("webserver lib " + $ws.config.lib + " could not be found");
+            throw new Error("webserver custom library " + $ws.config.lib + " could not be found or loaded");
           }
         }
       }
