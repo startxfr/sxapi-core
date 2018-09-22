@@ -97,7 +97,8 @@
     "twitter": "~1.7.1",
     "object-recursive-iterator": "~1.0.2",
     "socket.io": "~2.1.0",
-    "socket.io-client": "~2.1.0"
+    "socket.io-client": "~2.1.0",
+    "yaml-to-json": "~0.3.0"
   },
   "devDependencies": {
     "mocha": "~4.0.1",
