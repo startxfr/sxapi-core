@@ -20,14 +20,13 @@ module.exports = function (id, config) {
       if (config) {
         $skio.config = config;
       }
-      console.log($skio.config)
       $log.tools.resourceDebug($skio.id, "initializing", 3);
       $skio.config._sign = $skio.id;
       if (!$skio.config.host) {
         throw new Error("no 'host' key found in resource '" + $skio.id + "' config");
       }
       if (typeof $skio.pool[$skio.config._sign] === 'undefined') {
-        $log.tools.resourceDebug($skio.id, "initialize websocket-client connection to " + $skio.config._sign, 4);
+        $log.tools.resourceDebug($skio.id, "initialize websocket-client connection to " + $skio.config.host, 4);
         $skio.pool[$skio.config._sign] = require("socket.io-client");
       }
       else {
@@ -40,7 +39,7 @@ module.exports = function (id, config) {
       var timerId = 'resource_websocket-client_start_' + $skio.id;
       if (typeof $skio.pool[$skio.config._sign] !== 'undefined') {
         $log.tools.resourceDebug($skio.id, "Starting resource " + $skio.config._sign, 3);
-        $skio.pool[$skio.config._sign]($skio.config.host);
+        $skio.pool[$skio.config._sign] = $skio.pool[$skio.config._sign]($skio.config.host);
         $log.tools.resourceDebug($skio.id, "Connected to " + $skio.config.host, 1, $timer.timeStop(timerId));
         if ($skio.config.onStart && typeof $skio.config.onStart === "string") {
           $log.tools.resourceDebug($skio.id, "Execute websocket onStart callback " + $skio.config.onStart, 3);
