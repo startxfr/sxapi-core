@@ -213,7 +213,7 @@ module.exports = function (id, config) {
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
             var params = $cbdb.tools.generateParams4Template(config, req);
-            var n1ql = $cbdb.tools.format(config.n1ql, params);
+            var n1ql = $cbdb.tools.format(config.n1ql || "", params);
             var callback = function (key) {
               return function (err, reponse) {
                 var duration = $timer.timeStop('couchbase_query_' + key);
