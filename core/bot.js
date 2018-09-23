@@ -23,16 +23,19 @@ var $bot = {
       try {
         require.resolve("../" + $bot.config.lib);
         $bot.lib = require("../" + $bot.config.lib);
+        $log.debug("loaded bot custom library ../" + $bot.config.lib, 4);
       } catch (e) {
         try {
           require.resolve($bot.config.lib);
           $bot.lib = require($bot.config.lib);
+          $log.debug("loaded bot custom library " + $bot.config.lib, 4);
         } catch (e) {
           try {
             require.resolve($app.config.app_path + "/" + $bot.config.lib);
             $bot.lib = require($app.config.app_path + "/" + $bot.config.lib);
+            $log.debug("loaded bot custom library " + $app.config.app_path + "/" + $bot.config.lib, 4);
           } catch (e) {
-            throw new Error("bot lib " + $bot.config.lib + " could not be found");
+            throw new Error("bot custom library " + $bot.config.lib + " could not be found or loaded");
           }
         }
       }
@@ -253,8 +256,8 @@ var $bot = {
           var streamer = function (opt) {
             rs.readStream(opt, function (err, reponse) {
               if (err) {
-                opt.interval = opt.interval*2;
-                $log.warn("Bot reader twitter " + resource.resource + " received error message " + err.message+" and comme back in "+opt.interval);
+                opt.interval = opt.interval * 2;
+                $log.warn("Bot reader twitter " + resource.resource + " received error message " + err.message + " and comme back in " + opt.interval);
                 clearInterval(intervalID);
                 intervalID = setInterval(function () {
                   streamer(opt);
