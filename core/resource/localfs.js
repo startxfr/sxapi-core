@@ -1,4 +1,4 @@
-/* global module, require, process, $log, $timer, $app */
+/* global module, require, process, $log, $timer, $app, Buffer */
 //'use strict';
 
 /**
@@ -208,6 +208,7 @@ module.exports = function (id, config) {
                     $app.notification.notif(config.notification, reponse);
                   }
                   $log.tools.resourceDebug($fs.id, "endpoint '" + $fs.id + "' : read " + docId + " found ", 4, duration);
+                  res.type(require('mime-types').lookup($fs.config.directory + '/' + docId));
                   res.end(reponse);
                   $log.tools.endpointDebug($fs.id, req, "returned " + docId + ' item', 2, duration);
                 }
@@ -226,7 +227,7 @@ module.exports = function (id, config) {
           if ($app.resources.exist(config.resource)) {
             var docId = (req.params.id) ? req.params.id : req.body.id;
             var docData = req.body;
-            if (typeof docData === 'object') {
+            if (Buffer.isBuffer(docData)!== true && typeof docData === 'object') {
               docData = JSON.stringify(docData);
             }
             $app.resources
@@ -258,7 +259,7 @@ module.exports = function (id, config) {
           $log.tools.endpointDebug($fs.id, req, "update()", 1);
           var docId = (req.params.id) ? req.params.id : req.body.id;
           var docData = req.body;
-          if (typeof docData === 'object') {
+          if (Buffer.isBuffer(docData) !== true && typeof docData === 'object') {
             docData = JSON.stringify(docData);
           }
           if ($app.resources.exist(config.resource)) {
