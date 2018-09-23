@@ -36,20 +36,24 @@ var $ws = {
     $ws.app = $ws.express();
     var bodyParser = require('body-parser');
     if ($ws.config.bodyParserJson !== false) {
-      var optBpj = $ws.config.bodyParserJsonOptions || {};
+      var type = $ws.config.bodyParserJsonType || "*/json";
+      var optBpj = $ws.config.bodyParserJsonOptions || { type : type };
       $ws.app.use(bodyParser.json(optBpj));
     }
+    if ($ws.config.bodyParserText !== false) {
+      var type = $ws.config.bodyParserTextType || "text/*";
+      var optBpt = $ws.config.bodyParserTextOptions || { type : type };
+      $ws.app.use(bodyParser.raw(optBpt));
+    }
     if ($ws.config.bodyParserRaw !== false) {
-      var optBpr = $ws.config.bodyParserRawOptions || {};
+      var type = $ws.config.bodyParserRawType || "*/*";
+      var optBpr = $ws.config.bodyParserRawOptions || { type : type };
       $ws.app.use(bodyParser.raw(optBpr));
     }
     if ($ws.config.bodyParserUrl !== false) {
-      var optBpu = $ws.config.bodyParserUrlOptions || {extended: true};
+      var type = $ws.config.bodyParserUrlType || "*/*";
+      var optBpu = $ws.config.bodyParserUrlOptions || { type : type, extended: true };
       $ws.app.use(bodyParser.urlencoded(optBpu));
-    }
-    if ($ws.config.bodyParserText === true) {
-      var optBpt = $ws.config.bodyParserTextOptions || {};
-      $ws.app.use(bodyParser.raw(optBpt));
     }
     if ($ws.config.useCors !== false) {
       var optCors = $ws.config.corsOptions || {
