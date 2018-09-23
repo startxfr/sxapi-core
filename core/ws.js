@@ -36,20 +36,24 @@ var $ws = {
     $ws.app = $ws.express();
     var bodyParser = require('body-parser');
     if ($ws.config.bodyParserJson !== false) {
-      var optBpj = $ws.config.bodyParserJsonOptions || {};
+      var type = $ws.config.bodyParserJsonType || "*/json";
+      var optBpj = $ws.config.bodyParserJsonOptions || { type : type };
       $ws.app.use(bodyParser.json(optBpj));
     }
+    if ($ws.config.bodyParserText !== false) {
+      var type = $ws.config.bodyParserTextType || "text/*";
+      var optBpt = $ws.config.bodyParserTextOptions || { type : type };
+      $ws.app.use(bodyParser.raw(optBpt));
+    }
     if ($ws.config.bodyParserRaw !== false) {
-      var optBpr = $ws.config.bodyParserRawOptions || {};
+      var type = $ws.config.bodyParserRawType || "*/*";
+      var optBpr = $ws.config.bodyParserRawOptions || { type : type };
       $ws.app.use(bodyParser.raw(optBpr));
     }
     if ($ws.config.bodyParserUrl !== false) {
-      var optBpu = $ws.config.bodyParserUrlOptions || {extended: true};
+      var type = $ws.config.bodyParserUrlType || "*/*";
+      var optBpu = $ws.config.bodyParserUrlOptions || { type : type, extended: true };
       $ws.app.use(bodyParser.urlencoded(optBpu));
-    }
-    if ($ws.config.bodyParserText === true) {
-      var optBpt = $ws.config.bodyParserTextOptions || {};
-      $ws.app.use(bodyParser.raw(optBpt));
     }
     if ($ws.config.useCors !== false) {
       var optCors = $ws.config.corsOptions || {
@@ -65,19 +69,19 @@ var $ws = {
       try {
         require.resolve("../" + $ws.config.lib);
         $ws.lib = require("../" + $ws.config.lib);
-        $log.debug("use custom library ../" + $ws.config.lib, 5);
+        $log.debug("loaded webserver custom library ../" + $ws.config.lib, 4);
       } catch (e) {
         try {
           require.resolve($ws.config.lib);
           $ws.lib = require($ws.config.lib);
-          $log.debug("use custom library " + $ws.config.lib, 5);
+          $log.debug("loaded webserver custom library " + $ws.config.lib, 4);
         } catch (e) {
           try {
             require.resolve($app.config.app_path + "/" + $ws.config.lib);
             $ws.lib = require($app.config.app_path + "/" + $ws.config.lib);
-            $log.debug("use custom library " + $app.config.app_path + "/" + $ws.config.lib, 5);
+            $log.debug("loaded webserver custom library " + $app.config.app_path + "/" + $ws.config.lib, 4);
           } catch (e) {
-            throw new Error("webserver lib " + $ws.config.lib + " could not be found");
+            throw new Error("webserver custom library " + $ws.config.lib + " could not be found or loaded");
           }
         }
       }
@@ -462,6 +466,7 @@ var $ws = {
       for (var i = 0; i < $ws.config.websockets.events.length; i++) {
         $ws.websockets._initClientEventCallback($ws.config.websockets.events[i], i, client);
       }
+      client.emit("connected", {id: client.id});
     },
     onMessageDefaultCallback: function (client, config) {
       return function (data) {
