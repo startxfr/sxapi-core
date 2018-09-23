@@ -51,4 +51,4 @@ RUN  apk update && apk upgrade && apk add git python make gcc g++ \
 USER 1001
 EXPOSE 8080
 WORKDIR $APP_PATH
-CMD [ "npm" , "run", "test:start" ]
+CMD [ "npm" , "start" ]
