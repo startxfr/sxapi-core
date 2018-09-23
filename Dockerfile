@@ -1,7 +1,7 @@
 FROM node:8-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV SXAPI_VERSION=0.2.17 \
+ENV SXAPI_VERSION=0.2.19 \
     SX_ID="startx/sxapi" \
     SX_NAME="Startx SXAPI (alpine)" \
     SX_SUMMARY="Small an eXtensible API framework to build small and flexible microservices using a single configuration file" \
@@ -53,4 +53,4 @@ RUN  apk update && apk upgrade && apk add git python make gcc g++ \
 USER 1001
 EXPOSE 8080
 WORKDIR $APP_PATH
-CMD [ "npm" , "start" ]
+CMD [ "npm" , "run", "test:start" ]
