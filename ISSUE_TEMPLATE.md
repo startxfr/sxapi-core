@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.23-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.24-npm/docs/assets/logo.svg?sanitize=true">
 
 # Writting an issue to dev team
 
@@ -20,7 +20,7 @@ If the current behavior is a bug, please provide the steps to reproduce and if p
 
 * **Please tell us about your environment:**
 
-- version: 0.2.23 (npm, docker)
+- version: 0.2.24 (npm, docker)
 - Browser: "Firefox 21.0.2"
 - Nodejs: "NodeJS 2.1.2"
 
