@@ -39,7 +39,7 @@ server:
       running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>
     - <div class="alert alert-info" role="alert"><p>The application signature is <b>{{appsign}}</b>
       and corespond to a blank project.</p></div>
-    - "<p>Default config file must be changed and replaced your <b>own sxapi.json</b>
+    - "<p>Default config file must be changed and replaced your <b>own sxapi.yml</b>
       config file."
     - You will then be able to build your own API resources and endpoints.<br>
     - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"

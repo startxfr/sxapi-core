@@ -53,37 +53,29 @@ npm init --force
 npm install sxapi-core --save
 ```
 
-### 4. Create your sxapi.json configuration file
+### 4. Create your sxapi.yml configuration file
 
-Create a file named sxapi.json
+Create a file named sxapi.yml
 
 ```bash
-vi ~/test-sxapi/sxapi.json
+vi ~/test-sxapi/sxapi.yml
 ```
 
 Edit it with the following content
 
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My sample API</h1></body></html>"
-            }
-        ]
-    }
-}
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My sample API</h1></body></html>"
 ```
 
 You can change ```name```, ```description```, ```version``` and ```server.endpoints.body``` with personalized content
