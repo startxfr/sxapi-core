@@ -91,7 +91,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the S3 bucket defined in the config.bucket section of sxapi.json
+     * Read the S3 bucket defined in the config.bucket section of sxapi.yml
      * @param {string} id object ID
      * @param {string} bucket bucket name
      * @param {object} options object with options to pass to the AWS receiveObject method

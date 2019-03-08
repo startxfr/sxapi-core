@@ -11,7 +11,7 @@ app:
     - "8080:8080"
   volumes:
   - "./:/usr/src/app:z"
-  - "./sxapi.json:/conf/sxapi.json:z"
+  - "./sxapi.yml:/conf/sxapi.yml:z"
   - "./test:/test:z"
   working_dir: /usr/src/app
 ## build application 

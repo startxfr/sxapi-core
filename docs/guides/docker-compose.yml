@@ -10,7 +10,7 @@ app:
   - CONF_PATH=/conf
   volumes:
   - "./:/usr/src/app:z"
-  - "./sxapi.json:/conf/sxapi.json:z"
+  - "./sxapi.yml:/conf/sxapi.yml:z"
   working_dir: /usr/src/app
   entrypoint: npm
   command: start

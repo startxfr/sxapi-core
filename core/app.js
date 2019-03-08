@@ -151,7 +151,7 @@ $app = {
     var fs = require('fs');
     var mg = require('merge');
     var pkg_file = this.config.app_path + '/package.json';
-    var cfg_file = this.config.conf_path + '/sxapi.json';
+    var cfg_file = this.config.conf_path + '/sxapi.yml';
     try {
       mg.recursive($app.package, JSON.parse(fs.readFileSync(pkg_file, 'utf-8')));
       $log.debug("Pkg source   : " + this.config.app_path + '/package.json', 2);
@@ -165,13 +165,13 @@ $app = {
     }
     else {
       try {
-        mg.recursive($app.config, JSON.parse(fs.readFileSync(cfg_file, 'utf-8')));
-        $log.debug("Cfg source   : " + this.config.conf_path + '/sxapi.json', 2);
+        mg.recursive($app.config, require('js-yaml').load(fs.readFileSync(cfg_file, 'utf-8')));
+        $log.debug("Cfg source   : " + this.config.conf_path + '/sxapi.yml', 2);
       }
       catch (e) {
         $log.error("Cfg source   : is missing", 2);
         $log.debug("sxapi configuration could not be found", 3);
-        $log.debug("add environment variable SXAPI_CONF or create /conf/sxapi.json config file", 3);
+        $log.debug("add environment variable SXAPI_CONF or create /conf/sxapi.yml config file", 3);
         this.fatalError('configuration file or variable is missing');
       }
     }

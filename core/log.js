@@ -17,7 +17,7 @@ var $log = {
   isDebug: false,
   booted: false,
   /**
-   * Initialise log according to the log section in sxapi.json. 
+   * Initialise log according to the log section in sxapi.yml. 
    * @param {object} config
    * @param {bool} isDebug
    * @param {bool} disableLog
@@ -186,7 +186,7 @@ var $log = {
   sqs: {
     isActive: false,
     /**
-     * Initialise SQS queue using the $log.sqs section in sxapi.json. 
+     * Initialise SQS queue using the $log.sqs section in sxapi.yml. 
      * @returns {$log.sqs}
      */
     init: function () {
@@ -239,7 +239,7 @@ var $log = {
   couchbase: {
     isActive: false,
     /**
-     * Initialise SQS queue using the $log.couchbase section in sxapi.json. 
+     * Initialise SQS queue using the $log.couchbase section in sxapi.yml. 
      * @returns {$log.couchbase}
      */
     init: function () {

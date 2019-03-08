@@ -40,14 +40,10 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "insee-id": {
-        "_class": "insee"
-    }
-    ...
-}
+```yaml
+resources:
+  insee-id:
+    _class: insee
 ```
 
 ## Resource methods
@@ -222,16 +218,12 @@ The purpose of this endpoint is to display legals informations about a company.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/legal",
-            "resource": "insee-id",
-            "endpoint": "read"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/legal"
+    resource: insee-id
+    endpoint: read
 ```
 
 ### siret2Tva endpoint
@@ -248,16 +240,12 @@ The purpose of this endpoint is to return the VAT code (French) associated to th
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/tva",
-            "resource": "insee-id",
-            "endpoint": "siret2Tva"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/tva"
+    resource: insee-id
+    endpoint: siret2Tva
 ```
 
 ### siren2Tva endpoint
@@ -274,16 +262,12 @@ The purpose of this endpoint is to return the VAT code (French) associated to th
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/tva",
-            "resource": "insee-id",
-            "endpoint": "siren2Tva"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/tva"
+    resource: insee-id
+    endpoint: siren2Tva
 ```
 
 ### tva2Siren endpoint
@@ -300,14 +284,10 @@ The purpose of this endpoint is to return the SIREN (French) associated to the g
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/tva",
-            "resource": "insee-id",
-            "endpoint": "tva2Siren"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/tva"
+    resource: insee-id
+    endpoint: tva2Siren
 ```

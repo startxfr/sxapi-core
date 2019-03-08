@@ -13,11 +13,11 @@ describe("test running application", function () {
         expect($app).to.be.an('object');
     });
     //Start the application
-    $app.launch("/conf/sxapi.json", function () {
+    $app.launch("/conf/sxapi.yml", function () {
         it("should start the application", function () {
             expect($app.ws).to.be.an('object');
         });
-        it("should use /conf/sxapi.json", function () {
+        it("should use /conf/sxapi.yml", function () {
             expect($app.config).to.be.an('object');
         });
         var url = "/";

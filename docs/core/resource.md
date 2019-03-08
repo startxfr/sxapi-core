@@ -31,15 +31,11 @@ persist data.
 
 ### Config Sample
 
-```javascript
-{
-    "resources": {
-        "resource-id": {
-            "_class": "resource_name",
-            "param": "value"
-        }
-    }
-}
+```yaml
+resources:
+  resource-id:
+    _class: resource_name
+    param: value
 ```
 
 ## Methods
