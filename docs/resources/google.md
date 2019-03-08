@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : google
 
@@ -48,23 +48,16 @@ please refer to [Google OAuth GApp Domain-wide tutorial](https://developers.goog
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "google-id": {
-        "_class": "google",
-        "auth": {
-            "method": "jwt",
-            "jwt": { ... },
-            "scopes": "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive"
-        },
-        "services": {
-            "drive": {
-            }
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  google-id:
+    _class: google
+    auth:
+      method: jwt
+      jwt: {}
+      scopes: https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive
+    services:
+      drive: {}
 ```
 
 ## Resource methods
@@ -126,14 +119,10 @@ Take care when exposing this endpoint !
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "getToken"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: getToken
 ```

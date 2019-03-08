@@ -10,8 +10,8 @@
 cd $APP_PATH
 if [[ -d /tmp/src ]]; then
     cp -R /tmp/src/* $APP_PATH/
-    if [[ -f /tmp/src/sxapi.json ]]; then
-        cp -f /tmp/src/sxapi.json $CONF_PATH/sxapi.json
+    if [[ -f /tmp/src/sxapi.yml ]]; then
+        cp -f /tmp/src/sxapi.yml $CONF_PATH/sxapi.yml
     fi;
 #    rm -rf /tmp/src
 fi;

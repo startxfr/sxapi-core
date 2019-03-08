@@ -41,27 +41,20 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "sendmail-id": {
-        "_class": "sendmail",
-        "transport": {
-            "host": "localhost",
-            "port": 465,
-            "secure": true,
-            "auth": {
-                "user": "myUser",
-                "pass": "myPwd"
-            }
-        },
-        "messages": {
-            "from": "my@email.org",
-            "to": "my@email.org"
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  sendmail-id:
+    _class: sendmail
+    transport:
+      host: localhost
+      port: 465
+      secure: true
+      auth:
+        user: myUser
+        pass: myPwd
+    messages:
+      from: my@email.org
+      to: my@email.org
 ```
 
 ## Resource methods
@@ -124,17 +117,13 @@ The purpose of this endpoint is to send a mail when called.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/info",
-            "resource": "sendmail-id",
-            "endpoint": "sendMail",
-            "to": "my@email.org",
-            "subject": "default subject",
-            "text": "default message"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/info"
+    resource: sendmail-id
+    endpoint: sendMail
+    to: my@email.org
+    subject: default subject
+    text: default message
 ```

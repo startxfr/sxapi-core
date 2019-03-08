@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : AWS SQS
 
@@ -48,18 +48,14 @@ for a complete list of the parameters that you can use in this config object.
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "aws-sqs-id": {
-        "_class": "aws_sqs",
-        "ACCESS_ID": "xxxxxxxxxxx",
-        "ACCESS_KEY" : "yyyyyyyyyyyy",
-        "region" : "eu-west-1",
-        "QueueUrl" : "https://sqs.eu-west-1.amazonaws.com"
-    }
-    ...
-}
+```yaml
+resources:
+  aws-sqs-id:
+    _class: aws_sqs
+    ACCESS_ID: xxxxxxxxxxx
+    ACCESS_KEY: yyyyyyyyyyyy
+    region: eu-west-1
+    QueueUrl: https://sqs.eu-west-1.amazonaws.com
 ```
 
 ## Resource methods
@@ -257,19 +253,14 @@ the a list of message from a given queue.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs",
-            "resource": "aws-sqs-id",
-            "endpoint": "listMessages",
-            "config": {
-                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs"
+    resource: aws-sqs-id
+    endpoint: listMessages
+    config:
+      QueueUrl: https://sqs.eu-west-1.amazonaws.com
 ```
 
 ### addMessage endpoint
@@ -288,17 +279,13 @@ will be the HTTP body of the query.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs/:id",
-            "method": "POST",
-            "resource": "aws-sqs-id",
-            "endpoint": "addMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs/:id"
+    method: POST
+    resource: aws-sqs-id
+    endpoint: addMessage
 ```
 
 ### deleteMessage endpoint
@@ -316,17 +303,13 @@ The purpose of this endpoint is to delete a message from AWS SQS queue. Id is de
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs/:id",
-            "method": "DELETE",
-            "resource": "aws-sqs-id",
-            "endpoint": "deleteMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs/:id"
+    method: DELETE
+    resource: aws-sqs-id
+    endpoint: deleteMessage
 ```
 
 ### listQueue endpoint
@@ -345,19 +328,14 @@ the a list of availables queues.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs",
-            "resource": "aws-sqs-id",
-            "endpoint": "listQueue",
-            "config": {
-                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs"
+    resource: aws-sqs-id
+    endpoint: listQueue
+    config:
+      QueueUrl: https://sqs.eu-west-1.amazonaws.com
 ```
 
 ### addQueue endpoint
@@ -376,17 +354,13 @@ is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs/:id",
-            "method": "POST",
-            "resource": "aws-sqs-id",
-            "endpoint": "addQueue"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs/:id"
+    method: POST
+    resource: aws-sqs-id
+    endpoint: addQueue
 ```
 
 ### deleteQueue endpoint
@@ -404,15 +378,11 @@ The purpose of this endpoint is to delete a complete AWS SQS queue. Id is define
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_sqs/:id",
-            "method": "DELETE",
-            "resource": "aws-sqs-id",
-            "endpoint": "deleteQueue"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_sqs/:id"
+    method: DELETE
+    resource: aws-sqs-id
+    endpoint: deleteQueue
 ```

@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : google_drive
 
@@ -39,19 +39,13 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "google-id": {
-        "_class": "google",
-        "auth": { ... },
-        "services": {
-            "drive": {
-            }
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  google-id:
+    _class: google
+    auth: {}
+    services:
+      drive: {}
 ```
 
 ## Resource methods
@@ -643,17 +637,13 @@ to the http response.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "getFile",
-            "fileId" : "314159265358979323846"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: getFile
+    fileId: '314159265358979323846'
 ```
 
 
@@ -676,17 +666,13 @@ content received from the http request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "addFile",
-            "parent" : "314159265358979323846"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: addFile
+    parent: '314159265358979323846'
 ```
 
 
@@ -707,17 +693,13 @@ The purpose of this endpoint is to find a list of file coresponding to the given
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "findFile",
-            "q" : "fullText contains 'hello'"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: findFile
+    q: fullText contains 'hello'
 ```
 
 
@@ -739,17 +721,13 @@ The purpose of this endpoint is to find a list of files within a given directory
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "listDirectory",
-            "folderId" : "314159265358979323846"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: listDirectory
+    folderId: '314159265358979323846'
 ```
 
 ### addDirectory endpoint
@@ -771,16 +749,12 @@ The purpose of this endpoint is to add a new directory into our google drive bac
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/token",
-            "resource": "google-id",
-            "endpoint": "listDirectory",
-            "parent" : "314159265358979323846",
-            "name" : "new folder from sxapi"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/token"
+    resource: google-id
+    endpoint: listDirectory
+    parent: '314159265358979323846'
+    name: new folder from sxapi
 ```

@@ -101,7 +101,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the Twitter stream defined in the config section of sxapi.json
+     * Read the Twitter stream defined in the config section of sxapi.yml
      * @param {object} options object with options to pass to the Twitter readStream method
      * @param {function} callback to call when Twitter answer
      * @returns {$twt.connection.stream}
@@ -140,7 +140,7 @@ module.exports = function (id, config) {
       }
     },
 //    /**
-//     * Read the Twitter queue defined in the config.queue section of sxapi.json
+//     * Read the Twitter queue defined in the config.queue section of sxapi.yml
 //     * @param {object} options object with options to pass to the Twitter receiveMessage method
 //     * @param {function} callback to call when Twitter answer
 //     * @returns {$twt.connection}
@@ -238,7 +238,7 @@ module.exports = function (id, config) {
 //      return this;
 //    },
 //    /**
-//     * Read the Twitter queue defined in the config.queue section of sxapi.json
+//     * Read the Twitter queue defined in the config.queue section of sxapi.yml
 //     * @param {string} message body of the message whe want to send
 //     * @param {object} options object with options to pass to the Twitter sendMessage method
 //     * @param {function} callback to call when Twitter answer

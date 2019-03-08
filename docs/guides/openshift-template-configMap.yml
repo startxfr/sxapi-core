@@ -12,7 +12,7 @@ objects:
   metadata:
     name: "${APPLICATION_NAME}"
   data:
-    sxapi.json: "${SXAPI_CONF}"
+    sxapi.yml: "${SXAPI_CONF}"
 - kind: Service
   apiVersion: v1
   metadata:
@@ -77,8 +77,8 @@ objects:
             configMap:
               name: "${APPLICATION_NAME}"
               items:
-              - key: sxapi.json
-                path: sxapi.json
+              - key: sxapi.yml
+                path: sxapi.yml
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
@@ -86,7 +86,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.2.25
+  value: 0.2.99
   required: true
 - name: REGISTRY
   value: "startx/sxapi"

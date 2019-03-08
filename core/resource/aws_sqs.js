@@ -91,7 +91,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the SQS queue defined in the config.queue section of sxapi.json
+     * Read the SQS queue defined in the config.queue section of sxapi.yml
      * @param {object} options object with options to pass to the AWS receiveMessage method
      * @param {function} callback to call when AWS answer
      * @returns {$queue.sqs}
@@ -189,7 +189,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the SQS queue defined in the config.queue section of sxapi.json
+     * Read the SQS queue defined in the config.queue section of sxapi.yml
      * @param {string} message body of the message whe want to send
      * @param {object} options object with options to pass to the AWS sendMessage method
      * @param {function} callback to call when AWS answer

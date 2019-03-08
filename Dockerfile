@@ -1,7 +1,7 @@
 FROM node:8-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV SXAPI_VERSION=0.2.25 \
+ENV SXAPI_VERSION=0.2.99 \
     SX_ID="startx/sxapi" \
     SX_NAME="Startx SXAPI (alpine)" \
     SX_SUMMARY="Small an eXtensible API framework to build small and flexible microservices using a single configuration file" \
@@ -34,7 +34,7 @@ COPY ./s2i /s2i
 COPY ./core $APP_PATH/core
 COPY ./app.js $APP_PATH/app.js
 COPY ./package.json $APP_PATH/package.json
-COPY ./sxapi.json $CONF_PATH/sxapi.json
+COPY ./sxapi.yml $CONF_PATH/sxapi.yml
 
 RUN  apk update && apk upgrade && apk add git python make gcc g++ \
  &&  mkdir -p $APP_PATH $CONF_PATH $DATA_PATH /.npm /.config \

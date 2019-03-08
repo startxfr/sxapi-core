@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : web server manager
 
@@ -70,24 +70,16 @@ connections.
 
 ### Config Sample
 
-```javascript
-{
-    "server": {
-        "port": "8080",
-        "endpoints": [
-            {
-                "path": "/ping",
-                "desc": "Ping the application. Return a sample message in json",
-                "code": "200",
-                "body": "pong"
-            },
-            {
-                "path": "/info",
-                "desc": "return API information from the server (using serviceinfo resource)",
-                "resource": "serviceinfo-sample",
-                "endpoint": "info"
-            }
-        ]
-    }
-}
+```yaml
+server:
+  port: '8080'
+  endpoints:
+  - path: "/ping"
+    desc: Ping the application. Return a sample message in json
+    code: '200'
+    body: pong
+  - path: "/info"
+    desc: return API information from the server (using serviceinfo resource)
+    resource: serviceinfo-sample
+    endpoint: info
 ```
