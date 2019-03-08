@@ -6,3 +6,4 @@ test
 bot-*
 full-*
 .travis.yml
+.git
