@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # USE sxapi with docker
 
@@ -47,37 +47,30 @@ This will update your local docker image cache.
 docker pull startx/sxapi:latest
 ```
 
-### 4. Create your sxapi.json configuration file
+### 4. Create your sxapi.yml configuration file
 
-Create a file named sxapi.json
+Create a file named sxapi.yml
 
 ```bash
-vi ~/test-sxapi/sxapi.json
+vi ~/test-sxapi/sxapi.yml
 ```
 
 Edit it with the following content
 
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My sample API</h1></body></html>"
-            }
-        ]
-    }
-}
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My sample API</h1></body></html>"
+
 ```
 
 You can change `name`, `description`, `version` and `server.endpoints.body` with personalized content
@@ -87,13 +80,13 @@ You can change `name`, `description`, `version` and `server.endpoints.body` with
 with your own configuration file 
 
 ```bash
-docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx/sxapi
+docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
 ```
 
 or using environement variable
 
 ```bash
-docker run -d -p 8080:8080  --env SXAPI_CONF=$(cat ~/test-sxapi/sxapi.json) startx/sxapi
+docker run -d -p 8080:8080  --env SXAPI_CONF=$(cat ~/test-sxapi/sxapi.yml) startx/sxapi
 ```
 
 ### 6. Explore your api
@@ -131,33 +124,25 @@ when using our container version, you can follow these step :
 docker pull startx/sxapi:latest
 ```
 
-2. Create a file named sxapi.json and edit it with the following content
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My sample API</h1></body></html>"
-            }
-        ]
-    }
-}
+2. Create a file named sxapi.yml and edit it with the following content
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My sample API</h1></body></html>"
 ```
 
 3. Run your application
 ```bash
-docker run -d -p 8080:8080 -v $(pwd)/sxapi.json:/conf/sxapi.json:ro startx/sxapi
+docker run -d -p 8080:8080 -v $(pwd)/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
 ```
 
 4. Connect to `http://localhost:8080` with your favorite navigator
@@ -174,33 +159,25 @@ api:
   ports:
     - "8080:8080"
   volumes:
-  - "./sxapi-test.json:/conf/sxapi.json:ro"
+  - "./sxapi-dev.yml:/conf/sxapi.yml:ro"
 ```
 
 1. Create your `docker-compose.yml` file with the previous content
 
-2. Create a file named sxapi.json and edit it with the following content
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My sample API</h1></body></html>"
-            }
-        ]
-    }
-}
+2. Create a file named sxapi.yml and edit it with the following content
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My sample API</h1></body></html>"
 ```
 
 3. Run your application

@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : http
 
@@ -42,18 +42,13 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "http-id": {
-        "_class": "http",
-        "url": "https://adobe.github.io/Spry/data/json/array-02.js",
-        "headers": {
-          "User-Agent": "request"
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  http-id:
+    _class: http
+    url: https://adobe.github.io/Spry/data/json/array-02.js
+    headers:
+      User-Agent: request
 ```
 
 ## Resource methods
@@ -115,18 +110,13 @@ the server response. it can be seen like an http proxy.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/info",
-            "resource": "http-id",
-            "endpoint": "info",
-            "url": "https://adobe.github.io/Spry/data/json/object-01.js",
-            "headers": {
-                "User-Agent": "request"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/info"
+    resource: http-id
+    endpoint: info
+    url: https://adobe.github.io/Spry/data/json/object-01.js
+    headers:
+      User-Agent: request
 ```

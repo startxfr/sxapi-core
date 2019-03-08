@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resources Catalog
 
@@ -41,42 +41,34 @@ if(resourceManager.exist('resource-id')) {
 
 ## Using a resource
 
-If you wan't to see sample sxapi.json config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.0.27-npm/samples)
+If you wan't to see sample sxapi.yml config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.2.99-npm/samples)
 
-### Declaring a resource in your sxapi.json
+### Declaring a resource in your sxapi.yml
 
-Resources are referenced within the `resources` key in sxapi.json. This object reference, with and *resource-id*, all resources available in you API. You have to read resource documentation to know required or available configuration parameters.
+Resources are referenced within the `resources` key in sxapi.yml. This object reference, with and *resource-id*, all resources available in you API. You have to read resource documentation to know required or available configuration parameters.
 
-```javascript
-{
-    "resources": {
-        "resource-id": {
-            "_class": "resource_name",
-            "param": "value"
-        }
-    }
-}
+```yaml
+resources:
+  resource-id:
+    _class: resource_name
+    param: value
 ```
 You can then use the *resource-id* in your [endpoints](#using-a-resource-endpoint) or with the [resource manager](#using-a-resource-method)
 
 ### Using a resource endpoint
 
-If a resource come with endpoints, they are all available using the `endpoints` property of the resource instance. In your sxapi.json, you can use them in your declared endpoints. You must use the configuration property `endpoint: "endpoints.method"` in your endpoint configuration object. This method will receive the full config endpoint object (with inherited property of parents if required). You can use as many times the same resource endpoint with various configuration options.
+If a resource come with endpoints, they are all available using the `endpoints` property of the resource instance. In your sxapi.yml, you can use them in your declared endpoints. You must use the configuration property `endpoint: "endpoints.method"` in your endpoint configuration object. This method will receive the full config endpoint object (with inherited property of parents if required). You can use as many times the same resource endpoint with various configuration options.
 
 -   `resource` **string** REQUIRED *resource-id* of the resource to use
 -   `endpoint` **string** REQUIRED resource method to use for handling response
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/beer",
-            "method": "POST",
-            "resource": "resource-id",
-            "endpoint": "endpoints.method"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/beer"
+    method: POST
+    resource: resource-id
+    endpoint: endpoints.method
 ```
 
 ### Using a resource method

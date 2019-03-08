@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # USE sxapi with npm
 
@@ -48,28 +48,20 @@ sxapi.app.launch(function () {
 });
 ```
 
-3. Create a file named sxapi.json and edit it with the following content
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My API</h1></body></html>"
-            }
-        ]
-    }
-}
+3. Create a file named sxapi.yml and edit it with the following content
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My API</h1></body></html>"
 ```
 
 4. Start your application

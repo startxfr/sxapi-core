@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : couchbase
 
@@ -58,19 +58,14 @@ for more information.
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "couchbase-id": {
-        "_class" : "couchbase",
-        "cluster": "http://172.17.42.1:8091",
-        "bucket" : "bucket",
-        "insertOptions": {
-            "expiry" : 3600
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  couchbase-id:
+    _class: couchbase
+    cluster: http://172.17.42.1:8091
+    bucket: bucket
+    insertOptions:
+      expiry: 3600
 ```
 
 ## Resource methods
@@ -261,17 +256,13 @@ the value associated to the given document ID.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/couchbase",
-            "resource": "couchbase-id",
-            "endpoint": "list",
-            "n1ql": "SELECT name FROM `beer-sample` WHERE  brewery_id =\"mishawaka_brewing\";"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/couchbase"
+    resource: couchbase-id
+    endpoint: list
+    n1ql: SELECT name FROM `beer-sample` WHERE  brewery_id ="mishawaka_brewing";
 ```
 
 ### Read endpoint
@@ -292,16 +283,12 @@ and work extremely fast on well sized cluster.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/couchbase/:id",
-            "resource": "couchbase-id",
-            "endpoint": "read"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/couchbase/:id"
+    resource: couchbase-id
+    endpoint: read
 ```
 
 ### Create endpoint
@@ -321,17 +308,13 @@ Document Id is defined by the context, and document will be the HTTP body of the
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/couchbase/:id",
-            "method": "POST",
-            "resource": "couchbase-id",
-            "endpoint": "create"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/couchbase/:id"
+    method: POST
+    resource: couchbase-id
+    endpoint: create
 ```
 
 
@@ -352,17 +335,13 @@ Document Id is defined by the context, and document will be the HTTP body of the
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/couchbase/:id",
-            "method": "PUT",
-            "resource": "couchbase-id",
-            "endpoint": "update"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/couchbase/:id"
+    method: PUT
+    resource: couchbase-id
+    endpoint: update
 ```
 
 ### Delete endpoint
@@ -383,16 +362,12 @@ by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/couchbase/:id",
-            "method": "DELETE",
-            "resource": "couchbase-id",
-            "endpoint": "delete"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/couchbase/:id"
+    method: DELETE
+    resource: couchbase-id
+    endpoint: delete
 ```
 

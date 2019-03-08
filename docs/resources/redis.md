@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : redis
 
@@ -44,16 +44,12 @@ for a complete list of the parameters that you can use in this config object.
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "redis-id": {
-        "_class": "redis",
-        "url": "redis://dev:dev@172.17.42.1/bucket",
-        "return_buffers" : false
-    }
-    ...
-}
+```yaml
+resources:
+  redis-id:
+    _class: redis
+    url: redis://dev:dev@172.17.42.1/bucket
+    return_buffers: false
 ```
 
 ## Resource methods
@@ -188,16 +184,12 @@ the value associated to the given key.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/redis",
-            "resource": "redis-id",
-            "endpoint": "read"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/redis"
+    resource: redis-id
+    endpoint: read
 ```
 
 ### Create endpoint
@@ -215,17 +207,13 @@ by the context, and document will be the HTTP body of the query.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/redis/:id",
-            "method": "POST",
-            "resource": "redis-id",
-            "endpoint": "create"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/redis/:id"
+    method: POST
+    resource: redis-id
+    endpoint: create
 ```
 
 
@@ -244,17 +232,13 @@ by the context, and document will be the HTTP body of the query.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/redis/:id",
-            "method": "PUT",
-            "resource": "redis-id",
-            "endpoint": "update"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/redis/:id"
+    method: PUT
+    resource: redis-id
+    endpoint: update
 ```
 
 ### Delete endpoint
@@ -272,15 +256,11 @@ Key Id is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/redis/:id",
-            "method": "DELETE",
-            "resource": "redis-id",
-            "endpoint": "delete"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/redis/:id"
+    method: DELETE
+    resource: redis-id
+    endpoint: delete
 ```

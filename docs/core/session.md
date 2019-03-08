@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : session manager
 
@@ -33,19 +33,16 @@ used a buildin mecanism for user context persistance.
 
 ### Config Sample
 
-```javascript
-"session": {
-    "duration"   : 3600,
-    "auto_create": true,
-    "transport"  : {
-        "type": "cookie",
-        ...
-    },
-    "backend"    : {
-        "type": "memory",
-        ...
-    }
-}
+```yaml
+session:
+  duration: 3600
+  auto_create: true
+  transport:
+    type: cookie
+    ...
+  backend:
+    type: memory
+    ...
 ```
 
 ## Transport type
@@ -72,13 +69,11 @@ Choose carefully your `param` name to avoid naming conflict with your API endpoi
 
 #### Token config sample
 
-```javascript
-"session": {
-    "transport": {
-        "type" : "token",
-        "param": "sid"
-    }
-}
+```yaml
+session:
+  transport:
+    type: token
+    param: sid
 ```
 
 ### transport using `cookie`
@@ -103,14 +98,13 @@ cookies.
 
 #### Cookie config sample
 
-```javascript
-"session": {
-    "transport": {
-        "type"           : "cookie",
-        "cookie_name"    : "sxapi-sess",
-        "cookie_options" : { ... }
-    }
-}
+```yaml
+session:
+  transport:
+    type: cookie
+    cookie_name: sxapi-sess
+    cookie_options: 
+      ...
 ```
 
 
@@ -131,12 +125,10 @@ the session ID.
 
 #### Bearer config sample
 
-```javascript
-"session": {
-    "transport": {
-        "type" : "bearer"
-    }
-}
+```yaml
+session:
+  transport:
+    type: bearer
 ```
 
 
@@ -165,20 +157,17 @@ This backend type use [mysql resource](../resource/mysql.md) to persist session 
 
 #### mysql config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"     : "mysql",
-        "resource" : "mysql-sample",
-        "table"    : "sessions",
-        "sid_field": "token_sess",
-        "fields"   : {
-            "ip"   : "ip_sess",
-            "start": "start_sess",
-            "stop" : "stop_sess"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: mysql
+    resource: mysql-sample
+    table: sessions
+    sid_field: token_sess
+    fields:
+      ip: ip_sess
+      start: start_sess
+      stop: stop_sess
 ```
 
 ### backend using `postgres`
@@ -200,20 +189,17 @@ This backend type use [postgres resource](../resource/postgres.md) to persist se
 
 #### postgres config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"     : "postgres",
-        "resource" : "postgres-sample",
-        "table"    : "sessions",
-        "sid_field": "token_sess",
-        "fields"   : {
-            "ip"   : "ip_sess",
-            "start": "start_sess",
-            "stop" : "stop_sess"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: postgres
+    resource: postgres-sample
+    table: sessions
+    sid_field: token_sess
+    fields:
+      ip: ip_sess
+      start: start_sess
+      stop: stop_sess
 ```
 
 ### backend using `couchbase`
@@ -235,20 +221,17 @@ This backend type use [couchbase resource](../resource/couchbase.md) to persist 
 
 #### couchbase config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"    : "couchbase",
-        "resource": "couchbase-sample",
-        "key_ns"  : "sess::",
-        "fields"  : {
-            "token": "token",
-            "ip"   : "ipAdress",
-            "start": "startDate",
-            "stop" : "stopDate"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: couchbase
+    resource: couchbase-sample
+    key_ns: 'sess::'
+    fields:
+      token: token
+      ip: ipAdress
+      start: startDate
+      stop: stopDate
 ```
 
 ### backend using `memory`
@@ -268,18 +251,15 @@ This backend type use application memory space to persist session context across
 
 #### memory config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"     : "memory",
-        "sid_field": "sessionID",
-        "fields"   : {
-            "ip"   : "ipAdress",
-            "start": "startDate",
-            "stop" : "stopDate"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: memory
+    sid_field: sessionID
+    fields:
+      ip: ipAdress
+      start: startDate
+      stop: stopDate
 ```
 
 ### backend using `memcache`
@@ -300,17 +280,14 @@ This backend type use [memcache resource](../resource/memcache.md) to persist se
 
 #### memcache config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"      : "memcache",
-        "resource"  : "memcache-sample",
-        "sid_field" : "token",
-        "fields"    : {
-            "stop"  : "stopDate"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: memcache
+    resource: memcache-sample
+    sid_field: token
+    fields:
+      stop: stopDate
 ```
 
 ### backend using `redis`
@@ -331,15 +308,12 @@ This backend type use [redis resource](../resource/redis.md) to persist session 
 
 #### redis config sample
 
-```javascript
-"session": {
-    "backend": {
-        "type"      : "redis",
-        "resource"  : "redis-sample",
-        "sid_field" : "token",
-        "fields"    : {
-            "stop"  : "stopDate"
-        }
-    }
-}
+```yaml
+session:
+  backend:
+    type: redis
+    resource: redis-sample
+    sid_field: token
+    fields:
+      stop: stopDate
 ```

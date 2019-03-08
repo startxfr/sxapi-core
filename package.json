@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.2.25",
+  "version": "0.2.99",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
@@ -98,7 +98,8 @@
     "object-recursive-iterator": "~1.0.2",
     "socket.io": "~2.2.0",
     "socket.io-client": "~2.2.0",
-    "mime-types": "~2.1.21"
+    "mime-types": "~2.1.21",
+    "js-yaml": "~3.12.2"
   },
   "devDependencies": {
     "mocha": "~5.2.0",

@@ -11,7 +11,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [twitter npm module](https://www.npmjs.com/package/twitter) 
 [![npm](https://img.shields.io/npm/v/twitter.svg)](https://www.npmjs.com/package/twitter) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.2.25-blue.svg)](https://github.com/startxfr/sxapi-core).
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.2.99-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>
@@ -47,18 +47,14 @@ for a complete list of the parameters that you can use in this config object.
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "twitter-id": {
-        "_class": "twitter",
-        "consumer_key": "xxxxxxxxxxx",
-        "consumer_secret" : "yyyyyyyyyyyy",
-        "access_token_key": "xxxxxxxxxxx",
-        "access_token_secret" : "yyyyyyyyyyyy"
-    }
-    ...
-}
+```yaml
+resources:
+  twitter-id:
+    _class: twitter
+    consumer_key: xxxxxxxxxxx
+    consumer_secret: yyyyyyyyyyyy
+    access_token_key: xxxxxxxxxxx
+    access_token_secret: yyyyyyyyyyyy
 ```
 
 ## Resource methods
@@ -282,19 +278,13 @@ the a list of message from a given queue.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter",
-            "resource": "twitter-id",
-            "endpoint": "listMessages",
-            "config": {
-                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter"
+    resource: twitter-id
+    endpoint: listMessages
+    config: {}
 ```
 
 ### addMessage endpoint
@@ -313,17 +303,13 @@ will be the HTTP body of the query.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter/:id",
-            "method": "POST",
-            "resource": "twitter-id",
-            "endpoint": "addMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter/:id"
+    method: POST
+    resource: twitter-id
+    endpoint: addMessage
 ```
 
 ### deleteMessage endpoint
@@ -341,17 +327,13 @@ The purpose of this endpoint is to delete a message from Twitter API queue. Id i
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter/:id",
-            "method": "DELETE",
-            "resource": "twitter-id",
-            "endpoint": "deleteMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter/:id"
+    method: DELETE
+    resource: twitter-id
+    endpoint: deleteMessage
 ```
 
 ### listQueue endpoint
@@ -370,19 +352,13 @@ the a list of availables queues.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter",
-            "resource": "twitter-id",
-            "endpoint": "listQueue",
-            "config": {
-                QueueUrl : "https://sqs.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter"
+    resource: twitter-id
+    endpoint: listQueue
+    config: {}
 ```
 
 ### addQueue endpoint
@@ -401,17 +377,13 @@ is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter/:id",
-            "method": "POST",
-            "resource": "twitter-id",
-            "endpoint": "addQueue"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter/:id"
+    method: POST
+    resource: twitter-id
+    endpoint: addQueue
 ```
 
 ### deleteQueue endpoint
@@ -429,15 +401,11 @@ The purpose of this endpoint is to delete a complete Twitter API queue. Id is de
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/twitter/:id",
-            "method": "DELETE",
-            "resource": "twitter-id",
-            "endpoint": "deleteQueue"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/twitter/:id"
+    method: DELETE
+    resource: twitter-id
+    endpoint: deleteQueue
 ```

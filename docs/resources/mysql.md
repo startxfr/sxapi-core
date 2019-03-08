@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.25-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resource : mysql
 
@@ -49,23 +49,17 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "mysql-id": {
-        "_class" : "mysql",
-        "server": {
-            "host": "172.17.42.1",
-            "port": "3306",
-            "user": "username",
-            "password": "userpassword",
-            "database": "databasename"
-            "connectTimeout" : 10000
-
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  mysql-id:
+    _class: mysql
+    server:
+      host: 172.17.42.1
+      port: '3306'
+      user: username
+      password: userpassword
+      database: databasename
+      connectTimeout: 10000
 ```
 
 ## Resource methods
@@ -228,18 +222,14 @@ the value associated to the given document ID.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql",
-            "resource": "mysql-id",
-            "endpoint": "list",
-            "configParam": "test",
-            "sql": "SELECT name FROM `table-sample` WHERE fieldname_id =\"{{key}}\" AND fieldname_sample =\"{{configParam}}\";"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql"
+    resource: mysql-id
+    endpoint: list
+    configParam: test
+    sql: SELECT name FROM `table-sample` WHERE fieldname_id ="{{key}}" AND fieldname_sample ="{{configParam}}";
 ```
 
 Whith the previous configuration sample, if you make the following http request `GET /mysql?key=id`
@@ -263,18 +253,14 @@ the value associated to the given row ID.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql/:id",
-            "resource": "mysql-id",
-            "endpoint": "read",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql/:id"
+    resource: mysql-id
+    endpoint: read
+    table: log
+    id_field: id
 ```
 ### ReadOne endpoint
 
@@ -293,18 +279,14 @@ the value associated to the given row ID. only the first result is returned, no 
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql/:id",
-            "resource": "mysql-id",
-            "endpoint": "readOne",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql/:id"
+    resource: mysql-id
+    endpoint: readOne
+    table: log
+    id_field: id
 ```
 
 ### Create endpoint
@@ -325,19 +307,15 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql/:id",
-            "method": "POST",
-            "resource": "mysql-id",
-            "endpoint": "create",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql/:id"
+    method: POST
+    resource: mysql-id
+    endpoint: create
+    table: log
+    id_field: id
 ```
 
 
@@ -359,19 +337,15 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql/:id",
-            "method": "PUT",
-            "resource": "mysql-id",
-            "endpoint": "update",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql/:id"
+    method: PUT
+    resource: mysql-id
+    endpoint: update
+    table: log
+    id_field: id
 ```
 
 ### Delete endpoint
@@ -391,17 +365,13 @@ Table row is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/mysql/:id",
-            "method": "DELETE",
-            "resource": "mysql-id",
-            "endpoint": "delete",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/mysql/:id"
+    method: DELETE
+    resource: mysql-id
+    endpoint: delete
+    table: log
+    id_field: id
 ```

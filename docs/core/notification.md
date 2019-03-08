@@ -25,13 +25,11 @@ notification context will be defined and your API will be muted and no notificat
 
 ### Config Sample
 
-```javascript
-"notification": {
-    "pipeline-id": {
-            "type": "sqs",
-            "resource": "sqs-api"
-    }
-}
+```yaml
+notification:
+  pipeline-id:
+    type: sqs
+    resource: sqs-api
 ```
 
 
@@ -46,9 +44,8 @@ notification context will be defined and your API will be muted and no notificat
 
 ### Config Sample
 
-```javascript
-"notification": {
-    "pipeline": "pipeline-id",
-    "event": "event:action"
-}
+```yaml
+notification:
+  pipeline: pipeline-id
+  event: event:action
 ```

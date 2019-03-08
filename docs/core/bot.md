@@ -6,7 +6,7 @@ The bot component is a [core component](./README.md) used for executing cron tas
 This component comes with 2 kind of tasks : cron for time based actions or reader for message driven actions.
 
 This resource is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.2.25-blue.svg)](https://github.com/startxfr/sxapi-core).
+until [![sxapi](https://img.shields.io/badge/sxapi-v0.2.99-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Configuration
 
@@ -44,38 +44,25 @@ bot context will be defined.
 
 ### Config Sample
 
-```javascript
-"bot": {
-    "lib": "./mylib",
-    "cron": [
-        {
-            "id": "test-task",
-            "name": "Execute test task",
-            "schedule": "*/1 * * * *",
-            "task": "cronTask"
-        }
-    ],
-    "readers": {
-        "sqs": [ {
-            "resource": "sqs-demo",
-            "filters": [
-                {
-                    "id": "test-task",
-                    "event": "api:objectname:create",
-                    "task": "mySqsFunction"
-                }
-            ]
-        } ],
-        "twitter": [ {
-            "resource": "twitter-demo",
-            "filters": [
-                {
-                    "id": "test-task",
-                    "match": "#paris",
-                    "task": "myTwitterFunction"
-                }
-            ]
-        } ]
-    }
-}
+```yaml
+bot:
+  lib: "./mylib"
+  cron:
+  - id: test-task
+    name: Execute test task
+    schedule: "*/1 * * * *"
+    task: cronTask
+  readers:
+    sqs:
+    - resource: sqs-demo
+      filters:
+      - id: test-task
+        event: api:objectname:create
+        task: mySqsFunction
+    twitter:
+    - resource: twitter-demo
+      filters:
+      - id: test-task
+        match: "#paris"
+        task: myTwitterFunction
 ```
