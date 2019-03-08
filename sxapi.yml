@@ -1,7 +1,8 @@
-name: sxapi-default-testing
+---
+name: sxapi-default-run
 description: sxapi default microservice API ({{{NODE_ENV}}})
 version: 0.0.1
-debug: "{{{SX_DEBUG}}}"
+debug: false
 session:
   duration: 3600
   auto_create: true
@@ -21,23 +22,10 @@ resources:
     host: http://localhost:8080
 log:
   filters:
-    level: '0,1,2,3,4,5'
-    type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
+    level: '0,1,2'
+    type: info,error,warn
 server:
   port: '8080'
-  lib: "./bot-mylib"
-  static:
-  - path: "/test"
-    dir: "/test"
-  enableWebsockets: true
-  websockets:
-    events:
-    - event: test
-      handler: "$ws.websockets.onMessageDefaultCallback"
-    - event: testGlobal
-      handler: "$ws.lib.mySocketEndpointFunction"
-    - event: disconnect
-      handler: "$ws.websockets.onMessageDefaultCallback"
   endpoints:
   - path: "/"
     desc: Display welcome message (HTML)
@@ -52,7 +40,7 @@ server:
       running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>
     - <div class="alert alert-info" role="alert"><p>The application signature is <b>{{appsign}}</b>
       and corespond to a blank project.</p></div>
-    - "<p>Default config file must be changed and replaced your <b>own sxapi.json</b>
+    - "<p>Default config file must be changed and replaced your <b>own sxapi.yml</b>
       config file."
     - You will then be able to build your own API resources and endpoints.<br>
     - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"
@@ -71,10 +59,3 @@ server:
     desc: Ping the application. Return a sample message in json
     code: '200'
     body: pong
-  - path: "/function"
-    desc: Ping the application. Return a sample message in json
-    handler: "$ws.dynamicRequestHandlerTest"
-  - path: "/function2"
-    desc: Test fonction to get e rturn and accès to low level resources
-    handler: "$ws.lib.myEndpointFunction"
-    param_sample: dev-config

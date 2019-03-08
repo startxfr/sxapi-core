@@ -52,37 +52,30 @@ Use docker command to get sxapi container image from the docker hub registry. Th
 docker pull startx/sxapi:latest
 ```
 
-### 4. Create your sxapi.json configuration file
+### 4. Create your sxapi.yml configuration file
 
-Create a file named sxapi.json
+Create a file named sxapi.yml
 
 ```bash
-vi ~/test-sxapi/sxapi.json
+vi ~/test-sxapi/sxapi.yml
 ```
 
 Edit it with the following content
 
-```javascript
-{
-    "name": "sample-api",
-    "description": "my sample api using sxapi-core framework",
-    "version": "0.0.0",
-    "debug": true,
-    "log": {
-        "filters": {
-            "level": "0,1,2,3,4",
-            "type": "debug,info,error,warn"
-        }
-    },
-    "server": {
-        "endpoints": [
-            {
-                "path": "/",
-                "body": "<html><head></head><body><h1>My sample API</h1></body></html>"
-            }
-        ]
-    }
-}
+```yaml
+name: sample-api
+description: my sample api using sxapi-core framework
+version: 0.0.0
+debug: true
+log:
+  filters:
+    level: '0,1,2,3,4'
+    type: debug,info,error,warn
+server:
+  endpoints:
+  - path: "/"
+    body: "<html><head></head><body><h1>My sample API</h1></body></html>"
+
 ```
 
 You can change ```name```, ```description```, ```version``` and ```server.endpoints.body``` with personalized content
@@ -90,7 +83,7 @@ You can change ```name```, ```description```, ```version``` and ```server.endpoi
 ### 5. Run your application
 
 ```bash
-docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.json:/conf/sxapi.json:ro startx/sxapi
+docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
 ```
 
 ### 6. Explore your api
