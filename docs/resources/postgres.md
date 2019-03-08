@@ -48,23 +48,17 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "postgres-id": {
-        "_class" : "postgres",
-        "server": {
-            "host": "172.17.42.1",
-            "port": "3306",
-            "user": "username",
-            "password": "userpassword",
-            "database": "databasename"
-            "connectTimeout" : 10000
-
-        }
-    }
-    ...
-}
+```yaml
+resources:
+  postgres-id:
+    _class: postgres
+    server:
+      host: 172.17.42.1
+      port: '3306'
+      user: username
+      password: userpassword
+      database: databasename
+      connectTimeout: 10000
 ```
 
 ## Resource methods
@@ -226,18 +220,14 @@ the value associated to the given document ID.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/postgres",
-            "resource": "postgres-id",
-            "endpoint": "list",
-            "configParam": "test",
-            "sql": "SELECT name FROM `table-sample` WHERE fieldname_id =\"{{key}}\" AND fieldname_sample =\"{{configParam}}\";"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/postgres"
+    resource: postgres-id
+    endpoint: list
+    configParam: test
+    sql: SELECT name FROM `table-sample` WHERE fieldname_id ="{{key}}" AND fieldname_sample ="{{configParam}}";
 ```
 
 Whith the previous configuration sample, if you make the following http request `GET /postgres?key=id`
@@ -261,18 +251,14 @@ the value associated to the given row ID.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/postgres/:id",
-            "resource": "postgres-id",
-            "endpoint": "read",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/postgres/:id"
+    resource: postgres-id
+    endpoint: read
+    table: log
+    id_field: id
 ```
 
 ### Create endpoint
@@ -293,19 +279,15 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/postgres/:id",
-            "method": "POST",
-            "resource": "postgres-id",
-            "endpoint": "create",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/postgres/:id"
+    method: POST
+    resource: postgres-id
+    endpoint: create
+    table: log
+    id_field: id
 ```
 
 
@@ -327,19 +309,15 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/postgres/:id",
-            "method": "PUT",
-            "resource": "postgres-id",
-            "endpoint": "update",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/postgres/:id"
+    method: PUT
+    resource: postgres-id
+    endpoint: update
+    table: log
+    id_field: id
 ```
 
 ### Delete endpoint
@@ -359,17 +337,13 @@ Table row is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/postgres/:id",
-            "method": "DELETE",
-            "resource": "postgres-id",
-            "endpoint": "delete",
-            "table": "log",
-            "id_field": "id"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/postgres/:id"
+    method: DELETE
+    resource: postgres-id
+    endpoint: delete
+    table: log
+    id_field: id
 ```

@@ -41,15 +41,11 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "websocket-client-id": {
-        "_class": "websocket-client",
-        "host": "http://localhost:8080"
-    }
-    ...
-}
+```yaml
+resources:
+  websocket-client-id:
+    _class: websocket-client
+    host: http://localhost:8080
 ```
 
 ## Resource methods
@@ -121,15 +117,11 @@ the server response.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/emitter",
-            "resource": "websocket-client-id",
-            "endpoint": "emit",
-            "event": "myEvent"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/emitter"
+    resource: websocket-client-id
+    endpoint: emit
+    event: myEvent
 ```

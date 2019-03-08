@@ -30,14 +30,11 @@ log context will be defined and your API will be muted and no log will be persis
 
 ### Config Sample
 
-```javascript
-"log": {
-    "filters": {
-        "level": "0,1,2",
-        "type": "debug,info,error,warn"
-    },
-    "sqs": {
-        "resource": "resource-id"
-    }
-}
+```yaml
+log:
+  filters:
+    level: '0,1,2'
+    type: debug,info,error,warn
+  sqs:
+    resource: resource-id
 ```

@@ -11,7 +11,7 @@ app:
     - "db-couchbase"
   volumes:
   - "./:/usr/src/app:z"
-  - "./full-sxapi.json:/conf/sxapi.json:z"
+  - "./full-sxapi.yml:/conf/sxapi.yml:z"
   command: ["npm" , "start"]
   
 db-redis:

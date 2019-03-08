@@ -98,7 +98,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the DynamoDB table defined in the config.table section of sxapi.json
+     * Read the DynamoDB table defined in the config.table section of sxapi.yml
      * @param {string} id object ID
      * @param {string} table table name
      * @param {object} options object with options to pass to the AWS receiveObject method

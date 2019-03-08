@@ -39,14 +39,10 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "serviceinfo-id": {
-        "_class": "serviceinfo"
-    }
-    ...
-}
+```yaml
+resources:
+  serviceinfo-id:
+    _class: serviceinfo
 ```
 
 ## Resource methods
@@ -152,16 +148,12 @@ the server as well as the list of all exposed endpoints for your API.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/info",
-            "resource": "serviceinfo-id",
-            "endpoint": "info"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/info"
+    resource: serviceinfo-id
+    endpoint: info
 ```
 
 ### health endpoint
@@ -178,16 +170,12 @@ The purpose of this endpoint is to display informations about application health
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/info",
-            "resource": "serviceinfo-id",
-            "endpoint": "health"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/info"
+    resource: serviceinfo-id
+    endpoint: health
 ```
 
 ### getEnv endpoint
@@ -204,14 +192,10 @@ The purpose of this endpoint is to display information about the system environe
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/info",
-            "resource": "serviceinfo-id",
-            "endpoint": "getEnv"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/info"
+    resource: serviceinfo-id
+    endpoint: getEnv
 ```

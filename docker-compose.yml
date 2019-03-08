@@ -4,7 +4,7 @@ app:
   ports:
     - "8080:8080"
   volumes:
-  - "./sxapi.json:/conf/sxapi.json:z"
+  - "./sxapi.yml:/conf/sxapi.yml:z"
   - "./test:/test:z"
   working_dir: /usr/src/app
 ## build application 

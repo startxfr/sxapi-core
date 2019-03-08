@@ -48,18 +48,14 @@ for a complete list of the parameters that you can use in this config object.
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "aws-dynamodb-id": {
-        "_class": "aws_dynamodb",
-        "ACCESS_ID": "xxxxxxxxxxx",
-        "ACCESS_KEY" : "yyyyyyyyyyyy",
-        "region" : "eu-west-1",
-        "QueueUrl" : "https://dynamodb.eu-west-1.amazonaws.com"
-    }
-    ...
-}
+```yaml
+resources:
+  aws-dynamodb-id:
+    _class: aws_dynamodb
+    ACCESS_ID: xxxxxxxxxxx
+    ACCESS_KEY: yyyyyyyyyyyy
+    region: eu-west-1
+    QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
 ```
 
 ## Resource methods
@@ -257,19 +253,14 @@ the a list of message from a given queue.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "listMessages",
-            "config": {
-                QueueUrl : "https://dynamodb.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb"
+    resource: aws-dynamodb-id
+    endpoint: listMessages
+    config:
+      QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
 ```
 
 ### addMessage endpoint
@@ -288,17 +279,13 @@ will be the HTTP body of the query.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb/:id",
-            "method": "POST",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "addMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb/:id"
+    method: POST
+    resource: aws-dynamodb-id
+    endpoint: addMessage
 ```
 
 ### deleteMessage endpoint
@@ -316,17 +303,13 @@ The purpose of this endpoint is to delete a message from AWS DynamoDB queue. Id 
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb/:id",
-            "method": "DELETE",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "deleteMessage"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb/:id"
+    method: DELETE
+    resource: aws-dynamodb-id
+    endpoint: deleteMessage
 ```
 
 ### listQueue endpoint
@@ -345,19 +328,14 @@ the a list of availables queues.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "listQueue",
-            "config": {
-                QueueUrl : "https://dynamodb.eu-west-1.amazonaws.com"
-            }
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb"
+    resource: aws-dynamodb-id
+    endpoint: listQueue
+    config:
+      QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
 ```
 
 ### addQueue endpoint
@@ -376,17 +354,13 @@ is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb/:id",
-            "method": "POST",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "addQueue"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb/:id"
+    method: POST
+    resource: aws-dynamodb-id
+    endpoint: addQueue
 ```
 
 ### deleteQueue endpoint
@@ -404,312 +378,11 @@ The purpose of this endpoint is to delete a complete AWS DynamoDB queue. Id is d
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/aws_dynamodb/:id",
-            "method": "DELETE",
-            "resource": "aws-dynamodb-id",
-            "endpoint": "deleteQueue"
-        }
-    ]
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# SXAPI Resource : aws_dynamodb
-
-This resource allow you to interact with a AWS DynamoDB Storage service. Based on [AWS SDK 2.6](https://github.com/aws/aws-sdk-js). This resource can be used using `$app.resources.get('resource-id')` in your own modules. You can then use one of the [availables methods](#available-methods). AWS DynamoDB resource also come with [various entrypoints](#available-endpoints) ready to use in your API.
-
-## Resource configuration
-
-### **Config parameters**
-
--   `_class` **string** Must be aws_dynamodb for this resource
--   `ACCESS_ID` **string** AWS acess ID with credentials to the queue
--   `ACCESS_KEY` **string** AWS acess secret to use with ACCESS_ID
--   `SESSION_TOKEN` **string** token to use for authentication
--   `region` **string** AWS datacenter region
--   `Table` **string** Give the default Table name to use. Could be overwrited by xx_options or by an endpoint config
--   `read_options` **object** options used when reading an object from the AWS DynamoDB. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#receiveMessage-property) for more options
-    -   `Table`  **string** Give the url of the AWS DynamoDB endpoint to use. Could be overwrited by an endpoint config
--   `delete_options` **object** options used when deleting an object from the AWS DynamoDB. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#deleteMessage-property) for more options
-    -   `Table`  **string** Give the url of the AWS DynamoDB endpoint to use. Could be overwrited by an endpoint config
--   `listObjects_options` **object** options used when listing an object list from an AWS DynamoDB Table. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
-    -   `Table`  **string** Give the Table name to use. Could be overwrited by an endpoint config
-
-### **Sample sxapi.json**
-
-```javascript
-"resources": {
-    ...
-    "dynamodb-sample": {
-        "_class": "aws_dynamodb",
-        "read_options": {
-        },
-        "delete_options": {
-        },
-        "send_options": {
-        },
-        "listObjects_options": {
-        },
-        "ACCESS_ID": "XXXX",
-        "ACCESS_KEY": "XXXX/YYYYYYYYY+ZZZZZ",
-        "SESSION_TOKEN": "",
-        "region": "eu-west-1"
-    },
-    ...
-}
-```
-
-## Available Methods
-
-### Method listObjects
-
-list objects in a given table. This method use `listObjects_options` configuration as defined in the ([resource configuration](#resource-configuration))
-
-#### **Parameters**
-
--   `table` **string** table name
--   `options` **object** options used to get object list. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS DynamoDB cluster
-
-#### **Sample code**
-
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.listObjects('tablename',{}, function (error, response) {
-    console.log(error, response);
-});
-```
-
-### Method getObject
-
-return an object given by it ID. This method use `getObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
-
-#### **Parameters**
-
--   `id` **string** object id to get
--   `table` **string** table name
--   `options` **object** options used when reading a message to the AWS DynamoDB. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#receiveMessage-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS DynamoDB cluster
-
-#### **Sample code**
-
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.getObject('file.pdf','tablename',{},function (error, response) {
-    console.log(error, response);
-});
-```
-
-### Method addObject
-
-Add an object into a table. This method use `addObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
-
-#### **Parameters**
-
--   `id` **string** object id to add
--   `content` **string** content (could be a Stream or Buffer) 
--   `table` **string** table name
--   `options` **object** options used for adding this object. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putObject-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS DynamoDB cluster
-
-#### **Sample code**
-
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.addObject('file.txt','content sample','tablename',{},function (error, response) {
-    console.log(error, response);
-});
-```
-```
-
-### Method updateObject
-
-Update an object into a table. This method use `updateObject_options` configuration as defined in the ([resource configuration](#resource-configuration))
-
-#### **Parameters**
-
--   `id` **string** object id to update
--   `content` **string** content (could be a Stream or Buffer) 
--   `table` **string** table name
--   `options` **object** options used for updating this object. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#putObject-property) for more options
--   `callback` **function** Callback function used to handle the answer. If not provided, use an internal default function. Callback function must have first parameter set for error boolean and second parameter for result.
-    -   `error` **boolean** True if and error occur. Response describe this error
-    -   `response` **object, array** Content responded for the AWS DynamoDB cluster
-
-#### **Sample code**
-
-```javascript
-var resource = $app.resources.get('resource-id');
-resource.updateObject('file.txt','content sample','tablename',{},function (error, response) {
-    console.log(error, response);
-});
-```
-
-## Available Endpoints
-
-### listObjects endpoint
-
-List objects stored in a table
-
-#### **Config parameters**
-
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the aws_dynamodb resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
--   `table` **string** table name
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/dynamodb",
-    "method": "GET",
-    "resource": "dynamodb-sample",
-    "endpoint": "endpoints.listObjects",
-    "table" : "sxapitest",
-    "config": {
-        "Table" : "sxapitest"
-    }
-}
-```
-
-#### **call this endpoint**
-
-```bash
-curl -X GET http://127.0.0.1:8080/dynamodb
-```
-
-### getObject endpoint
-
-Get one object stored in a table
-
-#### **Config parameters**
-
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the aws_dynamodb resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
--   `table` **string** table name
--   `objectId` **string** ID of the object to get
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/dynamodb/:id",
-    "method": "GET",
-    "resource": "dynamodb-sample",
-    "endpoint": "endpoints.getObject",
-    "table" : "sxapitest"
-}
-```
-
-#### **call this endpoint**
-
-```bash
-curl -X GET http://127.0.0.1:8080/dynamodb/file.pdf
-```
-
-### addObject endpoint
-
-Add one object into a table
-
-#### **Config parameters**
-
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the aws_dynamodb resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
--   `table` **string** table name
--   `objectId` **string** ID of the object to get
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/dynamodb/:id",
-    "method": "POST",
-    "resource": "dynamodb-sample",
-    "endpoint": "endpoints.addObject",
-    "table" : "sxapitest"
-}
-```
-
-#### **call this endpoint**
-
-```bash
-curl -X POST http://127.0.0.1:8080/dynamodb/file.pdf
-```
-
-### updateObject endpoint
-
-Update one object into a table
-
-#### **Config parameters**
-
--   `path` **string** Server path to bind this entrypoint to
--   `method` **string** http method to listen to
--   `resource` **string** define the aws_dynamodb resource to use. Fill with a resource name as defined in the resource pool
--   `endpoint` **string** The resource handler to use. For this entrypoint, use ***endpoints.listObjects***
--   `config` **object** endpoint config object to send to the AWS endpoint. [AWS DynamoDB documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#listObjectsV2-property) for more options
--   `table` **string** table name
--   `objectId` **string** ID of the object to get
-
-#### **Sample code**
-
-```javascript 
-{
-    "path": "/dynamodb/:id",
-    "method": "PUT",
-    "resource": "dynamodb-sample",
-    "endpoint": "endpoints.updateObject",
-    "table" : "sxapitest"
-}
-```
-
-#### **call this endpoint**
-
-```bash
-curl -X PUT http://127.0.0.1:8080/dynamodb/file.pdf
+```yaml
+server:
+  endpoints:
+  - path: "/aws_dynamodb/:id"
+    method: DELETE
+    resource: aws-dynamodb-id
+    endpoint: deleteQueue
 ```

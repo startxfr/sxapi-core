@@ -11,7 +11,7 @@ var $notification = {
   config: {},
   pipeline: {},
   /**
-   * Initialise notification according to the notification section in sxapi.json. 
+   * Initialise notification according to the notification section in sxapi.yml. 
    * @param {type} config
    * @returns {notification}
    */
