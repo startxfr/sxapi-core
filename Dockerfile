@@ -36,7 +36,7 @@ COPY ./core $APP_PATH/core
 COPY ./test $APP_PATH/test
 COPY ./app.js $APP_PATH/app.js
 COPY ./package.json $APP_PATH/package.json
-COPY ./sxapi.json $CONF_PATH/sxapi.json
+COPY ./sxapi.yml $CONF_PATH/sxapi.yml
 
 RUN  apk update && apk upgrade && apk add git python make gcc g++ \
  &&  mkdir -p $APP_PATH $CONF_PATH $DATA_PATH /.npm /.config \
