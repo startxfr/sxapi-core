@@ -26,7 +26,7 @@ To configure your application, you should follow the [configuration user guide](
 1. Init application
    1. init process signals for catching process signals
    2. check environments variables 
-   3. load config profile from environement variable `SXAPI_CONF` or `sxapi.json`
+   3. load config profile from environement variable `SXAPI_CONF` or `sxapi.yml`
    4. [init resources manager](resource.md#init)
       1. load each resource declared in config profile
       2. init each resource declared in config profile

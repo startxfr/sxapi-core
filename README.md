@@ -1,6 +1,6 @@
 [![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.2.25-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.2.99-blue.svg)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
@@ -30,7 +30,7 @@ If you plan to extend sxapi capabilities with your own component, change default
 
 ## Creating your own API
 
-sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.json` config file and implement api endpoints you want to create. 
+sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.yml` config file and implement api endpoints you want to create. 
 To help you understand how you can configure your api, you can :
 1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/README.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/2.Configure.md)
 2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and explore sample config file to help find sample code or ready-to-use config file

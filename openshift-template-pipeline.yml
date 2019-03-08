@@ -1,0 +1,313 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: sxapi-template-pipeline
+  annotations:
+    openshift.io/display-name: SXAPI micro-service application (Builder)
+    description: SXAPI micro-service application builder based on alpine linux
+    iconClass: icon-nodejs
+    tags: builder,startx,alpine,nodejs,sxapi-latest
+    openshift.io/long-description: This template provides a startx sxapi micro-service
+      framework builder. Ready to use in openshift with a simple deployement config,
+      or as a s2i builder for building web applications container. For more information
+      about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
+message: Your application ${APP_NAME} have been created in your project. You can use
+  openshift console to monitor it building and deployement status.
+labels:
+  template: sxapi-template-pipeline
+objects:
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: "${APP_NAME}-pipeline"
+    creationTimestamp: 
+    labels:
+      name: "${APP_NAME}-pipeline"
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+    annotations:
+      openshift.io/generated-by: STARTX
+      pipeline.alpha.openshift.io/uses: '[{"name": "${NAME}", "namespace": "", "kind":
+        "DeploymentConfig"}]'
+  spec:
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        jenkinsfile: 'try { timeout(time: 10, unit: ''MINUTES'') { node(''nodejs'')
+          { stage(''build'') { openshiftBuild(buildConfig: ''sxapi'', showBuildLogs:
+          ''true'') }; stage(''deploy'') { openshiftDeploy(deploymentConfig: ''sxapi'')
+          } } } } catch (err) { echo "in catch block"; echo "Caught: ${err}"; currentBuild.result
+          = ''FAILURE''; throw err }   '
+    triggers:
+    - type: GitHub
+      github:
+        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+    - type: Generic
+      generic:
+        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+  status:
+    lastVersion: 0
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: sxapi
+    annotations:
+      openshift.io/display-name: Startx SXAPI framework (S2I)
+      openshift.io/generated-by: STARTX
+    labels:
+      base-image: sxapi
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+  spec:
+    tags:
+    - name: latest
+      annotations:
+        openshift.io/display-name: S2I Startx SXAPI framework (latest)
+        description: Builder for Simple and eXtensible API framework based on alpine
+          (latest)
+        iconClass: icon-nodejs
+        tags: builder,startx,alpine,nodejs,sxapi-latest
+        supports: sxapi:latest,nodejs,http
+        version: latest
+        sampleRepo: https://github.com/startxfr/sxapi-example.git
+      from:
+        kind: DockerImage
+        name: startx/sxapi:latest
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${APP_NAME}"
+    annotations:
+      openshift.io/display-name: Application ${APP_NAME}
+      openshift.io/generated-by: STARTX
+    labels:
+      base-image: sxapi
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+  spec:
+    tags:
+    - name: latest
+      annotations:
+        openshift.io/display-name: Application ${APP_NAME}
+        description: Base image for the application ${APP_NAME}
+        iconClass: icon-nodejs
+        tags: startx,alpine,nodejs,sxapi-latest,application,${APP_NAME}
+        supports: sxapi:latest,nodejs,http
+        version: latest
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: sxapi
+    creationTimestamp: 
+    labels:
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+    annotations:
+      openshift.io/generated-by: STARTX
+  spec:
+    triggers:
+    - type: GitHub
+      github:
+        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+    - type: Generic
+      generic:
+        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+    runPolicy: SerialLatestOnly
+    source:
+      type: Git
+      git:
+        uri: "${SOURCE_GIT}"
+        ref: "${SOURCE_BRANCH}"
+    strategy:
+      type: Source
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: sxapi:latest
+        env:
+        - name: SX_VERBOSE
+          value: 'true'
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${APP_NAME}:latest"
+    resources: {}
+  status:
+    lastVersion: 0
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: sxapi
+    generation: 2
+    creationTimestamp: 
+    labels:
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+    annotations:
+      openshift.io/generated-by: STARTX
+  spec:
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 20
+        maxUnavailable: 25%
+        maxSurge: 25%
+      resources: {}
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APP_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APP_NAME}:latest"
+    - type: ConfigChange
+    replicas: 1
+    test: false
+    selector:
+      app: "${APP_NAME}"
+      deploymentconfig: sxapi
+    template:
+      metadata:
+        creationTimestamp: 
+        labels:
+          app: "${APP_NAME}"
+          type: "${APP_TYPE}"
+          provider: startx
+          template: sxapi-template-pipeline
+          deploymentconfig: sxapi
+        annotations:
+          openshift.io/generated-by: STARTX
+      spec:
+        containers:
+        - name: "${APP_NAME}"
+          image: " "
+          command:
+          - npm
+          - start
+          resources: {}
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 4
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: "/health"
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 4
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: Always
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirst
+        securityContext: {}
+  status:
+    observedGeneration: 2
+    replicas: 1
+    updatedReplicas: 1
+    availableReplicas: 1
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APP_NAME}"
+    creationTimestamp: 
+    labels:
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "${NAME}", "namespace":
+        "", "kind": "Service"}]'
+      openshift.io/generated-by: STARTX
+  spec:
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: "${APP_NAME}"
+      deploymentconfig: sxapi
+    type: ClusterIP
+    sessionAffinity: None
+  status:
+    loadBalancer: {}
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${APP_NAME}"
+    creationTimestamp: 
+    labels:
+      app: "${APP_NAME}"
+      type: "${APP_TYPE}"
+      provider: startx
+      template: sxapi-template-pipeline
+    annotations:
+      openshift.io/generated-by: STARTX
+  spec:
+    to:
+      kind: Service
+      name: "${APP_NAME}"
+      weight: 100
+  status:
+    ingress:
+    - routerName: router
+      conditions:
+      - type: Admitted
+        status: 'True'
+parameters:
+- name: APP_NAME
+  displayName: Application name
+  description: The name of the created application
+  value: app
+  required: true
+- name: APP_TYPE
+  displayName: Application type
+  description: The type of the created application
+  value: application
+- name: SOURCE_GIT
+  displayName: Source repository
+  description: URL to the source code to use during build process
+  value: https://github.com/startxfr/sxapi-example.git
+  required: true
+- name: SOURCE_BRANCH
+  displayName: Source branch
+  description: Name of the default branch
+  value: master
+  required: true
+- name: WEBHOOK_TOKEN
+  displayName: Webhook token
+  description: Secret token to use for webhook to github or generic
+  generate: expression
+  from: "[a-zA-Z0-9]{24}"
+  required: true

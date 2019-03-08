@@ -39,15 +39,11 @@ configuration profile, please refer to the [configuration guide](../guides/2.Con
 This is a sample configuration of this resource. You must add this section under 
 the `resources` section of your [configuration profile](../guides/2.Configure.md)
 
-```javascript
-"resources": {
-    ...
-    "localfs-id": {
-        "_class" : "localfs",
-        "directory": "/tmp"
-    }
-    ...
-}
+```yaml
+resources:
+  localfs-id:
+    _class: localfs
+    directory: "/tmp"
 ```
 
 ## Resource methods
@@ -206,17 +202,13 @@ the value associated to the given filename.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/localfs",
-            "resource": "localfs-id",
-            "endpoint": "list",
-            "directory": "test/"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/localfs"
+    resource: localfs-id
+    endpoint: list
+    directory: test/
 ```
 
 With the previous configuration sample, if you make the following http request `GET /localfs`
@@ -239,17 +231,13 @@ the content of a filename
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/localfs/:id",
-            "resource": "localfs-id",
-            "endpoint": "read",
-            "directory": "test/"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/localfs/:id"
+    resource: localfs-id
+    endpoint: read
+    directory: test/
 ```
 
 ### Create endpoint
@@ -269,18 +257,14 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/localfs/:id",
-            "method": "POST",
-            "resource": "localfs-id",
-            "endpoint": "create",
-            "directory": "test/"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/localfs/:id"
+    method: POST
+    resource: localfs-id
+    endpoint: create
+    directory: test/
 ```
 
 
@@ -301,18 +285,14 @@ request.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/localfs/:id",
-            "method": "PUT",
-            "resource": "localfs-id",
-            "endpoint": "update",
-            "directory": "test/"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/localfs/:id"
+    method: PUT
+    resource: localfs-id
+    endpoint: update
+    directory: test/
 ```
 
 ### Delete endpoint
@@ -331,16 +311,12 @@ Filename is defined by the context.
 
 #### Example
 
-```javascript
-"server": {
-    "endpoints": [
-        {
-            "path": "/localfs/:id",
-            "method": "DELETE",
-            "resource": "localfs-id",
-            "endpoint": "delete",
-            "directory": "test/"
-        }
-    ]
-}
+```yaml
+server:
+  endpoints:
+  - path: "/localfs/:id"
+    method: DELETE
+    resource: localfs-id
+    endpoint: delete
+    directory: test/
 ```

@@ -44,38 +44,25 @@ bot context will be defined.
 
 ### Config Sample
 
-```javascript
-"bot": {
-    "lib": "./mylib",
-    "cron": [
-        {
-            "id": "test-task",
-            "name": "Execute test task",
-            "schedule": "*/1 * * * *",
-            "task": "cronTask"
-        }
-    ],
-    "readers": {
-        "sqs": [ {
-            "resource": "sqs-demo",
-            "filters": [
-                {
-                    "id": "test-task",
-                    "event": "api:objectname:create",
-                    "task": "mySqsFunction"
-                }
-            ]
-        } ],
-        "twitter": [ {
-            "resource": "twitter-demo",
-            "filters": [
-                {
-                    "id": "test-task",
-                    "match": "#paris",
-                    "task": "myTwitterFunction"
-                }
-            ]
-        } ]
-    }
-}
+```yaml
+bot:
+  lib: "./mylib"
+  cron:
+  - id: test-task
+    name: Execute test task
+    schedule: "*/1 * * * *"
+    task: cronTask
+  readers:
+    sqs:
+    - resource: sqs-demo
+      filters:
+      - id: test-task
+        event: api:objectname:create
+        task: mySqsFunction
+    twitter:
+    - resource: twitter-demo
+      filters:
+      - id: test-task
+        match: "#paris"
+        task: myTwitterFunction
 ```

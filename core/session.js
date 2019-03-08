@@ -13,7 +13,7 @@ var $sess = {
     cached: {},
     config: {},
     /**
-     * Initialise log according to the log section in sxapi.json. 
+     * Initialise log according to the log section in sxapi.yml. 
      * @param {type} config
      * @returns {log}
      */

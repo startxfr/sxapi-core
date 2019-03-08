@@ -1,0 +1,80 @@
+name: sxapi-default-testing
+description: sxapi default microservice API ({{{NODE_ENV}}})
+version: 0.0.1
+debug: "{{{SX_DEBUG}}}"
+session:
+  duration: 3600
+  auto_create: true
+  transport:
+    type: cookie
+    cookie_name: sxapi-sess
+  backend:
+    type: memory
+    sid_field: token_sess
+    fields:
+      stop: datefin_sess
+resources:
+  serviceinfo-sample:
+    _class: serviceinfo
+  websocket-sample:
+    _class: websocket-client
+    host: http://localhost:8080
+log:
+  filters:
+    level: '0,1,2,3,4,5'
+    type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
+server:
+  port: '8080'
+  lib: "./bot-mylib"
+  static:
+  - path: "/test"
+    dir: "/test"
+  enableWebsockets: true
+  websockets:
+    events:
+    - event: test
+      handler: "$ws.websockets.onMessageDefaultCallback"
+    - event: testGlobal
+      handler: "$ws.lib.mySocketEndpointFunction"
+    - event: disconnect
+      handler: "$ws.websockets.onMessageDefaultCallback"
+  endpoints:
+  - path: "/"
+    desc: Display welcome message (HTML)
+    body:
+    - "<html>"
+    - "<head><title>Application {{name}}</title></head>"
+    - <link rel="stylesheet" href="https://goo.gl/4kFNLH">
+    - <body><div class="container">
+    - <h1><span class="glyphicon glyphicon-eye-open"></span> Your API {{name}} is
+      live !</h1>
+    - <div class="alert alert-success" role="alert"><p>This API is {{description}}
+      running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>
+    - <div class="alert alert-info" role="alert"><p>The application signature is <b>{{appsign}}</b>
+      and corespond to a blank project.</p></div>
+    - "<p>Default config file must be changed and replaced your <b>own sxapi.json</b>
+      config file."
+    - You will then be able to build your own API resources and endpoints.<br>
+    - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"
+      target="">sxapi project documentation</a>.</p>
+    - <nav class="navbar navbar-default navbar-fixed-bottom"><div class="container">
+      Microservice engine is <b>{{package.name}} v{{package.version}}</b>. {{package.description}}</div></nav>
+    - "</div></body>"
+    - "</html>"
+  - path: "/health"
+    resource: serviceinfo-sample
+    endpoint: health
+  - path: "/info"
+    resource: serviceinfo-sample
+    endpoint: info
+  - path: "/ping"
+    desc: Ping the application. Return a sample message in json
+    code: '200'
+    body: pong
+  - path: "/function"
+    desc: Ping the application. Return a sample message in json
+    handler: "$ws.dynamicRequestHandlerTest"
+  - path: "/function2"
+    desc: Test fonction to get e rturn and accès to low level resources
+    handler: "$ws.lib.myEndpointFunction"
+    param_sample: dev-config
