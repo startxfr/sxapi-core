@@ -44,7 +44,7 @@ server:
   - path: "/"
     desc: Display welcome message (HTML)
     body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
-      !</h1><p>This API is based on sxapi-core v0.2.99 and use default config file.
+      !</h1><p>This API is based on sxapi-core v0.3.0 and use default config file.
       You can now start to configure your sxapi.yml config file in order to build
       your own API </p></body></html>"
   - path: "/health"
