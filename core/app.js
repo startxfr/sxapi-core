@@ -13,18 +13,26 @@ $log.init({}, true);
 
 //'use strict';
 $app = {
+  // app alias to timer instance
   timer: $timer,
+  // app alias to log instance
   log: $log,
+  // app alias to notification instance
   notification: null,
+  // application package configuration
   package: {
     network_port: "8080"
   },
+  // application configuration
   config: {
     ip: require("ip").address(),
     log: {}
   },
+  // function queue to call when application stop 
   _onstopQueue: [],
+  // function queue to call when application start 
   _onstartQueue: [],
+  
   /**
    * Main init function who start the application
    * @param {function} callback
