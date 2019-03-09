@@ -190,11 +190,18 @@ docker-compose up
 
 ### Using Openshift
 
-If you're familiar with Openshift PaaS, you will find 3 usefull templates to use in
+If you're familiar with Openshift PaaS, you will find 5 usefull templates to use in
 your project
-- [template with configuration (template parameter) directly loaded into an environement variable](./openshift-template-env.yml) 
-- [template with configuration (template parameter) embeded in a configMap mounted volume](./openshift-template-cm-defined.yml)
-- [template with configuration (embeded in template) embeded in a configMap mounted volume](./openshift-template-cm-embeded.yml)
-- [template with configuration in mounted volume](./openshift-template-volume.yml)
+- [statefulSet template with configuration (embeded in template) embeded in a configMap mounted volume](./openshift-template-cm-embeded.yml)
+- [deployConfig template with configuration (template parameter) directly loaded into an environement variable](./openshift-template-env.yml) 
+- [deployConfig template with configuration (template parameter) embeded in a configMap mounted volume](./openshift-template-cm-defined.yml)
+- [deployConfig template with configuration (embeded in template) embeded in a configMap mounted volume](./openshift-template-cm-embeded.yml)
+- [deployConfig template with configuration in mounted volume](./openshift-template-volume.yml)
 
+For example you can run 
+```bash
+oc new-project test
+oc create -f https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/guides/openshift-template-cm-defined.yml
+oc new-app --template sxapi-cm-defined-template -p APPLICATION_NAME=sxapi-example
+```
 You can add them in a project using [openshift user guide](https://docs.openshift.org/latest/dev_guide/templates.html#uploading-a-template)

@@ -24,36 +24,121 @@ message: |-
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
-- kind: StatefulSet
-  apiVersion: apps/v1beta1
+- kind: ImageStream
+  apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/display-name: Application ${APPLICATION_NAME}
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
       openshift.io/generated-by: STARTX
   spec:
-    serviceName: "${APPLICATION_NAME}"
-    replicas: "${REPLICAS_DATA}"
+    tags:
+    - name: ${IMAGE_NAME}
+      annotations:
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+        iconClass: icon-nodejs
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
+      from:
+        kind: DockerImage
+        name: ${REGISTRY}:${IMAGE_NAME}
+- kind: PersistentVolume
+  apiVersion: v1
+  metadata:
+    name: ${APPLICATION_NAME}-config
+    annotations:
+      openshift.io/display-name: Persistent volume for application ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+    labels:
+      kind: "${APPLICATION_NAME}-resilient"
+  spec:
+    capacity:
+      storage: 64Mi
+    accessModes:
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      path: "${NFS_PATH}/sto25"
+      server: "${NFS_SERVER}"
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}-config"
+    annotations:
+      openshift.io/display-name: Persistent volume claim for ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    accessModes: 
+      - ReadOnlyMany 
+    selector:
+      matchLabels:
+        kind: "${APPLICATION_NAME}-resilient"
+    resources:
+      requests:
+        storage: 64Mi
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Deployement ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    replicas: 2
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 60
+        maxUnavailable: 25%
+        maxSurge: 25%
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
+    - type: ConfigChange
+    test: false
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
         labels:
-          name: "${APPLICATION_NAME}"
-          app: sxapi
-          type: application
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
-          pod.alpha.kubernetes.io/initialized: 'true'
-          scheduler.alpha.kubernetes.io/affinity: "{}"
+          openshift.io/generated-by: STARTX
       spec:
-        terminationGracePeriodSeconds: 86400
+        terminationGracePeriodSeconds: 5
         containers:
-        - name: sxapi-default
-          image: "${REGISTRY}:${IMAGE_NAME}"
+        - name: "${APPLICATION_NAME}"
+          image: " "
           imagePullPolicy: Always
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 2
             tcpSocket:
               port: 8077
             timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          env:
+          - name: SX_VERBOSE
+            value: 'true'
           lifecycle:
             preStop:
               exec:
@@ -65,24 +150,20 @@ objects:
             containerPort: 8077
           resources:
             requests:
+              cpu: 200m
               memory: "${MEMORY_LIMIT}"
-              cpu: 0.1
             limits:
+              cpu: 2000m
               memory: "${MEMORY_LIMIT}"
+          terminationMessagePath: "/dev/termination-log"
           volumeMounts:
           - mountPath: "/conf"
             name: conf
-    volumeClaimTemplates:
-    - metadata:
-        name: conf
-        annotations:
-          volume.beta.kubernetes.io/storage-class: "${STORAGE_CLASS_DATA}"
-      spec:
-        accessModes:
-        - ReadOnly
-        resources:
-          requests:
-            storage: "${VOLUME_CAPACITY_DATA}"
+        restartPolicy: Always
+        volumes:
+        - name: "conf"
+          persistentVolumeClaim:
+            claimName: "${APPLICATION_NAME}-config"
 - kind: Service
   apiVersion: v1
   metadata:
@@ -135,3 +216,12 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
+- name: NFS_SERVER
+  displayName: Startx NFS server
+  description: "DNS or IP for the NFS backend"
+  value: nfs.startx.fr
+  required: true
+- name: NFS_PATH
+  displayName: Path to storage directory in NFS server
+  description: "path to the directory containing the storages contents"
+  value: /PersistentStorage

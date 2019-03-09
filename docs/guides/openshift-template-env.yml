@@ -23,37 +23,87 @@ message: |-
   config      : environement \$SXAPI_CONF var
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
-- kind: StatefulSet
-  apiVersion: apps/v1beta1
+- kind: ImageStream
+  apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/display-name: Application ${APPLICATION_NAME}
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
       openshift.io/generated-by: STARTX
   spec:
-    serviceName: "${APPLICATION_NAME}"
-    replicas: "${REPLICAS_DATA}"
+    tags:
+    - name: ${IMAGE_NAME}
+      annotations:
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+        iconClass: icon-nodejs
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
+      from:
+        kind: DockerImage
+        name: ${REGISTRY}:${IMAGE_NAME}
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Deployement ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    replicas: 2
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 60
+        maxUnavailable: 25%
+        maxSurge: 25%
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
+    - type: ConfigChange
+    test: false
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
         labels:
-          name: "${APPLICATION_NAME}"
-          app: sxapi
-          type: application
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
-          pod.alpha.kubernetes.io/initialized: 'true'
-          scheduler.alpha.kubernetes.io/affinity: "{}"
+          openshift.io/generated-by: STARTX
       spec:
-        terminationGracePeriodSeconds: 86400
+        terminationGracePeriodSeconds: 5
         containers:
-        - name: sxapi-default
-          image: "${REGISTRY}:${IMAGE_NAME}"
+        - name: "${APPLICATION_NAME}"
+          image: " "
           imagePullPolicy: Always
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 2
             tcpSocket:
               port: 8077
             timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
           env:
+          - name: SX_VERBOSE
+            value: 'true'
           - name: SXAPI_CONF
             value: "${SXAPI_CONF}"
           lifecycle:
@@ -67,10 +117,13 @@ objects:
             containerPort: 8077
           resources:
             requests:
+              cpu: 200m
               memory: "${MEMORY_LIMIT}"
-              cpu: 0.1
             limits:
+              cpu: 2000m
               memory: "${MEMORY_LIMIT}"
+          terminationMessagePath: "/dev/termination-log"
+        restartPolicy: Always
 - kind: Service
   apiVersion: v1
   metadata:
