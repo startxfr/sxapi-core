@@ -18,13 +18,13 @@ resources:
     _class: serviceinfo
   websocket-sample:
     _class: websocket-client
-    host: http://localhost:8080
+    host: http://localhost:8077
 log:
   filters:
     level: '0,1,2,3,4,5'
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
-  port: '8080'
+  port: '8077'
   lib: "./bot-mylib"
   static:
   - path: "/test"

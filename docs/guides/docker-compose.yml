@@ -1,8 +1,8 @@
 app:
-  image: node:8
+  image: node:10-alpine
   container_name: "sxapi-core-dev"
   ports:
-    - "8080:8080"
+    - "8077:8077"
   environment:
   - NODE_ENV=development
   - APP_PATH=/usr/src/app
