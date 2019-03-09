@@ -115,9 +115,8 @@ objects:
     template:
       metadata:
         labels:
-          name: "${APPLICATION_NAME}"
-          app: sxapi
-          type: application
+          app: "${APPLICATION_NAME}"
+          api: sxapi
         annotations:
           pod.alpha.kubernetes.io/initialized: 'true'
           scheduler.alpha.kubernetes.io/affinity: "{}"
@@ -170,8 +169,8 @@ objects:
     - name: sxapi
       port: 8077
     selector:
-      name: "${APPLICATION_NAME}"
-      type: application
+      app: "${APPLICATION_NAME}"
+      api: "sxapi"
 - kind: Route
   apiVersion: v1
   metadata:
