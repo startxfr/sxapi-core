@@ -21,7 +21,7 @@ $app = {
   notification: null,
   // application package configuration
   package: {
-    network_port: "8080"
+    network_port: "8077"
   },
   // application configuration
   config: {

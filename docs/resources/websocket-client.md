@@ -45,7 +45,7 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 resources:
   websocket-client-id:
     _class: websocket-client
-    host: http://localhost:8080
+    host: http://localhost:8077
 ```
 
 ## Resource methods

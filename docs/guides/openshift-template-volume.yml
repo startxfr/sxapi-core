@@ -16,8 +16,8 @@ objects:
   spec:
     clusterIP: None
     ports:
-    - name: app
-      port: 8080
+    - name: sxapi
+      port: 8077
     selector:
       name: "${APPLICATION_NAME}"
       type: application
@@ -46,7 +46,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 20
             tcpSocket:
-              port: 8080
+              port: 8077
             timeoutSeconds: 2
           lifecycle:
             preStop:
@@ -55,8 +55,8 @@ objects:
                 - "npm"
                 - stop
           ports:
-          - containerPort: 8080
-            name: app
+          - name: sxapi
+            containerPort: 8077
           resources:
             requests:
               memory: "${MEMORY_LIMIT}"
@@ -84,7 +84,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.3.2
+  value: 0.3.3
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
