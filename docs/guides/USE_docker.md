@@ -80,18 +80,18 @@ You can change `name`, `description`, `version` and `server.endpoints.body` with
 with your own configuration file 
 
 ```bash
-docker run -d -p 8080:8080 -v ~/test-sxapi/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
+docker run -d -p 8077:8077 -v ~/test-sxapi/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
 ```
 
 or using environement variable
 
 ```bash
-docker run -d -p 8080:8080  --env SXAPI_CONF=$(cat ~/test-sxapi/sxapi.yml) startx/sxapi
+docker run -d -p 8077:8077  --env SXAPI_CONF=$(cat ~/test-sxapi/sxapi.yml) startx/sxapi
 ```
 
 ### 6. Explore your api
 
-Connect to `http://localhost:8080/` with your favorite navigator. You should
+Connect to `http://localhost:8077/` with your favorite navigator. You should
 see an html message "My Sample API".
 
 
@@ -104,13 +104,13 @@ docker pull startx/sxapi:latest
 
 2. Run your sample application
 ```bash
-// run on port 8080 and attach console
+// run on port 8077 and attach console
 docker run startx/sxapi
 // or run in detached mode and expose port 81
-docker run -d -p 81:8080 startx/sxapi
+docker run -d -p 81:8077 startx/sxapi
 ```
 
-3. Connect to `http://localhost:8080` or `http://localhost:81` 
+3. Connect to `http://localhost:8077` or `http://localhost:81` 
 with your favorite navigator
 
 
@@ -142,10 +142,10 @@ server:
 
 3. Run your application
 ```bash
-docker run -d -p 8080:8080 -v $(pwd)/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
+docker run -d -p 8077:8077 -v $(pwd)/sxapi.yml:/conf/sxapi.yml:ro startx/sxapi
 ```
 
-4. Connect to `http://localhost:8080` with your favorite navigator
+4. Connect to `http://localhost:8077` with your favorite navigator
 
 
 ### Container with your own configuration (docker-compose)
@@ -157,7 +157,7 @@ api:
   image: startx/sxapi:latest
   container_name: "my-api"
   ports:
-    - "8080:8080"
+    - "8077:8077"
   volumes:
   - "./sxapi-dev.yml:/conf/sxapi.yml:ro"
 ```
@@ -185,7 +185,7 @@ server:
 docker-compose up
 ```
 
-4. Connect to `http://localhost:8080` with your favorite navigator
+4. Connect to `http://localhost:8077` with your favorite navigator
 
 
 ### Using Openshift

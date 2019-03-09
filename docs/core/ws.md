@@ -22,7 +22,7 @@ connections.
 
 | Param                           | Mandatory | Type    | default | Description
 |---------------------------------|:---------:|:-------:|---------|---------------
-| **port**                        | no        | int     | 8080    | Webserver port
+| **port**                        | no        | int     | 8077    | Webserver port
 | **enableWebsockets**            | no        | bool    | false   | Enable socket.io connection
 | **websockets**                  | no        | obj     |         | socket.io configuration
 | websockets.**onConnection**     | no        | string  |         | Function to use when a new client connect (leave blank for autoLoading events)
@@ -72,7 +72,7 @@ connections.
 
 ```yaml
 server:
-  port: '8080'
+  port: '8077'
   endpoints:
   - path: "/ping"
     desc: Ping the application. Return a sample message in json
