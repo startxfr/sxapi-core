@@ -1,0 +1,195 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: sxapi-configmap-template
+  annotations:
+    description: Template for creating an SXAPI microservice with configuration stored in a configMap object
+    iconClass: icon-nodejs
+    tags: sxapi,api,nodejs,startx,microservice
+labels:
+  template: sxapi-configMap-embeded-template
+objects:
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+  data:
+    sxapi.yml: |
+      name: sxapi-default
+      description: sxapi default microservice API ({{{NODE_ENV}}})
+      version: 0.0.1
+      debug: "{{{SX_DEBUG}}}"
+      session:
+        duration: 3600
+        auto_create: true
+        transport:
+          type: cookie
+          cookie_name: sxapi-sess
+        backend:
+          type: memory
+          sid_field: token_sess
+          fields:
+            stop: datefin_sess
+      resources:
+        serviceinfo-sample:
+          _class: serviceinfo
+        websocket-sample:
+          _class: websocket-client
+          host: http://localhost:8077
+      log:
+        filters:
+          level: '0,1,2,3,4,5'
+          type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
+      server:
+        port: '8077'
+        lib: "./bot-mylib"
+        static:
+        - path: "/test"
+          dir: "/test"
+        enableWebsockets: true
+        websockets:
+          events:
+          - event: test
+            handler: "$ws.websockets.onMessageDefaultCallback"
+          - event: testGlobal
+            handler: "$ws.lib.mySocketEndpointFunction"
+          - event: disconnect
+            handler: "$ws.websockets.onMessageDefaultCallback"
+        endpoints:
+        - path: "/"
+          desc: Display welcome message (HTML)
+          body:
+          - "<html>"
+          - "<head><title>Application {{name}}</title></head>"
+          - <link rel="stylesheet" href="https://goo.gl/4kFNLH">
+          - <body><div class="container">
+          - <h1><span class="glyphicon glyphicon-eye-open"></span> Your API {{name}} is
+            live !</h1>
+          - <div class="alert alert-success" role="alert"><p>This API is {{description}}
+            running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>
+          - <div class="alert alert-info" role="alert"><p>The application signature is <b>{{appsign}}</b>
+            and corespond to a blank project.</p></div>
+          - "<p>Default config file must be changed and replaced your <b>own sxapi.yml</b>
+            config file."
+          - You will then be able to build your own API resources and endpoints.<br>
+          - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"
+            target="">sxapi project documentation</a>.</p>
+          - <nav class="navbar navbar-default navbar-fixed-bottom"><div class="container">
+            Microservice engine is <b>{{package.name}} v{{package.version}}</b>. {{package.description}}</div></nav>
+          - "</div></body>"
+          - "</html>"
+        - path: "/health"
+          resource: serviceinfo-sample
+          endpoint: health
+        - path: "/info"
+          resource: serviceinfo-sample
+          endpoint: info
+        - path: "/ping"
+          desc: Ping the application. Return a sample message in json
+          code: '200'
+          body: pong
+        - path: "/function"
+          desc: Ping the application. Return a sample message in json
+          handler: "$ws.dynamicRequestHandlerTest"
+        - path: "/function2"
+          desc: Test fonction to get e rturn and accès to low level resources
+          handler: "$ws.lib.myEndpointFunction"
+          param_sample: dev-config
+- kind: StatefulSet
+  apiVersion: apps/v1beta1
+  metadata:
+    name: "${APPLICATION_NAME}"
+  spec:
+    serviceName: "${APPLICATION_NAME}"
+    replicas: "${REPLICAS_DATA}"
+    template:
+      metadata:
+        labels:
+          name: "${APPLICATION_NAME}"
+          app: sxapi
+          type: application
+        annotations:
+          pod.alpha.kubernetes.io/initialized: 'true'
+          scheduler.alpha.kubernetes.io/affinity: "{}"
+      spec:
+        terminationGracePeriodSeconds: 86400
+        containers:
+        - name: sxapi-default
+          image: "${REGISTRY}:${IMAGE_NAME}"
+          imagePullPolicy: Always
+          livenessProbe:
+            initialDelaySeconds: 20
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - "npm"
+                - stop
+          ports:
+          - name: sxapi
+            containerPort: 8077
+          resources:
+            requests:
+              memory: "${MEMORY_LIMIT}"
+              cpu: 0.1
+            limits:
+              memory: "${MEMORY_LIMIT}"
+          volumeMounts:
+          - mountPath: "/conf"
+            name: conf
+        volumes:
+          - name: conf
+            configMap:
+              name: "${APPLICATION_NAME}"
+              items:
+              - key: sxapi.yml
+                path: sxapi.yml
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      name: "${APPLICATION_NAME}"
+      type: application
+- kind: Route
+  apiVersion: v1
+  metadata:
+      name: "${APPLICATION_NAME}"
+  spec:
+    port:
+      targetPort: sxapi
+    to:
+      kind: Service
+      name: "${APPLICATION_NAME}"
+      weight: 100
+    wildcardPolicy: None
+parameters:
+- name: APPLICATION_NAME
+  displayName: Application Name
+  description: The name of the application.
+  value: sxapi-demo
+  required: true
+- name: IMAGE_NAME
+  value: 0.3.3
+  required: true
+- name: REGISTRY
+  value: "startx/sxapi"
+  required: true
+- name: REPLICAS_DATA
+  displayName: Desired Pod count for data nodes
+  description: How many data nodes should be provisioned? This value can be changed
+    later, by scaling up/down.
+  value: '2'
+  required: true
+- name: MEMORY_LIMIT
+  displayName: Memory Limit for data nodes
+  description: Maximum amount of memory data container can use.
+  value: 128Mi

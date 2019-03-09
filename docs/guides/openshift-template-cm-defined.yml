@@ -6,6 +6,8 @@ metadata:
     description: Template for creating an SXAPI microservice with configuration stored in a configMap object
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
+labels:
+  template: sxapi-configMap-defined-template
 objects:
 - kind: ConfigMap
   apiVersion: v1
@@ -13,20 +15,6 @@ objects:
     name: "${APPLICATION_NAME}"
   data:
     sxapi.yml: "${SXAPI_CONF}"
-- kind: Service
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-    annotations:
-      service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
-  spec:
-    clusterIP: None
-    ports:
-    - name: sxapi
-      port: 8077
-    selector:
-      name: "${APPLICATION_NAME}"
-      type: application
 - kind: StatefulSet
   apiVersion: apps/v1beta1
   metadata:
@@ -79,6 +67,30 @@ objects:
               items:
               - key: sxapi.yml
                 path: sxapi.yml
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      name: "${APPLICATION_NAME}"
+      type: application
+- kind: Route
+  apiVersion: v1
+  metadata:
+      name: "${APPLICATION_NAME}"
+  spec:
+    port:
+      targetPort: sxapi
+    to:
+      kind: Service
+      name: "${APPLICATION_NAME}"
+      weight: 100
+    wildcardPolicy: None
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
@@ -106,5 +118,3 @@ parameters:
   description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
   value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
-labels:
-  template: sxapi-configMap-template

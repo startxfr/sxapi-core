@@ -3,28 +3,33 @@ kind: Template
 metadata:
   name: sxapi-environement-template
   annotations:
+    openshift.io/display-name: SXAPI (environenement config)
     description: Template for creating an SXAPI microservice with configuration stored in a environement variable
+      for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
+labels:
+  template: sxapi-environement-template
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the deployement for application availability and
+  Follow created route to browse your running application
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  config      : environement \$SXAPI_CONF var
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
-- kind: Service
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-    annotations:
-      service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
-  spec:
-    clusterIP: None
-    ports:
-    - name: sxapi
-      port: 8077
-    selector:
-      name: "${APPLICATION_NAME}"
-      type: application
 - kind: StatefulSet
   apiVersion: apps/v1beta1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Application ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   spec:
     serviceName: "${APPLICATION_NAME}"
     replicas: "${REPLICAS_DATA}"
@@ -66,6 +71,36 @@ objects:
               cpu: 0.1
             limits:
               memory: "${MEMORY_LIMIT}"
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Service ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      name: "${APPLICATION_NAME}"
+      type: application
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Route ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    port:
+      targetPort: sxapi
+    to:
+      kind: Service
+      name: "${APPLICATION_NAME}"
+      weight: 100
+    wildcardPolicy: None
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
@@ -93,5 +128,3 @@ parameters:
   description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
   value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
-labels:
-  template: sxapi-environement-template

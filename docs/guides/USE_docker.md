@@ -192,8 +192,9 @@ docker-compose up
 
 If you're familiar with Openshift PaaS, you will find 3 usefull templates to use in
 your project
-- [template with configuration in environement variable](./openshift-template-env.yml)
-- [template with configuration in configMap mounted volume](./openshift-template-configMap.yml)
+- [template with configuration (template parameter) directly loaded into an environement variable](./openshift-template-env.yml) 
+- [template with configuration (template parameter) embeded in a configMap mounted volume](./openshift-template-cm-defined.yml)
+- [template with configuration (embeded in template) embeded in a configMap mounted volume](./openshift-template-cm-embeded.yml)
 - [template with configuration in mounted volume](./openshift-template-volume.yml)
 
 You can add them in a project using [openshift user guide](https://docs.openshift.org/latest/dev_guide/templates.html#uploading-a-template)
