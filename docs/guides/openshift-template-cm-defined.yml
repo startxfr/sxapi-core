@@ -1,24 +1,45 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-configmap-template
+  name: sxapi-cm-defined-template
   annotations:
-    description: Template for creating an SXAPI microservice with configuration stored in a configMap object
+    openshift.io/display-name: SXAPI (defined configmap)
+    description: Template for creating an SXAPI microservice where configuration 
+      (defined during templating processing) is stored in a configMap object
+      for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-configMap-defined-template
+  template: sxapi-cm-defined-template
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the deployement for application availability and
+  Follow created route to browse your running application
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  config      : configmap ${APPLICATION_NAME} (json)
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
 - kind: ConfigMap
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Sxapi configuration ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   data:
     sxapi.yml: "${SXAPI_CONF}"
 - kind: StatefulSet
   apiVersion: apps/v1beta1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Application ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   spec:
     serviceName: "${APPLICATION_NAME}"
     replicas: "${REPLICAS_DATA}"
@@ -71,6 +92,9 @@ objects:
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Service ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   spec:
     clusterIP: None
     ports:
@@ -82,7 +106,10 @@ objects:
 - kind: Route
   apiVersion: v1
   metadata:
-      name: "${APPLICATION_NAME}"
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Route ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   spec:
     port:
       targetPort: sxapi
