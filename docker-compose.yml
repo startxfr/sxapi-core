@@ -2,34 +2,31 @@ app:
   build: .
   container_name: "sxapi-core-testing"
   ports:
-    - "8080:8080"
+    - "8077:8077"
   volumes:
   - "./sxapi.yml:/conf/sxapi.yml:z"
   - "./test:/test:z"
   working_dir: /usr/src/app
-## build application 
-#  command: ["npm" , "run" , "build"]
-## run application 
-#  command: ["npm" , "start"]
-## build and start application for dev environement
+## build, test and start application for dev environement (with live-reload when code change)
 #  command: ["npm" , "run", "dev"]
 ## install application for dev environement
 #  command: ["npm",  "run", "dev:install"]
-## update application depndencies
-#  command: ["npm" , "run" , "dev:update"]
-## build application for dev environement
+## build application for dev environement (clean, install and update)
 #  command: ["npm" , "run" , "dev:build"]
-## start application for dev environement
-#  command: ["npm" , "run" , "dev:start"]
-## run application test
+## start application for dev environement (install, test and start application)
+  command: ["npm" , "run" , "dev:start"]
+
+## run application test only
 #  command: ["npm" , "test"]
-## build application for testing
-#  command: ["npm" , "run" , "test:build"]
-## start application for testing
-  command: ["npm" , "run" , "test:start"]
-## build application for production
+
+## build application for production (clean, install and update)
 #  command: ["npm" , "run" , "prod:build"]
 ## start application for production
 #  command: ["npm" , "run" , "prod:start"]
-## build and start application for production
+## build, test and start application for production
 #  command: ["npm" , "run" , "prod"]
+
+## build application for production (alias `npm run prod:build`)
+#  command: ["npm" , "run" , "build"]
+## run application (node app.js)
+#  command: ["npm" , "start"]

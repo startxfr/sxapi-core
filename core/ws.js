@@ -15,7 +15,7 @@ var $ws = {
       throw new Error("no 'server' section in config");
     }
     if (!$ws.config.port) {
-      $ws.config.port = "8080";
+      $ws.config.port = "8077";
     }
     if ($ws.config.port) {
       $ws.config.port = $log.format($ws.config.port, process.env);
@@ -256,7 +256,7 @@ var $ws = {
       if ($ws.config.enableWebsockets === true) {
         this.websockets.start();
       }
-      $ws.server.listen($ws.config.port || 8080);
+      $ws.server.listen($ws.config.port || 8077);
     }
     catch (err) {
       $log.error('web server can\'t start because ' + err.message);
