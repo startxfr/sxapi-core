@@ -27,7 +27,7 @@ sxapi.app.launch(function () {
 node app.js
 ```
 
-4. Connect to `http://localhost:8080` with your favorite navigator
+4. Connect to `http://localhost:8077` with your favorite navigator
 
 
 
@@ -69,6 +69,6 @@ server:
 node app.js
 ```
 
-4. Connect to `http://localhost:8080` with your favorite navigator
+4. Connect to `http://localhost:8077` with your favorite navigator
 
 

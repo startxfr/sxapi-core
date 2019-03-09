@@ -52,7 +52,7 @@ db-mariadb:
 #  container_name: "sxapi-core-testing-dbadminer"
 #  restart: always
 #  ports:
-#    - 8081:8080
+#    - 8077:8077
 #  links:
 #    - "db-postgres"
 #    - "db-mariadb"

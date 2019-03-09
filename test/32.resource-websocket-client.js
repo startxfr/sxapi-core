@@ -8,7 +8,7 @@ var test = null;
 describe("websocket-client resource component", function () {
   describe("app object", function () {
     test = require("../core/resource/websocket-client");
-    test = test("test-websocket-client", {host:"localhost:8080"}, {
+    test = test("test-websocket-client", {host:"localhost:8077"}, {
     });
     it("should be an object", function () {
       expect(test).to.be.an('object');
