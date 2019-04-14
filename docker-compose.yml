@@ -15,7 +15,7 @@ app:
   - "./test:/test:z"
   working_dir: /usr/src/app
 ## build, test and start application for dev environement (with live-reload when code change)
-  command: ["npm" , "run", "dev"]
+#  command: ["npm" , "run", "dev"]
 ## install application for dev environement
 #  command: ["npm",  "run", "dev:install"]
 ## build application for dev environement (clean, install and update)
@@ -36,4 +36,4 @@ app:
 ## build application for production (alias `npm run prod:build`)
 #  command: ["npm" , "run" , "build"]
 ## run application (node app.js)
-#  command: ["npm" , "start"]
+  command: ["npm" , "start"]

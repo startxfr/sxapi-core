@@ -6,6 +6,7 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
+| 0.3.5    | 2019-04-14 | Improve http and mysql modules
 | 0.3.4    | 2019-03-29 | Improve release note and project structure
 | 0.3.3    | 2019-03-10 | Improve OKD (Openshift) templates
 | 0.3.2    | 2019-03-09 | Update busybox and memcache dependencies
