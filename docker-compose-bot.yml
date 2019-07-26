@@ -5,6 +5,6 @@ app:
     service: app
   volumes:
   - "./:/usr/src/app:z"
-  - "./bot-sxapi.yml:/conf/sxapi.yml:z"
-  - "./bot-mylib.js:/usr/src/app/bot-mylib.js:z"
+  - "./api-examples/bot/sxapi.yml:/conf/sxapi.yml:z"
+  - "./api-examples/bot/mylib.js:/usr/src/app/mylib.js:z"
   command: ["npm" , "start"]

@@ -1,6 +1,6 @@
 [![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.3-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.7-blue.svg)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
@@ -43,6 +43,18 @@ If you want to have more information on how to install, develop and run this fra
 3. [Run you application](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/3.Run.md)
 4. [Develop sxapi resource](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/4.Develop.md)
 5. [Contribute to sxapi project](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/5.Contribute.md)
+
+## Release notes
+
+If you want to have more information on a minor release, [read released notes](docs/RELEASES.md)
+
+| Release  | Date       |  Description
+|----------|------------|-------------
+| 0.3.7    |            | Latest release (read released notes)
+| 0.3      | 2019-03-08 | Moving config to yaml syntax
+| 0.2      | 2018-03-18 | Adding bot behavior, event messaging and containerized images
+| 0.1      | 2018-01-20 | Adding all resources, session and websockets
+| beta     | 2016-10-29 | micro api componement with log and lightweight webserver
 
 ## Troubleshooting
 

@@ -3,52 +3,107 @@ kind: Template
 metadata:
   name: sxapi-environement-template
   annotations:
+    openshift.io/display-name: SXAPI (environenement config)
     description: Template for creating an SXAPI microservice with configuration stored in a environement variable
+      for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
+labels:
+  template: sxapi-environement-template
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the deployement for application availability and
+  Follow created route to browse your running application
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  config      : environement \$SXAPI_CONF var
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
-- kind: Service
+- kind: ImageStream
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+      openshift.io/generated-by: STARTX
   spec:
-    clusterIP: None
-    ports:
-    - name: sxapi
-      port: 8077
-    selector:
-      name: "${APPLICATION_NAME}"
-      type: application
-- kind: StatefulSet
-  apiVersion: apps/v1beta1
+    tags:
+    - name: ${IMAGE_NAME}
+      annotations:
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+        iconClass: icon-nodejs
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
+      from:
+        kind: DockerImage
+        name: ${REGISTRY}:${IMAGE_NAME}
+- kind: DeploymentConfig
+  apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Deployement ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
   spec:
-    serviceName: "${APPLICATION_NAME}"
-    replicas: "${REPLICAS_DATA}"
+    replicas: 2
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 60
+        maxUnavailable: 25%
+        maxSurge: 25%
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
+    - type: ConfigChange
+    test: false
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
         labels:
-          name: "${APPLICATION_NAME}"
-          app: sxapi
-          type: application
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
-          pod.alpha.kubernetes.io/initialized: 'true'
-          scheduler.alpha.kubernetes.io/affinity: "{}"
+          openshift.io/generated-by: STARTX
       spec:
-        terminationGracePeriodSeconds: 86400
+        terminationGracePeriodSeconds: 5
         containers:
-        - name: sxapi-default
-          image: "${REGISTRY}:${IMAGE_NAME}"
+        - name: "${APPLICATION_NAME}"
+          image: " "
           imagePullPolicy: Always
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 2
             tcpSocket:
               port: 8077
             timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
           env:
+          - name: SX_VERBOSE
+            value: 'true'
           - name: SXAPI_CONF
             value: "${SXAPI_CONF}"
           lifecycle:
@@ -62,10 +117,43 @@ objects:
             containerPort: 8077
           resources:
             requests:
+              cpu: 200m
               memory: "${MEMORY_LIMIT}"
-              cpu: 0.1
             limits:
+              cpu: 2000m
               memory: "${MEMORY_LIMIT}"
+          terminationMessagePath: "/dev/termination-log"
+        restartPolicy: Always
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Service ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Route ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    port:
+      targetPort: sxapi
+    to:
+      kind: Service
+      name: "${APPLICATION_NAME}"
+      weight: 100
+    wildcardPolicy: None
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
@@ -73,7 +161,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.3.3
+  value: 0.3.7
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -93,5 +181,3 @@ parameters:
   description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
   value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
-labels:
-  template: sxapi-environement-template

@@ -11,6 +11,30 @@ session:
     type: redis
     resource: redis-sample
     sid_field: sid
+  auth:
+    default: anonymous
+    auth_field: auth_info
+    auth_field_serializer: json
+    providers:
+    - name: "sql-user"
+      type: user
+      backend: mysql
+      resource: mysql-sample
+      table_name: user
+      id_field: id_user
+      login_field: login_user
+      password_field: password_user
+      password_algorithm: md5
+    - name: "sql-sa"
+      type: sa
+      backend: mysql
+      resource: mysql-sample
+      table_name: servicesaccount
+      id_field: id_sa
+      name_field: name_sa
+      token_field: token_sa
+    - name: "anonymous"
+      type: anonymous
 resources:
   s3-sample:
     _class: aws_s3
@@ -23,7 +47,7 @@ resources:
     ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
     SESSION_TOKEN: ''
     region: eu-west-1
-    Bucket: sxapitest
+    Bucket: sxapiexample
   sqs-sample:
     _class: aws_sqs
     read_options:
@@ -37,7 +61,7 @@ resources:
         from:
           DataType: String
           StringValue: sxapi-core-dev
-    QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/test
+    QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
     ACCESS_ID: AKIAJ7JDWBNTZOXZRM6A
     ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
     SESSION_TOKEN: ''
@@ -45,7 +69,7 @@ resources:
   couchbase-sample:
     _class: serviceinfo
     cluster: http://db-couchbase:8091
-    bucket: sxapicore_test
+    bucket: sxapicore_example
   serviceinfo-sample:
     _class: serviceinfo
   insee-sample:
@@ -63,9 +87,9 @@ resources:
     server:
       host: db-mariadb
       port: '3306'
-      user: sxapicore_test
-      password: sxapicore_test
-      database: sxapicore_test
+      user: sxapicore_example
+      password: sxapicore_example
+      database: sxapicore_example
   files-sample:
     _class: localfs
     directory: "/usr/src/app/"
@@ -116,6 +140,25 @@ server:
     header:
       Content-Type: application/json
     body: '{"key":"value"}'
+  - path: "/restricted"
+    method: ROUTER
+    auth: ["sql-user", "sql-sa"]
+    endpoints:
+    - path: "/restricted"
+      method: GET
+      body: "<html><head></head><body><h1>Restricted area</h1></body></html>"
+    - path: "/restricted/user"
+      method: GET
+      auth: ["sql-user"]
+      body: "<html><head></head><body><h1>Restricted area (only user)</h1></body></html>"
+    - path: "/restricted/sa"
+      method: GET
+      auth: ["sql-sa"]
+      body: "<html><head></head><body><h1>Restricted area (only SA)</h1></body></html>"
+    - path: "/restricted/unrestricted"
+      method: GET
+      auth: ["anonymous"]
+      body: "<html><head></head><body><h1>Unrestricted area (into a restricted area)</h1></body></html>"
   - path: "/function"
     handler: "$ws.dynamicRequestHandlerTest"
     param_sample: value de param_sample
@@ -144,7 +187,7 @@ server:
       method: GET
       endpoint: listMessages
       config:
-        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/test
+        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
     - path: "/message"
       method: POST
       endpoint: addMessage
@@ -152,7 +195,7 @@ server:
       method: DELETE
       endpoint: deleteMessage
       config:
-        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/test
+        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
   - path: "/s3store"
     method: ROUTER
     resource: s3-sample
@@ -160,15 +203,15 @@ server:
     - path: "/s3store"
       method: GET
       endpoint: listObjects
-      Bucket: sxapitest
+      Bucket: sxapiexample
     - path: "/s3store/:id"
       method: GET
       endpoint: getObject
-      bucket: sxapitest
+      bucket: sxapiexample
     - path: "/s3store/:id"
       method: POST
       endpoint: addObject
-      bucket: sxapitest
+      bucket: sxapiexample
     - path: "/s3store/:bid/:id"
       method: GET
       endpoint: getObject
@@ -230,5 +273,28 @@ server:
       method: PUT
       endpoint: update
     - path: "/file/:id"
+      method: DELETE
+      endpoint: delete
+  - path: "/mysql"
+    method: ROUTER
+    resource: mysql-sample
+    table: example
+    id_field: id
+    endpoints:
+    - path: "/mysql"
+      method: GET
+      endpoint: list
+      sql: SELECT * FROM example LIMIT 200
+    - path: "/mysql/:id"
+      method: POST
+      endpoint: create
+    - path: "/mysql/:id"
+      method: GET
+      endpoint: readOne
+      sql: "SELECT * FROM example WHERE id = '{{id}}' LIMIT 1"
+    - path: "/mysql/:id"
+      method: PUT
+      endpoint: update
+    - path: "/mysql/:id"
       method: DELETE
       endpoint: delete
