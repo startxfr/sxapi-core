@@ -32,6 +32,44 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+DROP TABLE IF EXISTS `example`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `example` (
+  `id` int(4) unsigned NOT NULL AUTO_INCREMENT,
+  `val` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `val` (`val`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id_user` int(4) unsigned NOT NULL AUTO_INCREMENT,
+  `login_user` varchar(128) NOT NULL,
+  `password_user` varchar(254) NOT NULL,
+  PRIMARY KEY (`id_user`),
+  KEY `val` (`login_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+DROP TABLE IF EXISTS `servicesaccount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `servicesaccount` (
+  `id_sa` int(4) unsigned NOT NULL AUTO_INCREMENT,
+  `name_sa` varchar(128) NOT NULL,
+  `token_sa` varchar(254) NOT NULL,
+  PRIMARY KEY (`id_sa`),
+  KEY `val` (`name_sa`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Dumping events for database 'startx-db-tools'
 --
