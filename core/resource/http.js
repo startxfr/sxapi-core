@@ -65,13 +65,13 @@ module.exports = function (id, config) {
       if (typeof url === "string") {
         var pat = /^https?:\/\//i;
         if (pat.test(url)) {
-          opt.url = url;
+          opt.uri = url;
         }
         else {
-          opt.url = (($htcli.config.url) ? $htcli.config.url : 'http://localhost/') + url;
+          opt.uri = (($htcli.config.url) ? $htcli.config.url : 'http://localhost/') + url;
         }
       }
-      $log.tools.resourceInfo($htcli.id, "call url " + opt.url);
+      $log.tools.resourceInfo($htcli.id, "call uri " + opt.uri);
       return $htcli.pool[$htcli.config._sign](opt, (callback) ? callback(timerId) : $htcli.__callDefaultCallback(timerId));
     },
     __callDefaultCallback: function (timerId) {

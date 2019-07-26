@@ -20,8 +20,8 @@ var mylib = {
   myEndpointFunction: function (config) {
     return function (req, res) {
       res.writeHead(200);
-      res.end("this text is a test à " + config.param_sample);
-      $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic test content", 2);
+      res.end("this text is an example param " + config.param_sample);
+      $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic example content", 2);
       return this;
     };
   },
@@ -29,8 +29,8 @@ var mylib = {
     return function (data) {
       console.log("------mySocketEndpointFunction");
       console.log(client.id, config, data);
-      client.broadcast.emit("test", data);
-      client.emit("test", data);
+      client.broadcast.emit("example", data);
+      client.emit("example", data);
     };
   }
 };

@@ -25,16 +25,16 @@ log:
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
   port: '8077'
-  lib: "./bot-mylib"
+  lib: "./api-examples/bot/mylib"
   static:
   - path: "/test"
     dir: "/test"
   enableWebsockets: true
   websockets:
     events:
-    - event: test
+    - event: example
       handler: "$ws.websockets.onMessageDefaultCallback"
-    - event: testGlobal
+    - event: exampleGlobal
       handler: "$ws.lib.mySocketEndpointFunction"
     - event: disconnect
       handler: "$ws.websockets.onMessageDefaultCallback"

@@ -121,7 +121,7 @@ module.exports = function (id, config) {
       var sqlFilter = '';
       if (typeof filter === 'object' && Object.keys(filter).length > 0) {
         for (var i in filter) {
-          sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
+          sqlFilter += "`" + i + "` = " + $mqdb.__escapeFilter(filter[i]) + " AND";
         }
         var timerId = 'mysql_read_' + table + '_' + sqlFilter.slice(0, -3);
         $timer.start(timerId);
@@ -160,7 +160,7 @@ module.exports = function (id, config) {
       var vals = '';
       for (var i in data) {
         fields += "`" + i + "`,";
-        vals += connection.escape(data[i]) + ",";
+        vals += $mqdb.__escapeData(data[i]) + ",";
       }
       var sql = "INSERT INTO " + table + " (" + fields.slice(0, -1) + ") VALUES(" + vals.slice(0, -1) + ");";
       return connection.query(sql, (callback) ? callback(timerId) : $mqdb.__insertDefaultCallback(timerId));
@@ -176,6 +176,34 @@ module.exports = function (id, config) {
         }
       };
     },
+    
+    /**
+     * Escape field data for SQL inclusion
+     * @param {mixed} data 
+     * @param {string} escaped data with SQL decoration
+     */
+    __escapeData: function (data) {
+      var d = data;
+      if(typeof data === "function") {
+        d = data();
+      }
+      else if(data.constructor === Array) {
+        d = data.join(',');
+      }
+      else if(typeof data === 'object') {
+        d = JSON.stringify(data);
+      }
+      return $mqdb.pool[$mqdb.config._sign].escape(d);
+    },
+    /**
+     * Escape field filter for SQL inclusion
+     * @param {mixed} data 
+     * @param {string} escaped filter with SQL decoration
+     */
+    __escapeFilter: function (data) {
+      return $mqdb.__escapeData(data);
+    },
+    
     /**
      * Update a document into the mysql storage
      * @param {string} table
@@ -190,12 +218,12 @@ module.exports = function (id, config) {
       $log.tools.resourceInfo($mqdb.id, "update entry in table '" + table + "'");
       if (typeof filter === 'object' && Object.keys(filter).length > 0) {
         for (var i in filter) {
-          sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
+          sqlFilter += "`" + i + "` = " + $mqdb.__escapeFilter(filter[i]) + " AND";
         }
         var timerId = 'mysql_udpate_' + table + '_' + sqlFilter.slice(0, -3);
         $timer.start(timerId);
         for (var i in data) {
-          sqlFrag += "`" + i + "` = " + connection.escape(data[i]) + ",";
+          sqlFrag += "`" + i + "` = " + $mqdb.__escapeData(data[i]) + ",";
         }
         var sql = "UPDATE " + table + " SET " + sqlFrag.slice(0, -1) + " WHERE " + sqlFilter.slice(0, -3) + ";";
         return connection.query(sql, (callback) ? callback(timerId) : $mqdb.__updateDefaultCallback(timerId));
@@ -228,7 +256,7 @@ module.exports = function (id, config) {
       $log.tools.resourceInfo($mqdb.id, "delete entry in table '" + table + "'");
       if (typeof filter === 'object' && Object.keys(filter).length > 0) {
         for (var i in filter) {
-          sqlFilter += "`" + i + "` = " + connection.escape(filter[i]) + " AND";
+          sqlFilter += "`" + i + "` = " + $mqdb.__escapeFilter(filter[i]) + " AND";
         }
         var timerId = 'mysql_delete_' + table + '_' + sqlFilter.slice(0, -3);
         $timer.start(timerId);
