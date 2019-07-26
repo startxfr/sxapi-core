@@ -1,6 +1,6 @@
 app:
   container_name: "sxapi-core-dev"
-  image: node:8
+  image: node:12-alpine
   environment:
   - SX_DEBUG=true
   - NODE_ENV=development
@@ -21,7 +21,7 @@ app:
 ## build application for dev environement (clean, install and update)
 #  command: ["npm" , "run" , "dev:build"]
 ## start application for dev environement (install, test and start application)
-#  command: ["npm" , "run" , "dev:start"]
+  command: ["npm" , "run" , "dev:start"]
 
 ## run application test only
 #  command: ["npm" , "test"]
@@ -36,4 +36,4 @@ app:
 ## build application for production (alias `npm run prod:build`)
 #  command: ["npm" , "run" , "build"]
 ## run application (node app.js)
-  command: ["npm" , "start"]
+#  command: ["npm" , "start"]
