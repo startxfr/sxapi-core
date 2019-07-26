@@ -41,7 +41,7 @@ COPY ./sxapi.yml $CONF_PATH/sxapi.yml
 RUN  apk update && apk upgrade && apk add git python make gcc g++ \
  &&  mkdir -p $APP_PATH $CONF_PATH $DATA_PATH /.npm /.config \
  &&  cd $APP_PATH \
- &&  npm install \
+ &&  npm run build \
  &&  npm dedupe \
  &&  npm cache verify \
  &&  npm cache clean --force \

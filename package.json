@@ -47,8 +47,8 @@
     "test": "./node_modules/.bin/mocha --exit",
     "prod": "npm run prod:build && npm run test && npm run prod:start",
     "prod:clean": "rimraf package-lock.json *.md docs test",
-    "prod:install": "npm install --only=prod -P && npm audit fix --force && npm dedupe",
-    "prod:build": "npm run prod:clean -s && npm run prod:install -s && npm update --save && npm dedupe",
+    "prod:install": "npm install --only=prod -P && npm update --no-save && npm audit fix --force && npm dedupe",
+    "prod:build": "npm install rimraf --no-save && npm run prod:clean -s && npm run prod:install -s",
     "prod:start": "npm start",
     "build": "npm run prod:build -s",
     "start": "node app.js"
@@ -96,17 +96,17 @@
     "js-yaml": "~3.13.1"
   },
   "devDependencies": {
-    "mocha": "~5.2.0",
+    "mocha": "~6.2.0",
     "chai": "~4.2.0",
-    "chai-http": "~4.2.1",
-    "sinon": "~7.2.3",
+    "chai-http": "~4.3.0",
+    "sinon": "~7.3.2",
     "http-server": "^0.11.1",
-    "jshint": "^2.9.7",
+    "jshint": "^2.10.2",
     "live-reload": "^1.1.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "rimraf": "^2.6.3",
-    "wait-on": "^3.2.0"
+    "wait-on": "^3.3.0"
   },
   "engines": {
     "node": ">= 11.7.0",
