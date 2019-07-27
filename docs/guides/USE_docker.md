@@ -198,6 +198,11 @@ your project
 - [deployConfig template with configuration (embeded in template) embeded in a configMap mounted volume](./openshift-template-cm-embeded.yml)
 - [deployConfig template with configuration in mounted volume](./openshift-template-volume.yml)
 
+You can also use the example templates :
+- [deployConfig template with simple configuration(../../api-examples/simple/openshift-template-simple.yml) 
+- [deployConfig template with bot configuration(../../api-examples/bot/openshift-template-bot.yml) 
+- [deployConfig template with full configuration(../../api-examples/full/openshift-template-full.yml) 
+
 For example you can run 
 ```bash
 oc new-project test
