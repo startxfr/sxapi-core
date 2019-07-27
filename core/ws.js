@@ -143,8 +143,8 @@ var $ws = {
       type: (typeof handler === "string") ? "dynamic" : "static ",
       endpoint: "defaultEndpoint"
     };
-    if (typeof config.desc !== "undefined") {
-      urlDescriptor.desc = config.desc;
+    if (typeof config.description !== "undefined") {
+      urlDescriptor.description = config.description;
     }
     if (typeof handler === "string") {
       urlDescriptor.type = "dynamic";

@@ -1,6 +1,10 @@
-name: sxapi-dev-server
-description: sxapi developing config file (server dev)
-version: 0.0.1-beta
+name: sxapi-dev-full
+description: sxapi full microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+termsOfService: http://startx.fr/api#termOfService
+contactName: Dev STARTX
+contactMail: dev@startx.fr
+licence: GPL v2.0
+version: 0.0.1
 debug: true
 session:
   duration: 3600
@@ -72,6 +76,8 @@ resources:
     bucket: sxapicore_example
   serviceinfo-sample:
     _class: serviceinfo
+  swagger-sample:
+    _class: swagger
   insee-sample:
     _class: insee
     siren2tva:
@@ -94,7 +100,7 @@ resources:
     _class: localfs
     directory: "/usr/src/app/"
   twitter-sample:
-    _class: serviceinfo
+    _class: twitter
     QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -112,21 +118,27 @@ notifications:
 server:
   endpoints:
   - path: "/"
-    desc: Display welcome message (HTML)
+    description: Display welcome message (HTML)
     header:
       Content-Type: text/html
     body: "<html><head></head><body><h1>SXAPI - Full dev - v0.0.1</h1></body></html>"
   - path: "/health"
+    description: Return health check for this API instance
     resource: serviceinfo-sample
     endpoint: health
     notification:
       pipeline: default-sqs
       event: health:get
+  - path: "/swagger"
+    resource: swagger-sample
+    description: Return a swagger manifest for this API
+    endpoint: manifest
   - path: "/ping"
-    desc: Ping the application. Return a sample message in json
+    description: Ping the application. Return a sample message in json
     code: '200'
     body: pong
   - path: "/html"
+    description: Static HTML content
     body: "<html><head></head><body><h1>Static html content</h1></body></html>"
   - path: "/dir"
     directory: docs/
@@ -136,6 +148,7 @@ server:
       Content-Type: text/plain
     body: text response
   - path: "/json"
+    description: Static JSON content
     code: '200'
     header:
       Content-Type: application/json
@@ -145,21 +158,26 @@ server:
     auth: ["sql-user", "sql-sa"]
     endpoints:
     - path: "/restricted"
+      description: Restricted area example
       method: GET
       body: "<html><head></head><body><h1>Restricted area</h1></body></html>"
     - path: "/restricted/user"
+      description: Restricted only user example
       method: GET
       auth: ["sql-user"]
       body: "<html><head></head><body><h1>Restricted area (only user)</h1></body></html>"
     - path: "/restricted/sa"
+      description: Restricted area serviceAccount example
       method: GET
       auth: ["sql-sa"]
       body: "<html><head></head><body><h1>Restricted area (only SA)</h1></body></html>"
     - path: "/restricted/unrestricted"
+      description: Restricted area wuth unresigtered example
       method: GET
       auth: ["anonymous"]
       body: "<html><head></head><body><h1>Unrestricted area (into a restricted area)</h1></body></html>"
   - path: "/function"
+    description: Restricted area example
     handler: "$ws.dynamicRequestHandlerTest"
     param_sample: value de param_sample
   - path: "/http"

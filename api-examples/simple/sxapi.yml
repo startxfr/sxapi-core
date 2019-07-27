@@ -1,5 +1,5 @@
-name: sxapi-default-testing
-description: sxapi testing microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+name: sxapi-dev-simple
+description: sxapi simple microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
 termsOfService: http://startx.fr/api#termOfService
 contactName: Dev STARTX
 contactMail: dev@startx.fr
@@ -31,9 +31,19 @@ log:
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
   port: '8077'
+  lib: "/usr/src/app/mylib"
   static:
   - path: "/test"
     dir: "/test"
+  enableWebsockets: true
+  websockets:
+    events:
+    - event: example
+      handler: "$ws.websockets.onMessageDefaultCallback"
+    - event: exampleGlobal
+      handler: "$ws.lib.mySocketEndpointFunction"
+    - event: disconnect
+      handler: "$ws.websockets.onMessageDefaultCallback"
   endpoints:
   - path: "/"
     description: Display welcome message (HTML)
@@ -76,3 +86,7 @@ server:
   - path: "/function"
     description: Test and dedicated function. Return a sample message in json
     handler: "$ws.dynamicRequestHandlerTest"
+  - path: "/function2"
+    description: Test user-defined fonction to get return and acces to low level resources
+    handler: "$ws.lib.myEndpointFunction"
+    param_sample: dev-config
