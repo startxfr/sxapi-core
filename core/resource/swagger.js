@@ -92,6 +92,11 @@ module.exports = function (id, config) {
             summary: ws.urlList[urlID].description || ws.urlList[urlID].method + " on " + ws.urlList[urlID].path,
             description: ws.urlList[urlID].desc || ws.urlList[urlID].type + " on " + ws.urlList[urlID].path,
             produces: ["application/json"],
+            responses:{
+              "200":{
+                "description":"successful operation"
+              }
+            },
             parameters: []
           };
         }
