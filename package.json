@@ -33,7 +33,7 @@
     "lib": "core",
     "doc": "docs",
     "test": "test",
-    "api-examples": "api-examples"
+    "examples": "examples"
   },
   "scripts": {
     "dev": "npm-run-all --parallel \"dev:internal:live-reload\" \"dev:start\" \"dev:internal:open\"",
