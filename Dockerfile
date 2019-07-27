@@ -1,7 +1,7 @@
 FROM node:12-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV SXAPI_VERSION=0.3.9 \
+ENV SXAPI_VERSION=0.3.11 \
     SX_ID="startx/sxapi" \
     SX_NAME="Startx SXAPI (alpine)" \
     SX_SUMMARY="Small an eXtensible API framework to build small and flexible microservices using a single configuration file" \
