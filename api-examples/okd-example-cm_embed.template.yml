@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-example-simple-template
+  name: sxapi-example-cm_embeded-template
   annotations:
-    openshift.io/display-name: SXAPI Simple Example (embeded configmap)
-    description: Template for creating a simple SXAPI example where configuration 
+    openshift.io/display-name: SXAPI Example (embed configuration via configMap)
+    description: Template for creating an SXAPI microservice where configuration 
       (embeded in template) is stored in a configMap object
       for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
@@ -13,13 +13,14 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-example-simple-template
+  template: sxapi-example-cm_embeded-template
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
-  Monitor the deployement for application availability
+  Monitor the deployement for application availability and
+  Follow created route to browse your running application
 
   Application : ${APPLICATION_NAME}
-  sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
@@ -28,19 +29,19 @@ objects:
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
       openshift.io/generated-by: STARTX
   spec:
     tags:
-    - name: ${IMAGE_VERSION}
+    - name: ${IMAGE_NAME}
       annotations:
-        openshift.io/display-name: SXAPI container image (${IMAGE_NAME} ${IMAGE_VERSION})
-        description: SXAPI image for the application ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
         iconClass: icon-nodejs
-        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${IMAGE_NAME}:${IMAGE_VERSION}
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
       from:
         kind: DockerImage
-        name: ${IMAGE_NAME}:${IMAGE_VERSION}
+        name: ${REGISTRY}:${IMAGE_NAME}
 - kind: ConfigMap
   apiVersion: v1
   metadata:
@@ -50,14 +51,10 @@ objects:
       openshift.io/generated-by: STARTX
   data:
     sxapi.yml: |
-      name: sxapi-dev-simple
-      description: sxapi simple microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
-      termsOfService: http://startx.fr/api#termOfService
-      contactName: Dev STARTX
-      contactMail: dev@startx.fr
-      licence: GPL v2.0
+      name: sxapi-example-cm_embed
+      description: sxapi default microservice API
       version: 0.0.1
-      debug: "{{{SX_DEBUG}}}"
+      debug: "true"
       session:
         duration: 3600
         auto_create: true
@@ -72,100 +69,57 @@ objects:
       resources:
         serviceinfo-sample:
           _class: serviceinfo
-        swagger-sample:
-          _class: swagger
         websocket-sample:
           _class: websocket-client
           host: http://localhost:8077
       log:
         filters:
           level: '0,1,2,3,4,5'
-          type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
+          type: "debug,info,error,warn"
       server:
         port: '8077'
-        lib: "/usr/src/app/mylib"
         static:
         - path: "/test"
           dir: "/test"
         enableWebsockets: true
         websockets:
           events:
-          - event: example
+          - event: test
             handler: "$ws.websockets.onMessageDefaultCallback"
-          - event: exampleGlobal
-            handler: "$ws.lib.mySocketEndpointFunction"
           - event: disconnect
             handler: "$ws.websockets.onMessageDefaultCallback"
         endpoints:
         - path: "/"
-          description: Display welcome message (HTML)
+          desc: Display welcome message (HTML)
           body:
           - "<html>"
-          - "<head><title>Application {{name}}</title></head>"
+          - "<head><title>Application ${APPLICATION_NAME}</title></head>"
           - <link rel="stylesheet" href="https://goo.gl/4kFNLH">
           - <body><div class="container">
-          - <h1><span class="glyphicon glyphicon-eye-open"></span> Your API {{name}} is
+          - <h1><span class="glyphicon glyphicon-eye-open"></span> Your API ${APPLICATION_NAME} is
             live !</h1>
-          - <div class="alert alert-success" role="alert"><p>This API is {{description}}
-            running on <b>{{hostname}}</b> with current release <b>v{{version}}</b></p></div>
-          - <div class="alert alert-info" role="alert"><p>The application signature is <b>{{appsign}}</b>
-            and corespond to a blank project.</p></div>
           - "<p>Default config file must be changed and replaced your <b>own sxapi.yml</b>
             config file."
           - You will then be able to build your own API resources and endpoints.<br>
           - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"
             target="">sxapi project documentation</a>.</p>
           - <nav class="navbar navbar-default navbar-fixed-bottom"><div class="container">
-            Microservice engine is <b>{{package.name}} v{{package.version}}</b>. {{package.description}}</div></nav>
+            Microservice engine is <b>${REGISTRY} v${IMAGE_NAME}</b></div></nav>
           - "</div></body>"
           - "</html>"
         - path: "/health"
-          description: Return health check for this API instance
           resource: serviceinfo-sample
           endpoint: health
         - path: "/info"
-          description: Return information about this API instance
           resource: serviceinfo-sample
           endpoint: info
-        - path: "/swagger"
-          resource: swagger-sample
-          description: Return a swagger manifest for this API
-          endpoint: manifest
         - path: "/ping"
-          description: Ping the application. Return a sample message in json
+          desc: Ping the application. Return a sample message in json
           code: '200'
           body: pong
         - path: "/function"
-          description: Test and dedicated function. Return a sample message in json
+          desc: Ping the application. Return a sample message in json
           handler: "$ws.dynamicRequestHandlerTest"
-        - path: "/function2"
-          description: Test user-defined fonction to get return and acces to low level resources
-          handler: "$ws.lib.myEndpointFunction"
-          param_sample: dev-config
-      
-    mylib.js: |
-      /* global resConf, $log */
-      //'use strict';
-      var mylib = {
-        myEndpointFunction: function (config) {
-          return function (req, res) {
-            res.writeHead(200);
-            res.end("this text is an example param " + config.param_sample);
-            $log.tools.endpointDebug("defaultEndpoint", req, " return dynamic example content", 2);
-            return this;
-          };
-        },
-        mySocketEndpointFunction: function (client, config) {
-          return function (data) {
-            console.log("------mySocketEndpointFunction");
-            console.log(client.id, config, data);
-            client.broadcast.emit("example", data);
-            client.emit("example", data);
-          };
-        }
-      };
-      module.exports = mylib;
-
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -191,7 +145,7 @@ objects:
         - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APPLICATION_NAME}:${IMAGE_VERSION}"
+          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
     - type: ConfigChange
     test: false
     selector:
@@ -226,17 +180,14 @@ objects:
             periodSeconds: 5
             successThreshold: 1
             failureThreshold: 2
+          env:
+          - name: SX_VERBOSE
+            value: 'true'
           lifecycle:
-            preStart:
-              exec:
-                command:
-                - npm
-                - audit
-                - fix
             preStop:
               exec:
                 command:
-                - npm
+                - "npm"
                 - stop
           ports:
           - name: sxapi
@@ -260,8 +211,6 @@ objects:
               items:
               - key: sxapi.yml
                 path: sxapi.yml
-              - key: mylib.js
-                path: mylib.js
 - kind: Service
   apiVersion: v1
   metadata:
@@ -296,12 +245,12 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-simple-example
-  required: true
-- name: IMAGE_VERSION
-  value: 0.3.15
+  value: sxapi-example-cm_embed
   required: true
 - name: IMAGE_NAME
+  value: 0.3.17
+  required: true
+- name: REGISTRY
   value: "startx/sxapi"
   required: true
 - name: REPLICAS_DATA
