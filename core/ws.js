@@ -37,22 +37,22 @@ var $ws = {
     var bodyParser = require('body-parser');
     if ($ws.config.bodyParserJson !== false) {
       var type = $ws.config.bodyParserJsonType || "*/json";
-      var optBpj = $ws.config.bodyParserJsonOptions || { type : type };
+      var optBpj = $ws.config.bodyParserJsonOptions || {type: type};
       $ws.app.use(bodyParser.json(optBpj));
     }
     if ($ws.config.bodyParserText !== false) {
       var type = $ws.config.bodyParserTextType || "text/*";
-      var optBpt = $ws.config.bodyParserTextOptions || { type : type };
+      var optBpt = $ws.config.bodyParserTextOptions || {type: type};
       $ws.app.use(bodyParser.raw(optBpt));
     }
     if ($ws.config.bodyParserRaw !== false) {
       var type = $ws.config.bodyParserRawType || "*/*";
-      var optBpr = $ws.config.bodyParserRawOptions || { type : type };
+      var optBpr = $ws.config.bodyParserRawOptions || {type: type};
       $ws.app.use(bodyParser.raw(optBpr));
     }
     if ($ws.config.bodyParserUrl !== false) {
       var type = $ws.config.bodyParserUrlType || "*/*";
-      var optBpu = $ws.config.bodyParserUrlOptions || { type : type, extended: true };
+      var optBpu = $ws.config.bodyParserUrlOptions || {type: type, extended: true};
       $ws.app.use(bodyParser.urlencoded(optBpu));
     }
     if ($ws.config.useCors !== false) {
@@ -64,8 +64,8 @@ var $ws = {
       };
       $ws.app.use(require('cors')(optCors));
     }
-    if ($ws.config.lib) {
-      $log.debug("use webserver custom library ", 4);
+    if (typeof $ws.config.lib === "string") {
+      $log.debug("use webserver custom library " + $ws.config.lib, 4);
       try {
         require.resolve("../" + $ws.config.lib);
         $ws.lib = require("../" + $ws.config.lib);
@@ -143,8 +143,8 @@ var $ws = {
       type: (typeof handler === "string") ? "dynamic" : "static ",
       endpoint: "defaultEndpoint"
     };
-    if (typeof config.desc !== "undefined") {
-      urlDescriptor.desc = config.desc;
+    if (typeof config.description !== "undefined") {
+      urlDescriptor.description = config.description;
     }
     if (typeof handler === "string") {
       urlDescriptor.type = "dynamic";

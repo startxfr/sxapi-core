@@ -7,17 +7,32 @@
 #  https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
+S2IPATH=/tmp/src
 cd $APP_PATH
-if [[ -d /tmp/src ]]; then
-    cp -R /tmp/src/* $APP_PATH/
-    if [[ -f /tmp/src/sxapi.yml ]]; then
-        cp -f /tmp/src/sxapi.yml $CONF_PATH/sxapi.yml
+
+if [[ -d $S2IPATH ]]; then
+    cp -R $S2IPATH/* $APP_PATH/
+    RET=$?
+    if [[ -f $S2IPATH/sxapi.yml ]]; then
+      cp -f $S2IPATH/sxapi.yml $CONF_PATH/sxapi.yml
     fi;
-#    rm -rf /tmp/src
+    if [[ $RET == 0 ]]; then
+      rm -rf $S2IPATH
+    fi;
 fi;
-npm install -production
-npm dedupe
-npm cache verify
-npm cache clean --force
+
+if [[ "$NODE_ENV" == "development" ]]; then
+  npm install -production
+  npm dedupe
+  npm cache verify
+  npm cache clean --force
+else
+  npm install -production
+  npm dedupe
+  npm cache verify
+  npm cache clean --force
+fi;
+
+
 cd -
 exit 0;

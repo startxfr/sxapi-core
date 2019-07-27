@@ -1,5 +1,9 @@
 name: sxapi-dev-bot
-description: sxapi developing config file (bot dev)
+description: sxapi bot microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+termsOfService: http://startx.fr/api#termOfService
+contactName: Dev STARTX
+contactMail: dev@startx.fr
+licence: GPL v2.0
 version: 0.0.1
 debug: true
 session:
@@ -16,7 +20,9 @@ session:
 resources:
   serviceinfo-sample:
     _class: serviceinfo
-  sqs-test:
+  swagger-sample:
+    _class: swagger
+  sqs-example:
     _class: aws_sqs
     send_options:
       DelaySeconds: 2
@@ -28,8 +34,8 @@ resources:
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     region: eu-west-1
-  twitter-test:
-    _class: serviceinfo
+  twitter-example:
+    _class: twitter
     consumer_key: XXXXXXXXXXXXXXXXXXXX
     consumer_secret: XXXXXXXXXXXXXXXXXXXX
     access_token_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -42,45 +48,51 @@ server:
   port: '8077'
   endpoints:
   - path: "/"
-    desc: Display welcome message (HTML)
+    description: Display welcome message (HTML)
     body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
-      !</h1><p>This API is based on sxapi-core v0.3.3 and use default config file.
+      !</h1><p>This API is based on sxapi-core v0.3.9 and use default config file.
       You can now start to configure your sxapi.yml config file in order to build
       your own API </p></body></html>"
   - path: "/health"
+    description: Return health check for this API instance
     resource: serviceinfo-sample
     endpoint: health
   - path: "/info"
+    description: Return information about this API instance
     resource: serviceinfo-sample
     endpoint: info
+  - path: "/swagger"
+    resource: swagger-sample
+    description: Return a swagger manifest for this API
+    endpoint: manifest
   - path: "/ping"
-    desc: Ping the application. Return a sample message in json
+    description: Ping the application. Return a sample message in json
     code: '200'
     body: pong
 bot:
-  lib: "./bot-mylib"
+  lib: "/usr/src/app/mylib"
   cron:
-  - id: test-cront-task
-    name: Execute test cron task
+  - id: example-cront-task
+    name: Execute example cron task
     schedule: "*/1 * * * *"
     task: myCronFunction
   readers:
     sqs:
-    - resource: sqs-test
+    - resource: sqs-example
       frequency: 5
       config:
         MaxNumberOfMessages: 2
         VisibilityTimeout: 2
       filters:
-      - id: test-sqs-task
+      - id: example-sqs-task
         event: event:type
         task: myReaderFunction
     twitter:
-    - resource: twitter-test
+    - resource: twitter-example
       filters:
-      - id: test-twitter-startx
+      - id: example-twitter-startx
         match: "#paris"
         task: myTwitterFunction
-      - id: test-twitter-startx
+      - id: example-twitter-startx
         match: "#london"
         task: myTwitterFunction

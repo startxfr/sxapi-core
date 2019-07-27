@@ -19,6 +19,30 @@ INSERT INTO `app` VALUES
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `example`
+--
+LOCK TABLES `example` WRITE;
+INSERT INTO `example` VALUES 
+(1,'example entry');
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `user`
+--
+LOCK TABLES `user` WRITE;
+INSERT INTO `user` VALUES 
+(1,'example-user',MD5('example-user'));
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `servicesaccount`
+--
+LOCK TABLES `servicesaccount` WRITE;
+INSERT INTO `servicesaccount` VALUES 
+(1,'example-sa',MD5('example-satoken'));
+UNLOCK TABLES;
+
+--
 -- Dumping events for database 'startx-db-tools'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

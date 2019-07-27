@@ -3,51 +3,142 @@ kind: Template
 metadata:
   name: sxapi-volume-template
   annotations:
-    description: Template for creating an SXAPI microservice with configuration stored in a volume object
+    openshift.io/display-name: SXAPI (embeded configmap)
+    description: Template for creating an SXAPI microservice where configuration 
+      (embeded in template) is stored in a configMap object
+      for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
+labels:
+  template: sxapi-volume-template
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the deployement for application availability and
+  Follow created route to browse your running application
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  config      : configmap ${APPLICATION_NAME} (yaml)
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
-- kind: Service
+- kind: ImageStream
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+      openshift.io/generated-by: STARTX
   spec:
-    clusterIP: None
-    ports:
-    - name: sxapi
-      port: 8077
+    tags:
+    - name: ${IMAGE_NAME}
+      annotations:
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+        iconClass: icon-nodejs
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
+      from:
+        kind: DockerImage
+        name: ${REGISTRY}:${IMAGE_NAME}
+- kind: PersistentVolume
+  apiVersion: v1
+  metadata:
+    name: ${APPLICATION_NAME}-config
+    annotations:
+      openshift.io/display-name: Persistent volume for application ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+    labels:
+      kind: "${APPLICATION_NAME}-resilient"
+  spec:
+    capacity:
+      storage: 64Mi
+    accessModes:
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      path: "${NFS_PATH}/sto25"
+      server: "${NFS_SERVER}"
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}-config"
+    annotations:
+      openshift.io/display-name: Persistent volume claim for ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    accessModes: 
+      - ReadOnlyMany 
     selector:
-      name: "${APPLICATION_NAME}"
-      type: application
-- kind: StatefulSet
-  apiVersion: apps/v1beta1
+      matchLabels:
+        kind: "${APPLICATION_NAME}-resilient"
+    resources:
+      requests:
+        storage: 64Mi
+- kind: DeploymentConfig
+  apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Deployement ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
   spec:
-    serviceName: "${APPLICATION_NAME}"
-    replicas: "${REPLICAS_DATA}"
+    replicas: 2
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 60
+        maxUnavailable: 25%
+        maxSurge: 25%
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
+    - type: ConfigChange
+    test: false
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
         labels:
-          name: "${APPLICATION_NAME}"
-          app: sxapi
-          type: application
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
-          pod.alpha.kubernetes.io/initialized: 'true'
-          scheduler.alpha.kubernetes.io/affinity: "{}"
+          openshift.io/generated-by: STARTX
       spec:
-        terminationGracePeriodSeconds: 86400
+        terminationGracePeriodSeconds: 5
         containers:
-        - name: sxapi-default
-          image: "${REGISTRY}:${IMAGE_NAME}"
+        - name: "${APPLICATION_NAME}"
+          image: " "
           imagePullPolicy: Always
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 2
             tcpSocket:
               port: 8077
             timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          env:
+          - name: SX_VERBOSE
+            value: 'true'
           lifecycle:
             preStop:
               exec:
@@ -59,24 +150,50 @@ objects:
             containerPort: 8077
           resources:
             requests:
+              cpu: 200m
               memory: "${MEMORY_LIMIT}"
-              cpu: 0.1
             limits:
+              cpu: 2000m
               memory: "${MEMORY_LIMIT}"
+          terminationMessagePath: "/dev/termination-log"
           volumeMounts:
           - mountPath: "/conf"
             name: conf
-    volumeClaimTemplates:
-    - metadata:
-        name: conf
-        annotations:
-          volume.beta.kubernetes.io/storage-class: "${STORAGE_CLASS_DATA}"
-      spec:
-        accessModes:
-        - ReadOnly
-        resources:
-          requests:
-            storage: "${VOLUME_CAPACITY_DATA}"
+        restartPolicy: Always
+        volumes:
+        - name: "conf"
+          persistentVolumeClaim:
+            claimName: "${APPLICATION_NAME}-config"
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Service ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Route ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    port:
+      targetPort: sxapi
+    to:
+      kind: Service
+      name: "${APPLICATION_NAME}"
+      weight: 100
+    wildcardPolicy: None
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
@@ -84,7 +201,7 @@ parameters:
   value: sxapi-demo
   required: true
 - name: IMAGE_NAME
-  value: 0.3.3
+  value: 0.3.9
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -99,15 +216,12 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: VOLUME_CAPACITY_DATA
-  displayName: Volume Capacity for data nodes
-  description: Volume space available for data nodes, e.g. 512Mi, 2Gi.
-  value: 10Mi
+- name: NFS_SERVER
+  displayName: Startx NFS server
+  description: "DNS or IP for the NFS backend"
+  value: nfs.startx.fr
   required: true
-- name: STORAGE_CLASS_DATA
-  displayName: Storage Class for data nodes
-  description: Storage Class of the volume space for data nodes, e.g. fast, slow
-  value: slow
-  required: true
-labels:
-  template: sxapi-volume-template
+- name: NFS_PATH
+  displayName: Path to storage directory in NFS server
+  description: "path to the directory containing the storages contents"
+  value: /PersistentStorage
