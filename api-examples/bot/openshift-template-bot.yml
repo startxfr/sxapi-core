@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-cm-embeded-template
+  name: sxapi-example-bot-template
   annotations:
-    openshift.io/display-name: SXAPI (embeded configmap)
-    description: Template for creating an SXAPI microservice where configuration 
+    openshift.io/display-name: SXAPI Bot Example (embeded configmap)
+    description: Template for creating an SXAPI bot where configuration 
       (embeded in template) is stored in a configMap object
       for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
@@ -13,14 +13,13 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-cm-embeded-template
+  template: sxapi-example-bot-template
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
-  Monitor the deployement for application availability and
-  Follow created route to browse your running application
+  Monitor the deployement for application availability
 
   Application : ${APPLICATION_NAME}
-  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
@@ -29,19 +28,19 @@ objects:
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
       openshift.io/generated-by: STARTX
   spec:
     tags:
-    - name: ${IMAGE_NAME}
+    - name: ${IMAGE_VERSION}
       annotations:
-        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
-        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
+        openshift.io/display-name: SXAPI container image (${IMAGE_NAME} ${IMAGE_VERSION})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
         iconClass: icon-nodejs
-        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${IMAGE_NAME}:${IMAGE_VERSION}
       from:
         kind: DockerImage
-        name: ${REGISTRY}:${IMAGE_NAME}
+        name: ${IMAGE_NAME}:${IMAGE_VERSION}
 - kind: ConfigMap
   apiVersion: v1
   metadata:
@@ -51,10 +50,14 @@ objects:
       openshift.io/generated-by: STARTX
   data:
     sxapi.yml: |
-      name: sxapi-default
-      description: sxapi default microservice API
+      name: sxapi-dev-bot
+      description: sxapi bot microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+      termsOfService: http://startx.fr/api#termOfService
+      contactName: Dev STARTX
+      contactMail: dev@startx.fr
+      licence: GPL v2.0
       version: 0.0.1
-      debug: "true"
+      debug: true
       session:
         duration: 3600
         auto_create: true
@@ -69,57 +72,104 @@ objects:
       resources:
         serviceinfo-sample:
           _class: serviceinfo
-        websocket-sample:
-          _class: websocket-client
-          host: http://localhost:8077
+        swagger-sample:
+          _class: swagger
+        sqs-example:
+          _class: aws_sqs
+          send_options:
+            DelaySeconds: 2
+            MessageAttributes:
+              from:
+                DataType: String
+                StringValue: startx
+          QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
+          ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
+          ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          region: eu-west-1
+        twitter-example:
+          _class: twitter
+          consumer_key: XXXXXXXXXXXXXXXXXXXX
+          consumer_secret: XXXXXXXXXXXXXXXXXXXX
+          access_token_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          access_token_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       log:
         filters:
-          level: '0,1,2,3,4,5'
-          type: "debug,info,error,warn"
+          level: '0,1,2,3,4'
+          type: debug,info,error,warn
       server:
         port: '8077'
-        static:
-        - path: "/test"
-          dir: "/test"
-        enableWebsockets: true
-        websockets:
-          events:
-          - event: test
-            handler: "$ws.websockets.onMessageDefaultCallback"
-          - event: disconnect
-            handler: "$ws.websockets.onMessageDefaultCallback"
         endpoints:
         - path: "/"
-          desc: Display welcome message (HTML)
-          body:
-          - "<html>"
-          - "<head><title>Application ${APPLICATION_NAME}</title></head>"
-          - <link rel="stylesheet" href="https://goo.gl/4kFNLH">
-          - <body><div class="container">
-          - <h1><span class="glyphicon glyphicon-eye-open"></span> Your API ${APPLICATION_NAME} is
-            live !</h1>
-          - "<p>Default config file must be changed and replaced your <b>own sxapi.yml</b>
-            config file."
-          - You will then be able to build your own API resources and endpoints.<br>
-          - For more informations please visit <a href="https://github.com/startxfr/sxapi-core"
-            target="">sxapi project documentation</a>.</p>
-          - <nav class="navbar navbar-default navbar-fixed-bottom"><div class="container">
-            Microservice engine is <b>${REGISTRY} v${IMAGE_NAME}</b></div></nav>
-          - "</div></body>"
-          - "</html>"
+          description: Display welcome message (HTML)
+          body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
+            !</h1><p>This API is based on sxapi-core v0.3.5 and use default config file.
+            You can now start to configure your sxapi.yml config file in order to build
+            your own API </p></body></html>"
         - path: "/health"
+          description: Return health check for this API instance
           resource: serviceinfo-sample
           endpoint: health
         - path: "/info"
+          description: Return information about this API instance
           resource: serviceinfo-sample
           endpoint: info
+        - path: "/swagger"
+          resource: swagger-sample
+          description: Return a swagger manifest for this API
+          endpoint: manifest
         - path: "/ping"
-          desc: Ping the application. Return a sample message in json
+          description: Ping the application. Return a sample message in json
           code: '200'
           body: pong
-        - path: "/function"
-          desc: Ping the application. Return a sample message in json
-          handler: "$ws.dynamicRequestHandlerTest"
+      bot:
+        lib: "/conf/mylib"
+        cron:
+        - id: example-cront-task
+          name: Execute example cron task
+          schedule: "*/1 * * * *"
+          task: myCronFunction
+        readers:
+          sqs:
+          - resource: sqs-example
+            frequency: 5
+            config:
+              MaxNumberOfMessages: 2
+              VisibilityTimeout: 2
+            filters:
+            - id: example-sqs-task
+              event: event:type
+              task: myReaderFunction
+          twitter:
+          - resource: twitter-example
+            filters:
+            - id: example-twitter-startx
+              match: "#paris"
+              task: myTwitterFunction
+            - id: example-twitter-startx
+              match: "#london"
+              task: myTwitterFunction
+      
+    mylib.js: |
+      /* global resConf, $log */
+      //'use strict';
+      var mylib = {
+        myCronFunction: function (config) {
+          var moment = require('moment');
+          $log.info("cron task " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+        },
+        myReaderFunction: function (data, message, config) {
+          var moment = require('moment');
+          $log.info("sqs reader " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+          console.log(data);
+        },
+        myTwitterFunction: function (data, message, config) {
+          var moment = require('moment');
+          $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
+      //    console.log(data);
+        }
+      };
+      module.exports = mylib;
+
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -145,7 +195,7 @@ objects:
         - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APPLICATION_NAME}:${IMAGE_NAME}"
+          name: "${APPLICATION_NAME}:${IMAGE_VERSION}"
     - type: ConfigChange
     test: false
     selector:
@@ -180,14 +230,17 @@ objects:
             periodSeconds: 5
             successThreshold: 1
             failureThreshold: 2
-          env:
-          - name: SX_VERBOSE
-            value: 'true'
           lifecycle:
+            preStart:
+              exec:
+                command:
+                - npm
+                - audit
+                - fix
             preStop:
               exec:
                 command:
-                - "npm"
+                - npm
                 - stop
           ports:
           - name: sxapi
@@ -211,6 +264,8 @@ objects:
               items:
               - key: sxapi.yml
                 path: sxapi.yml
+              - key: mylib.js
+                path: mylib.js
 - kind: Service
   apiVersion: v1
   metadata:
@@ -226,31 +281,16 @@ objects:
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}"
-    annotations:
-      openshift.io/display-name: Route ${APPLICATION_NAME}
-      openshift.io/generated-by: STARTX
-  spec:
-    port:
-      targetPort: sxapi
-    to:
-      kind: Service
-      name: "${APPLICATION_NAME}"
-      weight: 100
-    wildcardPolicy: None
 parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-demo
+  value: sxapi-bot-example
   required: true
-- name: IMAGE_NAME
+- name: IMAGE_VERSION
   value: 0.3.15
   required: true
-- name: REGISTRY
+- name: IMAGE_NAME
   value: "startx/sxapi"
   required: true
 - name: REPLICAS_DATA
