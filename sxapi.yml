@@ -36,7 +36,7 @@ server:
     dir: "/test"
   endpoints:
   - path: "/"
-    desc: Display welcome message (HTML)
+    description: Display welcome message (HTML)
     body:
     - "<html>"
     - "<head><title>Application {{name}}</title></head>"
@@ -58,18 +58,21 @@ server:
     - "</div></body>"
     - "</html>"
   - path: "/health"
+    description: Return health check for this API instance
     resource: serviceinfo-sample
     endpoint: health
   - path: "/info"
+    description: Return information about this API instance
     resource: serviceinfo-sample
     endpoint: info
   - path: "/swagger"
     resource: swagger-sample
+    description: Return a swagger manifest for this API
     endpoint: manifest
   - path: "/ping"
-    desc: Ping the application. Return a sample message in json
+    description: Ping the application. Return a sample message in json
     code: '200'
     body: pong
   - path: "/function"
-    desc: Ping the application. Return a sample message in json
+    description: Test and dedicated function. Return a sample message in json
     handler: "$ws.dynamicRequestHandlerTest"

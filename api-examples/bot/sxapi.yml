@@ -48,22 +48,25 @@ server:
   port: '8077'
   endpoints:
   - path: "/"
-    desc: Display welcome message (HTML)
+    description: Display welcome message (HTML)
     body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
       !</h1><p>This API is based on sxapi-core v0.3.7 and use default config file.
       You can now start to configure your sxapi.yml config file in order to build
       your own API </p></body></html>"
   - path: "/health"
+    description: Return health check for this API instance
     resource: serviceinfo-sample
     endpoint: health
   - path: "/info"
+    description: Return information about this API instance
     resource: serviceinfo-sample
     endpoint: info
   - path: "/swagger"
     resource: swagger-sample
+    description: Return a swagger manifest for this API
     endpoint: manifest
   - path: "/ping"
-    desc: Ping the application. Return a sample message in json
+    description: Ping the application. Return a sample message in json
     code: '200'
     body: pong
 bot:

@@ -90,7 +90,7 @@ module.exports = function (id, config) {
           obj.paths[ws.urlList[urlID].path][ws.urlList[urlID].method.toLowerCase()] = {
             tags: [],
             summary: ws.urlList[urlID].description || ws.urlList[urlID].method + " on " + ws.urlList[urlID].path,
-            description: ws.urlList[urlID].desc || ws.urlList[urlID].type + " on " + ws.urlList[urlID].path,
+            description: ws.urlList[urlID].description || ws.urlList[urlID].type + " on " + ws.urlList[urlID].path,
             produces: ["application/json"],
             responses:{
               "200":{

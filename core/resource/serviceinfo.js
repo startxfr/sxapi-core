@@ -96,7 +96,7 @@ module.exports = function (id, config) {
             path: ws.urlList[urlID].path,
             method: ws.urlList[urlID].method,
             type: ws.urlList[urlID].type,
-            desc: ws.urlList[urlID].desc
+            desc: ws.urlList[urlID].description
           });
         }
       }
