@@ -1,61 +1,22 @@
----
 kind: Template
 apiVersion: v1
 metadata:
-  name: sxapi-template-pipeline
+  name: sxapi-template-build
   annotations:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
-    tags: builder,startx,alpine,nodejs,sxapi-latest
-    openshift.io/long-description: This template provides a startx sxapi micro-service
-      framework builder. Ready to use in openshift with a simple deployement config,
-      or as a s2i builder for building web applications container. For more information
-      about using this image, including OpenShift considerations, see https://github.com/startxfr/sxapi-core/blob/master/README.md.
+    tags: builder,startx,alpine,nodejs,sxapi-0.2.4
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
-message: Your application ${APP_NAME} have been created in your project. You can use
+message: Your application ${APPLICATION_NAME} have been created in your project. You can use
   openshift console to monitor it building and deployement status.
 labels:
-  template: sxapi-template-pipeline
+  template: sxapi-template-build
+  provider: startx
+  technology: sxapi
 objects:
-- kind: BuildConfig
-  apiVersion: v1
-  metadata:
-    name: "${APP_NAME}-pipeline"
-    creationTimestamp: 
-    labels:
-      name: "${APP_NAME}-pipeline"
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
-    annotations:
-      openshift.io/generated-by: STARTX
-      pipeline.alpha.openshift.io/uses: '[{"name": "${NAME}", "namespace": "", "kind":
-        "DeploymentConfig"}]'
-  spec:
-    strategy:
-      type: JenkinsPipeline
-      jenkinsPipelineStrategy:
-        jenkinsfile: 'try { timeout(time: 10, unit: ''MINUTES'') { node(''nodejs'')
-          { stage(''build'') { openshiftBuild(buildConfig: ''sxapi'', showBuildLogs:
-          ''true'') }; stage(''deploy'') { openshiftDeploy(deploymentConfig: ''sxapi'')
-          } } } } catch (err) { echo "in catch block"; echo "Caught: ${err}"; currentBuild.result
-          = ''FAILURE''; throw err }   '
-    triggers:
-    - type: GitHub
-      github:
-        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
-    - type: Generic
-      generic:
-        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
-    - type: ImageChange
-      imageChange: {}
-    - type: ConfigChange
-  status:
-    lastVersion: 0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -63,69 +24,59 @@ objects:
     annotations:
       openshift.io/display-name: Startx SXAPI framework (S2I)
       openshift.io/generated-by: STARTX
-    labels:
-      base-image: sxapi
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
   spec:
     tags:
-    - name: latest
+    - name: 0.2.4
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (latest)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.2.4)
         description: Builder for Simple and eXtensible API framework based on alpine
-          (latest)
+          (0.2.4)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-latest
-        supports: sxapi:latest,nodejs,http
-        version: latest
+        tags: builder,startx,alpine,nodejs,sxapi-0.2.4
+        supports: sxapi:0.2.4,nodejs,http
+        version: 0.2.4
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:latest
+        name: startx/sxapi:0.2.4
 - kind: ImageStream
   apiVersion: v1
   metadata:
-    name: "${APP_NAME}"
-    annotations:
-      openshift.io/display-name: Application ${APP_NAME}
-      openshift.io/generated-by: STARTX
+    name: "${APPLICATION_NAME}"
     labels:
-      base-image: sxapi
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
+      app: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Application ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
   spec:
     tags:
     - name: latest
       annotations:
-        openshift.io/display-name: Application ${APP_NAME}
-        description: Base image for the application ${APP_NAME}
+        openshift.io/display-name: Application ${APPLICATION_NAME}
+        description: Base image for the application ${APPLICATION_NAME}
         iconClass: icon-nodejs
-        tags: startx,alpine,nodejs,sxapi-latest,application,${APP_NAME}
-        supports: sxapi:latest,nodejs,http
+        tags: startx,alpine,nodejs,sxapi-0.2.4,application,${APPLICATION_NAME}
+        supports: sxapi:0.2.4,nodejs,http
         version: latest
 - kind: BuildConfig
   apiVersion: v1
   metadata:
-    name: sxapi
-    creationTimestamp: 
+    name: "${APPLICATION_NAME}"
     labels:
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/generated-by: STARTX
   spec:
     triggers:
     - type: GitHub
       github:
-        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+        secret: "${WEBHOOK_TOKEN}_${APPLICATION_NAME}"
     - type: Generic
       generic:
-        secret: "${WEBHOOK_TOKEN}_${APP_NAME}"
+        secret: "${WEBHOOK_TOKEN}_${APPLICATION_NAME}"
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
     runPolicy: SerialLatestOnly
     source:
       type: Git
@@ -137,28 +88,23 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: sxapi:latest
+          name: sxapi:0.2.4
         env:
         - name: SX_VERBOSE
           value: 'true'
     output:
       to:
         kind: ImageStreamTag
-        name: "${APP_NAME}:latest"
+        name: "${APPLICATION_NAME}:latest"
     resources: {}
   status:
     lastVersion: 0
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: sxapi
-    generation: 2
-    creationTimestamp: 
+    name: "${APPLICATION_NAME}"
     labels:
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/generated-by: STARTX
   spec:
@@ -176,30 +122,28 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - "${APP_NAME}"
+        - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APP_NAME}:latest"
+          name: "${APP_NAME}:0.2.4"
     - type: ConfigChange
     replicas: 1
     test: false
     selector:
-      app: "${APP_NAME}"
-      deploymentconfig: sxapi
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
-        creationTimestamp: 
         labels:
-          app: "${APP_NAME}"
-          type: "${APP_TYPE}"
+          app: "${APPLICATION_NAME}"
           provider: startx
-          template: sxapi-template-pipeline
-          deploymentconfig: sxapi
+          template: sxapi-template-build
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
           openshift.io/generated-by: STARTX
       spec:
         containers:
-        - name: "${APP_NAME}"
+        - name: "${APPLICATION_NAME}"
           image: " "
           command:
           - npm
@@ -239,16 +183,10 @@ objects:
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${APP_NAME}"
-    creationTimestamp: 
+    name: "${APPLICATION_NAME}"
     labels:
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
+      app: "${APPLICATION_NAME}"
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "${NAME}", "namespace":
-        "", "kind": "Service"}]'
       openshift.io/generated-by: STARTX
   spec:
     ports:
@@ -256,8 +194,8 @@ objects:
       port: 8080
       targetPort: 8080
     selector:
-      app: "${APP_NAME}"
-      deploymentconfig: sxapi
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
     type: ClusterIP
     sessionAffinity: None
   status:
@@ -265,19 +203,15 @@ objects:
 - kind: Route
   apiVersion: v1
   metadata:
-    name: "${APP_NAME}"
-    creationTimestamp: 
+    name: "${APPLICATION_NAME}"
     labels:
-      app: "${APP_NAME}"
-      type: "${APP_TYPE}"
-      provider: startx
-      template: sxapi-template-pipeline
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/generated-by: STARTX
   spec:
     to:
       kind: Service
-      name: "${APP_NAME}"
+      name: "${APPLICATION_NAME}"
       weight: 100
   status:
     ingress:
@@ -286,15 +220,11 @@ objects:
       - type: Admitted
         status: 'True'
 parameters:
-- name: APP_NAME
+- name: APPLICATION_NAME
   displayName: Application name
   description: The name of the created application
   value: app
   required: true
-- name: APP_TYPE
-  displayName: Application type
-  description: The type of the created application
-  value: application
 - name: SOURCE_GIT
   displayName: Source repository
   description: URL to the source code to use during build process
