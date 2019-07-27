@@ -299,7 +299,7 @@ parameters:
   value: sxapi-simple-example
   required: true
 - name: IMAGE_VERSION
-  value: 0.3.11
+  value: 0.3.15
   required: true
 - name: IMAGE_NAME
   value: "startx/sxapi"
