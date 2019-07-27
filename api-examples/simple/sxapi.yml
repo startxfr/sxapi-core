@@ -31,7 +31,7 @@ log:
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
   port: '8077'
-  lib: "./api-examples/bot/mylib"
+  lib: "/usr/src/app/mylib"
   static:
   - path: "/test"
     dir: "/test"

@@ -34,15 +34,6 @@ server:
   static:
   - path: "/test"
     dir: "/test"
-  enableWebsockets: true
-  websockets:
-    events:
-    - event: example
-      handler: "$ws.websockets.onMessageDefaultCallback"
-    - event: exampleGlobal
-      handler: "$ws.lib.mySocketEndpointFunction"
-    - event: disconnect
-      handler: "$ws.websockets.onMessageDefaultCallback"
   endpoints:
   - path: "/"
     desc: Display welcome message (HTML)
@@ -82,7 +73,3 @@ server:
   - path: "/function"
     desc: Ping the application. Return a sample message in json
     handler: "$ws.dynamicRequestHandlerTest"
-  - path: "/function2"
-    desc: Test fonction to get e rturn and accès to low level resources
-    handler: "$ws.lib.myEndpointFunction"
-    param_sample: dev-config
