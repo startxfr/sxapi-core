@@ -1,5 +1,9 @@
 name: sxapi-default
-description: sxapi default microservice API ({{{NODE_ENV}}})
+description: sxapi default microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+termsOfService: see more at http://startx.fr/api#termOfService
+contactName: Dev STARTX
+contactMail: dev@startx.fr
+licence: GPL v2.0
 version: 0.0.1
 debug: "{{{SX_DEBUG}}}"
 session:
@@ -16,6 +20,8 @@ session:
 resources:
   serviceinfo-sample:
     _class: serviceinfo
+  swagger-sample:
+    _class: swagger
   websocket-sample:
     _class: websocket-client
     host: http://localhost:8077
@@ -67,6 +73,9 @@ server:
   - path: "/info"
     resource: serviceinfo-sample
     endpoint: info
+  - path: "/swagger"
+    resource: swagger-sample
+    endpoint: manifest
   - path: "/ping"
     desc: Ping the application. Return a sample message in json
     code: '200'
