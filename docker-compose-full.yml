@@ -12,7 +12,7 @@ app:
   volumes:
   - "./:/usr/src/app:z"
   - "./api-examples/full/sxapi.yml:/conf/sxapi.yml:z"
-  command: ["npm" , "test"]
+  command: ["npm" , "start"]
   
 db-redis:
   image: redis:3.2.11-alpine
