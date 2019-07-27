@@ -1,6 +1,10 @@
-name: sxapi-dev-server
-description: sxapi developing config file (server dev)
-version: 0.0.1-beta
+name: sxapi-dev-full
+description: sxapi full microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+termsOfService: see more at http://startx.fr/api#termOfService
+contactName: Dev STARTX
+contactMail: dev@startx.fr
+licence: GPL v2.0
+version: 0.0.1
 debug: true
 session:
   duration: 3600
@@ -72,6 +76,8 @@ resources:
     bucket: sxapicore_example
   serviceinfo-sample:
     _class: serviceinfo
+  swagger-sample:
+    _class: swagger
   insee-sample:
     _class: insee
     siren2tva:
@@ -94,7 +100,7 @@ resources:
     _class: localfs
     directory: "/usr/src/app/"
   twitter-sample:
-    _class: serviceinfo
+    _class: twitter
     QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -122,6 +128,9 @@ server:
     notification:
       pipeline: default-sqs
       event: health:get
+  - path: "/swagger"
+    resource: swagger-sample
+    endpoint: manifest
   - path: "/ping"
     desc: Ping the application. Return a sample message in json
     code: '200'

@@ -1,5 +1,9 @@
 name: sxapi-dev-bot
-description: sxapi developing config file (bot dev)
+description: sxapi bot microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+termsOfService: see more at http://startx.fr/api#termOfService
+contactName: Dev STARTX
+contactMail: dev@startx.fr
+licence: GPL v2.0
 version: 0.0.1
 debug: true
 session:
@@ -16,6 +20,8 @@ session:
 resources:
   serviceinfo-sample:
     _class: serviceinfo
+  swagger-sample:
+    _class: swagger
   sqs-example:
     _class: aws_sqs
     send_options:
@@ -29,7 +35,7 @@ resources:
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     region: eu-west-1
   twitter-example:
-    _class: serviceinfo
+    _class: twitter
     consumer_key: XXXXXXXXXXXXXXXXXXXX
     consumer_secret: XXXXXXXXXXXXXXXXXXXX
     access_token_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -53,6 +59,9 @@ server:
   - path: "/info"
     resource: serviceinfo-sample
     endpoint: info
+  - path: "/swagger"
+    resource: swagger-sample
+    endpoint: manifest
   - path: "/ping"
     desc: Ping the application. Return a sample message in json
     code: '200'
