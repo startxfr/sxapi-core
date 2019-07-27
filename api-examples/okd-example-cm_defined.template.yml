@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-environement-template
+  name: sxapi-example-cm_defined-template
   annotations:
-    openshift.io/display-name: SXAPI (environenement config)
-    description: Template for creating an SXAPI microservice with configuration stored in a environement variable
+    openshift.io/display-name: SXAPI Example (dynamic configuration via configMap)
+    description: Template for creating an SXAPI microservice where configuration 
+      (defined during templating processing) is stored in a configMap object
       for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
@@ -12,7 +13,7 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-environement-template
+  template: sxapi-example-cm_defined-template
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
   Monitor the deployement for application availability and
@@ -20,7 +21,7 @@ message: |-
 
   Application : ${APPLICATION_NAME}
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
-  config      : environement \$SXAPI_CONF var
+  config      : configmap ${APPLICATION_NAME} (json)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
 - kind: ImageStream
@@ -41,6 +42,15 @@ objects:
       from:
         kind: DockerImage
         name: ${REGISTRY}:${IMAGE_NAME}
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Sxapi configuration ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  data:
+    sxapi.yml: "${SXAPI_CONF}"
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -104,8 +114,6 @@ objects:
           env:
           - name: SX_VERBOSE
             value: 'true'
-          - name: SXAPI_CONF
-            value: "${SXAPI_CONF}"
           lifecycle:
             preStop:
               exec:
@@ -123,7 +131,17 @@ objects:
               cpu: 2000m
               memory: "${MEMORY_LIMIT}"
           terminationMessagePath: "/dev/termination-log"
+          volumeMounts:
+          - mountPath: "/conf"
+            name: conf
         restartPolicy: Always
+        volumes:
+          - name: conf
+            configMap:
+              name: "${APPLICATION_NAME}"
+              items:
+              - key: sxapi.yml
+                path: sxapi.yml
 - kind: Service
   apiVersion: v1
   metadata:
@@ -158,7 +176,7 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-demo
+  value: sxapi-example-cm_defined
   required: true
 - name: IMAGE_NAME
   value: 0.3.15
@@ -177,7 +195,7 @@ parameters:
   description: Maximum amount of memory data container can use.
   value: 128Mi
 - name: SXAPI_CONF
-  displayName: Configuration object
+  displayName: Configuration object (injected into the configMap)
   description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
   value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
