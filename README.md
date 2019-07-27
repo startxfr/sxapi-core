@@ -28,6 +28,11 @@ If you plan to extend sxapi capabilities with your own component, change default
 - [NodJS user guide](https://github.com/startxfr/sxapi-core/tree/dev/docs/guides/USE_npm.md)
 - [Source code user guide](https://github.com/startxfr/sxapi-core/tree/dev/docs/guides/USE_source.md)
 
+You can also use the examples templates designed for openshift to deploy  a
+[simple app (../../api-examples/simple/openshift-template-simple.yml), a
+[bot daemon (../../api-examples/bot/openshift-template-bot.yml) or a
+[full application (../../api-examples/full/openshift-template-full.yml) 
+
 ## Creating your own API
 
 sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.yml` config file and implement api endpoints you want to create. 

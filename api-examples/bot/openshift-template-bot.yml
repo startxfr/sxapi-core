@@ -1,0 +1,305 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: sxapi-example-bot-template
+  annotations:
+    openshift.io/display-name: SXAPI Bot Example (embeded configmap)
+    description: Template for creating an SXAPI bot where configuration 
+      (embeded in template) is stored in a configMap object
+      for more information see https://hub.docker.com/r/startx/sxapi
+    iconClass: icon-nodejs
+    tags: sxapi,api,nodejs,startx,microservice
+    openshift.io/provider-display-name: STARTX
+    openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
+    openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
+labels:
+  template: sxapi-example-bot-template
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the deployement for application availability
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
+  config      : configmap ${APPLICATION_NAME} (yaml)
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+objects:
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Application image stream ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
+      openshift.io/generated-by: STARTX
+  spec:
+    tags:
+    - name: ${IMAGE_VERSION}
+      annotations:
+        openshift.io/display-name: SXAPI container image (${IMAGE_NAME} ${IMAGE_VERSION})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${IMAGE_NAME} ${IMAGE_VERSION}
+        iconClass: icon-nodejs
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${IMAGE_NAME}:${IMAGE_VERSION}
+      from:
+        kind: DockerImage
+        name: ${IMAGE_NAME}:${IMAGE_VERSION}
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Sxapi configuration ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  data:
+    sxapi.yml: |
+      name: sxapi-dev-bot
+      description: sxapi bot microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+      termsOfService: http://startx.fr/api#termOfService
+      contactName: Dev STARTX
+      contactMail: dev@startx.fr
+      licence: GPL v2.0
+      version: 0.0.1
+      debug: true
+      session:
+        duration: 3600
+        auto_create: true
+        transport:
+          type: cookie
+          cookie_name: sxapi-sess
+        backend:
+          type: memory
+          sid_field: token_sess
+          fields:
+            stop: datefin_sess
+      resources:
+        serviceinfo-sample:
+          _class: serviceinfo
+        swagger-sample:
+          _class: swagger
+        sqs-example:
+          _class: aws_sqs
+          send_options:
+            DelaySeconds: 2
+            MessageAttributes:
+              from:
+                DataType: String
+                StringValue: startx
+          QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
+          ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
+          ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          region: eu-west-1
+        twitter-example:
+          _class: twitter
+          consumer_key: XXXXXXXXXXXXXXXXXXXX
+          consumer_secret: XXXXXXXXXXXXXXXXXXXX
+          access_token_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          access_token_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      log:
+        filters:
+          level: '0,1,2,3,4'
+          type: debug,info,error,warn
+      server:
+        port: '8077'
+        endpoints:
+        - path: "/"
+          description: Display welcome message (HTML)
+          body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
+            !</h1><p>This API is based on sxapi-core v0.3.5 and use default config file.
+            You can now start to configure your sxapi.yml config file in order to build
+            your own API </p></body></html>"
+        - path: "/health"
+          description: Return health check for this API instance
+          resource: serviceinfo-sample
+          endpoint: health
+        - path: "/info"
+          description: Return information about this API instance
+          resource: serviceinfo-sample
+          endpoint: info
+        - path: "/swagger"
+          resource: swagger-sample
+          description: Return a swagger manifest for this API
+          endpoint: manifest
+        - path: "/ping"
+          description: Ping the application. Return a sample message in json
+          code: '200'
+          body: pong
+      bot:
+        lib: "/conf/mylib"
+        cron:
+        - id: example-cront-task
+          name: Execute example cron task
+          schedule: "*/1 * * * *"
+          task: myCronFunction
+        readers:
+          sqs:
+          - resource: sqs-example
+            frequency: 5
+            config:
+              MaxNumberOfMessages: 2
+              VisibilityTimeout: 2
+            filters:
+            - id: example-sqs-task
+              event: event:type
+              task: myReaderFunction
+          twitter:
+          - resource: twitter-example
+            filters:
+            - id: example-twitter-startx
+              match: "#paris"
+              task: myTwitterFunction
+            - id: example-twitter-startx
+              match: "#london"
+              task: myTwitterFunction
+      
+    mylib.js: |
+      /* global resConf, $log */
+      //'use strict';
+      var mylib = {
+        myCronFunction: function (config) {
+          var moment = require('moment');
+          $log.info("cron task " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+        },
+        myReaderFunction: function (data, message, config) {
+          var moment = require('moment');
+          $log.info("sqs reader " + config.id + " executed at " + moment().format('YYYY-MM-DD HH:mm:ss'));
+          console.log(data);
+        },
+        myTwitterFunction: function (data, message, config) {
+          var moment = require('moment');
+          $log.info("twitter reader " + config.id + " found tweet " + data.id_str);
+      //    console.log(data);
+        }
+      };
+      module.exports = mylib;
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Deployement ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    replicas: 2
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 60
+        maxUnavailable: 25%
+        maxSurge: 25%
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${APPLICATION_NAME}"
+        from:
+          kind: ImageStreamTag
+          name: "${APPLICATION_NAME}:${IMAGE_VERSION}"
+    - type: ConfigChange
+    test: false
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
+    template:
+      metadata:
+        labels:
+          app: "${APPLICATION_NAME}"
+          deploymentconfig: "${APPLICATION_NAME}"
+        annotations:
+          openshift.io/generated-by: STARTX
+      spec:
+        terminationGracePeriodSeconds: 5
+        containers:
+        - name: "${APPLICATION_NAME}"
+          image: " "
+          imagePullPolicy: Always
+          livenessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            initialDelaySeconds: 2
+            tcpSocket:
+              port: 8077
+            timeoutSeconds: 2
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          lifecycle:
+            preStart:
+              exec:
+                command:
+                - npm
+                - audit
+                - fix
+            preStop:
+              exec:
+                command:
+                - npm
+                - stop
+          ports:
+          - name: sxapi
+            containerPort: 8077
+          resources:
+            requests:
+              cpu: 200m
+              memory: "${MEMORY_LIMIT}"
+            limits:
+              cpu: 2000m
+              memory: "${MEMORY_LIMIT}"
+          terminationMessagePath: "/dev/termination-log"
+          volumeMounts:
+          - mountPath: "/conf"
+            name: conf
+        restartPolicy: Always
+        volumes:
+          - name: conf
+            configMap:
+              name: "${APPLICATION_NAME}"
+              items:
+              - key: sxapi.yml
+                path: sxapi.yml
+              - key: mylib.js
+                path: mylib.js
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Service ${APPLICATION_NAME}
+      openshift.io/generated-by: STARTX
+  spec:
+    clusterIP: None
+    ports:
+    - name: sxapi
+      port: 8077
+    selector:
+      app: "${APPLICATION_NAME}"
+      deploymentconfig: "${APPLICATION_NAME}"
+parameters:
+- name: APPLICATION_NAME
+  displayName: Application Name
+  description: The name of the application.
+  value: sxapi-bot-example
+  required: true
+- name: IMAGE_VERSION
+  value: 0.3.11
+  required: true
+- name: IMAGE_NAME
+  value: "startx/sxapi"
+  required: true
+- name: REPLICAS_DATA
+  displayName: Desired Pod count for data nodes
+  description: How many data nodes should be provisioned? This value can be changed
+    later, by scaling up/down.
+  value: '2'
+  required: true
+- name: MEMORY_LIMIT
+  displayName: Memory Limit for data nodes
+  description: Maximum amount of memory data container can use.
+  value: 128Mi
