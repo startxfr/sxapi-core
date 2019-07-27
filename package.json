@@ -45,7 +45,7 @@
     "dev:internal:open": "wait-on http://localhost:8077 && echo 'Application is running, open your browser to http://localhost:8077'",
     "dev:internal:live-reload": "live-reload --port=8078 --delay=2000 ./",
     "test": "./node_modules/.bin/mocha --exit",
-    "prod": "npm run prod:build && npm run test && npm run prod:start",
+    "prod": "npm run prod:build && npm run prod:start",
     "prod:clean": "npm install rimraf --no-save && rimraf package-lock.json *.md docs test",
     "prod:install": "npm install --only=prod -P && npm update --no-save && npm audit fix --force && npm dedupe",
     "prod:build": "npm run prod:clean -s && npm run prod:install -s",
