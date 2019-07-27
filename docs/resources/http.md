@@ -115,7 +115,7 @@ server:
   endpoints:
   - path: "/info"
     resource: http-id
-    endpoint: info
+    endpoint: call
     url: https://adobe.github.io/Spry/data/json/object-01.js
     headers:
       User-Agent: request

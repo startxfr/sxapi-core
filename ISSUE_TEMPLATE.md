@@ -20,8 +20,15 @@ If the current behavior is a bug, please provide the steps to reproduce and if p
 
 * **Please tell us about your environment:**
 
-- version: 0.3.3 (npm, docker)
-- Browser: "Firefox 21.0.2"
-- Nodejs: "NodeJS 2.1.2"
+- Runtime
+  - sxapi version 
+  - nodejs version
+  - npm version
+  - OS release
+  - Docker if applicable
+- Webserver client
+  - sxapi version 
+  - Browser release
+  - Javascript engine 
 
 * **Other information** (e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. stackoverflow, gitter, etc)

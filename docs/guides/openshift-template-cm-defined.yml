@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sxapi-volume-template
+  name: sxapi-cm-defined-template
   annotations:
-    openshift.io/display-name: SXAPI (embeded configmap)
+    openshift.io/display-name: SXAPI (defined configmap)
     description: Template for creating an SXAPI microservice where configuration 
-      (embeded in template) is stored in a configMap object
+      (defined during templating processing) is stored in a configMap object
       for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
@@ -13,7 +13,7 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-volume-template
+  template: sxapi-cm-defined-template
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
   Monitor the deployement for application availability and
@@ -21,7 +21,7 @@ message: |-
 
   Application : ${APPLICATION_NAME}
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
-  config      : configmap ${APPLICATION_NAME} (yaml)
+  config      : configmap ${APPLICATION_NAME} (json)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
 objects:
 - kind: ImageStream
@@ -42,40 +42,15 @@ objects:
       from:
         kind: DockerImage
         name: ${REGISTRY}:${IMAGE_NAME}
-- kind: PersistentVolume
+- kind: ConfigMap
   apiVersion: v1
   metadata:
-    name: ${APPLICATION_NAME}-config
+    name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/display-name: Persistent volume for application ${APPLICATION_NAME} application
+      openshift.io/display-name: Sxapi configuration ${APPLICATION_NAME}
       openshift.io/generated-by: STARTX
-    labels:
-      kind: "${APPLICATION_NAME}-resilient"
-  spec:
-    capacity:
-      storage: 64Mi
-    accessModes:
-      - ReadOnlyMany
-    persistentVolumeReclaimPolicy: Retain
-    nfs:
-      path: "${NFS_PATH}/sto25"
-      server: "${NFS_SERVER}"
-- kind: PersistentVolumeClaim
-  apiVersion: v1
-  metadata:
-    name: "${APPLICATION_NAME}-config"
-    annotations:
-      openshift.io/display-name: Persistent volume claim for ${APPLICATION_NAME} application
-      openshift.io/generated-by: STARTX
-  spec:
-    accessModes: 
-      - ReadOnlyMany 
-    selector:
-      matchLabels:
-        kind: "${APPLICATION_NAME}-resilient"
-    resources:
-      requests:
-        storage: 64Mi
+  data:
+    sxapi.yml: "${SXAPI_CONF}"
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -161,9 +136,12 @@ objects:
             name: conf
         restartPolicy: Always
         volumes:
-        - name: "conf"
-          persistentVolumeClaim:
-            claimName: "${APPLICATION_NAME}-config"
+          - name: conf
+            configMap:
+              name: "${APPLICATION_NAME}"
+              items:
+              - key: sxapi.yml
+                path: sxapi.yml
 - kind: Service
   apiVersion: v1
   metadata:
@@ -216,12 +194,8 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: NFS_SERVER
-  displayName: Startx NFS server
-  description: "DNS or IP for the NFS backend"
-  value: nfs.startx.fr
+- name: SXAPI_CONF
+  displayName: Configuration object (injected into the configMap)
+  description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
+  value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
-- name: NFS_PATH
-  displayName: Path to storage directory in NFS server
-  description: "path to the directory containing the storages contents"
-  value: /PersistentStorage
