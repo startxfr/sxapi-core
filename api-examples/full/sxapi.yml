@@ -1,6 +1,6 @@
 name: sxapi-dev-full
 description: sxapi full microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
-termsOfService: see more at http://startx.fr/api#termOfService
+termsOfService: http://startx.fr/api#termOfService
 contactName: Dev STARTX
 contactMail: dev@startx.fr
 licence: GPL v2.0

@@ -84,13 +84,15 @@ module.exports = function (id, config) {
       var ws = $app.ws;
       if (ws.urlList) {
         for (var urlID in ws.urlList) {
-          obj.paths[urlID] = {}
-          obj.paths[urlID][ws.urlList[urlID].method] = {
+          if (!obj.paths.hasOwnProperty(ws.urlList[urlID].path)) {
+            obj.paths[ws.urlList[urlID].path] = {};
+          }
+          obj.paths[ws.urlList[urlID].path][ws.urlList[urlID].method.toLowerCase()] = {
             tags: [],
-            summary: ws.urlList[urlID].description || ws.urlList[urlID].method+" on "+ws.urlList[urlID].path,
-            description: ws.urlList[urlID].desc || ws.urlList[urlID].type+" on "+ws.urlList[urlID].path,
+            summary: ws.urlList[urlID].description || ws.urlList[urlID].method + " on " + ws.urlList[urlID].path,
+            description: ws.urlList[urlID].desc || ws.urlList[urlID].type + " on " + ws.urlList[urlID].path,
             produces: ["application/json"],
-            parameters:[]
+            parameters: []
           };
         }
       }
