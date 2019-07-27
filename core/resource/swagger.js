@@ -2,47 +2,47 @@
 //'use strict';
 
 /**
- * service info resource handler
- * @module resource/serviceinfo
+ * swagger info resource handler
+ * @module resource/swagger
  * @constructor
  * @param {string} id
  * @param {object} config
  * @type resource
  */
 module.exports = function (id, config) {
-  var $svif = {
+  var $swgr = {
     id: id,
     config: {},
     init: function (config) {
-      var timerId = 'resource_svif_init_' + $svif.id;
+      var timerId = 'resource_swgr_init_' + $swgr.id;
       $timer.start(timerId);
-      $log.tools.resourceDebug($svif.id, "initializing", 3);
+      $log.tools.resourceDebug($swgr.id, "initializing", 3);
       if (config) {
-        $svif.config = config;
+        $swgr.config = config;
       }
-      $log.tools.resourceDebug($svif.id, "initialized ", 1, $timer.timeStop(timerId));
+      $log.tools.resourceDebug($swgr.id, "initialized ", 1, $timer.timeStop(timerId));
       return this;
     },
     start: function (callback) {
-      $log.tools.resourceDebug($svif.id, "Starting resource", 3);
+      $log.tools.resourceDebug($swgr.id, "Starting resource", 3);
       var cb = function () {
-        $log.tools.resourceDebug($svif.id, "started ", 1);
+        $log.tools.resourceDebug($swgr.id, "started ", 1);
         if (typeof callback === "function") {
           callback();
         }
       };
-      $svif.open(cb);
+      $swgr.open(cb);
       return this;
     },
     stop: function (callback) {
-      $log.tools.resourceDebug($svif.id, "Stopping resource", 2);
+      $log.tools.resourceDebug($swgr.id, "Stopping resource", 2);
       if (typeof callback === "function") {
         callback(null, this);
       }
       return this;
     },
     open: function (callback) {
-      $log.tools.resourceDebug($svif.id, "opened", 4);
+      $log.tools.resourceDebug($swgr.id, "opened", 4);
       if (typeof callback === "function") {
         callback(null, this);
       }
@@ -51,102 +51,59 @@ module.exports = function (id, config) {
     /**
      * Read services informations from process and config
      * @param {function} callback called when informations are returned
-     * @returns {$svif.serviceinfo}
+     * @returns {$swgr.swagger}
      */
-    read: function (callback) {
-      var timerId = 'svif_read_' + $svif.id;
+    getManifest: function (callback) {
+      var timerId = 'swgr_getManifest_' + $swgr.id;
       $timer.start(timerId);
-      $log.tools.resourceInfo($svif.id, "read()");
-      var cb = (typeof callback === "function") ? callback : $svif.__readDefaultCallback;
-      var obj = {
-        server: {},
-        endpoints: [],
-        service: {}
-      };
+      $log.tools.resourceInfo($swgr.id, "getManifest()");
+      var cb = (typeof callback === "function") ? callback : $swgr.__getManifestDefaultCallback;
       var app = require("../app");
+      var obj = {
+        swagger: '2.0',
+        info: {
+          version: app.config.version || '0.0.0',
+          title: app.config.name || 'My app',
+          description: app.config.description || 'Description of my app.',
+          termsOfService: app.config.termsOfService || 'My app terms of service',
+          contact: {
+            name: app.config.contactName || 'My app owner',
+            email: app.config.contactMail || 'contact@example.com'
+          },
+          license: {
+            name: app.config.license || 'Unknown',
+            url: app.config.termsOfService || 'My app terms of service',
+          }
+        },
+        basePath: '/',
+        paths: {},
+//        server: {},
+//        endpoints: [],
+//        service: {}
+      };
       var ws = $app.ws;
-      if (process.env.HOSTNAME) {
-        obj.server.hostname = process.env.HOSTNAME;
-      }
-      if (app.config.ip) {
-        obj.server.ip = app.config.ip;
-      }
-      if (app.config.appsign) {
-        obj.server.print = app.config.appsign;
-      }
-      if (app.config.name) {
-        obj.service.name = app.config.name;
-      }
-      if (app.config.version) {
-        obj.service.version = app.config.version;
-      }
-      if (app.config.description) {
-        obj.service.description = app.config.description;
-      }
-      if (app.config.resources) {
-        var ls = [];
-        for (var id in app.config.resources) {
-          ls.push(id);
-        }
-        obj.service.resources = ls.join(", ");
-      }
       if (ws.urlList) {
         for (var urlID in ws.urlList) {
-          obj.endpoints.push({
-            path: ws.urlList[urlID].path,
-            method: ws.urlList[urlID].method,
-            type: ws.urlList[urlID].type,
-            desc: ws.urlList[urlID].desc
-          });
+          obj.paths[urlID] = {}
+          obj.paths[urlID][ws.urlList[urlID].method] = {
+            tags: [],
+            summary: ws.urlList[urlID].description || ws.urlList[urlID].method+" on "+ws.urlList[urlID].path,
+            description: ws.urlList[urlID].desc || ws.urlList[urlID].type+" on "+ws.urlList[urlID].path,
+            produces: ["application/json"],
+            parameters:[]
+          };
         }
       }
       cb(null, obj);
       return this;
     },
-    __readDefaultCallback: function (error, serviceinfo) {
-      $log.tools.resourceDebug($svif.id, "default callback", 4);
-      console.log(error, serviceinfo);
-      return serviceinfo;
-    },
-    /**
-     * Read health from process and config
-     * @param {function} callback called when informations are returned
-     * @returns {$svif.serviceinfo}
-     */
-    health: function (callback) {
-      var timerId = 'svif_health_' + $svif.id;
-      $timer.start(timerId);
-      $log.tools.resourceInfo($svif.id, "health()");
-      var cb = (typeof callback === "function") ? callback : $svif.__healthDefaultCallback;
-      var obj = {status: "ok", health: "good"};
-      cb(null, obj);
-      return this;
-    },
-    __healthDefaultCallback: function (error, health) {
-      $log.tools.resourceDebug($svif.id, "default callback", 4);
-      console.log(error, health);
-      return health;
-    },
-    /**
-     * Read the environements from process
-     * @param {function} callback called when informations are returned
-     * @returns {$svif.serviceinfo}
-     */
-    getEnv: function (callback) {
-      var timerId = 'svif_getEnv_' + $svif.id;
-      $timer.start(timerId);
-      $log.tools.resourceInfo($svif.id, "getEnv()");
-      var cb = (typeof callback === "function") ? callback : $svif.__getEnvDefaultCallback;
-      cb(null, process.env);
-      return this;
-    },
-    __getEnvDefaultCallback: function (error, vars) {
-      $log.tools.resourceDebug($svif.id, "default callback", 4);
-      console.log(error, vars);
-      return vars;
+    __getManifestDefaultCallback: function (error, swagger) {
+      $log.tools.resourceDebug($swgr.id, "getManifest default callback", 4);
+      console.log(error, swagger);
+      return swagger;
     },
     endpoints: {
-      info: function (config) {
+      manifest: function (config) {
         /**
          * Callback called when a defined endpoint is called
          * @param {object} req
@@ -155,80 +112,26 @@ module.exports = function (id, config) {
         return function (req, res) {
           var callback = function (err, reponse) {
             if (err) {
-              $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
+              $log.tools.endpointErrorAndAnswer(res, $swgr.id, req, "error because " + err.message);
             }
             else {
               if (config.notification !== undefined) {
                 $app.notification.notif(config.notification, reponse);
               }
-              $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service informations", 2);
+              $log.tools.endpointDebugAndAnswer(res, reponse, $swgr.id, req, "return swagger maps", 2);
             }
           };
-          $log.tools.endpointDebug($svif.id, req, "info()", 1);
+          $log.tools.endpointDebug($swgr.id, req, "manifest()", 1);
           if ($app.resources.exist(config.resource)) {
-            $app.resources.get(config.resource).read(callback);
+            $app.resources.get(config.resource).getManifest(callback);
           }
           else {
-            $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
-          }
-        };
-      },
-      health: function (config) {
-        /**
-         * Callback called when a defined endpoint is called
-         * @param {object} req
-         * @param {object} res
-         */
-        return function (req, res) {
-          var callback = function (err, reponse) {
-            if (err) {
-              $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
-            }
-            else {
-              if (config.notification !== undefined) {
-                $app.notification.notif(config.notification, reponse);
-              }
-              $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service informations", 2);
-            }
-          };
-          $log.tools.endpointDebug($svif.id, req, "health()", 1);
-          if ($app.resources.exist(config.resource)) {
-            $app.resources.get(config.resource).health(callback);
-          }
-          else {
-            $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
-          }
-        };
-      },
-      getEnv: function (config) {
-        /**
-         * Callback called when a defined endpoint is called
-         * @param {object} req
-         * @param {object} res
-         */
-        return function (req, res) {
-          var callback = function (err, reponse) {
-            if (err) {
-              $log.tools.endpointErrorAndAnswer(res, $svif.id, req, "error because " + err.message);
-            }
-            else {
-              if (config.notification !== undefined) {
-                $app.notification.notif(config.notification, reponse);
-              }
-              $log.tools.endpointDebugAndAnswer(res, reponse, $svif.id, req, "return service environements variables", 2);
-            }
-          };
-          $log.tools.endpointDebug($svif.id, req, "getEnv()", 1);
-          if ($app.resources.exist(config.resource)) {
-            $app.resources.get(config.resource).getEnv(callback);
-          }
-          else {
-            $log.tools.endpointWarnAndAnswerNoResource(res, $svif.id, req, config.resource);
+            $log.tools.endpointWarnAndAnswerNoResource(res, $swgr.id, req, config.resource);
           }
         };
       }
     }
   };
-  $svif.init(config);
-  return $svif;
+  $swgr.init(config);
+  return $swgr;
 };

@@ -1,5 +1,5 @@
-name: sxapi-default
-description: sxapi default microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+name: sxapi-dev-simple
+description: sxapi simple microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
 termsOfService: see more at http://startx.fr/api#termOfService
 contactName: Dev STARTX
 contactMail: dev@startx.fr
@@ -31,6 +31,7 @@ log:
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
   port: '8077'
+  lib: "./api-examples/bot/mylib"
   static:
   - path: "/test"
     dir: "/test"
