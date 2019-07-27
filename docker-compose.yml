@@ -24,7 +24,7 @@ app:
 ## start application for production
 #  command: ["npm" , "run" , "prod:start"]
 ## build, test and start application for production
-  command: ["npm" , "run" , "prod"]
+#  command: ["npm" , "run" , "prod"]
 
 ## build application for production (alias `npm run prod:build`)
 #  command: ["npm" , "run" , "build"]
