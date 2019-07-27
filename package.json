@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.3.9",
+  "version": "0.3.11",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
@@ -38,7 +38,7 @@
   "scripts": {
     "dev": "npm-run-all --parallel \"dev:internal:live-reload\" \"dev:start\" \"dev:internal:open\"",
     "dev:env": "env",
-    "dev:clean": "rimraf package-lock.json",
+    "dev:clean": "npm install rimraf --no-save && rimraf package-lock.json *.md docs",
     "dev:install": "npm install --only=dev -D && npm install --only=prod -P && npm audit fix --force && npm dedupe",
     "dev:build": "npm run dev:env -s && npm run dev:clean -s && npm run dev:install -s && npm update --save && npm dedupe ",
     "dev:start": "npm run dev:install && npm test && npm start",
@@ -46,7 +46,7 @@
     "dev:internal:live-reload": "live-reload --port=8078 --delay=2000 ./",
     "test": "./node_modules/.bin/mocha --exit",
     "prod": "npm run prod:build && npm run test && npm run prod:start",
-    "prod:clean": "rimraf package-lock.json *.md docs test",
+    "prod:clean": "npm install rimraf --no-save && rimraf package-lock.json *.md docs test",
     "prod:install": "npm install --only=prod -P && npm audit fix --force && npm dedupe",
     "prod:build": "npm run prod:clean -s && npm run prod:install -s && npm update --save && npm dedupe",
     "prod:start": "npm start",
