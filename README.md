@@ -29,9 +29,9 @@ If you plan to extend sxapi capabilities with your own component, change default
 - [Source code user guide](https://github.com/startxfr/sxapi-core/tree/dev/docs/guides/USE_source.md)
 
 You can also use the examples templates designed for openshift to deploy instantly a
-[simple app](./api-examples/okd-app_example-simple.template.yml), a
-[bot daemon](./api-examples/okd-app_example-bot.template.yml) or a
-[full application](./api-examples/okd-app_example-full.template.yml) 
+[simple app](./examples/okd-app_example-simple.template.yml), a
+[bot daemon](./examples/okd-app_example-bot.template.yml) or a
+[full application](./examples/okd-app_example-full.template.yml) 
 
 ## Creating your own API
 

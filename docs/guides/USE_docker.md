@@ -192,16 +192,16 @@ docker-compose up
 
 If you're familiar with Openshift PaaS, you will find 5 usefull templates to use in
 your project
-- [statefulSet template with configuration (embeded in template) embeded in a configMap mounted volume](../../api-examples/okd-example-statefulset.template.yml)
-- [deployConfig template with configuration (template parameter) directly loaded into an environement variable](../../api-examples/okd-example-environment.template.yml) 
-- [deployConfig template with configuration (template parameter) embeded in a configMap mounted volume](../../api-examples/okd-example-cm_defined.template.yml)
-- [deployConfig template with configuration (embeded in template) embeded in a configMap mounted volume](../../api-examples/okd-example-cm_embed.templateed.yml)
-- [deployConfig template with configuration in mounted volume](../../api-examples/okd-example-volume.template.yml)
+- [statefulSet template with configuration (embeded in template) embeded in a configMap mounted volume](../../examples/okd-example-statefulset.template.yml)
+- [deployConfig template with configuration (template parameter) directly loaded into an environement variable](../../examples/okd-example-environment.template.yml) 
+- [deployConfig template with configuration (template parameter) embeded in a configMap mounted volume](../../examples/okd-example-cm_defined.template.yml)
+- [deployConfig template with configuration (embeded in template) embeded in a configMap mounted volume](../../examples/okd-example-cm_embed.templateed.yml)
+- [deployConfig template with configuration in mounted volume](../../examples/okd-example-volume.template.yml)
 
 You can also use various example application use-case templates :
-- [deployConfig template with simple configuration](../../api-examples/okd-app_example-simple.template.yml) 
-- [deployConfig template with bot configuration](../../api-examples/okd-app_example-bot.template.yml) 
-- [deployConfig template with full configuration](../../api-examples/okd-app_example-full.template.yml) 
+- [deployConfig template with simple configuration](../../examples/okd-app_example-simple.template.yml) 
+- [deployConfig template with bot configuration](../../examples/okd-app_example-bot.template.yml) 
+- [deployConfig template with full configuration](../../examples/okd-app_example-full.template.yml) 
 
 For example you can run 
 ```bash
