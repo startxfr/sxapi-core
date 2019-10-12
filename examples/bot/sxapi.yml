@@ -5,7 +5,7 @@ contactName: Dev STARTX
 contactMail: dev@startx.fr
 licence: GPL v2.0
 version: 0.0.1
-debug: true
+debug: "{{{SX_DEBUG}}}"
 session:
   duration: 3600
   auto_create: true
@@ -42,15 +42,15 @@ resources:
     access_token_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 log:
   filters:
-    level: '0,1,2,3,4'
-    type: debug,info,error,warn
+    level: '0,1,2,3,4,5'
+    type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
-  port: '8077'
+  port: '{{{APP_PORT}}}'
   endpoints:
   - path: "/"
     description: Display welcome message (HTML)
     body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
-      !</h1><p>This API is based on sxapi-core v0.3.11 and use default config file.
+      !</h1><p>This API is based on sxapi-core v0.3.42 and use default config file.
       You can now start to configure your sxapi.yml config file in order to build
       your own API </p></body></html>"
   - path: "/health"

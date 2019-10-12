@@ -5,6 +5,7 @@ app:
     - "8077:8077"
   environment:
   - NODE_ENV=development
+  - APP_PORT=8077
   - APP_PATH=/usr/src/app
   - DATA_PATH=/data
   - CONF_PATH=/conf
