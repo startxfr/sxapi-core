@@ -25,6 +25,7 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 objects:
 - kind: ImageStream
   apiVersion: v1
@@ -130,7 +131,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -138,7 +139,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -153,8 +154,8 @@ objects:
                 - "npm"
                 - stop
           ports:
-          - name: sxapi
-            containerPort: 8077
+          - name: sxapi-http
+            containerPort: "${APP_PORT}"
           resources:
             requests:
               cpu: 200m
@@ -183,8 +184,10 @@ objects:
   spec:
     clusterIP: None
     ports:
-    - name: sxapi
-      port: 8077
+    - name: sxapi-http
+      protocol: TCP
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -199,7 +202,7 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     port:
-      targetPort: sxapi
+      targetPort: sxapi-http
     to:
       kind: Service
       name: "${APPLICATION_NAME}"
@@ -236,3 +239,7 @@ parameters:
   displayName: Path to storage directory in NFS server
   description: "path to the directory containing the storages contents"
   value: /PersistentStorage
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077

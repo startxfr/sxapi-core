@@ -3,6 +3,7 @@ app:
   image: node:12-alpine
   environment:
   - SX_DEBUG=true
+  - APP_PORT=8077
   - NODE_ENV=development
   - APP_PATH=/usr/src/app
   - DATA_PATH=/data
