@@ -6,6 +6,7 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
+| 0.3.43   | 2019-10-12 | Release reconciliation with unstable swagger support
 | 0.3.42   | 2019-10-12 | Improve openshift template with service application port configurable
 | 0.3.17   | 2019-07-27 | Adding openshift template for examples and introduce new swagger module to expose API using swagger description
 | 0.3.11   | 2019-07-26 | Adding swagger module
