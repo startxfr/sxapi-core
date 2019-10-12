@@ -26,7 +26,7 @@ LABEL name="startx/sxapi-$SXAPI_VERSION" \
       io.openshift.non-scalable="false" \
       io.openshift.min-memory="200Mi" \
       io.openshift.min-cpu="1000m" \
-      io.openshift.expose-services="8080:http" \
+      io.openshift.expose-services="8077:sxapi-http" \
       io.openshift.s2i.destination="/tmp" \
       io.openshift.s2i.scripts-url="image:///s2i" \
       fr.startx.component="$SX_ID:$SXAPI_VERSION"
@@ -51,6 +51,6 @@ RUN  apk update && apk upgrade && apk add git python make gcc g++ \
  &&  chmod -R g=u $APP_PATH $CONF_PATH $DATA_PATH /s2i /.npm /.config
 
 USER 1001
-EXPOSE 8080
+EXPOSE 8077
 WORKDIR $APP_PATH
 CMD [ "npm" , "start" ]
