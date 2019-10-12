@@ -206,7 +206,7 @@ You can also use various example application use-case templates :
 For example you can run 
 ```bash
 oc new-project test
-oc create -f https://raw.githubusercontent.com/startxfr/sxapi-core/master/docs/guides/okd-example-cm_embed.templateed.yml
+oc create -f https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/guides/okd-example-cm_embed.templateed.yml
 oc new-app --template sxapi-cm-embeded-template -p APPLICATION_NAME=sxapi-example
 ```
 You can add them in a project using [openshift user guide](https://docs.openshift.org/latest/dev_guide/templates.html#uploading-a-template)

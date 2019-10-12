@@ -1,4 +1,4 @@
-[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
 # sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.40-blue.svg)
 
