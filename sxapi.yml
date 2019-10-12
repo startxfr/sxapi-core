@@ -24,13 +24,13 @@ resources:
     _class: swagger
   websocket-sample:
     _class: websocket-client
-    host: http://localhost:8077
+    host: http://localhost:{{{APP_PORT}}}
 log:
   filters:
     level: '0,1,2,3,4,5'
     type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
 server:
-  port: '8077'
+  port: '{{{APP_PORT}}}'
   static:
   - path: "/test"
     dir: "/test"

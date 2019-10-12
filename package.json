@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.3.17",
+  "version": "0.3.40",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",

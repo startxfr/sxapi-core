@@ -12,6 +12,16 @@ metadata:
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 message: Your application ${APPLICATION_NAME} have been created in your project. You can use
   openshift console to monitor it building and deployement status.
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the CI/CD pipeline workflow and Follow created route to browse 
+  your running application
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${REGISTRY}:${IMAGE_NAME}
+  config      : configmap ${APPLICATION_NAME} (yaml)
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 labels:
   template: sxapi-template-pipeline
   provider: startx
@@ -176,7 +186,7 @@ objects:
           livenessProbe:
             httpGet:
               path: "/health"
-              port: 8077
+              port: "${APP_PORT}"
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -186,7 +196,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: 8077
+              port: "${APP_PORT}"
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -213,8 +223,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: 8080
-      targetPort: 8077
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: sxapi
@@ -257,3 +267,7 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{24}"
   required: true
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077

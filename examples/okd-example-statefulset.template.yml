@@ -25,6 +25,7 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 objects:
 - kind: ConfigMap
   apiVersion: v1
@@ -40,7 +41,7 @@ objects:
       name: sxapi-example-statefulset
       description: sxapi default microservice API
       version: 0.0.1
-      debug: "true"
+      debug: "{{{SX_DEBUG}}}"
       session:
         duration: 3600
         auto_create: true
@@ -57,13 +58,13 @@ objects:
           _class: serviceinfo
         websocket-sample:
           _class: websocket-client
-          host: http://localhost:8077
+          host: http://localhost:{{{APP_PORT}}}
       log:
         filters:
-          level: '0,1,2,3,4,5'
-          type: "debug,info,error,warn"
+          level: '0,1,2,3'
+          type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
       server:
-        port: '8077'
+        port: '{{{APP_PORT}}}'
         static:
         - path: "/test"
           dir: "/test"
@@ -132,7 +133,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 20
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
           lifecycle:
             preStop:
@@ -141,8 +142,8 @@ objects:
                 - "npm"
                 - stop
           ports:
-          - name: sxapi
-            containerPort: 8077
+          - name: sxapi-http
+            containerPort: "${APP_PORT}"
           resources:
             requests:
               memory: "${MEMORY_LIMIT}"
@@ -171,8 +172,10 @@ objects:
   spec:
     clusterIP: None
     ports:
-    - name: sxapi
-      port: 8077
+    - name: sxapi-http
+      protocol: TCP
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       api: "sxapi"
@@ -187,7 +190,7 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     port:
-      targetPort: sxapi
+      targetPort: sxapi-http
     to:
       kind: Service
       name: "${APPLICATION_NAME}"
@@ -200,7 +203,7 @@ parameters:
   value: sxapi-example-statefulset
   required: true
 - name: IMAGE_NAME
-  value: 0.3.17
+  value: 0.3.40
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -215,3 +218,7 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077

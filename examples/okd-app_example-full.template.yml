@@ -24,6 +24,7 @@ message: |-
   sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 objects:
 - kind: ImageStream
   apiVersion: v1
@@ -61,7 +62,7 @@ objects:
       contactMail: dev@startx.fr
       licence: GPL v2.0
       version: 0.0.1
-      debug: true
+      debug: "{{{SX_DEBUG}}}"
       session:
         duration: 3600
         auto_create: true
@@ -163,7 +164,7 @@ objects:
       log:
         filters:
           level: '0,1,2,3,4,5'
-          type: debug,info,error,warn
+          type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
       notifications:
         default-sqs:
           type: sqs
@@ -172,6 +173,7 @@ objects:
           type: sqs
           resource: sqs-sample
       server:
+        port: '{{{APP_PORT}}}'
         endpoints:
         - path: "/"
           description: Display welcome message (HTML)
@@ -422,7 +424,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -430,7 +432,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -448,8 +450,8 @@ objects:
                 - npm
                 - stop
           ports:
-          - name: sxapi
-            containerPort: 8077
+          - name: sxapi-http
+            containerPort: "${APP_PORT}"
           resources:
             requests:
               cpu: 200m
@@ -481,8 +483,10 @@ objects:
   spec:
     clusterIP: None
     ports:
-    - name: sxapi
-      port: 8077
+    - name: sxapi-http
+      protocol: TCP
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -497,7 +501,7 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     port:
-      targetPort: sxapi
+      targetPort: sxapi-http
     to:
       kind: Service
       name: "${APPLICATION_NAME}"
@@ -510,7 +514,7 @@ parameters:
   value: sxapi-full-example
   required: true
 - name: IMAGE_VERSION
-  value: 0.3.17
+  value: 0.3.40
   required: true
 - name: IMAGE_NAME
   value: "startx/sxapi"
@@ -525,3 +529,7 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077
