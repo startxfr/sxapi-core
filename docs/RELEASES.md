@@ -6,7 +6,8 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
-| 0.3.17   | 2019-07-27 | Adding openshift template for examples
+| 0.3.42   | 2019-10-12 | Improve openshift template with service application port configurable
+| 0.3.17   | 2019-07-27 | Adding openshift template for examples and introduce new swagger module to expose API using swagger description
 | 0.3.11   | 2019-07-26 | Adding swagger module
 | 0.3.7    | 2019-07-24 | Create various examples config
 | 0.3.5    | 2019-04-14 | Improve http and mysql modules

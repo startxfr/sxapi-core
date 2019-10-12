@@ -10,8 +10,15 @@ metadata:
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
-message: Your application ${APPLICATION_NAME} have been created in your project. You can use
-  openshift console to monitor it building and deployement status.
+message: |-
+  Your application ${APPLICATION_NAME} will be soon deployed in your project.
+  Monitor the build and deployement for application availability
+
+  Application : ${APPLICATION_NAME}
+  sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
+  config      : builded ${APPLICATION_NAME} (yaml)
+  Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 labels:
   template: sxapi-template-build
   provider: startx
@@ -97,8 +104,6 @@ objects:
         kind: ImageStreamTag
         name: "${APPLICATION_NAME}:latest"
     resources: {}
-  status:
-    lastVersion: 0
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -152,7 +157,7 @@ objects:
           livenessProbe:
             httpGet:
               path: "/health"
-              port: 8080
+              port: "${APP_PORT}"
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -162,7 +167,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: 8080
+              port: "${APP_PORT}"
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -175,11 +180,6 @@ objects:
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
         securityContext: {}
-  status:
-    observedGeneration: 2
-    replicas: 1
-    updatedReplicas: 1
-    availableReplicas: 1
 - kind: Service
   apiVersion: v1
   metadata:
@@ -190,16 +190,15 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
+    - name: sxapi-http
+      protocol: TCP
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
     type: ClusterIP
     sessionAffinity: None
-  status:
-    loadBalancer: {}
 - kind: Route
   apiVersion: v1
   metadata:
@@ -213,12 +212,8 @@ objects:
       kind: Service
       name: "${APPLICATION_NAME}"
       weight: 100
-  status:
-    ingress:
-    - routerName: router
-      conditions:
-      - type: Admitted
-        status: 'True'
+    port:
+      targetPort: sxapi-http
 parameters:
 - name: APPLICATION_NAME
   displayName: Application name
@@ -241,3 +236,7 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{24}"
   required: true
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077
