@@ -97,8 +97,6 @@ objects:
         kind: ImageStreamTag
         name: "${APPLICATION_NAME}:latest"
     resources: {}
-  status:
-    lastVersion: 0
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -152,7 +150,7 @@ objects:
           livenessProbe:
             httpGet:
               path: "/health"
-              port: 8080
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -162,7 +160,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: 8080
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -175,11 +173,6 @@ objects:
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
         securityContext: {}
-  status:
-    observedGeneration: 2
-    replicas: 1
-    updatedReplicas: 1
-    availableReplicas: 1
 - kind: Service
   apiVersion: v1
   metadata:
@@ -190,16 +183,15 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     ports:
-    - protocol: TCP
+    - name: sxapi-http
+      protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
     type: ClusterIP
     sessionAffinity: None
-  status:
-    loadBalancer: {}
 - kind: Route
   apiVersion: v1
   metadata:
@@ -213,12 +205,8 @@ objects:
       kind: Service
       name: "${APPLICATION_NAME}"
       weight: 100
-  status:
-    ingress:
-    - routerName: router
-      conditions:
-      - type: Admitted
-        status: 'True'
+    port:
+      targetPort: sxapi-http
 parameters:
 - name: APPLICATION_NAME
   displayName: Application name
