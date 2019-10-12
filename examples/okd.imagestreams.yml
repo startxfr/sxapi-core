@@ -39,18 +39,18 @@ items:
       from:
         kind: DockerImage
         name: startx/sxapi:testing
-    - name: 0.3.42
+    - name: 0.3.43
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (0.3.42)
-        description: Simple and extensible API framework based on alpine (v0.3.42)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.43)
+        description: Simple and extensible API framework based on alpine (v0.3.43)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-0.3.42
-        supports: sxapi:0.3.42,nodejs,http
-        version: 0.3.42
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.43
+        supports: sxapi:0.3.43,nodejs,http
+        version: 0.3.43
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.42
+        name: startx/sxapi:0.3.43
     - name: 0.3.0
       annotations:
         openshift.io/display-name: S2I Startx SXAPI framework (0.3.0)
