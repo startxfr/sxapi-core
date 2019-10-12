@@ -1,6 +1,6 @@
-[![sxapi](https://raw.githubusercontent.com/startxfr/sxapi-core/v0.2.99-docker/docs/assets/logo.svg?sanitize=true)](https://github.com/startxfr/sxapi-core)
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.42-docker/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.11-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.42-blue.svg)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
@@ -92,6 +92,11 @@ Connect to ```http://localhost:8080/``` with your favorite navigator. You should
 see an html message "My Sample API".
 
 
+You can also use the examples templates designed for openshift to deploy instantly a
+[simple app](./examples/okd-app_example-simple.template.yml), a
+[bot daemon](./examples/okd-app_example-bot.template.yml) or a
+[full application](./examples/okd-app_example-full.template.yml) 
+
 ## Creating your own API
 
 sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.yml` config file and implement api endpoints you want to create. 
@@ -114,7 +119,8 @@ If you want to have more information on a minor release, [read released notes](d
 
 | Release  | Date       |  Description
 |----------|------------|-------------
-| 0.3.11   | 2019-07-26 | Latest release (read released notes)
+| 0.3.42   | 2019-10-12 | Latest release (read released notes)
+| 0.3.17   | 2019-07-27 | Adding swagger module and improve couchbase support
 | 0.3      | 2019-03-08 | Moving config to yaml syntax
 | 0.2      | 2018-03-18 | Adding bot behavior, event messaging and containerized images
 | 0.1      | 2018-01-20 | Adding all resources, session and websockets

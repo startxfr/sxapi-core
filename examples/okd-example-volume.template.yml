@@ -1,10 +1,11 @@
-apiVersion: v1
 kind: Template
+apiVersion: v1
 metadata:
-  name: sxapi-environement-template
+  name: sxapi-example-volume-template
   annotations:
-    openshift.io/display-name: SXAPI (environenement config)
-    description: Template for creating an SXAPI microservice with configuration stored in a environement variable
+    openshift.io/display-name: SXAPI Example (Config comming from PV)
+    description: Template for creating an SXAPI microservice where configuration 
+      is stored in a persistent volume mounted with a PVC embed in this template
       for more information see https://hub.docker.com/r/startx/sxapi
     iconClass: icon-nodejs
     tags: sxapi,api,nodejs,startx,microservice
@@ -12,7 +13,9 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-environement-template
+  template: sxapi-example-volume-template
+  provider: startx
+  technology: sxapi
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
   Monitor the deployement for application availability and
@@ -20,8 +23,9 @@ message: |-
 
   Application : ${APPLICATION_NAME}
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
-  config      : environement \$SXAPI_CONF var
+  config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
+  service     : ${APPLICATION_NAME} -> ${APP_PORT}
 objects:
 - kind: ImageStream
   apiVersion: v1
@@ -41,10 +45,49 @@ objects:
       from:
         kind: DockerImage
         name: ${REGISTRY}:${IMAGE_NAME}
+- kind: PersistentVolume
+  apiVersion: v1
+  metadata:
+    name: ${APPLICATION_NAME}-config
+    labels:
+      app: "${APPLICATION_NAME}"
+      kind: "${APPLICATION_NAME}-resilient"
+    annotations:
+      openshift.io/display-name: Persistent volume for application ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    capacity:
+      storage: 64Mi
+    accessModes:
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Retain
+    nfs:
+      path: "${NFS_PATH}/sto25"
+      server: "${NFS_SERVER}"
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}-config"
+    labels:
+      app: "${APPLICATION_NAME}"
+    annotations:
+      openshift.io/display-name: Persistent volume claim for ${APPLICATION_NAME} application
+      openshift.io/generated-by: STARTX
+  spec:
+    accessModes: 
+      - ReadOnlyMany 
+    selector:
+      matchLabels:
+        kind: "${APPLICATION_NAME}-resilient"
+    resources:
+      requests:
+        storage: 64Mi
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/display-name: Deployement ${APPLICATION_NAME} application
       openshift.io/generated-by: STARTX
@@ -88,7 +131,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -96,7 +139,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: 8077
+              port: "${APP_PORT}"
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -104,8 +147,6 @@ objects:
           env:
           - name: SX_VERBOSE
             value: 'true'
-          - name: SXAPI_CONF
-            value: "${SXAPI_CONF}"
           lifecycle:
             preStop:
               exec:
@@ -113,8 +154,8 @@ objects:
                 - "npm"
                 - stop
           ports:
-          - name: sxapi
-            containerPort: 8077
+          - name: sxapi-http
+            containerPort: "${APP_PORT}"
           resources:
             requests:
               cpu: 200m
@@ -123,19 +164,30 @@ objects:
               cpu: 2000m
               memory: "${MEMORY_LIMIT}"
           terminationMessagePath: "/dev/termination-log"
+          volumeMounts:
+          - mountPath: "/conf"
+            name: conf
         restartPolicy: Always
+        volumes:
+        - name: "conf"
+          persistentVolumeClaim:
+            claimName: "${APPLICATION_NAME}-config"
 - kind: Service
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/display-name: Service ${APPLICATION_NAME}
       openshift.io/generated-by: STARTX
   spec:
     clusterIP: None
     ports:
-    - name: sxapi
-      port: 8077
+    - name: sxapi-http
+      protocol: TCP
+      port: "${APP_PORT}"
+      targetPort: "${APP_PORT}"
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -143,12 +195,14 @@ objects:
   apiVersion: v1
   metadata:
     name: "${APPLICATION_NAME}"
+    labels:
+      app: "${APPLICATION_NAME}"
     annotations:
       openshift.io/display-name: Route ${APPLICATION_NAME}
       openshift.io/generated-by: STARTX
   spec:
     port:
-      targetPort: sxapi
+      targetPort: sxapi-http
     to:
       kind: Service
       name: "${APPLICATION_NAME}"
@@ -158,10 +212,10 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-demo
+  value: sxapi-example-volume
   required: true
 - name: IMAGE_NAME
-  value: 0.3.11
+  value: 0.3.42
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -176,8 +230,16 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: SXAPI_CONF
-  displayName: Configuration object
-  description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
-  value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
+- name: NFS_SERVER
+  displayName: Startx NFS server
+  description: "DNS or IP for the NFS backend"
+  value: nfs.startx.fr
   required: true
+- name: NFS_PATH
+  displayName: Path to storage directory in NFS server
+  description: "path to the directory containing the storages contents"
+  value: /PersistentStorage
+- name: APP_PORT
+  displayName: Port used to expose application
+  description: Default is set to sxapi-http port number 8077
+  value: 8077

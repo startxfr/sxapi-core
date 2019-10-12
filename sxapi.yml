@@ -24,13 +24,13 @@ resources:
     _class: swagger
   websocket-sample:
     _class: websocket-client
-    host: http://localhost:8077
+    host: http://localhost:{{{APP_PORT}}}
 log:
   filters:
     level: '0,1,2'
     type: info,error,warn
 server:
-  port: '8077'
+  port: '{{{APP_PORT}}}'
   endpoints:
   - path: "/"
     description: Display welcome message (HTML)
