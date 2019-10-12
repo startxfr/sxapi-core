@@ -1,7 +1,7 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
-  name: sxapi-template-pipeline
+  name: sxapi-example-pipeline-template
   annotations:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
@@ -21,9 +21,9 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 labels:
-  template: sxapi-template-pipeline
+  template: sxapi-example-pipeline-template
   provider: startx
   technology: sxapi
 objects:
@@ -57,7 +57,7 @@ objects:
       imageChange: {}
     - type: ConfigChange
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: sxapi
     annotations:
@@ -81,7 +81,7 @@ objects:
         kind: DockerImage
         name: startx/sxapi:latest
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
@@ -136,7 +136,7 @@ objects:
         name: "${APPLICATION_NAME}:latest"
     resources: {}
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: sxapi
     labels:
@@ -182,11 +182,14 @@ objects:
           command:
           - npm
           - start
+          env:
+          - name: APP_PORT
+            value: '8077'
           resources: {}
           livenessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -196,7 +199,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -223,8 +226,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: sxapi
@@ -267,7 +270,3 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{24}"
   required: true
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
