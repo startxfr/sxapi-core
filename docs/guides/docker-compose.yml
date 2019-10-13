@@ -1,5 +1,5 @@
 app:
-  image: node:10-alpine
+  image: node:8.16.2-alpine
   container_name: "sxapi-core-dev"
   ports:
     - "8077:8077"

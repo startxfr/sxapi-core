@@ -14,7 +14,7 @@ services:
 before_install:
 - 'echo "{ \"experimental\": true, \"storage-driver\": \"overlay2\", \"max-concurrent-downloads\": 50, \"max-concurrent-uploads\": 50 }" | sudo tee /etc/docker/daemon.json'
 - sudo service docker restart
-- docker pull node:12-alpine
+- docker pull node:8.16.2-alpine
 - docker images
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; elif [ "$TRAVIS_BRANCH" == "testing" ]; then echo "testing"; else echo $RELEASE ; fi`

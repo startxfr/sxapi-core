@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:8.16.2-alpine
 MAINTAINER STARTX "dev@startx.fr"
 
 ENV SXAPI_VERSION=0.3.45 \
