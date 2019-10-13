@@ -1,5 +1,5 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   name: sxapi-template-build
   annotations:
@@ -18,14 +18,14 @@ message: |-
   sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
   config      : builded ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 labels:
   template: sxapi-template-build
   provider: startx
   technology: sxapi
 objects:
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: sxapi
     annotations:
@@ -47,7 +47,7 @@ objects:
         kind: DockerImage
         name: startx/sxapi:latest
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -105,7 +105,7 @@ objects:
         name: "${APPLICATION_NAME}:latest"
     resources: {}
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -153,11 +153,14 @@ objects:
           command:
           - npm
           - start
+          env:
+          - name: APP_PORT
+            value: '8077'
           resources: {}
           livenessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -167,7 +170,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -192,8 +195,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -218,7 +221,7 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application name
   description: The name of the created application
-  value: app
+  value: sxapi-build-example
   required: true
 - name: SOURCE_GIT
   displayName: Source repository
@@ -236,7 +239,3 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{24}"
   required: true
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
