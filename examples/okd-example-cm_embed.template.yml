@@ -1,7 +1,7 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
-  name: sxapi-example-cm_embeded-template
+  name: sxapi-example-cmembeded-template
   annotations:
     openshift.io/display-name: SXAPI Example (embed configuration via configMap)
     description: Template for creating an SXAPI microservice where configuration 
@@ -13,7 +13,7 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-example-cm_embeded-template
+  template: sxapi-example-cmembeded-template
   provider: startx
   technology: sxapi
 message: |-
@@ -25,10 +25,10 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 objects:
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
@@ -59,7 +59,7 @@ objects:
       openshift.io/generated-by: STARTX
   data:
     sxapi.yml: |
-      name: sxapi-example-cm_embed
+      name: sxapi-example-cmembed
       description: sxapi default microservice API
       version: 0.0.1
       debug: "{{{SX_DEBUG}}}"
@@ -129,7 +129,7 @@ objects:
           desc: Ping the application. Return a sample message in json
           handler: "$ws.dynamicRequestHandlerTest"
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -177,7 +177,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -185,7 +185,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -193,6 +193,8 @@ objects:
           env:
           - name: SX_VERBOSE
             value: 'true'
+          - name: APP_PORT
+            value: '8077'
           lifecycle:
             preStop:
               exec:
@@ -201,7 +203,7 @@ objects:
                 - stop
           ports:
           - name: sxapi-http
-            containerPort: "${APP_PORT}"
+            containerPort: 8077
           resources:
             requests:
               cpu: 200m
@@ -235,8 +237,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -261,10 +263,10 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-example-cm_embed
+  value: sxapi-example-cmembed
   required: true
 - name: IMAGE_NAME
-  value: 0.3.43
+  value: "0.3.45"
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -279,7 +281,4 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
+  

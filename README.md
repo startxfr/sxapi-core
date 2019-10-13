@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.43-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.45-blue.svg)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
@@ -55,7 +55,7 @@ If you want to have more information on a minor release, [read released notes](d
 
 | Release  | Date       |  Description
 |----------|------------|-------------
-| 0.3.43   | 2019-10-12 | Latest release (read released notes)
+| 0.3.45   | 2019-10-13 | Latest release (read released notes)
 | 0.3.17   | 2019-07-27 | Adding swagger module and improve couchbase support
 | 0.3      | 2019-03-08 | Moving config to yaml syntax
 | 0.2      | 2018-03-18 | Adding bot behavior, event messaging and containerized images
