@@ -3,15 +3,13 @@ apiVersion: template.openshift.io/v1
 metadata:
   name: sxapi-example-pipeline-template
   annotations:
-    openshift.io/display-name: SXAPI micro-service application (Builder)
+    openshift.io/display-name: SXAPI micro-service application (Pipeline workflow)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
     tags: builder,startx,alpine,nodejs,sxapi-latest
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
-message: Your application ${APPLICATION_NAME} have been created in your project. You can use
-  openshift console to monitor it building and deployement status.
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.
   Monitor the CI/CD pipeline workflow and Follow created route to browse 
@@ -59,7 +57,7 @@ objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
   metadata:
-    name: sxapi
+    name: "${APPLICATION_NAME}-sxapi"
     annotations:
       openshift.io/display-name: Startx SXAPI framework (S2I)
       openshift.io/generated-by: STARTX
@@ -67,19 +65,18 @@ objects:
       app: "${APPLICATION_NAME}"
   spec:
     tags:
-    - name: latest
+    - name: ${IMAGE_NAME}
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (latest)
-        description: Builder for Simple and eXtensible API framework based on alpine
-          (latest)
+        openshift.io/display-name: SXAPI container image (${REGISTRY} ${IMAGE_NAME})
+        description: SXAPI image for the application ${APPLICATION_NAME} based on ${REGISTRY} ${IMAGE_NAME}
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-latest
+        tags: sxapi,api,nodejs,startx,microservice,${APPLICATION_NAME},${REGISTRY}:${IMAGE_NAME}
         supports: sxapi:latest,nodejs,http
         version: latest
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:latest
+        name: ${REGISTRY}:${IMAGE_NAME}
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
   metadata:
@@ -102,7 +99,7 @@ objects:
 - kind: BuildConfig
   apiVersion: v1
   metadata:
-    name: sxapi
+    name: "${APPLICATION_NAME}"
     labels:
       app: "${APPLICATION_NAME}"
     annotations:
@@ -126,7 +123,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: sxapi:latest
+          name: "${APPLICATION_NAME}-sxapi:${IMAGE_NAME}"
         env:
         - name: SX_VERBOSE
           value: 'true'
@@ -138,7 +135,7 @@ objects:
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
   metadata:
-    name: sxapi
+    name: "${APPLICATION_NAME}"
     labels:
       app: "${APPLICATION_NAME}"
     annotations:
@@ -167,12 +164,12 @@ objects:
     test: false
     selector:
       app: "${APPLICATION_NAME}"
-      deploymentconfig: sxapi
+      deploymentconfig: "${APPLICATION_NAME}"
     template:
       metadata:
         labels:
           app: "${APPLICATION_NAME}"
-          deploymentconfig: sxapi
+          deploymentconfig: "${APPLICATION_NAME}"
         annotations:
           openshift.io/generated-by: STARTX
       spec:
@@ -230,7 +227,7 @@ objects:
       targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
-      deploymentconfig: sxapi
+      deploymentconfig: "${APPLICATION_NAME}"
     type: ClusterIP
     sessionAffinity: None
 - kind: Route
@@ -252,7 +249,7 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application name
   description: The name of the created application
-  value: app
+  value: sxapi-example-pipeline
   required: true
 - name: SOURCE_GIT
   displayName: Source repository
@@ -263,6 +260,12 @@ parameters:
   displayName: Source branch
   description: Name of the default branch
   value: master
+  required: true
+- name: IMAGE_NAME
+  value: "0.3.45"
+  required: true
+- name: REGISTRY
+  value: "startx/sxapi"
   required: true
 - name: WEBHOOK_TOKEN
   displayName: Webhook token
