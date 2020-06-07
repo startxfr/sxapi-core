@@ -1,5 +1,5 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   name: sxapi-example-statefulset-template
   annotations:
@@ -25,7 +25,7 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 objects:
 - kind: ConfigMap
   apiVersion: v1
@@ -108,7 +108,7 @@ objects:
           desc: Ping the application. Return a sample message in json
           handler: "$ws.dynamicRequestHandlerTest"
 - kind: StatefulSet
-  apiVersion: apps/v1beta1
+  apiVersion: apps/v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
@@ -133,7 +133,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 20
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
           lifecycle:
             preStop:
@@ -143,7 +143,10 @@ objects:
                 - stop
           ports:
           - name: sxapi-http
-            containerPort: "${APP_PORT}"
+            containerPort: 8077
+          env:
+          - name: APP_PORT
+            value: '8077'
           resources:
             requests:
               memory: "${MEMORY_LIMIT}"
@@ -174,8 +177,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       api: "sxapi"
@@ -203,7 +206,7 @@ parameters:
   value: sxapi-example-statefulset
   required: true
 - name: IMAGE_NAME
-  value: 0.3.43
+  value: "0.3.46"
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -218,7 +221,3 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077

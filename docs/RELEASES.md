@@ -6,6 +6,8 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
+| 0.3.46   | 2020-06-07 | Update npm dependencies
+| 0.3.45   | 2019-10-13 | Update OKD examples to OCP/OKD v4 runtime
 | 0.3.43   | 2019-10-12 | Release reconciliation with unstable swagger support
 | 0.3.42   | 2019-10-12 | Improve openshift template with service application port configurable
 | 0.3.17   | 2019-07-27 | Adding openshift template for examples and introduce new swagger module to expose API using swagger description

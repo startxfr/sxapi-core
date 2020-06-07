@@ -1,12 +1,12 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   name: sxapi-template-build
   annotations:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
-    tags: builder,startx,alpine,nodejs,sxapi-0.3.43
+    tags: builder,startx,alpine,nodejs,sxapi-0.3.45
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/testing/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
@@ -18,14 +18,14 @@ message: |-
   sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
   config      : builded ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 labels:
   template: sxapi-template-build
   provider: startx
   technology: sxapi
 objects:
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: sxapi
     annotations:
@@ -33,21 +33,21 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     tags:
-    - name: 0.3.43
+    - name: 0.3.45
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (0.3.43)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.45)
         description: Builder for Simple and eXtensible API framework based on alpine
-          (0.3.43)
+          (0.3.45)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-0.3.43
-        supports: sxapi:0.3.43,nodejs,http
-        version: 0.3.43
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.45
+        supports: sxapi:0.3.45,nodejs,http
+        version: 0.3.45
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.43
+        name: startx/sxapi:0.3.45
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -62,8 +62,8 @@ objects:
         openshift.io/display-name: Application ${APPLICATION_NAME}
         description: Base image for the application ${APPLICATION_NAME}
         iconClass: icon-nodejs
-        tags: startx,alpine,nodejs,sxapi-0.3.43,application,${APPLICATION_NAME}
-        supports: sxapi:0.3.43,nodejs,http
+        tags: startx,alpine,nodejs,sxapi-0.3.45,application,${APPLICATION_NAME}
+        supports: sxapi:0.3.45,nodejs,http
         version: latest
 - kind: BuildConfig
   apiVersion: v1
@@ -95,7 +95,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: sxapi:0.3.43
+          name: sxapi:0.3.45
         env:
         - name: SX_VERBOSE
           value: 'true'
@@ -105,7 +105,7 @@ objects:
         name: "${APPLICATION_NAME}:latest"
     resources: {}
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -130,7 +130,7 @@ objects:
         - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APP_NAME}:0.3.43"
+          name: "${APP_NAME}:0.3.45"
     - type: ConfigChange
     replicas: 1
     test: false
@@ -153,11 +153,14 @@ objects:
           command:
           - npm
           - start
+          env:
+          - name: APP_PORT
+            value: '8077'
           resources: {}
           livenessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -167,7 +170,7 @@ objects:
           readinessProbe:
             httpGet:
               path: "/health"
-              port: "${APP_PORT}"
+              port: 8077
               scheme: HTTP
             initialDelaySeconds: 4
             timeoutSeconds: 1
@@ -192,8 +195,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -218,7 +221,7 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application name
   description: The name of the created application
-  value: app
+  value: sxapi-build-example
   required: true
 - name: SOURCE_GIT
   displayName: Source repository
@@ -236,7 +239,3 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{24}"
   required: true
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
