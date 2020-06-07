@@ -1,7 +1,7 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
-  name: sxapi-app_example-simple-template
+  name: sxapi-example-simple-template
   annotations:
     openshift.io/display-name: SXAPI simple example application (embeded configmap)
     description: Template for creating a simple SXAPI example where configuration 
@@ -13,7 +13,7 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-app_example-simple-template
+  template: sxapi-example-simple-template
   provider: startx
   technology: sxapi
 message: |-
@@ -24,10 +24,10 @@ message: |-
   sxapi       : ${IMAGE_NAME}:${IMAGE_VERSION}
   config      : configmap ${APPLICATION_NAME} (yaml)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 objects:
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
@@ -88,7 +88,7 @@ objects:
           type: "{{#SX_DEBUG}}debug,{{/SX_DEBUG}}info,error,warn"
       server:
         port: '{{{APP_PORT}}}'
-        lib: "/usr/src/app/mylib"
+        lib: "/conf/mylib"
         static:
         - path: "/test"
           dir: "/test"
@@ -172,7 +172,7 @@ objects:
       module.exports = mylib;
 
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -220,7 +220,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -228,7 +228,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -247,7 +247,10 @@ objects:
                 - stop
           ports:
           - name: sxapi-http
-            containerPort: "${APP_PORT}"
+            containerPort: 8077
+          env:
+          - name: APP_PORT
+            value: '8077'
           resources:
             requests:
               cpu: 200m
@@ -283,8 +286,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -312,7 +315,7 @@ parameters:
   value: sxapi-simple-example
   required: true
 - name: IMAGE_VERSION
-  value: 0.3.43
+  value: "0.3.46"
   required: true
 - name: IMAGE_NAME
   value: "startx/sxapi"
@@ -327,7 +330,4 @@ parameters:
   displayName: Memory Limit for data nodes
   description: Maximum amount of memory data container can use.
   value: 128Mi
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
+  

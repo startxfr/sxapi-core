@@ -1,7 +1,7 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
-  name: sxapi-example-cm_defined-template
+  name: sxapi-example-cmdefined-template
   annotations:
     openshift.io/display-name: SXAPI Example (dynamic configuration via configMap)
     description: Template for creating an SXAPI microservice where configuration 
@@ -13,7 +13,7 @@ metadata:
     openshift.io/documentation-url: https://hub.docker.com/r/startx/sxapi
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 labels:
-  template: sxapi-example-cm_defined-template
+  template: sxapi-example-cmdefined-template
   provider: startx
   technology: sxapi
 message: |-
@@ -25,10 +25,10 @@ message: |-
   sxapi       : ${REGISTRY}:${IMAGE_NAME}
   config      : configmap ${APPLICATION_NAME} (json)
   Pods        : ${REPLICAS_DATA} (${MEMORY_LIMIT})
-  service     : ${APPLICATION_NAME} -> ${APP_PORT}
+  service     : ${APPLICATION_NAME} -> 8077
 objects:
 - kind: ImageStream
-  apiVersion: v1
+  apiVersion: image.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     annotations:
@@ -57,7 +57,7 @@ objects:
   data:
     sxapi.yml: "${SXAPI_CONF}"
 - kind: DeploymentConfig
-  apiVersion: v1
+  apiVersion: apps.openshift.io/v1
   metadata:
     name: "${APPLICATION_NAME}"
     labels:
@@ -105,7 +105,7 @@ objects:
           livenessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -113,7 +113,7 @@ objects:
           readinessProbe:
             initialDelaySeconds: 2
             tcpSocket:
-              port: "${APP_PORT}"
+              port: 8077
             timeoutSeconds: 2
             periodSeconds: 5
             successThreshold: 1
@@ -121,6 +121,8 @@ objects:
           env:
           - name: SX_VERBOSE
             value: 'true'
+          - name: APP_PORT
+            value: '8077'
           lifecycle:
             preStop:
               exec:
@@ -129,7 +131,7 @@ objects:
                 - stop
           ports:
           - name: sxapi-http
-            containerPort: "${APP_PORT}"
+            containerPort: 8077
           resources:
             requests:
               cpu: 200m
@@ -163,8 +165,8 @@ objects:
     ports:
     - name: sxapi-http
       protocol: TCP
-      port: "${APP_PORT}"
-      targetPort: "${APP_PORT}"
+      port: 8077
+      targetPort: 8077
     selector:
       app: "${APPLICATION_NAME}"
       deploymentconfig: "${APPLICATION_NAME}"
@@ -189,10 +191,10 @@ parameters:
 - name: APPLICATION_NAME
   displayName: Application Name
   description: The name of the application.
-  value: sxapi-example-cm_defined
+  value: sxapi-example-cmdefined
   required: true
 - name: IMAGE_NAME
-  value: 0.3.43
+  value: "0.3.46"
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
@@ -212,7 +214,4 @@ parameters:
   description: Json object string describing the application a see in https://github.com/startx/sxapi-core/blob/master/docs/guides/2.Configure.md
   value: "{ \"name\": \"sample-api\",\"description\": \"my desc\", \"version\": \"0.0.0\", \"server\": { \"endpoints\": [ { \"path\": \"/\", \"body\": \"<html><head></head><body><h1>My API</h1></body></html>\" } ] } }"
   required: true
-- name: APP_PORT
-  displayName: Port used to expose application
-  description: Default is set to sxapi-http port number 8077
-  value: 8077
+  
