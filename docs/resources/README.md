@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.47-npm/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.49-npm/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Resources Catalog
 
@@ -42,7 +42,7 @@ if(resourceManager.exist('resource-id')) {
 
 ## Using a resource
 
-If you wan't to see sample sxapi.yml config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.3.47-npm/samples)
+If you wan't to see sample sxapi.yml config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.3.49-npm/samples)
 
 ### Declaring a resource in your sxapi.yml
 

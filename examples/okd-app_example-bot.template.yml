@@ -107,7 +107,7 @@ objects:
         - path: "/"
           description: Display welcome message (HTML)
           body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
-            !</h1><p>This API is based on sxapi-core v0.3.47 and use default config file.
+            !</h1><p>This API is based on sxapi-core v0.3.49 and use default config file.
             You can now start to configure your sxapi.yml config file in order to build
             your own API </p></body></html>"
         - path: "/health"
@@ -302,7 +302,7 @@ parameters:
   value: sxapi-bot-example
   required: true
 - name: IMAGE_VERSION
-  value: "0.3.47"
+  value: "0.3.49"
   required: true
 - name: IMAGE_NAME
   value: "startx/sxapi"
