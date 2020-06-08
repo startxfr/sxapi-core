@@ -1,4 +1,4 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.47-docker/docs/assets/logo.svg?sanitize=true">
+<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.49-docker/docs/assets/logo.svg?sanitize=true">
 
 # SXAPI Core : tools component
 
