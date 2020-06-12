@@ -11,9 +11,11 @@ S2IPATH=/tmp/src
 cd $APP_PATH
 
 if [[ -d $S2IPATH ]]; then
+    echo "copy source code to $APP_PATH"
     cp -R $S2IPATH/* $APP_PATH/
     RET=$?
     if [[ -f $S2IPATH/sxapi.yml ]]; then
+      echo "copy config file to $CONF_PATH/sxapi.yml"
       cp -f $S2IPATH/sxapi.yml $CONF_PATH/sxapi.yml
     fi;
     if [[ $RET == 0 ]]; then
@@ -22,16 +24,16 @@ if [[ -d $S2IPATH ]]; then
 fi;
 
 if [[ "$NODE_ENV" == "development" ]]; then
+  echo "install npm module"
   npm install -production
-  npm dedupe
-  npm cache verify
-  npm cache clean --force
 else
+  echo "install npm module"
   npm install -production
-  npm dedupe
-  npm cache verify
-  npm cache clean --force
 fi;
+echo "clean npm module"
+npm dedupe
+npm cache verify
+npm cache clean --force
 
 
 cd -
