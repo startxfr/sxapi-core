@@ -1,6 +1,6 @@
 app:
   build: .
-  container_name: "sxapi-core-master"
+  container_name: "sxapi-core-testing"
   ports:
     - "8077:8077"
   volumes:

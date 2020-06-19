@@ -63,4 +63,4 @@ EXPOSE $APP_PORT
 
 VOLUME $DATA_PATH
 
-CMD [ "/bin/sx-nodejs" , "run" ]
+CMD [ "npm" , "run", "test:start" ]

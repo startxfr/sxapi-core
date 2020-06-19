@@ -8,7 +8,7 @@ metadata:
     iconClass: icon-nodejs
     tags: builder,startx,alpine,nodejs,sxapi-latest
     openshift.io/provider-display-name: STARTX
-    openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
+    openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/testing/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 message: |-
   Your application ${APPLICATION_NAME} will be soon deployed in your project.

@@ -1,5 +1,5 @@
-name: sxapi-default
-description: sxapi default microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
+name: sxapi-default-testing
+description: sxapi testing microservice API ({{{NODE_ENV}}}). You can find out more at http://startx.fr/api
 termsOfService: http://startx.fr/api#termOfService
 contactName: Dev STARTX
 contactMail: dev@startx.fr
