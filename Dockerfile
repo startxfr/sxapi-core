@@ -43,7 +43,7 @@ COPY ./app.js $APP_PATH/app.js
 COPY ./package.json $APP_PATH/package.json
 COPY ./sxapi.yml $CONF_PATH/sxapi.yml
 
-RUN  apk update && apk upgrade && apk add git python make gcc g++ \
+RUN  apk update && apk upgrade && apk add git python2 make gcc g++ \
  &&  mkdir -p $APP_PATH $CONF_PATH $DATA_PATH /.npm /.config \
  &&  cd $APP_PATH \
  &&  npm run build \
