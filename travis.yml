@@ -6,7 +6,10 @@ env:
     - REPO=startx/sxapi
     - RELEASE=0.3.49
 
-sudo: required
+dist: xenial
+os: linux
+language: ruby
+#sudo: required
 
 services:
   - docker
