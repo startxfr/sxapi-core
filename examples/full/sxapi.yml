@@ -47,8 +47,8 @@ resources:
     addObject_options: {}
     updateObject_options: {}
     deleteObject_options: {}
-    ACCESS_ID: AKIAJ7JDWBNTZOXZRM6A
-    ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     SESSION_TOKEN: ''
     region: eu-west-3
     Bucket: sxapiexample
@@ -66,8 +66,8 @@ resources:
           DataType: String
           StringValue: sxapi-core-dev
     QueueUrl: https://sqs.eu-west-3.amazonaws.com/791728029433/example
-    ACCESS_ID: AKIAJ7JDWBNTZOXZRM6A
-    ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     SESSION_TOKEN: ''
     region: eu-west-3
   couchbase-sample:

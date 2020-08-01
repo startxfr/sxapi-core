@@ -31,15 +31,15 @@ resources:
           DataType: String
           StringValue: startx
     QueueUrl: https://sqs.eu-west-3.amazonaws.com/11111111111111111/my-queue
-    ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
-    ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     region: eu-west-3
   twitter-example:
     _class: twitter
-    consumer_key: XXXXXXXXXXXXXXXXXXXX
-    consumer_secret: XXXXXXXXXXXXXXXXXXXX
-    access_token_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    access_token_secret: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    consumer_key: XXXXXXXXXXXXX
+    consumer_secret: XXXXXXXXXXXXX
+    access_token_key: XXXXXXXXXXXXX
+    access_token_secret: XXXXXXXXXXXXX
 log:
   filters:
     level: '0,1,2,3,4,5'

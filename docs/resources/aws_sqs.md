@@ -52,8 +52,8 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 resources:
   aws-sqs-id:
     _class: aws_sqs
-    ACCESS_ID: xxxxxxxxxxx
-    ACCESS_KEY: yyyyyyyyyyyy
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     region: eu-west-3
     QueueUrl: https://sqs.eu-west-3.amazonaws.com
 ```
