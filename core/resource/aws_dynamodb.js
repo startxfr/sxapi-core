@@ -352,7 +352,7 @@ module.exports = function (id, config) {
             $log.tools.endpointErrorAndAnswer(res, $ddb.id, req, "no id param found in request");
           }
           else {
-            var TableUrl = config.config.TableNameUrl || config.TableNameUrl || $ddb.config.TableNameUrl || "https://s3.eu-west-1.amazonaws.com";
+            var TableUrl = config.config.TableNameUrl || config.TableNameUrl || $ddb.config.TableNameUrl || "https://s3.eu-west-3.amazonaws.com";
             objectId = objectId.replace(/[ ]/g, '+');
             var params = config.config || {};
             params.TableNameUrl = TableUrl;

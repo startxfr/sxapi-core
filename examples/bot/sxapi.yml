@@ -30,10 +30,10 @@ resources:
         from:
           DataType: String
           StringValue: startx
-    QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
+    QueueUrl: https://sqs.eu-west-3.amazonaws.com/11111111111111111/my-queue
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    region: eu-west-1
+    region: eu-west-3
   twitter-example:
     _class: twitter
     consumer_key: XXXXXXXXXXXXXXXXXXXX
@@ -50,7 +50,7 @@ server:
   - path: "/"
     description: Display welcome message (HTML)
     body: "<html><head><title>sxapi-core API</title></head><body><h1>Your API is live
-      !</h1><p>This API is based on sxapi-core v0.3.49 and use default config file.
+      !</h1><p>This API is based on sxapi-core v0.3.51 and use default config file.
       You can now start to configure your sxapi.yml config file in order to build
       your own API </p></body></html>"
   - path: "/health"
@@ -70,7 +70,7 @@ server:
     code: '200'
     body: pong
 bot:
-  lib: "/usr/src/app/mylib"
+  lib: "/app/mylib"
   cron:
   - id: example-cront-task
     name: Execute example cron task

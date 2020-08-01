@@ -148,7 +148,7 @@ module.exports = function (id, config) {
 //    read: function (options, callback) {
 //      var timerId = 'resource_twitter.read_' + $twt.id;
 //      $timer.start(timerId);
-//      var QueueUrl = $twt.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+//      var QueueUrl = $twt.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
 //      var config = {};
 //      config.QueueUrl = QueueUrl;
 //      if (typeof options === 'object') {
@@ -212,7 +212,7 @@ module.exports = function (id, config) {
 //        $log.tools.resourceInfo($twt.id, "remove message '" + displayId + "'");
 //      }
 //      $timer.start(timerId);
-//      var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $twt.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+//      var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $twt.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
 //      if ($twt.config.delete_options && $twt.config.delete_options.QueueUrl) {
 //        QueueUrl = $twt.config.delete_options.QueueUrl;
 //      }
@@ -253,7 +253,7 @@ module.exports = function (id, config) {
 //        $log.tools.resourceInfo($twt.id, "send message '" + messId + "'");
 //      }
 //      $timer.start(timerId);
-//      var QueueUrl = $twt.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+//      var QueueUrl = $twt.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
 //      if ($twt.config.send_options && $twt.config.send_options.QueueUrl) {
 //        QueueUrl = $twt.config.send_options.QueueUrl;
 //      }
@@ -445,7 +445,7 @@ module.exports = function (id, config) {
 //            $log.tools.endpointErrorAndAnswer(res, $twt.id, req, "no id param found in request");
 //          }
 //          else {
-//            var QueueUrl = config.config.QueueUrl || config.QueueUrl || $twt.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+//            var QueueUrl = config.config.QueueUrl || config.QueueUrl || $twt.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
 //            messageId = messageId.replace(/[ ]/g, '+');
 //            var params = config.config || {};
 //            params.QueueUrl = QueueUrl;

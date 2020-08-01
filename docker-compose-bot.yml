@@ -4,7 +4,7 @@ app:
     file: docker-compose.yml
     service: app
   volumes:
-  - "./:/usr/src/app:z"
+  - "./:/app:z"
   - "./examples/bot/sxapi.yml:/conf/sxapi.yml:z"
-  - "./examples/bot/mylib.js:/usr/src/app/mylib.js:z"
+  - "./examples/bot/mylib.js:/app/mylib.js:z"
   command: ["npm" , "start"]

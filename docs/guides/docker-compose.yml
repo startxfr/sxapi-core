@@ -6,12 +6,12 @@ app:
   environment:
   - NODE_ENV=development
   - APP_PORT=8077
-  - APP_PATH=/usr/src/app
+  - APP_PATH=/app
   - DATA_PATH=/data
   - CONF_PATH=/conf
   volumes:
-  - "./:/usr/src/app:z"
+  - "./:/app:z"
   - "./sxapi.yml:/conf/sxapi.yml:z"
-  working_dir: /usr/src/app
+  working_dir: /app
   entrypoint: npm
   command: start
