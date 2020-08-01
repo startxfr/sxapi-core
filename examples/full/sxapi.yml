@@ -71,7 +71,7 @@ resources:
     SESSION_TOKEN: ''
     region: eu-west-1
   couchbase-sample:
-    _class: serviceinfo
+    _class: couchbase
     cluster: http://db-couchbase:8091
     bucket: sxapicore_example
   serviceinfo-sample:
@@ -98,7 +98,7 @@ resources:
       database: sxapicore_example
   files-sample:
     _class: localfs
-    directory: "/usr/src/app/"
+    directory: "//app/"
   twitter-sample:
     _class: twitter
     QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
@@ -221,7 +221,7 @@ server:
     - path: "/s3store"
       method: GET
       endpoint: listObjects
-      Bucket: sxapiexample
+      bucket: sxapiexample
     - path: "/s3store/:id"
       method: GET
       endpoint: getObject

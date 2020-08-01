@@ -70,7 +70,7 @@ server:
     code: '200'
     body: pong
 bot:
-  lib: "/usr/src/app/mylib"
+  lib: "//app/mylib"
   cron:
   - id: example-cront-task
     name: Execute example cron task

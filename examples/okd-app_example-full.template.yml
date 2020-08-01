@@ -155,7 +155,7 @@ objects:
             database: sxapicore_example
         files-sample:
           _class: localfs
-          directory: "/usr/src/app/"
+          directory: "//app/"
         twitter-sample:
           _class: twitter
           QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
