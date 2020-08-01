@@ -7,7 +7,7 @@
 | Release  | Date       |  Description
 |----------|------------|-------------
 | 0.3.51   | 2020-08-01 | stabilize aws_s3 resource
-| 0.3.49   | 2020-06-08 | Upgrade npm component and security fixes
+| 0.3.51   | 2020-06-08 | Upgrade npm component and security fixes
 | 0.3.47   | 2020-06-07 | Update node 12
 | 0.3.46   | 2020-06-07 | Update npm dependencies
 | 0.3.45   | 2019-10-13 | Update OKD examples to OCP/OKD v4 runtime
