@@ -99,7 +99,7 @@ module.exports = function (id, config) {
     read: function (options, callback) {
       var timerId = 'resource_aws.sqs_read_' + $sqs.id;
       $timer.start(timerId);
-      var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+      var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
       var config = {};
       config.QueueUrl = QueueUrl;
       if (typeof options === 'object') {
@@ -163,7 +163,7 @@ module.exports = function (id, config) {
         $log.tools.resourceInfo($sqs.id, "remove message '" + displayId + "'");
       }
       $timer.start(timerId);
-      var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+      var QueueUrl = ((options.config) ? options.config.QueueUrl : false) || options.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
       if ($sqs.config.delete_options && $sqs.config.delete_options.QueueUrl) {
         QueueUrl = $sqs.config.delete_options.QueueUrl;
       }
@@ -204,7 +204,7 @@ module.exports = function (id, config) {
         $log.tools.resourceInfo($sqs.id, "send message '" + messId + "'");
       }
       $timer.start(timerId);
-      var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+      var QueueUrl = $sqs.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
       if ($sqs.config.send_options && $sqs.config.send_options.QueueUrl) {
         QueueUrl = $sqs.config.send_options.QueueUrl;
       }
@@ -396,7 +396,7 @@ module.exports = function (id, config) {
             $log.tools.endpointErrorAndAnswer(res, $sqs.id, req, "no id param found in request");
           }
           else {
-            var QueueUrl = config.config.QueueUrl || config.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-1.amazonaws.com";
+            var QueueUrl = config.config.QueueUrl || config.QueueUrl || $sqs.config.QueueUrl || "https://sqs.eu-west-3.amazonaws.com";
             messageId = messageId.replace(/[ ]/g, '+');
             var params = config.config || {};
             params.QueueUrl = QueueUrl;
