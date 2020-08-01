@@ -6,6 +6,8 @@ app:
   volumes:
   - "./sxapi.yml:/conf/sxapi.yml:z"
   - "./test:/test:z"
+  - "./core:/app/core:z"
+  - "./app.js:/app/app.js:z"
   working_dir: /app
 ## build, test and start application for dev environement (with live-reload when code change)
 #  command: ["npm" , "run", "dev"]

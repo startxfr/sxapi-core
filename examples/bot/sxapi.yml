@@ -30,10 +30,10 @@ resources:
         from:
           DataType: String
           StringValue: startx
-    QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
+    QueueUrl: https://sqs.eu-west-3.amazonaws.com/11111111111111111/my-queue
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    region: eu-west-1
+    region: eu-west-3
   twitter-example:
     _class: twitter
     consumer_key: XXXXXXXXXXXXXXXXXXXX
@@ -70,7 +70,7 @@ server:
     code: '200'
     body: pong
 bot:
-  lib: "//app/mylib"
+  lib: "/app/mylib"
   cron:
   - id: example-cront-task
     name: Execute example cron task

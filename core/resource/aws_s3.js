@@ -91,7 +91,7 @@ module.exports = function (id, config) {
       return this;
     },
     /**
-     * Read the S3 bucket defined in the config.bucket section of sxapi.yml
+     * Read the S3 bucket defined in the config.Bucket section of sxapi.yml
      * @param {string} id object ID
      * @param {string} bucket bucket name
      * @param {object} options object with options to pass to the AWS receiveObject method
@@ -101,7 +101,7 @@ module.exports = function (id, config) {
     getObject: function (id, bucket, options, callback) {
       var timerId = 'resource_aws.s3_getObject_' + $s3.id;
       $timer.start(timerId);
-      var config = $s3.config.getObject_options || {};
+      var config = $s3.config.getObject_config || {};
       if (typeof options === 'object') {
         require('merge').recursive(config, options);
       }
@@ -132,13 +132,13 @@ module.exports = function (id, config) {
      */
     listObjects: function (bucket, options, callback) {
       var timerId = 'resource_aws.s3_listObjects_' + $s3.id;
-      $log.tools.resourceInfo($s3.id, "list objects in bucket '" + config.Bucket + "'");
       $timer.start(timerId);
-      var config = $s3.config.listObjects_options || {};
+      var config = $s3.config.listObjects_config || {};
       if (typeof options === 'object') {
         require('merge').recursive(config, options);
       }
       config.Bucket = bucket || config.Bucket;
+      $log.tools.resourceInfo($s3.id, "list objects in bucket '" + config.Bucket + "'");
       var defaultCallback = function (error, response) {
         var duration = $timer.timeStop(timerId);
         if (error) {
@@ -164,13 +164,13 @@ module.exports = function (id, config) {
       var messId = object.id;
       var timerId = 'resource_aws.s3_addObject_' + $s3.id + '::' + messId;
       $timer.start(timerId);
-      var config = $s3.config.addObject_options || {};
+      var config = $s3.config.addObject_config || {};
       if (typeof options === 'object') {
         require('merge').recursive(config, options);
       }
       config.Bucket = bucket || config.Bucket;
       config.Key = id || config.Key;
-      config.Body = (JSON.isSerializable(object)) ? JSON.serialize(object) : object;
+      config.Body = (Buffer.isBuffer(object)) ? object : ((JSON.isSerializable(object)) ? JSON.serialize(object) : object);
       $log.tools.resourceInfo($s3.id, "add S3 object " + config.Key + " in bucket " + config.Bucket);
       var defaultCallback = function (error, response) {
         var duration = $timer.timeStop(timerId);
@@ -196,12 +196,12 @@ module.exports = function (id, config) {
     deleteObject: function (id, bucket, options, callback) {
       var timerId = 'resource_aws.s3_deleteObject_' + $s3.id + '::' + id;
       $timer.start(timerId);
-      var config = $s3.config.deleteObject_options || {};
+      var config = $s3.config.deleteObject_config || {};
       if (typeof options === 'object') {
         require('merge').recursive(config, options);
       }
-      config.Bucket = bucket || config.Bucket;
-      config.Key = id || config.Key;
+      config.Bucket = bucket || config.Bucket || "bucketname";
+      config.Key = id || config.Key || "objectId";
       $log.tools.resourceInfo($s3.id, "delete S3 object " + config.Key + " in bucket " + config.Bucket);
       var defaultCallback = function (error, response) {
         var duration = $timer.timeStop(timerId);
@@ -212,7 +212,7 @@ module.exports = function (id, config) {
           $log.tools.resourceDebug($s3.id, "Deleting AWS S3 object " + id, 4, duration, true);
         }
       };
-      $s3.s3bucket.deleteObject(config.Key, config.Bucket, config, callback ? callback : defaultCallback);
+      $s3.s3bucket.deleteObject(config, callback ? callback : defaultCallback);
       return this;
     },
     /**
@@ -256,7 +256,7 @@ module.exports = function (id, config) {
         }
       };
       var params = {
-        Bucket: options.Bucket
+        bucket: options.bucket
       };
       require('async').parallel({
         location: function (callback) {
@@ -383,7 +383,7 @@ module.exports = function (id, config) {
      */
     deleteBucket: function (options, callback) {
       var timerId = 'resource_aws.s3_deleteBucket_' + $s3.id;
-      $log.tools.resourceInfo($s3.id, "delete bucket '" + config.Bucket + "'");
+      $log.tools.resourceInfo($s3.id, "delete bucket '" + options.Bucket + "'");
       $timer.start(timerId);
       var config = options || {};
       var defaultCallback = function (error, response) {
@@ -416,9 +416,10 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "listObjects()", 1);
+          config.config = $s3.config.listObject_config || {};
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
-            var bucketId = req.params.id || req.body.id || config.Bucket || (config.config && config.config.Bucket) ? config.config.Bucket : "bucketname";
+            var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
             rs.listObjects(bucketId, config.config || {}, function (err, reponse) {
               if (err) {
                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error listing objects because " + err.message);
@@ -427,7 +428,7 @@ module.exports = function (id, config) {
                 if (config.notification !== undefined) {
                   $app.notification.notif(config.notification, reponse.Contents);
                 }
-                $log.tools.endpointDebugAndAnswer(res, reponse.Contents, $s3.id, req, "readding AWS S3 objects in bucket " + config.config.Bucket, 2);
+                $log.tools.endpointDebugAndAnswer(res, reponse.Contents, $s3.id, req, "readding AWS S3 objects in bucket " + bucketId, 2);
               }
             });
           }
@@ -450,10 +451,11 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "getObject()", 1);
+          config.config = $s3.config.getObject_config || {};
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
-            var bucketId = req.params.bid || req.body.bid || config.Bucket || ((config.config && config.config.Bucket) ? config.config.Bucket : "bucketname");
-            var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
+            var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
+            var objectId = req.params.oid || req.body.oid || config.objectId || req.params.id || req.body.id || "objectId";
             rs.getObject(objectId, bucketId, config.config || {}, function (err, reponse) {
               if (err) {
                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error getting " + objectId + " object in bucket " + bucketId + " because " + err.message);
@@ -487,10 +489,11 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "addObject()", 1);
+          config.config = $s3.config.addObject_config || {};
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
-            var bucketId = req.params.bid || req.body.bid || config.Bucket || ((config.config && config.config.Bucket) ? config.config.Bucket : "bucketname");
-            var objectId = req.params.id || req.body.id || config.objectId || ((config.config && config.config.Key) ? config.config.Key : "objectId");
+            var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
+            var objectId = req.params.oid || req.body.oid || config.objectId || req.params.id || req.body.id || "objectId";
             rs.addObject(objectId, req.body, bucketId, config.config || {}, function (err, reponse) {
               if (err) {
                 $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
@@ -499,7 +502,7 @@ module.exports = function (id, config) {
                 if (config.notification !== undefined) {
                   $app.notification.notif(config.notification, reponse);
                 }
-                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "recorded AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
+                $log.tools.endpointDebugAndAnswer(res, reponse.Buckets, $s3.id, req, "recorded AWS S3 object with ETag " + reponse.ETag, 2);
               }
             });
           }
@@ -523,27 +526,29 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "deleteObject()", 1);
-          var objectId = req.params.id || req.body.id || config.config.receiptHandle || false;
+          config.config = $s3.config.deleteObject_config || {};
+          var bucketId = req.params.bid || req.body.bid || config.Bucket || "bucketname";
+          var objectId = req.params.oid || req.body.oid || config.objectId || req.params.id || req.body.id || false;
           if (objectId === false) {
             $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "no id param found in request");
           }
           else {
-            var BucketUrl = config.config.BucketUrl || config.BucketUrl || $s3.config.BucketUrl || "https://s3.eu-west-1.amazonaws.com";
+            var BucketUrl = config.BucketUrl || config.BucketUrl || $s3.config.BucketUrl || "https://s3.eu-west-3.amazonaws.com";
             objectId = objectId.replace(/[ ]/g, '+');
-            var params = config.config || {};
+            var params = JSON.parse(JSON.stringify(config.config));
             params.BucketUrl = BucketUrl;
             params.ReceiptHandle = objectId;
             if ($app.resources.exist(config.resource)) {
               var rs = $app.resources.get(config.resource);
-              rs.deleteObject(config.config || {}, function (err, reponse) {
+              rs.deleteObject(objectId,bucketId,config.config || {}, function (err, reponse) {
                 if (err) {
-                  $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error saving object because " + err.message);
+                  $log.tools.endpointErrorAndAnswer(res, $s3.id, req, "error deleting object because " + err.message);
                 }
                 else {
                   if (config.notification !== undefined) {
                     $app.notification.notif(config.notification, reponse);
                   }
-                  $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "deleted AWS S3 object in transaction " + reponse.ResponseMetadata.ObjectId, 2);
+                  $log.tools.endpointDebugAndAnswer(res, reponse, $s3.id, req, "deleted AWS S3 object " + objectId + " in bucket " + bucketId, 2);
                 }
               });
             }
@@ -600,9 +605,10 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "infoBucket()", 1);
-          var bucketId = req.params.id || req.body.id || config.Bucket || require('uuid').v1();
+          config.config = $s3.config.listBucket_config || {};
+          var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
           var params = config.config || {};
-          params.Bucket = bucketId;
+          params.bucket = bucketId;
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
             rs.infoBucket(params, function (err, reponse) {
@@ -636,9 +642,9 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "addBucket()", 1);
-          var bucketId = req.params.id || req.body.id || config.config.BucketName || require('uuid').v1();
-          var params = config.config || {};
-          params.BucketName = bucketId;
+          var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
+          var params = $s3.config.addBucket_config || {};
+          params.Bucket = bucketId;
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
             rs.createBucket(params, function (err, reponse) {
@@ -672,10 +678,9 @@ module.exports = function (id, config) {
          */
         return function (req, res) {
           $log.tools.endpointDebug($s3.id, req, "deleteBucket()", 1);
-          var bucketId = req.params.id || req.body.id || "";
-          var bucketUrlPath = config.bucketUrlPrefix || config.BucketUrl || "https://s3.us-west-1.amazonaws.com/xxxxxx/";
-          var params = config.config || {};
-          params.BucketUrl = bucketUrlPath + bucketId;
+          var bucketId = req.params.bid  || req.body.bid || config.Bucket || req.params.id || "bucketname";
+          var params = $s3.config.deleteBucket_config || {};
+          params.Bucket = bucketId;
           if ($app.resources.exist(config.resource)) {
             var rs = $app.resources.get(config.resource);
             rs.deleteBucket(params, function (err, reponse) {
@@ -686,7 +691,7 @@ module.exports = function (id, config) {
                 if (config.notification !== undefined) {
                   $app.notification.notif(config.notification, reponse);
                 }
-                $log.tools.endpointDebugAndAnswer(res, true, $s3.id, req, "deleted AWS S3 bucket " + params.bucketId, 2);
+                $log.tools.endpointDebugAndAnswer(res, true, $s3.id, req, "deleted AWS S3 bucket " + params.Bucket, 2);
               }
             });
           }

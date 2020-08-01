@@ -50,7 +50,7 @@ resources:
     ACCESS_ID: AKIAJ7JDWBNTZOXZRM6A
     ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
     SESSION_TOKEN: ''
-    region: eu-west-1
+    region: eu-west-3
     Bucket: sxapiexample
   sqs-sample:
     _class: aws_sqs
@@ -65,11 +65,11 @@ resources:
         from:
           DataType: String
           StringValue: sxapi-core-dev
-    QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
+    QueueUrl: https://sqs.eu-west-3.amazonaws.com/791728029433/example
     ACCESS_ID: AKIAJ7JDWBNTZOXZRM6A
     ACCESS_KEY: VQwNHhw/vAVbxDn9vRqC1KQUngz+DXolCnfpgkAl
     SESSION_TOKEN: ''
-    region: eu-west-1
+    region: eu-west-3
   couchbase-sample:
     _class: couchbase
     cluster: http://db-couchbase:8091
@@ -98,10 +98,10 @@ resources:
       database: sxapicore_example
   files-sample:
     _class: localfs
-    directory: "//app/"
+    directory: "/app/"
   twitter-sample:
     _class: twitter
-    QueueUrl: https://sqs.eu-west-1.amazonaws.com/11111111111111111/my-queue
+    QueueUrl: https://sqs.eu-west-3.amazonaws.com/11111111111111111/my-queue
     ACCESS_ID: XXXXXXXXXXXXXXXXXXXX
     ACCESS_KEY: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 log:
@@ -199,13 +199,13 @@ server:
     - path: "/message/queue/:id"
       method: DELETE
       endpoint: deleteQueue
-      queueUrlPrefix: https://sqs.eu-west-1.amazonaws.com/791728029433/
+      queueUrlPrefix: https://sqs.eu-west-3.amazonaws.com/791728029433/
       config: {}
     - path: "/message"
       method: GET
       endpoint: listMessages
       config:
-        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
+        QueueUrl: https://sqs.eu-west-3.amazonaws.com/791728029433/example
     - path: "/message"
       method: POST
       endpoint: addMessage
@@ -213,48 +213,73 @@ server:
       method: DELETE
       endpoint: deleteMessage
       config:
-        QueueUrl: https://sqs.eu-west-1.amazonaws.com/791728029433/example
-  - path: "/s3store"
-    method: ROUTER
-    resource: s3-sample
-    endpoints:
-    - path: "/s3store"
-      method: GET
-      endpoint: listObjects
-      bucket: sxapiexample
-    - path: "/s3store/:id"
-      method: GET
-      endpoint: getObject
-      bucket: sxapiexample
-    - path: "/s3store/:id"
-      method: POST
-      endpoint: addObject
-      bucket: sxapiexample
-    - path: "/s3store/:bid/:id"
-      method: GET
-      endpoint: getObject
-    - path: "/s3store/:bid/:id"
-      method: POST
-      endpoint: addObject
-    - path: "/s3store"
-      method: DELETE
-      endpoint: deleteObject
-    - path: "/s3store-bucket"
-      method: GET
-      endpoint: listBuckets
-      config: {}
-    - path: "/s3store-bucket/:id"
-      method: POST
-      endpoint: addBucket
-      config: {}
-    - path: "/s3store-bucket/:id"
-      method: GET
-      endpoint: infoBucket
-      config: {}
-    - path: "/s3store-bucket/:id"
-      method: DELETE
-      endpoint: deleteBucket
-      config: {}
+        QueueUrl: https://sqs.eu-west-3.amazonaws.com/791728029433/example
+    - path: "/s3/store"
+      description: Abstract path for file storage sub-path
+      method: ROUTER
+      resource: s3-sample
+      endpoints:
+      - path: "/s3/store"
+        description: List all objects from a fixed bucket in the S3 resource
+        method: GET
+        endpoint: listObjects
+        Bucket: sxapiexample
+      - path: "/s3/store/:id"
+        description: Read an object from a fixed bucket in the S3 resource
+        method: GET
+        endpoint: getObject
+        Bucket: sxapiexample
+      - path: "/s3/store/:id"
+        description: Create an object in a fixed bucket into the S3 resource
+        method: POST
+        endpoint: addObject
+        Bucket: sxapiexample
+      - path: "/s3/store/:id"
+        description: Update an object in a fixed bucket into the S3 resource
+        method: PUT
+        endpoint: addObject
+        Bucket: sxapiexample
+      - path: "/s3/store/:id"
+        description: Delete an object in a fixed bucket into the S3 resource
+        method: DELETE
+        endpoint: deleteObject
+        Bucket: sxapiexample
+      - path: "/s3/stores/:bid"
+        description: List all objects from a given bucket in the S3 resource
+        method: GET
+        endpoint: listObjects
+      - path: "/s3/stores/:bid/:id"
+        description: Read an object from a given bucket in the S3 resource
+        method: GET
+        endpoint: getObject
+      - path: "/s3/stores/:bid/:id"
+        description: Create an object in a given bucket into the S3 resource
+        method: POST
+        endpoint: addObject
+      - path: "/s3/stores/:bid/:id"
+        description: Update an object in a given bucket into the S3 resource
+        method: PUT
+        endpoint: addObject
+      - path: "/s3/stores/:bid/:id"
+        description: Delete an object in a given bucket into the S3 resource
+        method: DELETE
+        endpoint: deleteObject
+      - path: "/s3/buckets"
+        description: List all available buckets from a given bucket in the S3 resource
+        method: GET
+        endpoint: listBuckets
+      - path: "/s3/buckets/:id"
+        description: Create a new bucket in the S3 resource
+        method: POST
+        endpoint: addBucket
+      - path: "/s3/buckets/:id"
+        description: Read bucket info from the S3 resource
+        method: GET
+        endpoint: infoBucket
+      - path: "/s3/buckets/:id"
+        description: Delete a bucket in the S3 resource
+        method: DELETE
+        endpoint: deleteBucket
   - path: "/redis"
     method: ROUTER
     resource: redis-sample
