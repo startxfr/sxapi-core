@@ -52,8 +52,8 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 resources:
   aws-dynamodb-id:
     _class: aws_dynamodb
-    ACCESS_ID: xxxxxxxxxxx
-    ACCESS_KEY: yyyyyyyyyyyy
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     region: eu-west-3
     QueueUrl: https://dynamodb.eu-west-3.amazonaws.com
 ```

@@ -52,8 +52,8 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 resources:
   aws-s3-id:
     _class: aws_s3
-    ACCESS_ID: xxxxxxxxxxx
-    ACCESS_KEY: yyyyyyyyyyyy
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     region: eu-west-3
     QueueUrl: https://s3.eu-west-3.amazonaws.com
 ```

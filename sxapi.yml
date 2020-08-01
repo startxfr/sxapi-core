@@ -32,8 +32,8 @@ resources:
     addObject_options: {}
     updateObject_options: {}
     deleteObject_options: {}
-    ACCESS_ID: AKIA3QVVK73445L42R7V
-    ACCESS_KEY: H7cjlz6f35Lksl5yfg4zjeHQhX395P03ZuMz3Mcf
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
     SESSION_TOKEN: ''
     region: eu-west-3
     Bucket: sxapiexample
