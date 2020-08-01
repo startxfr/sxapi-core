@@ -25,6 +25,18 @@ resources:
   websocket-sample:
     _class: websocket-client
     host: http://localhost:{{{APP_PORT}}}
+  s3-sample:
+    _class: aws_s3
+    listObjects_options: {}
+    getObject_options: {}
+    addObject_options: {}
+    updateObject_options: {}
+    deleteObject_options: {}
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
+    SESSION_TOKEN: ''
+    region: eu-west-3
+    Bucket: sxapiexample
 log:
   filters:
     level: '0,1,2'
@@ -70,3 +82,72 @@ server:
     description: Ping the application. Return a sample message in json
     code: '200'
     body: pong
+  - path: "/function"
+    description: Test and dedicated function. Return a sample message in json
+    handler: "$ws.dynamicRequestHandlerTest"
+  - path: "/s3/store"
+    description: Abstract path for file storage sub-path
+    method: ROUTER
+    resource: s3-sample
+    endpoints:
+    - path: "/s3/store"
+      description: List all objects from a fixed bucket in the S3 resource
+      method: GET
+      endpoint: listObjects
+      Bucket: sxapiexample
+    - path: "/s3/store/:id"
+      description: Read an object from a fixed bucket in the S3 resource
+      method: GET
+      endpoint: getObject
+      Bucket: sxapiexample
+    - path: "/s3/store/:id"
+      description: Create an object in a fixed bucket into the S3 resource
+      method: POST
+      endpoint: addObject
+      Bucket: sxapiexample
+    - path: "/s3/store/:id"
+      description: Update an object in a fixed bucket into the S3 resource
+      method: PUT
+      endpoint: addObject
+      Bucket: sxapiexample
+    - path: "/s3/store/:id"
+      description: Delete an object in a fixed bucket into the S3 resource
+      method: DELETE
+      endpoint: deleteObject
+      Bucket: sxapiexample
+    - path: "/s3/stores/:bid"
+      description: List all objects from a given bucket in the S3 resource
+      method: GET
+      endpoint: listObjects
+    - path: "/s3/stores/:bid/:id"
+      description: Read an object from a given bucket in the S3 resource
+      method: GET
+      endpoint: getObject
+    - path: "/s3/stores/:bid/:id"
+      description: Create an object in a given bucket into the S3 resource
+      method: POST
+      endpoint: addObject
+    - path: "/s3/stores/:bid/:id"
+      description: Update an object in a given bucket into the S3 resource
+      method: PUT
+      endpoint: addObject
+    - path: "/s3/stores/:bid/:id"
+      description: Delete an object in a given bucket into the S3 resource
+      method: DELETE
+      endpoint: deleteObject
+    - path: "/s3/buckets"
+      description: List all available buckets from a given bucket in the S3 resource
+      method: GET
+      endpoint: listBuckets
+    - path: "/s3/buckets/:id"
+      description: Create a new bucket in the S3 resource
+      method: POST
+      endpoint: addBucket
+    - path: "/s3/buckets/:id"
+      description: Read bucket info from the S3 resource
+      method: GET
+      endpoint: infoBucket
+    - path: "/s3/buckets/:id"
+      description: Delete a bucket in the S3 resource
+      method: DELETE
+      endpoint: deleteBucket

@@ -52,10 +52,10 @@ the `resources` section of your [configuration profile](../guides/2.Configure.md
 resources:
   aws-dynamodb-id:
     _class: aws_dynamodb
-    ACCESS_ID: xxxxxxxxxxx
-    ACCESS_KEY: yyyyyyyyyyyy
-    region: eu-west-1
-    QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
+    ACCESS_ID: XXXXXXXXXXXXX
+    ACCESS_KEY: XXXXXXXXXXXXX
+    region: eu-west-3
+    QueueUrl: https://dynamodb.eu-west-3.amazonaws.com
 ```
 
 ## Resource methods
@@ -94,7 +94,7 @@ get a list of message for a list queue.
 ```javascript
 var resource = $app.resources.get('aws-dynamodb-id');
 resource.read(
-    {QueueUrl:"https://dynamodb.eu-west-1.amazonaws.com"}, 
+    {QueueUrl:"https://dynamodb.eu-west-3.amazonaws.com"}, 
     function (error, response) {
         console.log(error, response);
     });
@@ -149,7 +149,7 @@ Send a message to the given queue.
 var resource = $app.resources.get('aws-dynamodb-id');
 resource.sendMessage(
     { id : "msg1", "key" : "value" }, 
-    { QueueUrl:"https://dynamodb.eu-west-1.amazonaws.com" }, 
+    { QueueUrl:"https://dynamodb.eu-west-3.amazonaws.com" }, 
     function (error, response) {
         console.log(error, response);
     });
@@ -260,7 +260,7 @@ server:
     resource: aws-dynamodb-id
     endpoint: listMessages
     config:
-      QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
+      QueueUrl: https://dynamodb.eu-west-3.amazonaws.com
 ```
 
 ### addMessage endpoint
@@ -335,7 +335,7 @@ server:
     resource: aws-dynamodb-id
     endpoint: listQueue
     config:
-      QueueUrl: https://dynamodb.eu-west-1.amazonaws.com
+      QueueUrl: https://dynamodb.eu-west-3.amazonaws.com
 ```
 
 ### addQueue endpoint

@@ -10,7 +10,7 @@ app:
     - "db-mariadb"
     - "db-couchbase"
   volumes:
-  - "./:/usr/src/app:z"
+  - "./:/app:z"
   - "./examples/full/sxapi.yml:/conf/sxapi.yml:z"
   command: ["npm" , "start"]
   

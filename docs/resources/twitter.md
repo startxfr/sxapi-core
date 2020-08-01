@@ -119,7 +119,7 @@ get a list of message for a list queue.
 ```javascript
 var resource = $app.resources.get('twitter-id');
 resource.read(
-    {QueueUrl:"https://sqs.eu-west-1.amazonaws.com"}, 
+    {QueueUrl:"https://sqs.eu-west-3.amazonaws.com"}, 
     function (error, response) {
         console.log(error, response);
     });
@@ -174,7 +174,7 @@ Send a message to the given queue.
 var resource = $app.resources.get('twitter-id');
 resource.sendMessage(
     { id : "msg1", "key" : "value" }, 
-    { QueueUrl:"https://sqs.eu-west-1.amazonaws.com" }, 
+    { QueueUrl:"https://sqs.eu-west-3.amazonaws.com" }, 
     function (error, response) {
         console.log(error, response);
     });
