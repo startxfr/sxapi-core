@@ -1,0 +1,10 @@
+app:
+  container_name: "sxapi-bot-master"
+  extends:
+    file: docker-compose.yml
+    service: app
+  volumes:
+  - "./:/app:z"
+  - "./examples/bot/sxapi.yml:/conf/sxapi.yml:z"
+  - "./examples/bot/mylib.js:/app/mylib.js:z"
+  command: ["npm" , "start"]

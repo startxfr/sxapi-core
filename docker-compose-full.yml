@@ -1,0 +1,99 @@
+app:
+  container_name: "sxapi-core-testing"
+  extends:
+    file: docker-compose.yml
+    service: app
+  links:
+    - "db-redis"
+#    - "db-memcache"
+    - "db-postgres"
+    - "db-mariadb"
+    - "db-couchbase"
+  volumes:
+  - "./:/app:z"
+  - "./examples/full/sxapi.yml:/conf/sxapi.yml:z"
+  command: ["npm" , "start"]
+  
+db-redis:
+  image: redis:3.2.11-alpine
+  container_name: "sxapi-core-testing-db-redis"
+  mem_limit: 1g
+  memswap_limit: 2g
+  ports:
+    - "6379:6379"
+
+#db-memcache:
+#  image: memcache:1.5.3-alpine
+#  container_name: "sxapi-core-testing-db-memcache"
+#  mem_limit: 1g
+#  memswap_limit: 2g
+#  ports:
+#    - "11211:11211"
+  
+db-postgres:
+  image: postgres:10.1-alpine
+  container_name: "sxapi-core-testing-db-postgres"
+  restart: always
+  ports:
+    - "5432"
+  environment:
+    POSTGRES_PASSWORD: hguyFtgfR4r9R4r76
+
+db-mariadb:
+  image: mariadb:5.5
+  container_name: "sxapi-core-testing-db-mariadb"
+  mem_limit: 2g
+  memswap_limit: 3g
+  environment:
+   - MYSQL_ROOT_PASSWORD=hguyFtgfR4r9R4r76
+
+#dbadminer:
+#  image: adminer
+#  container_name: "sxapi-core-testing-dbadminer"
+#  restart: always
+#  ports:
+#    - 8077:8077
+#  links:
+#    - "db-postgres"
+#    - "db-mariadb"
+
+db-couchbase:
+  image: couchbase
+  container_name: "sxapi-core-testing-db-couchbase"
+  ports:
+    - 8091-8094:8091-8094
+    - 11210:11210
+
+
+#dbpma:
+#  image: phpmyadmin/phpmyadmin:latest
+#  container_name: "sxapi-core-testing-dbpma"
+#  links:
+#    - db-mysql:db
+#  environment:
+#   - PMA_HOST=db
+#   - PMA_USER=root
+#   - PMA_PASSWORD=root
+#   - PMA_VERBOSE=true
+#   - PMA_PORT=3306
+#   - PMA_ABSOLUTE_URI=http://localhost:1901
+#  ports:
+#    - "1901:80"
+
+dbtools:
+  image: startx/db-tools:latest
+  container_name: "sxapi-core-testing-dbtools"
+  links:
+    - db-mariadb:dbm
+    - db-couchbase:dbc
+  environment:
+   - MYSQL_ADMIN=root:hguyFtgfR4r9R4r76
+   - MYSQL_DATABASE=sxapicore_example
+   - MYSQL_USERS=sxapicore_example:sxapicore_example
+   - MYSQL_DUMP_DIR=/data/mysql
+   - COUCHBASE_ADMIN=sxapicore_example:sxapicore_example
+   - COUCHBASE_BUCKET=sxapicore_example
+  volumes:
+    - "./test/mock_data/couchbase:/data/couchbase:z"
+    - "./test/mock_data/mysql:/data/mysql:z"
+  command: ["recreate"] 
