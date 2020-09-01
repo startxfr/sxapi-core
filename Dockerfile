@@ -1,7 +1,7 @@
 FROM quay.io/startx/nodejs:alpine3
 MAINTAINER STARTX "dev@startx.fr"
 
-ENV SX_VERSION="0.3.51" \
+ENV SX_VERSION="0.3.53" \
     SX_TYPE="service" \
     SX_SERVICE="sxapi" \
     SX_ID="startx/sxapi" \
