@@ -73,6 +73,9 @@ module.exports = function (id, config) {
       var timerId = 'resource_aws.sqs_open_' + $sqs.id;
       $timer.start(timerId);
       var config = {};
+      if ($sqs.config.connection_options) {
+        config = $sqs.config.connection_options;
+      }
       if ($sqs.config.ACCESS_ID) {
         config.accessKeyId = $sqs.config.ACCESS_ID;
       }
