@@ -73,6 +73,9 @@ module.exports = function (id, config) {
       var timerId = 'resource_aws.s3_open_' + $s3.id;
       $timer.start(timerId);
       var config = {};
+      if ($s3.config.connection_options) {
+        config = $s3.config.connection_options;
+      }
       if ($s3.config.ACCESS_ID) {
         config.accessKeyId = $s3.config.ACCESS_ID;
       }

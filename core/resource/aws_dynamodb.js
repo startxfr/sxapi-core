@@ -79,6 +79,9 @@ module.exports = function (id, config) {
       var timerId = 'resource_aws.dynamodb_open_' + $ddb.id;
       $timer.start(timerId);
       var config = {};
+      if ($ddb.config.connection_options) {
+        config = $ddb.config.connection_options;
+      }
       if ($ddb.config.ACCESS_ID) {
         config.accessKeyId = $ddb.config.ACCESS_ID;
       }
