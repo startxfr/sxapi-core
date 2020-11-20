@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.53-docker/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.53-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.55-blue.svg)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
