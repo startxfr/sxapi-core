@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.3.53",
+  "version": "0.3.55",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
@@ -67,10 +67,11 @@
     "change-case": "~3.1.0",
     "cookies": "~0.7.3",
     "cors": "~2.8.5",
+    "couchbase": "^3.0.2",
     "express": "~4.17.1",
     "glob": "^7.1.6",
-    "google-auth-library": "^5.10.1",
-    "googleapis": "~41.0.1",
+    "google-auth-library": "^6.1.1",
+    "googleapis": "^61.0.0",
     "ip": "~1.1.5",
     "js-yaml": "~3.13.1",
     "md5": "~2.2.1",
@@ -86,13 +87,12 @@
     "pg": "^7.18.2",
     "redis": "~2.8.0",
     "request": "^2.88.2",
-    "siren2tva": "~1.0.1",
+    "siren2tva": "~1.1.1",
     "socket.io": "~2.2.0",
     "socket.io-client": "~2.2.0",
     "timer-machine": "~1.1.0",
     "twitter": "~1.7.1",
-    "uuid": "^3.4.0",
-    "couchbase": "^3.0.2"
+    "uuid": "^3.4.0"
   },
   "optionalDependencies": {
     "fsevents": "^2.1.3"
