@@ -6,7 +6,7 @@ metadata:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
-    tags: builder,startx,alpine,nodejs,sxapi-0.3.53
+    tags: builder,startx,alpine,nodejs,sxapi-0.3.55
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/testing/README.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
@@ -33,19 +33,19 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     tags:
-    - name: 0.3.53
+    - name: 0.3.55
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (0.3.53)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.55)
         description: Builder for Simple and eXtensible API framework based on alpine
-          (0.3.53)
+          (0.3.55)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-0.3.53
-        supports: sxapi:0.3.53,nodejs,http
-        version: 0.3.53
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.55
+        supports: sxapi:0.3.55,nodejs,http
+        version: 0.3.55
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.53
+        name: startx/sxapi:0.3.55
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
   metadata:
@@ -62,8 +62,8 @@ objects:
         openshift.io/display-name: Application ${APPLICATION_NAME}
         description: Base image for the application ${APPLICATION_NAME}
         iconClass: icon-nodejs
-        tags: startx,alpine,nodejs,sxapi-0.3.53,application,${APPLICATION_NAME}
-        supports: sxapi:0.3.53,nodejs,http
+        tags: startx,alpine,nodejs,sxapi-0.3.55,application,${APPLICATION_NAME}
+        supports: sxapi:0.3.55,nodejs,http
         version: latest
 - kind: BuildConfig
   apiVersion: v1
@@ -95,7 +95,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: sxapi:0.3.53
+          name: sxapi:0.3.55
         env:
         - name: SX_VERBOSE
           value: 'true'
@@ -130,7 +130,7 @@ objects:
         - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APP_NAME}:0.3.53"
+          name: "${APP_NAME}:0.3.55"
     - type: ConfigChange
     replicas: 1
     test: false
