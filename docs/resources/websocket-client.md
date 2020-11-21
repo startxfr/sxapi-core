@@ -9,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 Based on [request npm module](https://www.npmjs.com/package/request) 
 [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>
