@@ -11,6 +11,7 @@ Very light (application less than 100Ko, full container stack for less than 30Mo
 [![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+[![Openbase](https://badges.openbase.io/js/rating/sxapi-core.svg)](https://openbase.io/js/sxapi-core?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
 
 ## Getting Started
 
