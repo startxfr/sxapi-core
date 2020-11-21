@@ -2,7 +2,7 @@
 
 # SXAPI Core : session manager
 
-The session manager is a [core component](./README.md) allow you to keep persistant 
+The session manager is a [core component](./index.md) allow you to keep persistant 
 information between client and API server using a session mechanism.<br> 
 This component comes with various transport type ([cookie](#transport-using-cookie), 
 [token](#transport-using-token) or [bearer](#transport-using-bearer)) for transfering the 
@@ -147,7 +147,7 @@ This backend type use [mysql resource](../resource/mysql.md) to persist session 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | mysql      | Must be `mysql` for this backend type
-| **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/README.md).
+| **resource**     | yes       | string  |            | ID of the mysql resource [see resource for configuration](../resources/index.md).
 | **table**        | yes       | string  |            | table name used for session storage
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
 | **fields**       | no        | object  |            | an object with special field list
@@ -179,7 +179,7 @@ This backend type use [postgres resource](../resource/postgres.md) to persist se
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | postgres   | Must be `postgres` for this backend type
-| **resource**     | yes       | string  |            | ID of the postgres resource [see resource for configuration](../resources/README.md).
+| **resource**     | yes       | string  |            | ID of the postgres resource [see resource for configuration](../resources/index.md).
 | **table**        | yes       | string  |            | table name used for session storage
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
 | **fields**       | no        | object  |            | an object with special field list
@@ -211,7 +211,7 @@ This backend type use [couchbase resource](../resource/couchbase.md) to persist 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | couchbase  | Must be `couchbase` for this backend type
-| **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/README.md).
+| **resource**     | yes       | string  |            | ID of the couchbase resource [see resource for configuration](../resources/index.md).
 | **key_ns**       | yes       | string  |            | the key namespace for this kind of document. used as a key prefix
 | **fields**       | no        | object  |            | an object with special field list
 | **fields.token** | no        | string  |            | name of the field containing the session token
@@ -271,7 +271,7 @@ This backend type use [memcache resource](../resource/memcache.md) to persist se
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | memcache   | Must be `memcache` for this backend type
-| **resource**     | yes       | string  |            | ID of the memcache resource [see resource for configuration](../resources/README.md).
+| **resource**     | yes       | string  |            | ID of the memcache resource [see resource for configuration](../resources/index.md).
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
 | **fields**       | no        | object  |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
@@ -299,7 +299,7 @@ This backend type use [redis resource](../resource/redis.md) to persist session 
 | Param            | Mandatory | Type    | default    | Description
 |------------------|:---------:|:-------:|------------|---------------
 | **type**         | yes       | string  | redis      | Must be `redis` for this backend type
-| **resource**     | yes       | string  |            | ID of the redis resource [see resource for configuration](../resources/README.md).
+| **resource**     | yes       | string  |            | ID of the redis resource [see resource for configuration](../resources/index.md).
 | **sid_field**    | yes       | string  |            | name of the field containing the session ID
 | **fields**       | no        | object  |            | an object with special field list
 | **fields.ip**    | no        | string  |            | name of the field containing the session IP
