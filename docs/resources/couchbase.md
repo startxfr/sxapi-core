@@ -9,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [couchbase npm module](https://www.npmjs.com/package/couchbase) 
 [![couchbase SDK](https://img.shields.io/npm/v/couchbase.svg)](https://www.npmjs.com/package/couchbase) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.6-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>
