@@ -1,7 +1,4 @@
 site_name: SXApi
-nav:
-    - Home: index.md
-    - About: about.md
 theme:
     name: readthedocs
     highlightjs: true
