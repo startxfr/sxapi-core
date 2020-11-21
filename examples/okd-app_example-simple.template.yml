@@ -315,7 +315,7 @@ parameters:
   value: sxapi-simple-example
   required: true
 - name: IMAGE_VERSION
-  value: "0.3.56"
+  value: "0.3.57"
   required: true
 - name: IMAGE_NAME
   value: "startx/sxapi"
