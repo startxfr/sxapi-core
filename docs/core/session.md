@@ -138,7 +138,7 @@ Available backend types are [mysql](#backend-using-mysql), [postgres](#backend-u
 
 ### backend using `mysql`
 
-This backend type use [mysql resource](../resource/mysql.md) to persist session context across executions.
+This backend type use [mysql resource](../resources/mysql.md) to persist session context across executions.
 
 #### mysql config parameters
 
@@ -170,7 +170,7 @@ session:
 
 ### backend using `postgres`
 
-This backend type use [postgres resource](../resource/postgres.md) to persist session context across executions.
+This backend type use [postgres resource](../resources/postgres.md) to persist session context across executions.
 
 #### postgres config parameters
 
@@ -202,7 +202,7 @@ session:
 
 ### backend using `couchbase`
 
-This backend type use [couchbase resource](../resource/couchbase.md) to persist session context across executions.
+This backend type use [couchbase resource](../resources/couchbase.md) to persist session context across executions.
 
 #### couchbase config parameters
 
@@ -262,7 +262,7 @@ session:
 
 ### backend using `memcache`
 
-This backend type use [memcache resource](../resource/memcache.md) to persist session context across executions.
+This backend type use [memcache resource](../resources/memcache.md) to persist session context across executions.
 
 #### memcache config parameters
 
@@ -290,7 +290,7 @@ session:
 
 ### backend using `redis`
 
-This backend type use [redis resource](../resource/redis.md) to persist session context across executions.
+This backend type use [redis resource](../resources/redis.md) to persist session context across executions.
 
 #### redis config parameters
 
