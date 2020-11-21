@@ -61,4 +61,4 @@ This project is mainly developped by the [startx](https://www.startx.fr) dev tea
 
 ## License
 
-This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL Version 3 - see the [.md](.md) file for details
