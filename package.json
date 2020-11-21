@@ -1,6 +1,6 @@
 {
   "name": "sxapi-core",
-  "version": "0.3.56",
+  "version": "0.3.57",
   "description": "sxapi-core is an simple and extensible framework for building microservices API using javascript technologies",
   "author": "STARTX <dev+sxapi_core@startx.fr>",
   "homepage": "https://github.com/startxfr/sxapi-core",
@@ -111,8 +111,8 @@
     "wait-on": "^3.3.0"
   },
   "engines": {
-    "node": ">= 11.7.0",
-    "npm": ">= 6.5.0"
+    "node": ">= 12.19.0",
+    "npm": ">= 6.14.5"
   },
   "os": [
     "darwin",
