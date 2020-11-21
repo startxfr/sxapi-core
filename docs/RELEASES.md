@@ -6,7 +6,8 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
-| 0.3.57   | 2020-11-21 | Update nodejs siren2tva to version 1.1.1 baased on opendata api
+| 0.3.57   | 2020-11-21 | Update all nodejs, npm and related modules dependencies
+| 0.3.56   | 2020-11-20 | Update nodejs siren2tva to version 1.1.1 based on opendata api
 | 0.3.53   | 2020-09-01 | Add connection options to AWS resources
 | 0.3.51   | 2020-08-01 | stabilize aws_s3 resource
 | 0.3.49   | 2020-06-08 | Upgrade npm component and security fixes
