@@ -38,12 +38,12 @@ You can also use the examples templates designed for openshift to deploy instant
 sxapi-core come with many components to help you build your own api. As soon as you have an api instance working, you should focus on making change to your `sxapi.yml` config file and implement api endpoints you want to create.
 To help you understand how you can configure your api, you can :
 
-1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/README.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/2.Configure.md)
+1. Visit [sxapi-core official documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/index.md) and read carefully the [configure section](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/2.Configure.md)
 2. Visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample) and explore sample config file to help find sample code or ready-to-use config file
 
 ## Documentation
 
-If you want to have more information on how to install, develop and run this framework and use it in your project, please read the [full documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/README.md) or our [user guides](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/README.md) and execute the following steps :
+If you want to have more information on how to install, develop and run this framework and use it in your project, please read the [full documentation](https://github.com/startxfr/sxapi-core/tree/testing/docs/index.md) or our [user guides](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/index.md) and execute the following steps :
 
 1. [Install sxapi framework](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/1.Install.md)
 2. [Configure you API](https://github.com/startxfr/sxapi-core/tree/testing/docs/guides/2.Configure.md)
@@ -53,7 +53,7 @@ If you want to have more information on how to install, develop and run this fra
 
 ## Release notes
 
-If you want to have more information on a minor release, [read released notes](docs/RELEASES.md)
+If you want to have more information on a minor release, [read released notes](docs/releases.md)
 
 | Release  | Date       |  Description
 |----------|------------|-------------
@@ -81,7 +81,7 @@ Read the [contributing guide](https://github.com/startxfr/sxapi-core/tree/testin
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/testing/docs/CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [contributors.md](https://github.com/startxfr/sxapi-core/tree/testing/docs/contributors.md).
 
 ## License
 

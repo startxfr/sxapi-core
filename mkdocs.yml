@@ -1,0 +1,12 @@
+site_name: SXApi
+nav:
+    - Home: index.md
+    - About: about.md
+theme:
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+    - yaml
+    - javascript
+    - bash
+    include_homepage_in_sidebar: false

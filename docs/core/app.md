@@ -2,7 +2,7 @@
 
 # SXAPI Core : application 
 
-The application component is the main [core component](./README.md) creating the application object.<br> 
+The application component is the main [core component](./index.md) creating the application object.<br> 
 
 ## Configuration
 

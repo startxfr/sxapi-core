@@ -23,7 +23,7 @@ sxapi could be used in 3 ways : container, npm module or from source code. You w
 
 ### Core components
 
-Core components are all loaded and available when the application start. You can find usefull informations in [core component documentation](core/README.md)
+Core components are all loaded and available when the application start. You can find usefull informations in [core component documentation](core/index.md)
 - [tools](core/tools.md) core component
 - [timer](core/timer.md) core component
 - [log](core/log.md) core component
@@ -35,7 +35,7 @@ Core components are all loaded and available when the application start. You can
 
 ### Resources components
 
-Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/README.md)
+Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/index.md)
 - [aws_s3](resources/aws_s3.md) resource : Interact with an Amazon WebService S3 backend
 - [aws_sqs](resources/aws_sqs.md) resource : Interact with an Amazon WebService SQS backend
 - [aws_dynamodb](resources/aws_dynamodb.md) resource : Interact with an Amazon WebService DynamoDB backend
@@ -57,7 +57,7 @@ Read the [contributing guide](guides/5.Contribute.md) for details on our code of
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [contributors.md](contributors.md).
 
 ## License
 

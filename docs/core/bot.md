@@ -2,7 +2,7 @@
 
 # SXAPI Core : bot component
 
-The bot component is a [core component](./README.md) used for executing cron task or message driven action.<br> 
+The bot component is a [core component](./index.md) used for executing cron task or message driven action.<br> 
 This component comes with 2 kind of tasks : cron for time based actions or reader for message driven actions.
 
 This resource is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
