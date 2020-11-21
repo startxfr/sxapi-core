@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : Twitter API
 
 This resource allow you to interact with the Twitter API Webservice.

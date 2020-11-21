@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : application 
 
 The application component is the main [core component](./index.md) creating the application object.<br> 

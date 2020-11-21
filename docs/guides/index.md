@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI User guides
 
 This section will help you find several user guide to get hand on the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).

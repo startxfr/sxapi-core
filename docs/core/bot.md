@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : bot component
 
 The bot component is a [core component](./index.md) used for executing cron task or message driven action.<br> 

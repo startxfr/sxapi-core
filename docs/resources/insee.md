@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : insee
 
 This resource allow you to get information about french company and manipulate french legal business numbers such as VAT code, SIREN or SIRET and also get company informations form opendata french state api.
