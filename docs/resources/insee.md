@@ -2,7 +2,7 @@
 
 # SXAPI Resource : insee
 
-This resource allow you to get information about french company and manipulate french legal business numbers such as VAT code, SIREN or SIRET.
+This resource allow you to get information about french company and manipulate french legal business numbers such as VAT code, SIREN or SIRET and also get company informations form opendata french state api.
 Programmers can access [resource methods](#resource-methods) and embed this module
 methods into there own method and endpoints.
 API developpers can use [resource endpoints](#resource-endpoints) into there
