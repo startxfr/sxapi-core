@@ -40,7 +40,7 @@ if(resourceManager.exist('resource-id')) {
 
 ## Using a resource
 
-If you wan't to see sample sxapi.yml config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.3.57-npm/samples)
+If you wan't to see sample sxapi.yml config for various resources, you can visit [sxapi-sample project](https://github.com/startxfr/sxapi-sample/tree/v0.3.58-npm/samples)
 
 ### Declaring a resource in your sxapi.yml
 
