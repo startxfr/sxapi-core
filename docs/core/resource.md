@@ -1,16 +1,14 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : resource manager
 
-The resource manager is a [core component](./README.md) allow you to connect your API with
+The resource manager is a [core component](./index.md) allow you to connect your API with
 multiple backend. API builders can connect and expose data from theses backend, and 
 developers can use then with ease to keep concentrated on business developement rather than 
 technicals issues.<br> 
-You can get a full list of [availables resources](../resources/README.md#availables_resources) 
-and learn more about how to [use a resource](../resources/README.md#using_a_resource) 
-by reading the  [resource documentation](../resources/README.md).<br> 
-API builders can discover how to [expose resource endpoints](../resources/README.md#using_a_resource_endpoint) 
-and node developpers can learn how to [use resource methods](../resources/README.md#using_a_resource_method) 
+You can get a full list of [availables resources](../resources/index.md#availables_resources) 
+and learn more about how to [use a resource](../resources/index.md#using_a_resource) 
+by reading the  [resource documentation](../resources/index.md).<br> 
+API builders can discover how to [expose resource endpoints](../resources/index.md#using_a_resource_endpoint) 
+and node developpers can learn how to [use resource methods](../resources/index.md#using_a_resource_method) 
 
 ## Configuration
 
@@ -25,8 +23,8 @@ persist data.
 
 | Param                  | Mandatory | Type    | default | Description
 |------------------------|:---------:|:-------:|---------|---------------
-| **resource-id**        | yes       | obj     |         | the resource key ID. [more informations](../resources/README.md#using_a_resource) 
-| resource-id.**_class** | yes       | string  |         | the resource class name. Should be one of the [availables resources](../resources/README.md#availables_resources) 
+| **resource-id**        | yes       | obj     |         | the resource key ID. [more informations](../resources/index.md#using_a_resource) 
+| resource-id.**_class** | yes       | string  |         | the resource class name. Should be one of the [availables resources](../resources/index.md#availables_resources) 
 
 
 ### Config Sample

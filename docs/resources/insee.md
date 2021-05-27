@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : insee
 
 This resource allow you to get information about french company and manipulate french legal business numbers such as VAT code, SIREN or SIRET and also get company informations form opendata french state api.
@@ -11,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [nodejs core](https://nodejs.org/en/docs/) 
 [![node](https://img.shields.io/badge/node-v3.1.0-blue.svg)](https://nodejs.org/en/docs/) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v1.0.2-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v1.0.2-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>

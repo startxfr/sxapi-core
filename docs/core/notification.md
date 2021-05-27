@@ -2,7 +2,7 @@
 
 # SXAPI Core : notification component
 
-The notification component is a [core component](./README.md) used for notifying the application events.<br> 
+The notification component is a [core component](./index.md) used for notifying the application events.<br> 
 This component comes with 2 storage backend ([sqs](#backend-using-sqs) or [couchbase](#backend-using-couchbase)) 
 to persist notification context.
 
