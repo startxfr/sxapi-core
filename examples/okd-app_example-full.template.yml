@@ -128,7 +128,7 @@ objects:
           SESSION_TOKEN: ''
           region: eu-west-3
         couchbase-sample:
-          _class: serviceinfo
+          _class: couchbase
           cluster: http://db-couchbase:8091
           bucket: sxapicore_example
         serviceinfo-sample:
