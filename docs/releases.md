@@ -4,6 +4,7 @@
 
 | Release  | Date       |  Description
 |----------|------------|-------------
+| 0.3.58   | 2021-05-28 | Security update of all deps
 | 0.3.57   | 2020-11-21 | Update all nodejs, npm and related modules dependencies
 | 0.3.56   | 2020-11-20 | Update nodejs siren2tva to version 1.1.1 based on opendata api
 | 0.3.53   | 2020-09-01 | Add connection options to AWS resources

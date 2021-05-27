@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.57-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.58-blue.svg)
 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Doc](https://readthedocs.org/projects/sxapi-core/badge)](https://sxapi-core.readthedocs.io)
@@ -58,6 +58,7 @@ If you want to have more information on a minor release, [read released notes](d
 
 | Release  | Date       |  Description
 |----------|------------|-------------
+| 0.3.58   | 2021-05-28 | Security update of all deps
 | 0.3.57   | 2020-09-01 | stabilize aws_s3 resource
 | 0.3.17   | 2019-07-27 | Adding swagger module and improve couchbase support
 | 0.3      | 2019-03-08 | Moving config to yaml syntax
