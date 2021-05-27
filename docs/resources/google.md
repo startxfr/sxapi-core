@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-docker/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : google
 
 This resource allow you to authenticate into Google API Services and use multiple
@@ -12,7 +10,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 Based on [googleapis npm module](https://www.npmjs.com/package/googleapis) 
 [![npm](https://img.shields.io/npm/v/googleapis.svg)](https://www.npmjs.com/package/googleapis) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.9-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.9-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>

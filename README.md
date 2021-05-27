@@ -1,16 +1,18 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-docker/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.57-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.58-blue.svg)
+
+[![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+[![Doc](https://readthedocs.org/projects/sxapi-core/badge)](https://sxapi-core.readthedocs.io)
+[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=testing)](https://travis-ci.org/startxfr/sxapi-core)
+[![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/)
+[![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
 
 **sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
 
 Very light (application less than 100Ko, full container stack for less than 30Mo) and configured with a single json file, you can build instantly small atomic API endpoints as well as fully featured enterprise-sized API.
 
-[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=v0.3.57-npm)](https://travis-ci.org/startxfr/sxapi-core)
-[![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/)
-[![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
-[![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
-[![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+This is the main documentation for the sxapi-core project. You can get some sample code and components usage by [reading the documentation](https://sxapi-core.readthedocs.io).
 
 ## Getting Started with docker
 
@@ -44,11 +46,12 @@ If you want to have more information on how to install, develop and run this fra
 
 ## Release notes
 
-If you want to have more information on a minor release, [read released notes](docs/RELEASES.md)
+If you want to have more information on a minor release, [read released notes](docs/releases.md)
 
 | Release  | Date       |  Description
 |----------|------------|-------------
-| 0.3.53   | 2020-09-01 | stabilize aws_s3 resource
+| 0.3.58   | 2021-05-28 | Security update of all deps
+| 0.3.57   | 2020-09-01 | stabilize aws_s3 resource
 | 0.3.17   | 2019-07-27 | Adding swagger module and improve couchbase support
 | 0.3      | 2019-03-08 | Moving config to yaml syntax
 | 0.2      | 2018-03-18 | Adding bot behavior, event messaging and containerized images

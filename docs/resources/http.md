@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-docker/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : http
 
 This resource allow you to interact with a HTTP server.
@@ -11,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 Based on [request npm module](https://www.npmjs.com/package/request) 
 [![npm](https://img.shields.io/npm/v/request.svg)](https://www.npmjs.com/package/request) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>

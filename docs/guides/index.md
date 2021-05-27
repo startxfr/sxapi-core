@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-docker/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI User guides
 
 This section will help you find several user guide to get hand on the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
@@ -25,8 +23,8 @@ Read the [contributing guide](5.Contribute.md) for details on our code of conduc
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [contributors.md](../contributors.md).
 
 ## License
 
-This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL Version 3 - see the [LICENCE](../../LICENCE) file for details

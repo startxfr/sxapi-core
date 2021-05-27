@@ -1,8 +1,6 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-docker/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : log component
 
-The log component is a [core component](./README.md) used for logging the application events.<br> 
+The log component is a [core component](./index.md) used for logging the application events.<br> 
 This component comes with 2 storage backend ([sqs](#backend-using-sqs) or [couchbase](#backend-using-couchbase)) 
 to persist log context.
 
