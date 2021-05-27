@@ -2,11 +2,25 @@
 
 # SXAPI Documentation
 
-This is the main documentation for the sxapi-core project. For more information you can visit the [sxapi-core project page](https://github.com/startxfr/sxapi-core/).
+![sxapi-core](https://img.shields.io/badge/latest-v0.3.58-blue.svg) 
+[![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+[![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
+[![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=testing)](https://travis-ci.org/startxfr/sxapi-core)
+[![docker build](https://img.shields.io/docker/build/startx/sxapi.svg)](https://hub.docker.com/r/startx/sxapi/)
+[![npm version](https://badge.fury.io/js/sxapi-core.svg)](https://www.npmjs.com/package/sxapi-core)
+
+This is the main documentation for the sxapi-core project. For more information you can visit the [sxapi-core github project](https://github.com/startxfr/sxapi-core/).
+
+## the sxapi project
+
+**sxapi** for **s**imple and e**x**tensible **api** (Application Programming Interface) is an an open-source framework for quickly building simple and small API based on microservice architecture.
+
+Very light (application less than 100Ko, full container stack for less than 30Mo) and configured with a single json file, you can build instantly small atomic API endpoints as well as fully featured enterprise-sized API.
 
 ## Getting started User guides
 
 sxapi could be used in 3 ways : container, npm module or from source code. You will find a user guide for each one of these usage in the following sections :
+
 - [Docker image user guide](guides/USE_docker.md)
 - [NPM module user guide](guides/USE_npm.md)
 - [Source code user guide](guides/USE_source.md)
@@ -23,7 +37,8 @@ sxapi could be used in 3 ways : container, npm module or from source code. You w
 
 ### Core components
 
-Core components are all loaded and available when the application start. You can find usefull informations in [core component documentation](core/README.md)
+Core components are all loaded and available when the application start. You can find usefull informations in [core component documentation](core/index.md)
+
 - [tools](core/tools.md) core component
 - [timer](core/timer.md) core component
 - [log](core/log.md) core component
@@ -35,7 +50,8 @@ Core components are all loaded and available when the application start. You can
 
 ### Resources components
 
-Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/README.md)
+Resource components are loaded if defined in the configuration profile. You can find usefull informations in [resource documentation](resources/index.md)
+
 - [aws_s3](resources/aws_s3.md) resource : Interact with an Amazon WebService S3 backend
 - [aws_sqs](resources/aws_sqs.md) resource : Interact with an Amazon WebService SQS backend
 - [aws_dynamodb](resources/aws_dynamodb.md) resource : Interact with an Amazon WebService DynamoDB backend
@@ -57,8 +73,8 @@ Read the [contributing guide](guides/5.Contribute.md) for details on our code of
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [contributors.md](contributors.md).
 
 ## License
 
-This project is licensed under the GPL Version 3 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL Version 3 - see the [LICENCE](../LICENCE) file for details

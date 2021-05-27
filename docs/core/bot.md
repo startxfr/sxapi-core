@@ -1,12 +1,10 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : bot component
 
-The bot component is a [core component](./README.md) used for executing cron task or message driven action.<br> 
+The bot component is a [core component](./index.md) used for executing cron task or message driven action.<br> 
 This component comes with 2 kind of tasks : cron for time based actions or reader for message driven actions.
 
 This resource is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.3.57-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.86-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 ## Configuration
 

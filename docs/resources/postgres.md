@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-npm/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : postgres
 
 This resource allow you to interact with a PostgreSQL server. 
@@ -11,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [postgres npm module](https://www.npmjs.com/package/pg) 
 [![pg](https://img.shields.io/npm/v/pg.svg)](https://www.npmjs.com/package/pg) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.67-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.67-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>

@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-npm/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core
 
 sxapi comes with several buildin core modules to help you build a fast and flexible API. 

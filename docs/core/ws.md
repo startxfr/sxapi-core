@@ -1,13 +1,11 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-npm/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Core : web server manager
 
-The web server manager is a [core component](./README.md) allow you to receive incoming
+The web server manager is a [core component](./index.md) allow you to receive incoming
 request from http or websocket protocol and perfom a response coresponding to the defined
 endpoint.<br> 
 This component is highly flexible and API builders can easily
-[expose resource endpoints](../resources/README.md#using_a_resource_endpoint) 
-and developpers [using resource methods](../resources/README.md#using_a_resource_method).
+[expose resource endpoints](../resources/index.md#using_a_resource_endpoint) 
+and developpers [using resource methods](../resources/index.md#using_a_resource_method).
 
 ## Configuration
 
@@ -64,7 +62,7 @@ connections.
 | **path**               | yes       | string  |         | the endpoint path
 | **desc**               | no        | string  |         | A text description of the endpoint action
 | **resource**           | yes       | string  |         | the resource ID to use. For more information see [resource documentation](./resource.md#config-parameters)
-| **endpoint**           | yes       | string  |         | Endpoint name to use from the resource ID. Every resource come with various available endpoints. For more information see [how to use resource endpoints](../resources/README.md#using_a_resource_endpoint) 
+| **endpoint**           | yes       | string  |         | Endpoint name to use from the resource ID. Every resource come with various available endpoints. For more information see [how to use resource endpoints](../resources/index.md#using_a_resource_endpoint) 
 | **endpoint_param**     | no        |         |         | all other params will be given to the resource endpoint and used for it configuration
 
 

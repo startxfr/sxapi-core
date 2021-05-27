@@ -43,6 +43,18 @@ log:
     type: info,error,warn
 server:
   port: '{{{APP_PORT}}}'
+  static:
+  - path: "/test"
+    dir: "/test"
+  enableWebsockets: true
+  websockets:
+    events:
+    - event: example
+      handler: "$ws.websockets.onMessageDefaultCallback"
+    - event: exampleGlobal
+      handler: "$ws.lib.mySocketEndpointFunction"
+    - event: disconnect
+      handler: "$ws.websockets.onMessageDefaultCallback"
   endpoints:
   - path: "/"
     description: Display welcome message (HTML)

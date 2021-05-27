@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
-
 # SXAPI Resource : swagger
 
 This resource allow you to get a swagger manifest describing the current running service.
@@ -11,7 +9,7 @@ API developpers can use [resource endpoints](#resource-endpoints) into there
 This resource is based on [nodejs core](https://nodejs.org/en/docs/) 
 [![node](https://img.shields.io/badge/node-v3.1.0-blue.svg)](https://nodejs.org/en/docs/) 
 and is part of the [sxapi-core engine](https://github.com/startxfr/sxapi-core) 
-until [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
+from [![sxapi](https://img.shields.io/badge/sxapi-v0.0.8-blue.svg)](https://github.com/startxfr/sxapi-core).
 
 - [Resource configuration](#resource-configuration)<br>
 - [Resource methods](#resource-methods)<br>

@@ -1,5 +1,3 @@
-<img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/v0.3.57-npm/docs/assets/logo.svg?sanitize=true">
-
 # USE sxapi with source code
 
 ## Getting Started
@@ -76,7 +74,7 @@ See also the list of [contributors](https://github.com/your/project/contributors
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENCE](../../LICENCE) file for details
 
 ## Acknowledgments
 
