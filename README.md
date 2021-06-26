@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.58-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.59-blue.svg)
 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Doc](https://readthedocs.org/projects/sxapi-core/badge)](https://sxapi-core.readthedocs.io)
@@ -56,15 +56,16 @@ If you want to have more information on how to install, develop and run this fra
 
 If you want to have more information on a minor release, [read released notes](docs/releases.md)
 
-| Release  | Date       |  Description
-|----------|------------|-------------
-| 0.3.58   | 2021-05-28 | Security update of all deps
-| 0.3.57   | 2020-09-01 | stabilize aws_s3 resource
-| 0.3.17   | 2019-07-27 | Adding swagger module and improve couchbase support
-| 0.3      | 2019-03-08 | Moving config to yaml syntax
-| 0.2      | 2018-03-18 | Adding bot behavior, event messaging and containerized images
-| 0.1      | 2018-01-20 | Adding all resources, session and websockets
-| beta     | 2016-10-29 | micro api componement with log and lightweight webserver
+| Release | Date       | Description                                                      |
+| ------- | ---------- | ---------------------------------------------------------------- |
+| 0.3.59  | 2021-06-26 | Security update of all deps and add sxapi operator documentation |
+| 0.3.58  | 2021-05-28 | Security update of all deps                                      |
+| 0.3.57  | 2020-09-01 | stabilize aws_s3 resource                                        |
+| 0.3.17  | 2019-07-27 | Adding swagger module and improve couchbase support              |
+| 0.3     | 2019-03-08 | Moving config to yaml syntax                                     |
+| 0.2     | 2018-03-18 | Adding bot behavior, event messaging and containerized images    |
+| 0.1     | 2018-01-20 | Adding all resources, session and websockets                     |
+| beta    | 2016-10-29 | micro api componement with log and lightweight webserver         |
 
 ## Troubleshooting
 
