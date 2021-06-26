@@ -2,7 +2,7 @@
 
 # SXAPI Documentation
 
-![sxapi-core](https://img.shields.io/badge/latest-v0.3.58-blue.svg) 
+![sxapi-core](https://img.shields.io/badge/latest-v0.3.59-blue.svg) 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=testing)](https://travis-ci.org/startxfr/sxapi-core)
@@ -32,6 +32,7 @@ sxapi could be used in 3 ways : container, npm module or from source code. You w
 3. Execute your application using the [running application guide](guides/3.Run.md)
 4. Extend application capacity with the [developping guide](guides/4.Develop.md)
 5. Participate to this open-source project according to the [contributing guide](guides/5.Contribute.md)
+6. Execute application using the [sxapi operator guide](guides/6.Operator.md)
 
 ## API documentation
 
