@@ -32,6 +32,7 @@ sxapi could be used in 3 ways : container, npm module or from source code. You w
 3. Execute your application using the [running application guide](guides/3.Run.md)
 4. Extend application capacity with the [developping guide](guides/4.Develop.md)
 5. Participate to this open-source project according to the [contributing guide](guides/5.Contribute.md)
+6. Execute application using the [sxapi operator guide](guides/6.Operator.md)
 
 ## API documentation
 
