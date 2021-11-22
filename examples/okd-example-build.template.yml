@@ -6,7 +6,7 @@ metadata:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
-    tags: builder,startx,alpine,nodejs,sxapi-0.3.59
+    tags: builder,startx,alpine,nodejs,sxapi-0.3.61
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/testing/index.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
@@ -33,6 +33,19 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     tags:
+    - name: 0.3.61
+      annotations:
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.61)
+        description: Builder for Simple and eXtensible API framework based on alpine
+          (0.3.61)
+        iconClass: icon-nodejs
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.61
+        supports: sxapi:0.3.61,nodejs,http
+        version: 0.3.61
+        sampleRepo: https://github.com/startxfr/sxapi-example.git
+      from:
+        kind: DockerImage
+        name: startx/sxapi:0.3.61
     - name: 0.3.59
       annotations:
         openshift.io/display-name: S2I Startx SXAPI framework (0.3.59)
@@ -95,7 +108,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: sxapi:0.3.59
+          name: sxapi:latest
         env:
         - name: SX_VERBOSE
           value: 'true'
@@ -130,7 +143,7 @@ objects:
         - "${APPLICATION_NAME}"
         from:
           kind: ImageStreamTag
-          name: "${APP_NAME}:0.3.59"
+          name: "${APP_NAME}:latest"
     - type: ConfigChange
     replicas: 1
     test: false
