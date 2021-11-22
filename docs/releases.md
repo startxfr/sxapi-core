@@ -4,6 +4,8 @@
 
 | Release | Date       | Description                                                                                                     |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
+| 0.3.63  | 2021-11-22 | Upgrade siren2tva to 1.1.5 and all app and dev dependencies. Reduce to 3 moderate vuln                          |
+| 0.3.61  | 2021-11-21 | Security update of all deps                                                                                     |
 | 0.3.59  | 2021-06-26 | Security update of all deps and add sxapi operator documentation                                                |
 | 0.3.58  | 2021-05-28 | Security update of all deps                                                                                     |
 | 0.3.57  | 2020-11-21 | Update all nodejs, npm and related modules dependencies                                                         |
