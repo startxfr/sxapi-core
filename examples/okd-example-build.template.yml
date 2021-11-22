@@ -75,8 +75,8 @@ objects:
         openshift.io/display-name: Application ${APPLICATION_NAME}
         description: Base image for the application ${APPLICATION_NAME}
         iconClass: icon-nodejs
-        tags: startx,alpine,nodejs,sxapi-0.3.59,application,${APPLICATION_NAME}
-        supports: sxapi:0.3.59,nodejs,http
+        tags: startx,alpine,nodejs,sxapi-0.3.61,application,${APPLICATION_NAME}
+        supports: sxapi:0.3.61,nodejs,http
         version: latest
 - kind: BuildConfig
   apiVersion: v1
