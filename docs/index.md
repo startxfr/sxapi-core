@@ -2,7 +2,7 @@
 
 # SXAPI Documentation
 
-![sxapi-core](https://img.shields.io/badge/latest-v0.3.61-blue.svg) 
+![sxapi-core](https://img.shields.io/badge/latest-v0.3.63-blue.svg) 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![licence](https://img.shields.io/github/license/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Build Status](https://travis-ci.org/startxfr/sxapi-core.svg?branch=testing)](https://travis-ci.org/startxfr/sxapi-core)

@@ -266,7 +266,7 @@ parameters:
   value: sxapi-example-cmembed
   required: true
 - name: IMAGE_NAME
-  value: "0.3.61"
+  value: "0.3.63"
   required: true
 - name: REGISTRY
   value: "startx/sxapi"
