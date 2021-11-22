@@ -1,6 +1,6 @@
 FROM quay.io/startx/nodejs:alpine3
 
-ENV SX_VERSION="0.3.61" \
+ENV SX_VERSION="0.3.63" \
     SX_TYPE="service" \
     SX_SERVICE="sxapi" \
     SX_ID="startx/sxapi" \
