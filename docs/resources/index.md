@@ -21,22 +21,22 @@ if(resourceManager.exist('resource-id')) {
 
 | Class            | SDK                | Documentation          | Description
 |------------------|:------------------:|:----------------------:|------------------------
-| **aws_s3**       | aws-sdk v2.6       | [read](aws_s3.md)      | Resource to interact with an AWS S3 backend.
-| **aws_sqs**      | aws-sdk v2.6       | [read](aws_sqs.md)     | Resource to interact with an AWS SQS backend.
-| **aws_dynamodb** | aws-sdk v2.6       | [read](aws_s3.md)      | Resource to interact with an AWS DynamoDB backend.
-| **couchbase**    | couchbase v2.1.8   | [read](couchbase.md)   | Resource to interact with a couchbase cluster
-| **google**       | googleapis v23.0.0 | [read](google.md)      | Resource to interact with Google API backend.
-| **google_drive** | googleapis v23.0.0 | [read](google_drive.md)| Resource to interact with Google Drive API backend.
-| **http**         | request v2.79.0    | [read](http.md)        | Resource to interact with an http server.
-| **mysql**        | mysql v2.11.1      | [read](mysql.md)       | Resource to interact with a mysql server.
-| **postgres**     | pg v7.4.0          | [read](postgres.md)    | Resource to interact with a postgres server.
-| **memcache**     | memcache v0.3.4    | [read](memcache.md)    | Resource to interact with a memcache server.
-| **redis**        | node_redis v2.6.3  | [read](redis.md)       | Resource to interact with a redis cluster.
-| **serviceinfo**  | sxapi v0.0.66      | [read](serviceinfo.md) | Resource to interact with a application services.
-| **swagger**      | sxapi v0.3.9       | [read](swagger.md)     | Resource to return swagger manifests.
-| **insee**        | siren2tva v1.0     | [read](insee.md)       | Resource to interact with a French INSEE company code
+| **aws_s3**       | aws-sdk v2.1033.0  | [read](aws_s3.md)      | Resource to interact with an AWS S3 backend.
+| **aws_sqs**      | aws-sdk v2.1033.0  | [read](aws_sqs.md)     | Resource to interact with an AWS SQS backend.
+| **aws_dynamodb** | aws-sdk v2.1033.0  | [read](aws_s3.md)      | Resource to interact with an AWS DynamoDB backend.
+| **couchbase**    | couchbase v4.1.0   | [read](couchbase.md)   | Resource to interact with a couchbase cluster
+| **google**       | googleapis v91.0.0 | [read](google.md)      | Resource to interact with Google API backend.
+| **google_drive** | googleapis v91.0.0 | [read](google_drive.md)| Resource to interact with Google Drive API backend.
+| **http**         | request v2.88.2    | [read](http.md)        | Resource to interact with an http server.
+| **mysql**        | mysql v2.18.1      | [read](mysql.md)       | Resource to interact with a mysql server.
+| **postgres**     | pg v8.8.0          | [read](postgres.md)    | Resource to interact with a postgres server.
+| **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
+| **redis**        | node_redis v3.1.2  | [read](redis.md)       | Resource to interact with a redis cluster.
+| **serviceinfo**  | sxapi v0.0.65      | [read](serviceinfo.md) | Resource to interact with a application services.
+| **swagger**      | sxapi v0.3.65      | [read](swagger.md)     | Resource to return swagger manifests.
+| **insee**        | siren2tva v1.2.0   | [read](insee.md)       | Resource to interact with a French INSEE company code
 | **localfs**      | (none)             | [read](localfs.md)     | Resource to interact with the application host (or container) local file-system
-| **twitter**      | twitter API v1.7.1 | [read](twitter.md)     | Resource to interact with twitter API and tweet streams
+| **twitter-v2**   | twitter API v1.1.0 | [read](twitter.md)     | Resource to interact with twitter API and tweet streams
 
 ## Using a resource
 
