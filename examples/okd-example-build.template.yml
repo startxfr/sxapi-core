@@ -6,7 +6,7 @@ metadata:
     openshift.io/display-name: SXAPI micro-service application (Builder)
     description: SXAPI micro-service application builder based on alpine linux
     iconClass: icon-nodejs
-    tags: builder,startx,alpine,nodejs,sxapi-0.3.63
+    tags: builder,startx,alpine,nodejs,sxapi-0.3.65
     openshift.io/provider-display-name: STARTX
     openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/testing/index.md
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
@@ -33,19 +33,19 @@ objects:
       openshift.io/generated-by: STARTX
   spec:
     tags:
-    - name: 0.3.63
+    - name: 0.3.65
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (0.3.63)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.65)
         description: Builder for Simple and eXtensible API framework based on alpine
-          (0.3.63)
+          (0.3.65)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-0.3.63
-        supports: sxapi:0.3.63,nodejs,http
-        version: 0.3.63
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.65
+        supports: sxapi:0.3.65,nodejs,http
+        version: 0.3.65
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.63
+        name: startx/sxapi:0.3.65
     - name: 0.3.61
       annotations:
         openshift.io/display-name: S2I Startx SXAPI framework (0.3.61)
@@ -257,7 +257,7 @@ parameters:
 - name: SOURCE_BRANCH
   displayName: Source branch
   description: Name of the default branch
-  value: master
+  value: testing
   required: true
 - name: WEBHOOK_TOKEN
   displayName: Webhook token

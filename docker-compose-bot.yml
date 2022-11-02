@@ -1,5 +1,5 @@
 app:
-  container_name: "sxapi-bot-master"
+  container_name: "sxapi-bot-testing"
   extends:
     file: docker-compose.yml
     service: app
