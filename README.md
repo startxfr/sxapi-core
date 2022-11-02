@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.63-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.65-blue.svg)
 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Doc](https://readthedocs.org/projects/sxapi-core/badge)](https://sxapi-core.readthedocs.io)
