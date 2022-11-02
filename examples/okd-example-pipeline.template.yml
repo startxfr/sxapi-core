@@ -262,7 +262,7 @@ parameters:
   value: master
   required: true
 - name: IMAGE_NAME
-  value: "0.3.65"
+  value: "0.3.66"
   required: true
 - name: REGISTRY
   value: "startx/sxapi"

@@ -33,7 +33,7 @@ if(resourceManager.exist('resource-id')) {
 | **memcache**     | memcache v0.3.0    | [read](memcache.md)    | Resource to interact with a memcache server.
 | **redis**        | node_redis v3.1.2  | [read](redis.md)       | Resource to interact with a redis cluster.
 | **serviceinfo**  | sxapi v0.0.65      | [read](serviceinfo.md) | Resource to interact with a application services.
-| **swagger**      | sxapi v0.3.65      | [read](swagger.md)     | Resource to return swagger manifests.
+| **swagger**      | sxapi v0.3.66      | [read](swagger.md)     | Resource to return swagger manifests.
 | **insee**        | siren2tva v1.2.0   | [read](insee.md)       | Resource to interact with a French INSEE company code
 | **localfs**      | (none)             | [read](localfs.md)     | Resource to interact with the application host (or container) local file-system
 | **twitter-v2**   | twitter API v1.1.0 | [read](twitter.md)     | Resource to interact with twitter API and tweet streams
