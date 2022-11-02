@@ -1,6 +1,6 @@
 <img align="right" height="50" src="https://raw.githubusercontent.com/startxfr/sxapi-core/testing/docs/assets/logo.svg?sanitize=true">
 
-# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.65-blue.svg)
+# sxapi-core project ![sxapi](https://img.shields.io/badge/latest-v0.3.66-blue.svg)
 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/sxapi-core.svg)](https://github.com/startxfr/sxapi-core)
 [![Doc](https://readthedocs.org/projects/sxapi-core/badge)](https://sxapi-core.readthedocs.io)
@@ -58,7 +58,7 @@ If you want to have more information on a minor release, [read released notes](d
 
 | Release | Date       | Description                                                                            |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
-| 0.3.65  | 2022-11-02 | Upgrade siren2tva to 1.2.0 and all app and dev dependencies.                           |
+| 0.3.66  | 2022-11-02 | Upgrade siren2tva to 1.2.0 and all app and dev dependencies.                           |
 | 0.3.63  | 2021-11-22 | Upgrade siren2tva to 1.1.5 and all app and dev dependencies. Reduce to 3 moderate vuln |
 | 0.3.61  | 2021-11-21 | Security update of all deps                                                            |
 | 0.3.59  | 2021-06-26 | Security update of all deps and add sxapi operator documentation                       |
