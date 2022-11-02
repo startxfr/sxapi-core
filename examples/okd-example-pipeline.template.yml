@@ -259,7 +259,7 @@ parameters:
 - name: SOURCE_BRANCH
   displayName: Source branch
   description: Name of the default branch
-  value: master
+  value: testing
   required: true
 - name: IMAGE_NAME
   value: "0.3.65"

@@ -257,7 +257,7 @@ parameters:
 - name: SOURCE_BRANCH
   displayName: Source branch
   description: Name of the default branch
-  value: master
+  value: testing
   required: true
 - name: WEBHOOK_TOKEN
   displayName: Webhook token
