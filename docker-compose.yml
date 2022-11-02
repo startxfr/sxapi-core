@@ -1,6 +1,6 @@
 app:
   build: .
-  container_name: "sxapi-core-v0.3.65"
+  container_name: "sxapi-core-v0.3.66"
   ports:
     - "8077:8077"
   volumes:
